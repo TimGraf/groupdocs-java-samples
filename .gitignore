@@ -16,7 +16,12 @@ project/project
 project/target
 target
 tmp
-test-result
-server.pid
-*.iml
-*.eml
+.history
+dist
+/.idea
+/*.iml
+/out
+/.idea_modules
+/.classpath
+/.project
+/RUNNING_PID
