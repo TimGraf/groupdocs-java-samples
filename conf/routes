@@ -4,6 +4,26 @@
 
 # Home page
 GET     /                           controllers.Application.index()
+GET     /sample1                    controllers.Sample1.index()
+POST    /sample1                    controllers.Sample1.index()
+GET     /sample2                    controllers.Sample2.index()
+POST    /sample2                    controllers.Sample2.index()
+GET     /sample3                    controllers.Sample3.index()
+POST    /sample3                    controllers.Sample3.index()
+GET     /sample4                    controllers.Sample4.index()
+POST    /sample4                    controllers.Sample4.index()
+GET     /sample5                    controllers.Sample5.index()
+POST    /sample5                    controllers.Sample5.index()
+GET     /sample6                    controllers.Sample6.index()
+POST    /sample6                    controllers.Sample6.index()
+GET     /sample7                    controllers.Sample7.index()
+POST    /sample7                    controllers.Sample7.index()
+GET     /sample8                    controllers.Sample8.index()
+POST    /sample8                    controllers.Sample8.index()
+GET     /sample9                    controllers.Sample9.index()
+POST    /sample9                    controllers.Sample9.index()
+GET     /sample10                   controllers.Sample10.index()
+POST    /sample10                   controllers.Sample10.index()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

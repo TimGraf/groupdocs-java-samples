@@ -1,0 +1,52 @@
+@(title: String, subTitle: String, data: HashMap[String, String], aForm: Form[Credentials])
+
+@import helper._
+
+@main(title) {
+
+<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+
+<div class='samplecontent' style="padding:10px;">
+   Sample is under development. <i>This sample will show how to generate a embedded Viewer URL for a Document using Java SDK</i> <br/>
+   
+   <br/>
+   <div id="requestForm" style="padding:20px; border:1px solid black;">
+		<p>Enter data for request and press "Make request" button </p>
+		@myForm(routes.Sample9.index(), 'method -> "POST") {
+	        @aForm.globalErrors.map { error =>
+			  @if(error.arguments.size > 0){
+				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
+			  } else {
+				  <div>@error.message</div>
+			  }
+			}
+	        @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 100) 
+	        @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 100)
+	        @inputText(aForm("fileGuid"), '_label -> "File GUID", 'size -> 100)
+	        @inputText(aForm("width"), '_label -> "Width", 'size -> 100, 'placeholder -> "100%")
+	        @inputText(aForm("height"), '_label -> "Height", 'size -> 100, 'placeholder -> "1000 or 1000px")
+	        <input type="submit" value="Make Request">
+        }
+   </div>
+
+@if(data != null){
+   <br/> 
+   <div  style="padding:20px; border:1px solid black;">
+        <p> Results: </p>
+        <table style="border:1px double black;">
+          <tr>
+              <th>Key</th><th>Value</th>
+          </tr>
+@for((key, value) <- data){
+          <tr>
+               <td>@key</td><td>@value</td>
+          </tr>
+}
+        </table>
+   </div>
+	<iframe src="https://apps.groupdocs.com/document-viewer/embed/@data.get("guid")" frameborder="0" width="@data.get("width")" height="@data.get("height")" />
+}
+
+</div>
+
+}

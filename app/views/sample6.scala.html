@@ -1,0 +1,42 @@
+@(title: String, subTitle: String, fileGuid: String, aForm: Form[Credentials])
+
+@import helper._
+
+@main(title) {
+
+<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+
+<div class='samplecontent' style="padding:10px;">
+   Sample is under development. <i>This sample will show how to use StorageApi to upload file to GroupDocs using Java SDK</i> <br/>
+   
+   <br/>
+   <div id="requestForm" style="padding:20px; border:1px solid black;">
+		<p>Enter data for request and press "Make request" button </p>
+		@myForm(routes.Sample6.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+			@aForm.globalErrors.map { error =>
+			  @if(error.arguments.size > 0){
+				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
+			  } else {
+				  <div>@error.message</div>
+			  }
+			}
+	        @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 100) 
+	        @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 100)
+	        @inputText(aForm("signerName"), '_label -> "Signer Name", 'size -> 100)
+	        @inputFile(aForm("resourceFile"), '_label -> "Document to sign")
+	        @inputFile(aForm("resourceSignature"), '_label -> "Signature image")
+	        <input type="submit" value="Make Request">
+        }
+   </div>
+
+@if(fileGuid != null){
+   <br/> 
+   <div  style="padding:20px; border:1px solid black;">
+        <p> Results: </p>
+		<iframe src="https://apps.groupdocs.com/document-viewer/embed/@fileGuid" frameborder="0" width="100%" height="1000px" />
+   </div>
+}
+
+</div>
+
+}

@@ -8,11 +8,14 @@ object ApplicationBuild extends Build {
     val appVersion      = "1.0-SNAPSHOT"
 
     val appDependencies = Seq(
-      // Add your project dependencies here,
+        "com.groupdocs" % "groupdocs-java-client" % "1.2-SNAPSHOT",
+        "com.sun.jersey" % "jersey-core" % "1.13"
     )
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(
-      // Add your own project settings here      
+        resolvers += "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository",
+        templatesImport += "com.groupdocs.sdk.model._",
+        templatesImport += "com.groupdocs.sdk.common._"
     )
 
 }
