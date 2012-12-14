@@ -71,8 +71,8 @@ public class Sample6 extends Controller {
 					signer.setData(base64signature);
 					signer.setHeight(40d);
 					signer.setWidth(100d);
-					signer.setTop(0.03319);
-					signer.setLeft(0.52171);
+					signer.setTop(0.83319);
+					signer.setLeft(0.72171);
 					
 					SignatureSignDocumentSettings requestBody = new SignatureSignDocumentSettings();
 					List<SignatureSignDocumentSignerSettings> signers = new ArrayList<SignatureSignDocumentSignerSettings>();
