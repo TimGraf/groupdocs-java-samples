@@ -20,17 +20,15 @@
 				  <div>@error.message</div>
 			  }
 			}
-	        @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 100) 
-	        @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 100)
-	        @inputText(aForm("fileGuid"), '_label -> "File GUID", 'size -> 100)
-	        @inputText(aForm("width"), '_label -> "Width", 'size -> 100, 'placeholder -> "100%")
+
+	        @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 100)
 	        @inputText(aForm("height"), '_label -> "Height", 'size -> 100, 'placeholder -> "1000 or 1000px")
+            @inputText(aForm("width"), '_label -> "Width", 'size -> 100, 'placeholder -> "100%")
 	        <input type="submit" value="Make Request">
         }
    </div>
-
-@if(data != null){
    <br/> 
+@if(data != null){
    <div  style="padding:20px; border:1px solid black;">
         <p> Results: </p>
         <table style="border:1px double black;">
@@ -43,10 +41,26 @@
           </tr>
 }
         </table>
+        <iframe src='https://apps.groupdocs.com/document-viewer/embed/@data.get("guid") ?frameborder="0" width=@data.get("width") height=@data.get("height") '></iframe>
    </div>
-	<iframe src="https://apps.groupdocs.com/document-viewer/embed/@data.get("guid")" frameborder="0" width="@data.get("width")" height="@data.get("height")" />
 }
 
+<h5 style="text-align:left;">Choose another one sample:</h5>
+    <div style="padding:10px;">
+      <ul>
+        <li> <a href="/sample1">Sample1 - How to login to GroupDocs using the API</a></li>
+        <li> <a href="/sample2">Sample2 - How to list files within GroupDocs Storage using the Storage API</a></li>
+        <li> <a href="/sample3">Sample3 - How to upload a file to GroupDocs using the Storage API</a></li>
+        <li> <a href="/sample4">Sample4 - How to download a file from GroupDocs Storage using the Storage API</a></li>
+        <li> <a href="/sample5">Sample5 - How to copy / move a file using the GroupDocs Storage API</a></li>
+        <li> <a href="/sample6">Sample6 - How to add a Signature to a document in GroupDocs Signature</a></li>
+        <li> <a href="/sample7">Sample7 - How to create a list of thumbnails for a document</a></li>
+        <li> <a href="/sample8">Sample8 - How to return a URL representing a single page of a Document</a></li>
+        <li> <a href="/sample9">Sample9 - How to generate an embedded Viewer URL for a Document</a></li>
+        <li> <a href="/sample10">Sample10 - How to share a document to other users</a></li>
+      </ul>
+    </div>
+    
 </div>
 
 }

@@ -35,18 +35,19 @@ public class Sample3 extends Controller {
 				status = badRequest(views.html.sample3.render(title, sample, file, filledForm));
 			} else {
 				Credentials credentials = filledForm.get();
-				session().put("clientId", credentials.clientId);
-				session().put("privateKey", credentials.privateKey);
+				session().put("client_id", credentials.client_id);
+				session().put("private_key", credentials.private_key);
 				
 				MultipartFormData body = request().body().asMultipartFormData();
-		        FilePart resourceFile = body.getFile("resourceFile");
+		        FilePart filePart = body.getFile("file");
 		        
 				try {
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.privateKey));
+							new GroupDocsRequestSigner(credentials.private_key));
 					StorageApi api = new StorageApi();
-					FileInputStream is = new FileInputStream(resourceFile.getFile());
-					UploadResponse response = api.Upload(credentials.clientId, resourceFile.getFilename(), null, new FileStream(is));
+					FileInputStream is = new FileInputStream(filePart.getFile());
+					UploadResponse response = api.Upload(credentials.client_id, filePart.getFilename(), null, new FileStream(is));
+					UploadRequestResult fileResult;
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
 						file = response.getResult();
 					}
@@ -60,10 +61,10 @@ public class Sample3 extends Controller {
 					}
 					status = badRequest(views.html.sample3.render(title, sample, file, filledForm));
 				} catch (Exception e) {
-					if(resourceFile == null){
-						filledForm.reject("resourceFile", "This field is required");
+					if(filePart == null){
+						filledForm.reject("file", "This field is required");
 					} else {
-						filledForm.reject("resourceFile", "Something wrong with your file: " + e.getMessage());
+						filledForm.reject("file", "Something wrong with your file: " + e.getMessage());
 					}
 					status = badRequest(views.html.sample3.render(title, sample, file, filledForm));
 				}

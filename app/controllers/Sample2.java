@@ -31,13 +31,13 @@ public class Sample2 extends Controller {
 				status = badRequest(views.html.sample2.render(title, sample, files, filledForm));
 			} else {
 				Credentials credentials = filledForm.get();
-				session().put("clientId", credentials.clientId);
-				session().put("privateKey", credentials.privateKey);
+				session().put("client_id", credentials.client_id);
+				session().put("private_key", credentials.private_key);
 				try {
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.privateKey));
+							new GroupDocsRequestSigner(credentials.private_key));
 					StorageApi api = new StorageApi();
-					ListEntitiesResponse response = api.ListEntities(credentials.clientId, "", null, null, null, null, null, null, null);
+					ListEntitiesResponse response = api.ListEntities(credentials.client_id, "", null, null, null, null, null, null, null);
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
 						files = response.getResult().getFiles();
 					}

@@ -37,8 +37,8 @@ public class Sample5 extends Controller {
 				status = badRequest(views.html.sample5.render(title, sample, moveResult, filledForm));
 			} else {
 				Credentials credentials = filledForm.get();
-				session().put("clientId", credentials.clientId);
-				session().put("privateKey", credentials.privateKey);
+				session().put("client_id", credentials.client_id);
+				session().put("private_key", credentials.private_key);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 				String srcPath = formData.get("srcPath") != null ? formData.get("srcPath")[0] : null;
@@ -58,9 +58,9 @@ public class Sample5 extends Controller {
 					}
 					
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.privateKey));
+							new GroupDocsRequestSigner(credentials.private_key));
 					
-					GetDocumentInfoResponse metadata = new DocApi().GetDocumentMetadataByPath(credentials.clientId, srcPath);
+					GetDocumentInfoResponse metadata = new DocApi().GetDocumentMetadataByPath(credentials.client_id, srcPath);
 					Long fileId = null;
 					if(metadata != null && metadata.getStatus().trim().equalsIgnoreCase("Ok")){
 						fileId = metadata.getResult().getId().longValue();
@@ -71,9 +71,9 @@ public class Sample5 extends Controller {
 					StorageApi api = new StorageApi();
 					FileMoveResponse response;
 					if(isCopy){
-						response = api.MoveFile(credentials.clientId, destPath, null, fileId.toString(), null);
+						response = api.MoveFile(credentials.client_id, destPath, null, fileId.toString(), null);
 					} else {
-						response = api.MoveFile(credentials.clientId, destPath, null, null, fileId.toString());
+						response = api.MoveFile(credentials.client_id, destPath, null, null, fileId.toString());
 					}
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
 						moveResult = response.getResult();

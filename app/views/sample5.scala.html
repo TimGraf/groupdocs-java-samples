@@ -10,8 +10,13 @@
    Sample is under development. <i>This sample will show how to use StorageApi to Copy/Move file in GroupDocs using Java SDK</i> <br/>
    
    <br/>
+   @if(moveResult != null){
+       <p>file is processed successfully:</p>
+       <p> @moveResult.getDst_file.getDocument_path</p>
+   }
    <div id="requestForm" style="padding:20px; border:1px solid black;">
-		<p>Enter data for request and press "Make request" button </p>
+       <p>Enter data for request and press "Make request" button </p>
+       	
 		@myForm(routes.Sample5.index(), 'method -> "POST") {
 			@aForm.globalErrors.map { error =>
 			  @if(error.arguments.size > 0){
@@ -20,8 +25,8 @@
 				  <div>@error.message</div>
 			  }
 			}
-	        @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 100) 
-	        @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 100)
+            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 100)
+	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 100) 
 	        @inputText(aForm("srcPath"), '_label -> "Source Path", 'size -> 100, 'placeholder -> "myFile.doc or myFolder/myFile.doc")
 	        @inputText(aForm("destPath"), '_label -> "Destination Path", 'size -> 100, 'placeholder -> "myNewFile.doc or myFolder/myNewFile.doc")
 	        <input type="submit" name="copy" value="Copy"><input type="submit" name="move" value="Move">
@@ -51,6 +56,22 @@
         </table>
    </div>
 }
+
+<h5 style="text-align:left;">Choose another one sample:</h5>
+    <div style="padding:10px;">
+      <ul>
+        <li> <a href="/sample1">Sample1 - How to login to GroupDocs using the API</li>
+        <li> <a href="/sample2">Sample2 - How to list files within GroupDocs Storage using the Storage API</li>
+        <li> <a href="/sample3">Sample3 - How to upload a file to GroupDocs using the Storage API</li>
+        <li> <a href="/sample4">Sample4 - How to download a file from GroupDocs Storage using the Storage API</li>
+        <li> <a href="/sample5">Sample5 - How to copy / move a file using the GroupDocs Storage API</li>
+        <li> <a href="/sample6">Sample6 - How to add a Signature to a document in GroupDocs Signature</li>
+        <li> <a href="/sample7">Sample7 - How to create a list of thumbnails for a document</li>
+        <li> <a href="/sample8">Sample8 - How to return a URL representing a single page of a Document</li>
+        <li> <a href="/sample9">Sample9 - How to generate an embedded Viewer URL for a Document</li>
+        <li> <a href="/sample10">Sample10 - How to share a document to other users</li>
+      </ul>
+    </div>
 
 </div>
 

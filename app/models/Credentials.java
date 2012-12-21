@@ -5,8 +5,8 @@ import play.data.validation.Constraints.Required;
 public class Credentials {
 
 	@Required
-	public String clientId;
+	public String client_id;
 	@Required
-	public String privateKey;
-	
+	public String private_key;
+
 }

@@ -1,22 +1,40 @@
 package controllers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.lang.reflect.Array;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileOutputStream;
+
 
 import models.Credentials;
 
 import org.apache.commons.lang3.StringUtils;
 
+
+
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import scala.actors.threadpool.Arrays;
+import scala.actors.remote.*;
 
 import com.groupdocs.sdk.api.DocApi;
+import com.groupdocs.sdk.api.StorageApi;
 import com.groupdocs.sdk.common.ApiException;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.GetDocumentInfoResponse;
+import com.groupdocs.sdk.model.GetImageUrlsResponse;
+import com.groupdocs.sdk.model.ListEntitiesResponse;
+import com.groupdocs.sdk.model.FileSystemDocument;
+import com.groupdocs.sdk.model.UserInfo;
+import com.groupdocs.sdk.model.UserInfoResponse;
+import com.groupdocs.sdk.model.GetDocumentInfoResponse;
+import com.groupdocs.sdk.model.GetDocumentInfoResult;
 
 public class Sample7 extends Controller {
 
@@ -24,7 +42,8 @@ public class Sample7 extends Controller {
 	static Form<Credentials> form = form(Credentials.class);
 	
 	public static Result index() {
-		List<String> thumbnailUrls = null;
+		List<String> thumbnailUrls = new ArrayList<>();
+		List<FileSystemDocument> documents = null;
 		Form<Credentials> filledForm;
 		String sample = "Sample7";
 		Status status;
@@ -34,33 +53,69 @@ public class Sample7 extends Controller {
 				status = badRequest(views.html.sample7.render(title, sample, thumbnailUrls, filledForm));
 			} else {
 				Credentials credentials = filledForm.get();
-				session().put("clientId", credentials.clientId);
-				session().put("privateKey", credentials.privateKey);
+				session().put("client_id", credentials.client_id);
+				session().put("private_key", credentials.private_key);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
-				String fileGuid = formData.get("fileGuid") != null ? formData.get("fileGuid")[0] : null;
-				fileGuid = StringUtils.isBlank(fileGuid) ? null : fileGuid.trim();
-				String dimension = formData.get("dimension") != null ? formData.get("dimension")[0] : null;
-				dimension = StringUtils.isBlank(dimension) ? null : dimension.trim();
-				
+
 				try {
-					if(fileGuid == null || dimension == null){
+					if (credentials.private_key == null
+							|| credentials.client_id == null) {
 						throw new Exception();
 					}
-				
-					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.privateKey));
-					
-					DocApi api = new DocApi();
-					GetDocumentInfoResponse response = api.GetDocumentMetadata(credentials.clientId, fileGuid);
-					Integer pageCount = null;
-					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-						pageCount = response.getResult().getPage_count();
-					} else {
-						throw new Exception("Not Found");
-					}
-					thumbnailUrls = api.GetDocumentPagesImageUrls(credentials.clientId, fileGuid, 0, pageCount, dimension, null, null, null).getResult().getUrl();
-					status = ok(views.html.sample7.render(title, sample, thumbnailUrls, filledForm));
+
+					ApiInvoker.getInstance()
+							.setRequestSigner(
+									new GroupDocsRequestSigner(
+											credentials.private_key));
+
+					StorageApi api = new StorageApi();
+
+					ListEntitiesResponse response = api.ListEntities(
+							credentials.client_id, "", 0, null, null, null,
+							null, null, true);
+					if (response != null
+							&& response.getStatus().trim()
+									.equalsIgnoreCase("Ok")) {
+						documents = response.getResult().getFiles();
+
+						for (int i = 0; i <= documents.size(); i++) {
+
+							FileSystemDocument document = documents.get(i);
+							if (document.getThumbnail() != null) {
+
+								DocApi Docapi = new DocApi();
+								GetDocumentInfoResponse info = Docapi
+										.GetDocumentMetadata(
+												credentials.client_id,
+												document.getGuid());
+								Integer pageCount = null;
+								if (info != null
+										&& info.getStatus().trim()
+												.equalsIgnoreCase("Ok")) {
+									pageCount = info.getResult()
+											.getPage_count();
+								} else {
+									throw new Exception("Not Found");
+								}
+								String dimention = "65x65";
+								List<String> temp = Docapi
+										.GetDocumentPagesImageUrls(
+												credentials.client_id,
+												document.getGuid(), 0,
+												pageCount, dimention, null,
+												null, null).getResult()
+										.getUrl();
+								thumbnailUrls.addAll(temp);
+
+							}
+
+						}
+			                
+			                status = ok(views.html.sample7.render(title, sample, thumbnailUrls, filledForm));
+			            } else {
+			                throw new Exception("Result error!");
+			            }
 				} catch (ApiException e) {
 					if(e.getCode() == 401){
 						List<Object> args = Arrays.asList(new Object[]{"https://apps.groupdocs.com/My/Manage", "Production Server"});
@@ -71,13 +126,6 @@ public class Sample7 extends Controller {
 					status = badRequest(views.html.sample7.render(title, sample, thumbnailUrls, filledForm));
 				} catch (Exception e) {
 					e.printStackTrace();
-					if(fileGuid == null){
-						filledForm.reject("fileGuid", "This field is required");
-					} else if(dimension == null){
-						filledForm.reject("dimension", "This field is required");
-					} else {
-						filledForm.reject("fileGuid", "Something wrong with your file: " + e.getMessage());
-					}
 					status = badRequest(views.html.sample7.render(title, sample, thumbnailUrls, filledForm));
 				}
 			}

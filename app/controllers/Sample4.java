@@ -2,6 +2,13 @@ package controllers;
 
 import java.util.List;
 import java.util.Map;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.File;
+import java.io.InputStream;
+
 
 import models.Credentials;
 
@@ -36,32 +43,37 @@ public class Sample4 extends Controller {
 				status = badRequest(views.html.sample4.render(title, sample, file, filledForm));
 			} else {
 				Credentials credentials = filledForm.get();
-				session().put("clientId", credentials.clientId);
-				session().put("privateKey", credentials.privateKey);
+				session().put("client_id", credentials.client_id);
+				session().put("private_key", credentials.private_key);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
-				String fileGuid = formData.get("fileGuid") != null ? formData.get("fileGuid")[0] : null;
-				fileGuid = StringUtils.isBlank(fileGuid) ? null : fileGuid.trim();
+				String file_id = formData.get("file_id") != null ? formData.get("file_id")[0] : null;
+				file_id = StringUtils.isBlank(file_id) ? null : file_id.trim();
 				
 				try {
-					if(fileGuid == null){
+					if(file_id == null){
 						throw new Exception();
 					}
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.privateKey));
+							new GroupDocsRequestSigner(credentials.private_key));
 					StorageApi api = new StorageApi();
-					FileStream response = api.GetFile(credentials.clientId, fileGuid);
-					if(response != null && response.getInputStream() != null){
-						file = response;
+					FileStream resp = api.GetFile(credentials.client_id, file_id);
+					if(resp != null && resp.getInputStream() != null){
+						file = resp;
 					} else {
 						throw new Exception("Not Found");
 					}
 					if(file.getFileName() == null){
-						file.setFileName(fileGuid);
+						file.setFileName(file_id);
 					}
-					response().setHeader("Content-Disposition", ContentDisposition.type("attachment").fileName(file.getFileName()).build().toString());
-//					IOUtils.copy(file.getInputStream(), new FileOutputStream(file.getFileName()));
-					status = ok(file.getInputStream());
+			
+					String separator = System.getProperty("file.separator");
+	                String path = System.getProperty("user.dir");
+	                String downloadPath = path + separator + "public" + separator + "images" + separator;
+	                FileOutputStream newFile = new FileOutputStream(downloadPath + file.getFileName());
+	                IOUtils.copy(file.getInputStream(), newFile);
+	                IOUtils.closeQuietly(file.getInputStream());
+	                status = ok(views.html.sample4.render(title, sample, file, filledForm));
 				} catch (ApiException e) {
 					if(e.getCode() == 401){
 						List<Object> args = Arrays.asList(new Object[]{"https://apps.groupdocs.com/My/Manage", "Production Server"});
@@ -72,17 +84,14 @@ public class Sample4 extends Controller {
 					status = badRequest(views.html.sample4.render(title, sample, file, filledForm));
 				} catch (Exception e) {
 					e.printStackTrace();
-					if(fileGuid == null){
-						filledForm.reject("fileGuid", "This field is required");
+					if(file_id == null){
+						filledForm.reject("file_id", "This field is required");
 					} else {
-						filledForm.reject("fileGuid", "Something wrong with your file: " + e.getMessage());
+						filledForm.reject("file_id", "Something wrong with your file: " + e.getMessage());
 					}
 					status = badRequest(views.html.sample4.render(title, sample, file, filledForm));
-				} finally {
-					if(file != null){
-						IOUtils.closeQuietly(file.getInputStream());
-					}
-				}
+				} 
+
 			}
 		} else {
 			filledForm = form.bind(session());

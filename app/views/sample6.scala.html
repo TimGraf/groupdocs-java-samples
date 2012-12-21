@@ -20,28 +20,38 @@
 				  <div>@error.message</div>
 			  }
 			}
-	        @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 100) 
-	        @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 100)
-	        @inputText(aForm("signerName"), '_label -> "Signer Name", 'size -> 100)
-	        <span>Please use following <a href="http://help.adobe.com/en_US/Acrobat/9.0/Samples/interactiveform_enabled.pdf" target="_blank">PDF form</a> as a document to sign</span>
-	        @inputFile(aForm("resourceFile"), '_label -> "Document to sign")
-	        @inputFile(aForm("resourceSignature"), '_label -> "Signature image")
-	        <input type="submit" value="Make Request">
+            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 100)
+	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 100) 
+	        @inputFile(aForm("fi_document"), '_label -> "Document to sign")
+	        @inputFile(aForm("fi_signature"), '_label -> "Signature image")
+	        <input type="submit" id='btnLoad' value="Make Request">
         }
    </div>
 
 @if(fileGuid != null){
    <br/> 
    <div  style="padding:20px; border:1px solid black;">
-        <p> Results: </p>
-		<p> Your file successfully uploaded and is being processed, please hit the button after a while or click on 
-		<a name="uploadedFile" href="https://apps.groupdocs.com/document-viewer/embed/@fileGuid" target="_blank">https://apps.groupdocs.com/document-viewer/embed/@fileGuid</a></p>
-		<p> If you see error try hitting button again after a while </p>
-		<p> <button onclick="document.getElementsByName('embeddedViewer')[0].src=document.getElementsByName('uploadedFile')[0].href;">Show File</button> </p>
-		<iframe name="embeddedViewer" frameborder="0" width="100%" height="1000px" />
-   </div>
+        <p> Results: <span id="results_status" style="color:red;display:none;"> (Please wait for ajax response) </span></p>
+        <iframe id="viewer" src="https://apps.groupdocs.com/document-viewer/embed/@fileGuid" frameborder="0" width="600" height="500"></iframe>
+  </div>
+  
 }
 
-</div>
+<h5 style="text-align:left;">Choose another one sample:</h5>
+    <div style="padding:10px;">
+      <ul>
+        <li> <a href="/sample1">Sample1 - How to login to GroupDocs using the API</li>
+        <li> <a href="/sample2">Sample2 - How to list files within GroupDocs Storage using the Storage API</li>
+        <li> <a href="/sample3">Sample3 - How to upload a file to GroupDocs using the Storage API</li>
+        <li> <a href="/sample4">Sample4 - How to download a file from GroupDocs Storage using the Storage API</li>
+        <li> <a href="/sample5">Sample5 - How to copy / move a file using the GroupDocs Storage API</li>
+        <li> <a href="/sample6">Sample6 - How to add a Signature to a document in GroupDocs Signature</li>
+        <li> <a href="/sample7">Sample7 - How to create a list of thumbnails for a document</li>
+        <li> <a href="/sample8">Sample8 - How to return a URL representing a single page of a Document</li>
+        <li> <a href="/sample9">Sample9 - How to generate an embedded Viewer URL for a Document</li>
+        <li> <a href="/sample10">Sample10 - How to share a document to other users</li>
+      </ul>
+    </div>
 
+</div>
 }

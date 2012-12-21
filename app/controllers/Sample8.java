@@ -34,32 +34,28 @@ public class Sample8 extends Controller {
 				status = badRequest(views.html.sample8.render(title, sample, thumbnailUrls, filledForm));
 			} else {
 				Credentials credentials = filledForm.get();
-				session().put("clientId", credentials.clientId);
-				session().put("privateKey", credentials.privateKey);
+				session().put("client_id", credentials.client_id);
+				session().put("private_key", credentials.private_key);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
-				String fileGuid = formData.get("fileGuid") != null ? formData.get("fileGuid")[0] : null;
+				String fileGuid = formData.get("fileId") != null ? formData.get("fileId")[0] : null;
 				fileGuid = StringUtils.isBlank(fileGuid) ? null : fileGuid.trim();
-				String dimension = formData.get("dimension") != null ? formData.get("dimension")[0] : null;
-				dimension = StringUtils.isBlank(dimension) ? null : dimension.trim();
+				String pageNumber = formData.get("pageNumber") != null ? formData.get("pageNumber")[0] : null;
+				pageNumber = StringUtils.isBlank(pageNumber) ? null : pageNumber.trim();
 				
 				try {
-					if(fileGuid == null || dimension == null){
+					if(fileGuid == null){
 						throw new Exception();
 					}
 				
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.privateKey));
+							new GroupDocsRequestSigner(credentials.private_key));
 					
 					DocApi api = new DocApi();
-					GetDocumentInfoResponse response = api.GetDocumentMetadata(credentials.clientId, fileGuid);
-					Integer pageCount = null;
-					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-						pageCount = response.getResult().getPage_count();
-					} else {
-						throw new Exception("Not Found");
-					}
-					thumbnailUrls = api.GetDocumentPagesImageUrls(credentials.clientId, fileGuid, 0, pageCount, dimension, null, null, null).getResult().getUrl();
+					GetDocumentInfoResponse response = api.GetDocumentMetadata(credentials.client_id, fileGuid);
+
+					int page = Integer.parseInt( pageNumber );
+					thumbnailUrls = api.GetDocumentPagesImageUrls(credentials.client_id, fileGuid, page, 1, "150x150", null, null, null).getResult().getUrl();
 					status = ok(views.html.sample8.render(title, sample, thumbnailUrls, filledForm));
 				} catch (ApiException e) {
 					if(e.getCode() == 401){
@@ -73,8 +69,8 @@ public class Sample8 extends Controller {
 					e.printStackTrace();
 					if(fileGuid == null){
 						filledForm.reject("fileGuid", "This field is required");
-					} else if(dimension == null){
-						filledForm.reject("dimension", "This field is required");
+					} else if(pageNumber == null){
+						filledForm.reject("pageNumber", "This field is required");
 					} else {
 						filledForm.reject("fileGuid", "Something wrong with your file: " + e.getMessage());
 					}

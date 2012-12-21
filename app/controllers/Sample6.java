@@ -18,7 +18,6 @@ import scala.actors.threadpool.Arrays;
 import com.groupdocs.sdk.api.SignatureApi;
 import com.groupdocs.sdk.common.ApiException;
 import com.groupdocs.sdk.common.ApiInvoker;
-import com.groupdocs.sdk.common.MimeUtils;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.SignatureSignDocumentDocumentSettings;
 import com.groupdocs.sdk.model.SignatureSignDocumentResponse;
@@ -41,29 +40,30 @@ public class Sample6 extends Controller {
 				status = badRequest(views.html.sample6.render(title, sample, fileGuid, filledForm));
 			} else {
 				Credentials credentials = filledForm.get();
-				session().put("clientId", credentials.clientId);
-				session().put("privateKey", credentials.privateKey);
+				session().put("client_id", credentials.client_id);
+				session().put("private_key", credentials.private_key);
 				
 				MultipartFormData body = request().body().asMultipartFormData();
 				Map<String, String[]> formData = body.asFormUrlEncoded();
-				String signerName = formData.get("signerName") != null ? formData.get("signerName")[0] : null;
-				signerName = StringUtils.isBlank(signerName) ? null : signerName.trim();
-		        FilePart resourceFile = body.getFile("resourceFile");
-		        FilePart resourceSignature = body.getFile("resourceSignature");
+//				String signerName = formData.get("signerName") != null ? formData.get("signerName")[0] : null;
+//				signerName = StringUtils.isBlank(signerName) ? null : signerName.trim();
+		        FilePart fi_document = body.getFile("fi_document");
+		        FilePart fi_signature = body.getFile("fi_signature");
+		        String signerName = "GroupDocs";
 		        
 				try {
-					if(signerName == null || resourceFile == null || resourceSignature == null){
+					if(fi_document == null || fi_signature == null){
 						throw new Exception();
 					}
 					
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.privateKey));
+							new GroupDocsRequestSigner(credentials.private_key));
 					
-					String base64file = MimeUtils.readAsDataURL(resourceFile.getFile(), resourceFile.getContentType());
-					String base64signature = MimeUtils.readAsDataURL(resourceSignature.getFile(), resourceSignature.getContentType());
+					String base64file = ApiInvoker.readAsDataURL(fi_document.getFile(), fi_document.getContentType());
+					String base64signature = ApiInvoker.readAsDataURL(fi_signature.getFile(), fi_signature.getContentType());
 			  		
 			  		SignatureSignDocumentDocumentSettings document = new SignatureSignDocumentDocumentSettings();
-			  		document.setName(resourceFile.getFilename());
+			  		document.setName(fi_document.getFilename());
 			  		document.setData(base64file);
 					
 					SignatureSignDocumentSignerSettings signer = new SignatureSignDocumentSignerSettings();
@@ -83,7 +83,7 @@ public class Sample6 extends Controller {
 					documents.add(document);
 					requestBody.setDocuments(documents);
 					
-					SignatureSignDocumentResponse response = new SignatureApi().SignDocument(credentials.clientId, requestBody);
+					SignatureSignDocumentResponse response = new SignatureApi().SignDocument(credentials.client_id, requestBody);
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
 						fileGuid = response.getResult().getDocumentId();
 					} else {
@@ -99,15 +99,13 @@ public class Sample6 extends Controller {
 					}
 					status = badRequest(views.html.sample6.render(title, sample, fileGuid, filledForm));
 				} catch (Exception e) {
-					if(signerName == null || resourceFile == null || resourceSignature == null){
-						if(signerName == null){
-							filledForm.reject("signerName", "This field is required");
+					if(fi_document == null || fi_signature == null){
+
+						if(fi_document == null){
+							filledForm.reject("fi_document", "This field is required");
 						}
-						if(resourceFile == null){
-							filledForm.reject("resourceFile", "This field is required");
-						}
-						if(resourceSignature == null){
-							filledForm.reject("resourceSignature", "This field is required");
+						if(fi_signature == null){
+							filledForm.reject("fi_signature", "This field is required");
 						}
 					} else {
 						filledForm.reject("Unknown Error: " + e.getMessage());

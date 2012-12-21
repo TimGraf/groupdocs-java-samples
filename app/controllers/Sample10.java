@@ -36,32 +36,32 @@ public class Sample10 extends Controller {
 				status = badRequest(views.html.sample10.render(title, sample, result, filledForm));
 			} else {
 				Credentials credentials = filledForm.get();
-				session().put("clientId", credentials.clientId);
-				session().put("privateKey", credentials.privateKey);
+				session().put("client_id", credentials.client_id);
+				session().put("private_key", credentials.private_key);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
-				String fileGuid = formData.get("fileGuid") != null ? formData.get("fileGuid")[0] : null;
-				fileGuid = StringUtils.isBlank(fileGuid) ? null : fileGuid.trim();
+				String fileId = formData.get("fileId") != null ? formData.get("fileId")[0] : null;
+				fileId = StringUtils.isBlank(fileId) ? null : fileId.trim();
 				String email = formData.get("email") != null ? formData.get("email")[0] : null;
 				email = StringUtils.isBlank(email) ? null : email.trim();
 				
 				try {
-					if(fileGuid == null || email == null){
+					if(fileId == null || email == null){
 						throw new Exception();
 					}
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.privateKey));
+							new GroupDocsRequestSigner(credentials.private_key));
 					
 					DocApi api = new DocApi();
-					GetDocumentInfoResponse metadata = new DocApi().GetDocumentMetadata(credentials.clientId, fileGuid);
-					String fileId = null;
+					GetDocumentInfoResponse metadata = new DocApi().GetDocumentMetadata(credentials.client_id, fileId);
+					String file_Id = null;
 					if(metadata != null && metadata.getStatus().trim().equalsIgnoreCase("Ok")){
-						fileId = metadata.getResult().getId().toString();
+						file_Id = metadata.getResult().getId().toString();
 					} else {
 						throw new Exception("Not Found");
 					}
 					
-					SharedUsersResponse response = api.ShareDocument(credentials.clientId, fileId, Arrays.asList(new String[]{email}));
+					SharedUsersResponse response = api.ShareDocument(credentials.client_id, file_Id, Arrays.asList(new String[]{email}));
 					if(response != null && metadata.getStatus().trim().equalsIgnoreCase("Ok")){
 						result = response.getResult();
 					} else {
@@ -78,12 +78,12 @@ public class Sample10 extends Controller {
 					status = badRequest(views.html.sample10.render(title, sample, result, filledForm));
 				} catch (Exception e) {
 					e.printStackTrace();
-					if(fileGuid == null){
-						filledForm.reject("fileGuid", "This field is required");
+					if(fileId == null){
+						filledForm.reject("fileId", "This field is required");
 					} else if(email == null){
 						filledForm.reject("email", "This field is required");
 					} else {
-						filledForm.reject("fileGuid", "Something wrong with your file: " + e.getMessage());
+						filledForm.reject("fileId", "Something wrong with your file: " + e.getMessage());
 					}
 					status = badRequest(views.html.sample10.render(title, sample, result, filledForm));
 				} 

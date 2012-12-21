@@ -31,13 +31,13 @@ public class Sample1 extends Controller {
 				status = badRequest(views.html.sample1.render(title, sample, userInfo, filledForm));
 			} else {
 				Credentials credentials = filledForm.get();
-				session().put("clientId", credentials.clientId);
-				session().put("privateKey", credentials.privateKey);
+				session().put("client_id", credentials.client_id);
+				session().put("private_key", credentials.private_key);
 				ApiInvoker.getInstance().setRequestSigner(
-						new GroupDocsRequestSigner(credentials.privateKey));
+						new GroupDocsRequestSigner(credentials.private_key));
 				MgmtApi api = new MgmtApi();
 				try {
-					UserInfoResponse response = api.GetUserProfile(credentials.clientId);
+					UserInfoResponse response = api.GetUserProfile(credentials.client_id);
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
 						userInfo = response.getResult().getUser();
 					}
@@ -58,6 +58,5 @@ public class Sample1 extends Controller {
 		}
 		return status;
 	}
-	
 	
 }
