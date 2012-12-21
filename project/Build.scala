@@ -8,7 +8,7 @@ object ApplicationBuild extends Build {
     val appVersion      = "1.0-SNAPSHOT"
 
     val appDependencies = Seq(
-        "com.groupdocs" % "groupdocs-java-client" % "1.2",
+        "com.groupdocs" % "groupdocs-java-client" % "1.2.2",
         "com.sun.jersey" % "jersey-core" % "1.13"
     )
 

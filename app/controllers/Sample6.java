@@ -18,6 +18,7 @@ import scala.actors.threadpool.Arrays;
 import com.groupdocs.sdk.api.SignatureApi;
 import com.groupdocs.sdk.common.ApiException;
 import com.groupdocs.sdk.common.ApiInvoker;
+import com.groupdocs.sdk.common.MimeUtils;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.SignatureSignDocumentDocumentSettings;
 import com.groupdocs.sdk.model.SignatureSignDocumentResponse;
@@ -58,8 +59,8 @@ public class Sample6 extends Controller {
 					ApiInvoker.getInstance().setRequestSigner(
 							new GroupDocsRequestSigner(credentials.privateKey));
 					
-					String base64file = ApiInvoker.readAsDataURL(resourceFile.getFile(), resourceFile.getContentType());
-					String base64signature = ApiInvoker.readAsDataURL(resourceSignature.getFile(), resourceSignature.getContentType());
+					String base64file = MimeUtils.readAsDataURL(resourceFile.getFile(), resourceFile.getContentType());
+					String base64signature = MimeUtils.readAsDataURL(resourceSignature.getFile(), resourceSignature.getContentType());
 			  		
 			  		SignatureSignDocumentDocumentSettings document = new SignatureSignDocumentDocumentSettings();
 			  		document.setName(resourceFile.getFilename());
