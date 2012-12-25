@@ -26,4 +26,4 @@ GET     /sample10                   controllers.Sample10.index()
 POST    /sample10                   controllers.Sample10.index()
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /*file               controllers.Assets.at(path="/public", file)
