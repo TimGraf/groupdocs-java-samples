@@ -1,5 +1,6 @@
+//###<i>This sample will show how to use <b>MoveFile</b> method from Storage Api to copy/move a file in GroupDocs Storage </i>
 package controllers;
-
+//Import of necessary libraries
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ import com.groupdocs.sdk.model.FileMoveResult;
 import com.groupdocs.sdk.model.GetDocumentInfoResponse;
 
 public class Sample5 extends Controller {
-
+	//###Set variables
 	static String title = "GroupDocs Java SDK Samples";
 	static Form<Credentials> form = form(Credentials.class);
 	
@@ -31,11 +32,13 @@ public class Sample5 extends Controller {
 		Form<Credentials> filledForm;
 		String sample = "Sample5";
 		Status status;
+		//Check POST parameters
 		if(request().method().equalsIgnoreCase("POST")){
 			filledForm = form.bindFromRequest();
 			if(filledForm.hasErrors()){
 				status = badRequest(views.html.sample5.render(title, sample, moveResult, filledForm));
 			} else {
+				//Get POST data
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
@@ -46,6 +49,7 @@ public class Sample5 extends Controller {
 				String destPath = formData.get("destPath") != null ? formData.get("destPath")[0] : null;
 				destPath = StringUtils.isBlank(destPath) ? null : destPath.trim();
 				boolean isCopy;
+				//Check what button was pressed copy or move
 				if(formData.containsKey("move")){
 					isCopy = false;
 				} else {
@@ -53,32 +57,40 @@ public class Sample5 extends Controller {
 				}
 		        
 				try {
+					//Check source and destination path 
 					if(srcPath == null || destPath == null){
 						throw new Exception();
 					}
+					//###Create ApiInvoker, Doc and Storage Api objects
 					
+					//Create ApiInvoker object
 					ApiInvoker.getInstance().setRequestSigner(
 							new GroupDocsRequestSigner(credentials.private_key));
-					
+					//Create Doc Api object and get document metadata
 					GetDocumentInfoResponse metadata = new DocApi().GetDocumentMetadataByPath(credentials.client_id, srcPath);
 					Long fileId = null;
+					//Check request result
 					if(metadata != null && metadata.getStatus().trim().equalsIgnoreCase("Ok")){
 						fileId = metadata.getResult().getId().longValue();
 					} else {
 						throw new Exception("Not Found");
 					}
-					
+					//Create Storage object
 					StorageApi api = new StorageApi();
 					FileMoveResponse response;
+					//###Make a request to Storage API using clientId
 					if(isCopy){
 						response = api.MoveFile(credentials.client_id, destPath, null, fileId.toString(), null);
 					} else {
 						response = api.MoveFile(credentials.client_id, destPath, null, null, fileId.toString());
 					}
+					//Check request result
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
 						moveResult = response.getResult();
 					}
+					//If request was successfull - set moveResult variable for template
 					status = ok(views.html.sample5.render(title, sample, moveResult, filledForm));
+				//###Definition of Api errors and conclusion of the corresponding message
 				} catch (ApiException e) {
 					if(e.getCode() == 401){
 						List<Object> args = Arrays.asList(new Object[]{"https://apps.groupdocs.com/My/Manage", "Production Server"});
@@ -87,6 +99,7 @@ public class Sample5 extends Controller {
 						filledForm.reject("Failed to access API: " + e.getMessage());
 					}
 					status = badRequest(views.html.sample5.render(title, sample, moveResult, filledForm));
+			    //###Definition of filledForm errors and conclusion of the corresponding message	
 				} catch (Exception e) {
 					if(srcPath == null){
 						filledForm.reject("srcPath", "This field is required");
@@ -102,6 +115,7 @@ public class Sample5 extends Controller {
 			filledForm = form.bind(session());
 			status = ok(views.html.sample5.render(title, sample, moveResult, filledForm));
 		}
+		//Process template
 		return status;
 	}
 	

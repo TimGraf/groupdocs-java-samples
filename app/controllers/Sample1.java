@@ -1,4 +1,4 @@
-//<i>This sample will show how to use <b>Signer object</b> to be authorized at GroupDocs and how to get GroupDocs user infromation using PHP SDK</i>
+//###<i>This sample will show how to use <b>Signer object</b> to be authorized at GroupDocs and how to get GroupDocs user infromation using PHP SDK</i>
 
 package controllers;
 //Import of necessary libraries
@@ -23,7 +23,7 @@ public class Sample1 extends Controller {
 	static Form<Credentials> form = form(Credentials.class);
 	
 	public static Result index() {
-		//###Set variables and get POST data
+		
 		UserInfo userInfo = null;
 		Form<Credentials> filledForm;
 		String sample = "Sample1";
@@ -39,9 +39,9 @@ public class Sample1 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
-				//###Create Signer, ApiClient and Management Api objects
+				//###Create ApiInvoker and Management Api objects
 	            
-	            //Create signer object
+	            //Create ApiInvoker object
 				ApiInvoker.getInstance().setRequestSigner(
 						new GroupDocsRequestSigner(credentials.private_key));
 				//Create Management Api object

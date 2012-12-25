@@ -1,5 +1,6 @@
+//###<i>This sample will show how to use <b>ShareDocument</b> tmethod from Doc Api to share a document to other users</i>
 package controllers;
-
+//Import of necessary libraries
 import java.util.List;
 import java.util.Map;
 
@@ -21,20 +22,24 @@ import com.groupdocs.sdk.model.SharedUsersResponse;
 import com.groupdocs.sdk.model.SharedUsersResult;
 
 public class Sample10 extends Controller {
-
+	//###Set variables
 	static String title = "GroupDocs Java SDK Samples";
 	static Form<Credentials> form = form(Credentials.class);
 	
 	public static Result index() {
+		
 		SharedUsersResult result = null;
 		Form<Credentials> filledForm;
 		String sample = "Sample10";
 		Status status;
+		//Check POST parameters
 		if(request().method().equalsIgnoreCase("POST")){
 			filledForm = form.bindFromRequest();
 			if(filledForm.hasErrors()){
+				//If filledForm have errors return to template
 				status = badRequest(views.html.sample10.render(title, sample, result, filledForm));
 			} else {
+				//If filledForm have no errors get all parameters
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
@@ -46,28 +51,37 @@ public class Sample10 extends Controller {
 				email = StringUtils.isBlank(email) ? null : email.trim();
 				
 				try {
+					//### Check fileId amd email
 					if(fileId == null || email == null){
 						throw new Exception();
 					}
+					//###Create ApiInvoker, DocApi objects
+
+		            //Create ApiInvoker object
 					ApiInvoker.getInstance().setRequestSigner(
 							new GroupDocsRequestSigner(credentials.private_key));
-					
+					//Create DocApi obect
 					DocApi api = new DocApi();
+					//###Make a request to DocApi to get document metadeta for entered fileId
 					GetDocumentInfoResponse metadata = new DocApi().GetDocumentMetadata(credentials.client_id, fileId);
 					String file_Id = null;
+					//Check request result
 					if(metadata != null && metadata.getStatus().trim().equalsIgnoreCase("Ok")){
 						file_Id = metadata.getResult().getId().toString();
 					} else {
 						throw new Exception("Not Found");
 					}
-					
+					//###Make a request to DocApi to share document
 					SharedUsersResponse response = api.ShareDocument(credentials.client_id, file_Id, Arrays.asList(new String[]{email}));
+					//Check request result
 					if(response != null && metadata.getStatus().trim().equalsIgnoreCase("Ok")){
 						result = response.getResult();
 					} else {
 						throw new Exception("User identified by " + " not Found");
 					}
+					//If request was successfull - set result variable for template
 					status = ok(views.html.sample10.render(title, sample, result, filledForm));
+				//###Definition of Api errors and conclusion of the corresponding message
 				} catch (ApiException e) {
 					if(e.getCode() == 401){
 						List<Object> args = Arrays.asList(new Object[]{"https://apps.groupdocs.com/My/Manage", "Production Server"});
@@ -76,6 +90,7 @@ public class Sample10 extends Controller {
 						filledForm.reject("Failed to access API: " + e.getMessage());
 					}
 					status = badRequest(views.html.sample10.render(title, sample, result, filledForm));
+				//###Definition of filledForm errors and conclusion of the corresponding message
 				} catch (Exception e) {
 					e.printStackTrace();
 					if(fileId == null){
@@ -92,6 +107,7 @@ public class Sample10 extends Controller {
 			filledForm = form.bind(session());
 			status = ok(views.html.sample10.render(title, sample, result, filledForm));
 		}
+		//Process template
 		return status;
 	}
 	

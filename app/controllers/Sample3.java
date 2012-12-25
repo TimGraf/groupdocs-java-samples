@@ -1,5 +1,6 @@
+//###<i>This sample will show how to use <b>Upload</b> method from Storage Api to upload file to GroupDocs Storage </i>
 package controllers;
-
+//Import of necessary libraries
 import java.io.FileInputStream;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import com.groupdocs.sdk.model.UploadRequestResult;
 import com.groupdocs.sdk.model.UploadResponse;
 
 public class Sample3 extends Controller {
-
+	//###Set variables
 	static String title = "GroupDocs Java SDK Samples";
 	static Form<Credentials> form = form(Credentials.class);
 	
@@ -29,29 +30,41 @@ public class Sample3 extends Controller {
 		Form<Credentials> filledForm;
 		String sample = "Sample3";
 		Status status;
+		//Check POST parameters
 		if(request().method().equalsIgnoreCase("POST")){
 			filledForm = form.bindFromRequest();
 			if(filledForm.hasErrors()){
 				status = badRequest(views.html.sample3.render(title, sample, file, filledForm));
 			} else {
+				//Get POST data
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
 				
 				MultipartFormData body = request().body().asMultipartFormData();
 		        FilePart filePart = body.getFile("file");
-		        
+		       
+		        //###Create ApiInvoker, Storage Api and FileInputStream objects
 				try {
+					//Create ApiInvoker object
 					ApiInvoker.getInstance().setRequestSigner(
 							new GroupDocsRequestSigner(credentials.private_key));
+					//Create Storage object
 					StorageApi api = new StorageApi();
+					//Create FileInputStream object 
 					FileInputStream is = new FileInputStream(filePart.getFile());
+					//###Make a request to Storage API using clientId
+					
+					////Upload file to current user storage
 					UploadResponse response = api.Upload(credentials.client_id, filePart.getFilename(), null, new FileStream(is));
 					UploadRequestResult fileResult;
+					//Check request result
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
 						file = response.getResult();
 					}
+					//If request was successfull - set file variable for template
 					status = ok(views.html.sample3.render(title, sample, file, filledForm));
+			    //###Definition of Api errors and conclusion of the corresponding message
 				} catch (ApiException e) {
 					if(e.getCode() == 401){
 						List<Object> args = Arrays.asList(new Object[]{"https://apps.groupdocs.com/My/Manage", "Production Server"});
@@ -60,6 +73,7 @@ public class Sample3 extends Controller {
 						filledForm.reject("Failed to access API: " + e.getMessage());
 					}
 					status = badRequest(views.html.sample3.render(title, sample, file, filledForm));
+				//###Definition of filledForm errors and conclusion of the corresponding message
 				} catch (Exception e) {
 					if(filePart == null){
 						filledForm.reject("file", "This field is required");
@@ -73,6 +87,7 @@ public class Sample3 extends Controller {
 			filledForm = form.bind(session());
 			status = ok(views.html.sample3.render(title, sample, file, filledForm));
 		}
+		//Process template
 		return status;
 	}
 	

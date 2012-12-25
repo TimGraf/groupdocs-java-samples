@@ -1,5 +1,6 @@
+//###<i>This sample will show how to use <b>GuId</b> of file to generate an embedded Viewer URL for a Document</i>
 package controllers;
-
+//Import of necessary libraries
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,7 @@ import com.groupdocs.sdk.model.GetDocumentInfoResponse;
 import com.groupdocs.sdk.model.GetDocumentInfoResult;
 
 public class Sample9 extends Controller {
-
+	//###Set variables
 	static String title = "GroupDocs Java SDK Samples";
 	static Form<Credentials> form = form(Credentials.class);
 	
@@ -30,9 +31,10 @@ public class Sample9 extends Controller {
 		Form<Credentials> filledForm;
 		String sample = "Sample9";
 		Status status;
+		//Check POST parameters
 		if(request().method().equalsIgnoreCase("POST")){
 			filledForm = form.bindFromRequest();
-			
+				//Get POST data
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 				String fileId = formData.get("fileId") != null ? formData.get("fileId")[0] : null;
 				fileId = StringUtils.isBlank(fileId) ? null : fileId.trim();
@@ -42,8 +44,9 @@ public class Sample9 extends Controller {
 				height = StringUtils.isBlank(height) ? null : height.trim();
 				
 				try {
+					//CHeck fileId, width and height
 					if(fileId != null || width != null || height != null){
-
+						//Put entered parameters to data HashMap
 						data = new HashMap<String, String>();
 						data.put("guid", fileId);
 						data.put("width", width);
@@ -52,9 +55,9 @@ public class Sample9 extends Controller {
 					} else {
 						throw new Exception("Not Found");
 						}
-					
+					//If request was successfull - set  data variable for template
 					status = ok(views.html.sample9.render(title, sample, data, filledForm));
-
+				//###Definition of filledForm errors and conclusion of the corresponding message
 				} catch (Exception e) {
 					e.printStackTrace();
 					if(fileId == null){
@@ -73,6 +76,7 @@ public class Sample9 extends Controller {
 			filledForm = form.bind(session());
 			status = ok(views.html.sample9.render(title, sample, data, filledForm));
 		}
+		//Process template
 		return status;
 	}
 	
