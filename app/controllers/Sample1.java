@@ -1,5 +1,7 @@
-package controllers;
+//<i>This sample will show how to use <b>Signer object</b> to be authorized at GroupDocs and how to get GroupDocs user infromation using PHP SDK</i>
 
+package controllers;
+//Import of necessary libraries
 import java.util.List;
 
 import models.Credentials;
@@ -16,32 +18,45 @@ import com.groupdocs.sdk.model.UserInfo;
 import com.groupdocs.sdk.model.UserInfoResponse;
 
 public class Sample1 extends Controller {
-
+	//###Set variables
 	static String title = "GroupDocs Java SDK Samples";
 	static Form<Credentials> form = form(Credentials.class);
 	
 	public static Result index() {
+		//###Set variables and get POST data
 		UserInfo userInfo = null;
 		Form<Credentials> filledForm;
 		String sample = "Sample1";
 		Status status;
+		//Check POST parameters
 		if(request().method().equalsIgnoreCase("POST")){
 			filledForm = form.bindFromRequest();
+			//If filledForm have errors return to template
 			if(filledForm.hasErrors()){
 				status = badRequest(views.html.sample1.render(title, sample, userInfo, filledForm));
 			} else {
+				//If filledForm have no errors get all parameters
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
+				//###Create Signer, ApiClient and Management Api objects
+	            
+	            //Create signer object
 				ApiInvoker.getInstance().setRequestSigner(
 						new GroupDocsRequestSigner(credentials.private_key));
+				//Create Management Api object
 				MgmtApi api = new MgmtApi();
+				
+				//###Make a request to Management API using clientId
 				try {
 					UserInfoResponse response = api.GetUserProfile(credentials.client_id);
+					//Check the result of the request
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
 						userInfo = response.getResult().getUser();
 					}
+					//If request was successfull - set userInfo variable for template
 					status = ok(views.html.sample1.render(title, sample, userInfo, filledForm));
+				//###Definition of Api errors and conclusion of the corresponding message
 				} catch (ApiException e) {
 					if(e.getCode() == 401){
 						List<Object> args = Arrays.asList(new Object[]{"https://apps.groupdocs.com/My/Manage", "Production Server"});
@@ -53,6 +68,7 @@ public class Sample1 extends Controller {
 				}
 			}
 		} else {
+			//Process template
 			filledForm = form.bind(session());
 			status = ok(views.html.sample1.render(title, sample, userInfo, filledForm));
 		}

@@ -18,6 +18,7 @@ import scala.actors.threadpool.Arrays;
 import com.groupdocs.sdk.api.SignatureApi;
 import com.groupdocs.sdk.common.ApiException;
 import com.groupdocs.sdk.common.ApiInvoker;
+import com.groupdocs.sdk.common.MimeUtils;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.SignatureSignDocumentDocumentSettings;
 import com.groupdocs.sdk.model.SignatureSignDocumentResponse;
@@ -45,8 +46,6 @@ public class Sample6 extends Controller {
 				
 				MultipartFormData body = request().body().asMultipartFormData();
 				Map<String, String[]> formData = body.asFormUrlEncoded();
-//				String signerName = formData.get("signerName") != null ? formData.get("signerName")[0] : null;
-//				signerName = StringUtils.isBlank(signerName) ? null : signerName.trim();
 		        FilePart fi_document = body.getFile("fi_document");
 		        FilePart fi_signature = body.getFile("fi_signature");
 		        String signerName = "GroupDocs";
@@ -59,8 +58,8 @@ public class Sample6 extends Controller {
 					ApiInvoker.getInstance().setRequestSigner(
 							new GroupDocsRequestSigner(credentials.private_key));
 					
-					String base64file = ApiInvoker.readAsDataURL(fi_document.getFile(), fi_document.getContentType());
-					String base64signature = ApiInvoker.readAsDataURL(fi_signature.getFile(), fi_signature.getContentType());
+					String base64file = MimeUtils.readAsDataURL(fi_document.getFile(), fi_document.getContentType());
+					String base64signature = MimeUtils.readAsDataURL(fi_signature.getFile(), fi_signature.getContentType());
 			  		
 			  		SignatureSignDocumentDocumentSettings document = new SignatureSignDocumentDocumentSettings();
 			  		document.setName(fi_document.getFilename());

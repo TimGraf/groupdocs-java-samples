@@ -32,13 +32,6 @@ public class Sample9 extends Controller {
 		Status status;
 		if(request().method().equalsIgnoreCase("POST")){
 			filledForm = form.bindFromRequest();
-//			if(filledForm.hasErrors()){
-//				
-//				status = badRequest(views.html.sample9.render(title, sample, data, filledForm));
-//			} else {
-//				Credentials credentials = filledForm.get();
-//				session().put("clientId", credentials.clientId);
-//				session().put("privateKey", credentials.privateKey);
 			
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 				String fileId = formData.get("fileId") != null ? formData.get("fileId")[0] : null;
