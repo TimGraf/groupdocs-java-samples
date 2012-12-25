@@ -43,7 +43,7 @@ public class Sample7 extends Controller {
 	static Form<Credentials> form = form(Credentials.class);
 	
 	public static Result index() {
-		List<String> thumbnailUrls = new ArrayList<>();
+		List<String> thumbnailUrls = new ArrayList<String>();
 		List<FileSystemDocument> documents = null;
 		Form<Credentials> filledForm;
 		String sample = "Sample7";
