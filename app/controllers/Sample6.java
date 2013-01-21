@@ -22,7 +22,7 @@ import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.MimeUtils;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.SignatureSignDocumentDocumentSettings;
-import com.groupdocs.sdk.model.SignatureSignDocumentResponse;
+import com.groupdocs.sdk.model.SignatureSignDocumentsResponse;
 import com.groupdocs.sdk.model.SignatureSignDocumentSettings;
 import com.groupdocs.sdk.model.SignatureSignDocumentSignerSettings;
 
@@ -71,7 +71,7 @@ public class Sample6 extends Controller {
 			  		document.setData(base64file);
 					//Create SignatureSignDocumentSignerSettings object
 					SignatureSignDocumentSignerSettings signer = new SignatureSignDocumentSignerSettings();
-					signer.setPlaceSingatureOn("");
+					signer.setPlaceSignatureOn("");
 					signer.setName(signerName);
 					signer.setData(base64signature);
 					signer.setHeight(40d);
@@ -93,10 +93,10 @@ public class Sample6 extends Controller {
 					//###Make a request to Signature Api for sign document
 			        
 			        //Sign document using current user id and sign settings
-					SignatureSignDocumentResponse response = new SignatureApi().SignDocument(credentials.client_id, requestBody);
+					SignatureSignDocumentsResponse response = new SignatureApi().SignDocument(credentials.client_id, requestBody);
 					//Check request result
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-						fileGuid = response.getResult().getDocumentId();
+						fileGuid = response.getResult().getDocuments().getDocumentId();
 					} else {
 						throw new ApiException(400, response.getError_message());
 					}
