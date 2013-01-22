@@ -96,7 +96,7 @@ public class Sample6 extends Controller {
 					SignatureSignDocumentsResponse response = new SignatureApi().SignDocument(credentials.client_id, requestBody);
 					//Check request result
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-						fileGuid = response.getResult().getDocuments[0].getDocumentId();
+						fileGuid = response.getResult().getDocuments().get(0).getDocumentId();
 					} else {
 						throw new ApiException(400, response.getError_message());
 					}
