@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, gdFiles: List[FileSystemDocument], aForm: Form[Credentials])
+@(title: String, subTitle: String, Result: List[DocumentViewInfo], aForm: Form[Credentials])
 
 @import helper._
 
@@ -7,12 +7,17 @@
 <h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
 
 <div class='samplecontent' style="padding:10px;">
-   Sample is under development. <i>This sample will show how to use StorageApi to list user files using Java SDK</i> <br/>
+   Sample is under development. <i>This sample will show how to to check the number of document's views using Java SDK</i> <br/>
    
    <br/>
+  		<p><font color="green">You entered: </font></p>
+		<p>Client Id = @aForm.data.get("client_id")</p>
+		<p>Private Key = @aForm.data.get("private_key")</p>
+		
    <div id="requestForm" style="padding:20px; border:1px solid black;">
-		<p>Enter data for request and press "Make request" button </p>
-		@myForm(routes.Sample2.index(), 'method -> "POST") {
+       <p>Enter data for request and press "Make request" button </p>
+       	
+		@myForm(routes.Sample15.index(), 'method -> "POST") {
 			@aForm.globalErrors.map { error =>
 			  @if(error.arguments.size > 0){
 				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
@@ -22,28 +27,17 @@
 			}
             @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 100)
 	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 100) 
+	        
 	        <input type="submit" value="Make Request">
         }
    </div>
-
-@if(gdFiles != null){
-   <br/> 
+@if(Result != null){
    <div  style="padding:20px; border:1px solid black;">
-        <p> Results: </p>
-        <table style="border:1px double black;">
-          <tr>
-              <th>File Name</th><th>File Guid</th>
-          </tr>
-@for(file <- gdFiles){
-          <tr>
-               <td>@file.getName</td><td>@file.getGuid</td>
-          </tr>
-}
-        </table>
+                <p> Number of document's views: @Result.size()</p>
+               
    </div>
 }
-
-    <h5 style="text-align:left;">Choose another one sample:</h5>
+<h5 style="text-align:left;">Choose another one sample:</h5>
     <div style="padding:10px;">
       <ul>
         <li> <a href="/sample1">Sample1 - How to login to GroupDocs using the API</li>

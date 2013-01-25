@@ -1,0 +1,66 @@
+@(title: String, subTitle: String, data: HashMap[String, String], aForm: Form[Credentials])
+
+@import helper._
+
+@main(title) {
+
+<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+
+<div class='samplecontent' style="padding:10px;">
+   Sample is under development. <i>This sample will show how to insert Assembly questionary into webpage using Java SDK</i> <br/>
+   
+   <br/>
+   @if(data != null){
+	    <p><font color="green">You entered: </font></p>
+	   	<p>File Id = @data.get("guid") </p>
+   	}
+   <div id="requestForm" style="padding:20px; border:1px solid black;">
+		<p>Enter data for request and press "Make request" button </p>
+		@myForm(routes.Sample16.index(), 'method -> "POST") {
+	        @aForm.globalErrors.map { error =>
+			  @if(error.arguments.size > 0){
+				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
+			  } else {
+				  <div>@error.message</div>
+			  }
+			}
+
+	        @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 100)
+	      
+	        <input type="submit" value="Make Request">
+        }
+   </div>
+   <br/> 
+@if(data != null){
+   <div  style="padding:20px; border:1px solid black;">
+           <iframe src='https://apps.groupdocs.com/assembly2/questionnaire-assembly/@data.get("guid") ?frameborder='0' width='600' height='650''></iframe>
+   </div>
+}
+
+<h5 style="text-align:left;">Choose another one sample:</h5>
+    <div style="padding:10px;">
+      <ul>
+        <li> <a href="/sample1">Sample1 - How to login to GroupDocs using the API</a></li>
+        <li> <a href="/sample2">Sample2 - How to list files within GroupDocs Storage using the Storage API</a></li>
+        <li> <a href="/sample3">Sample3 - How to upload a file to GroupDocs using the Storage API</a></li>
+        <li> <a href="/sample4">Sample4 - How to download a file from GroupDocs Storage using the Storage API</a></li>
+        <li> <a href="/sample5">Sample5 - How to copy / move a file using the GroupDocs Storage API</a></li>
+        <li> <a href="/sample6">Sample6 - How to add a Signature to a document in GroupDocs Signature</a></li>
+        <li> <a href="/sample7">Sample7 - How to create a list of thumbnails for a document</a></li>
+        <li> <a href="/sample8">Sample8 - How to return a URL representing a single page of a Document</a></li>
+        <li> <a href="/sample9">Sample9 - How to generate an embedded Viewer URL for a Document</a></li>
+        <li> <a href="/sample10">Sample10 - How to share a document to other users</a></li>
+        <li> <a href="/sample11">Sample11 - How programmatically create and post an annotation into document. How to delete the annotation</li>
+	    <li> <a href="/sample12">Sample12 - How to list all annotations from document</li>
+	    <li> <a href="/sample13">Sample13 - How to add collaborator to doc with annotations</li>
+	    <li> <a href="/sample14">Sample14 - How to check the list of shares for a folder</li>
+	    <li> <a href="/sample15">Sample15 - How to check the number of document's views</li>
+	    <li> <a href="/sample16">Sample16 - How to insert Assembly questionary into webpage</li>
+	    <li> <a href="/sample17">Sample17 - How to upload a file into the storage and compress it into zip archive</li>
+	    
+      </ul>
+    </div>
+    
+</div>
+
+}
