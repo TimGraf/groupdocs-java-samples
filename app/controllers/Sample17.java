@@ -27,7 +27,7 @@ public class Sample17 extends Controller {
 	static Form<Credentials> form = form(Credentials.class);
 	
 	public static Result index() {
-		CompressRequestResult result = null;
+		String result = null;
 		Form<Credentials> filledForm;
 		String sample = "Sample17";
 		Status status;
@@ -69,7 +69,7 @@ public class Sample17 extends Controller {
 					//Check compress result
 					if(compress != null && compress.getStatus().trim().equalsIgnoreCase("Ok")){
 						//If status Ok get results
-						result = compress.getResult();
+						result = filePart.getFilename().replaceAll("\\.[a-z]{3}", ".zip");
 					
 					} else {
 						//If request failed throw exception massage   

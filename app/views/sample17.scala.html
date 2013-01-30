@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, gdFile: CompressRequestResult, aForm: Form[Credentials])
+@(title: String, subTitle: String, gdFile: String, aForm: Form[Credentials])
 
 @import helper._
 
@@ -36,7 +36,7 @@
    <div  style="padding:20px; border:1px solid black;">
         
         <p> Results: </p>
-        <font color="green">Archive created and saved successfully </font> 
+        <font color="green">Archive created and saved successfully as @gdFile</font> 
        
    </div>
 }
