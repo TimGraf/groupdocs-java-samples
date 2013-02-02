@@ -7,7 +7,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-public class ComparisonCallbackHandler extends Controller {
+public class DummyCallbackHandler extends Controller {
 	
 	@BodyParser.Of(value = BodyParser.TolerantText.class)
 	public static Result index() {
