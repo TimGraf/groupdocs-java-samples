@@ -1,8 +1,14 @@
 package controllers;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.codehaus.jackson.JsonNode;
+
+import play.api.libs.json.JsObject;
+import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -14,8 +20,22 @@ public class DummyCallbackHandler extends Controller {
 		System.out.println("Method: " + request().method());
 		System.out.println("URL: " + request().uri());
 		System.out.println("Headers: " + flattenMap(request().headers()));
-		System.out.println("Body: " + request().body().asText());
+		String rawBody = request().body().asText();
+		System.out.println("Body: " + rawBody);
 		System.out.println("");
+		
+		JsonNode json = (JsonNode) Json.parse(rawBody);
+		if(json != null && json.findPath("SourceId") != null){
+			String sourceId = json.findPath("SourceId").getTextValue();
+			try {
+				File tempFile = new File(".", sourceId);
+				tempFile.createNewFile();
+				System.out.println("File created: " + tempFile.getAbsolutePath());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 		return ok();
 	}

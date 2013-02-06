@@ -1,15 +1,20 @@
 //###<i>This sample will show how to use Signature Api to Create and Send Envelope for signing using Java SDK</i>
 package controllers;
 //Import of necessary libraries
+import java.io.File;
 import java.io.FileInputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.commons.io.IOUtils;
-
 import models.Credentials;
+
+import org.apache.commons.io.IOUtils;
+import org.codehaus.jackson.node.ObjectNode;
+
 import play.data.Form;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
@@ -28,11 +33,20 @@ import com.groupdocs.sdk.model.SignatureEnvelopeResponse;
 import com.groupdocs.sdk.model.SignatureEnvelopeSettings;
 import com.groupdocs.sdk.model.SignatureFieldInfo;
 import com.groupdocs.sdk.model.SignatureRoleInfo;
+import com.sun.jersey.core.header.ContentDisposition;
 
 public class Sample21 extends Controller {
 	//###Set variables
 	static String title = "GroupDocs Java SDK Samples";
 	static Form<Credentials> form = form(Credentials.class);
+	static String server = ""; // use "" for production, "stage-" for staging server
+	static StorageApi storageApi = new StorageApi();
+	static SignatureApi api = new SignatureApi();
+	
+	static {
+		storageApi.setBasePath("https://" + server + "api.groupdocs.com/v2.0");
+		api.setBasePath("https://" + server + "api.groupdocs.com/v2.0");
+	}
 	
 	public static Result index() {
 		String embedUrl = null;
@@ -67,13 +81,11 @@ public class Sample21 extends Controller {
 							new GroupDocsRequestSigner(credentials.private_key));
 					
 					//###Make request to Storage Api to upload document
-					StorageApi storageApi = new StorageApi();
 					FileStream fs = new FileStream(new FileInputStream(fi_document.getFile()));
 					String documentId = storageApi.Upload(credentials.client_id, "samples/signature/" + fi_document.getFilename(), null, fs).getResult().getGuid();
 					IOUtils.closeQuietly(fs.getInputStream());
 
 					//###Make a requests to Signature Api to create an envelope
-					final SignatureApi api = new SignatureApi();
 					SignatureEnvelopeSettings env = new SignatureEnvelopeSettings();
 					env.setEmailSubject("Sign this!");
 					SignatureEnvelopeResponse envelopeResponse = api.CreateSignatureEnvelope(credentials.client_id, "SampleEnvelope_" + UUID.randomUUID(), env, null, null);
@@ -130,12 +142,15 @@ public class Sample21 extends Controller {
 					api.AddSignatureEnvelopeField(credentials.client_id, envelopeId, documentId, recipientId, fieldId, envField);
 					
 					//###Make a request to Signature Api to send envelope for signing
-					String callbackHost = "groupdocs-java-samples.herokuapp.com";
+					String callbackHost = "groupdocs-java-samples.herokuapp.com"; // jake.dyndns.biz:8080  groupdocs-java-samples.herokuapp.com
 					FileStream stream = new FileStream(IOUtils.toInputStream("http://" + callbackHost + "/dummyCallbackHandler"));
 					api.SignatureEnvelopeSend(credentials.client_id, envelopeId, stream);
 					
+					//Store envelopeId in session for later ues in checkCallbackStatus action
+					session().put("envelopeId", envelopeId);
+					
 					//Construct embedded signature url
-					embedUrl = "https://apps.groupdocs.com/signature/signembed/" + envelopeId + "/" + recipientId;
+					embedUrl = "https://" + server + "apps.groupdocs.com/signature/signembed/" + envelopeId + "/" + recipientId;
 					//Use embedded signature url in template
 					status = ok(views.html.sample21.render(title, sample, embedUrl, filledForm));
 			    //###Definition of Api errors and conclusion of the corresponding message
@@ -161,10 +176,61 @@ public class Sample21 extends Controller {
 				}
 			}
 		} else {
-			filledForm = form.bind(session());
+			Map<String, String> sampleValues = new HashMap<String, String>(session());
+			sampleValues.put("email", "john@smith.com");
+			sampleValues.put("firstName", "John");
+			sampleValues.put("lastName", "Smith");
+			
+			filledForm = form.bind(sampleValues);
 			status = ok(views.html.sample21.render(title, sample, embedUrl, filledForm));
 		}
 		//Process template
+		return status;
+	}
+	
+	public static Result checkCallbackStatus() {
+		String envelopeId = session().get("envelopeId");
+		ObjectNode result = Json.newObject();
+		boolean status = false;
+		String message = "Not everybody signed the envelope";
+		
+		if(envelopeId != null && new File(".", envelopeId).exists()){
+			status = true;
+			message = "Everybody signed the envelope. Click <a href='/downloadEnvelope' target='_blank'>here</a> to download it";
+		}
+		
+		result.put("status", status);
+		result.put("message", message);
+		return ok(result);
+	}
+	
+	public static Result downloadEnvelope() {
+		String envelopeId = session().get("envelopeId");
+		Result status;
+		
+		if(envelopeId != null && new File(".", envelopeId).exists()){
+			String clientId = session().get("client_id");
+			String privateKey = session().get("private_key");
+			System.out.println(clientId + " " + privateKey);
+			
+			//Create ApiInvoker using given private_key
+//			ApiInvoker.getInstance().setDebug(true);
+			ApiInvoker.getInstance().setRequestSigner(
+					new GroupDocsRequestSigner(privateKey));
+			try {
+				FileStream zip = api.GetSignedEnvelopeDocuments(clientId, envelopeId);
+				response().setHeader("Content-Disposition", ContentDisposition.type("attachment").fileName(zip.getFileName()).build().toString());
+				status = ok(zip.getInputStream());
+//				new File(".", envelopeId).delete();
+				
+			} catch (ApiException e) {
+				e.printStackTrace();
+				status = badRequest("Failed to access API: " + e.getMessage());
+			} 
+		} else {
+			status = ok("Callback handler was not called yet.");
+		}
+		
 		return status;
 	}
 	
