@@ -11,6 +11,7 @@ import java.util.UUID;
 import models.Credentials;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.node.ObjectNode;
 
 import play.data.Form;
@@ -67,9 +68,13 @@ public class Sample21 extends Controller {
 				MultipartFormData body = request().body().asMultipartFormData();
 				Map<String, String[]> formData = body.asFormUrlEncoded();
 				String email = formData.get("email") != null ? formData.get("email")[0] : null;
-				String firstName = formData.get("firstName") != null ? formData.get("firstName")[0] : null;
+				String firstName = formData.get("name") != null ? formData.get("name")[0] : null;
 				String lastName = formData.get("lastName") != null ? formData.get("lastName")[0] : null;
-		        FilePart fi_document = body.getFile("fi_document");
+		        FilePart fi_document = body.getFile("file");
+		        String callback = formData.get("callbackUrl") != null ? formData.get("callbackUrl")[0] : null;
+				callback = StringUtils.isBlank(callback) ? null : callback.trim();
+				String basePath = formData.get("server_type") != null ? formData.get("server_type")[0] : null;
+				basePath = StringUtils.isBlank(basePath) ? null : basePath.trim();
 		        
 				try {
 					//Check if all form fields are filled in
@@ -79,13 +84,19 @@ public class Sample21 extends Controller {
 					//Create ApiInvoker using given private_key
 					ApiInvoker.getInstance().setRequestSigner(
 							new GroupDocsRequestSigner(credentials.private_key));
-					
+					//Create Storage Api object
+					StorageApi storage = new StorageApi();
+					//Choose server to use
+					storage.setBasePath(basePath);
 					//###Make request to Storage Api to upload document
 					FileStream fs = new FileStream(new FileInputStream(fi_document.getFile()));
-					String documentId = storageApi.Upload(credentials.client_id, "samples/signature/" + fi_document.getFilename(), null, fs).getResult().getGuid();
+					String documentId = storage.Upload(credentials.client_id, "samples/signature/" + fi_document.getFilename(), null, fs).getResult().getGuid();
 					IOUtils.closeQuietly(fs.getInputStream());
-
-					//###Make a requests to Signature Api to create an envelope
+					//Create Signature api object
+					SignatureApi api = new SignatureApi();
+					//Choose Server to use
+					api.setBasePath(basePath);
+					//Make a requests to Signature Api to create an envelope
 					SignatureEnvelopeSettings env = new SignatureEnvelopeSettings();
 					env.setEmailSubject("Sign this!");
 					SignatureEnvelopeResponse envelopeResponse = api.CreateSignatureEnvelope(credentials.client_id, "SampleEnvelope_" + UUID.randomUUID(), env, null, null);
@@ -142,15 +153,27 @@ public class Sample21 extends Controller {
 					api.AddSignatureEnvelopeField(credentials.client_id, envelopeId, documentId, recipientId, fieldId, envField);
 					
 					//###Make a request to Signature Api to send envelope for signing
-					String callbackHost = "groupdocs-java-samples.herokuapp.com"; // jake.dyndns.biz:8080  groupdocs-java-samples.herokuapp.com
-					FileStream stream = new FileStream(IOUtils.toInputStream("http://" + callbackHost + "/dummyCallbackHandler"));
+					
+					//Check is callback entered
+					if (callback == null) {
+						callback = "";
+					}
+					FileStream stream = new FileStream(IOUtils.toInputStream(callback));
 					api.SignatureEnvelopeSend(credentials.client_id, envelopeId, stream);
 					
 					//Store envelopeId in session for later ues in checkCallbackStatus action
 					session().put("envelopeId", envelopeId);
 					
 					//Construct embedded signature url
-					embedUrl = "https://" + server + "apps.groupdocs.com/signature/signembed/" + envelopeId + "/" + recipientId;
+					if (basePath.equals("https://api.groupdocs.com/v2.0")) {
+						embedUrl = "https://apps.groupdocs.com/signature/signembed/" + envelopeId + "/" + recipientId;
+	                //iframe to dev server
+	                } else if(basePath.equals("https://dev-api.groupdocs.com/v2.0")) {
+	                	embedUrl = "https://dev-apps.groupdocs.com/signature/signembed/" + envelopeId + "/" + recipientId;
+	                //iframe to test server
+	                } else if(basePath.equals("https://stage-api.groupdocs.com/v2.0")) {
+	                	embedUrl = "https://stage-apps.groupdocs.com/signature/signembed/" + envelopeId + "/" + recipientId;
+	                }
 					//Use embedded signature url in template
 					status = ok(views.html.sample21.render(title, sample, embedUrl, filledForm));
 			    //###Definition of Api errors and conclusion of the corresponding message

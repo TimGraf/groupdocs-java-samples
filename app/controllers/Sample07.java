@@ -37,7 +37,7 @@ import com.groupdocs.sdk.model.UserInfoResponse;
 import com.groupdocs.sdk.model.GetDocumentInfoResponse;
 import com.groupdocs.sdk.model.GetDocumentInfoResult;
 
-public class Sample7 extends Controller {
+public class Sample07 extends Controller {
 	//###Set variables
 	static String title = "GroupDocs Java SDK Samples";
 	static Form<Credentials> form = form(Credentials.class);
@@ -52,7 +52,7 @@ public class Sample7 extends Controller {
 		if(request().method().equalsIgnoreCase("POST")){
 			filledForm = form.bindFromRequest();
 			if(filledForm.hasErrors()){
-				status = badRequest(views.html.sample7.render(title, sample, thumbnailUrls, filledForm));
+				status = badRequest(views.html.sample07.render(title, sample, thumbnailUrls, filledForm));
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
@@ -130,7 +130,7 @@ public class Sample7 extends Controller {
 
 						}
 						//If request was successfull - set  thumbnailUrls variable for template
-			                status = ok(views.html.sample7.render(title, sample, thumbnailUrls, filledForm));
+			                status = ok(views.html.sample07.render(title, sample, thumbnailUrls, filledForm));
 			            } else {
 			                throw new Exception("Result error!");
 			            }
@@ -142,16 +142,16 @@ public class Sample7 extends Controller {
 					} else {
 						filledForm.reject("Failed to access API: " + e.getMessage());
 					}
-					status = badRequest(views.html.sample7.render(title, sample, thumbnailUrls, filledForm));
+					status = badRequest(views.html.sample07.render(title, sample, thumbnailUrls, filledForm));
 				//###Definition of filledForm errors and conclusion of the corresponding message	
 				} catch (Exception e) {
 					e.printStackTrace();
-					status = badRequest(views.html.sample7.render(title, sample, thumbnailUrls, filledForm));
+					status = badRequest(views.html.sample07.render(title, sample, thumbnailUrls, filledForm));
 				}
 			}
 		} else {
 			filledForm = form.bind(session());
-			status = ok(views.html.sample7.render(title, sample, thumbnailUrls, filledForm));
+			status = ok(views.html.sample07.render(title, sample, thumbnailUrls, filledForm));
 		}
 		//Process template
 		return status;

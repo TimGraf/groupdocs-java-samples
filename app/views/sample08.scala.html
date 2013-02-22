@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, gdFile: String, aForm: Form[Credentials])
+@(title: String, subTitle: String, thumbnailUrls: List[String], aForm: Form[Credentials])
 
 @import helper._
 
@@ -7,18 +7,14 @@
 <h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
 
 <div class='samplecontent' style="padding:10px;">
-   Sample is under development. <i>This sample will show how to upload a file into the storage and compress it into zip archive using Java SDK</i> <br/>
+   Sample is under development. <i>This sample will show how to use Document Api to list thumbnails for a document using Java SDK</i> <br/>
    <br />
-    <a href="/docs/sample17.html">Docs for this sample</a>
+    <a href="/docs/sample08.html">Docs for this sample</a>
     <br />
    <br/>
-   <p><font color="green">You entered: </font></p>
-		<p>Client Id = @aForm.data.get("client_id")</p>
-		<p>Private Key = @aForm.data.get("private_key")</p>
-		
    <div id="requestForm" style="padding:20px; border:1px solid black;">
 		<p>Enter data for request and press "Make request" button </p>
-		@myForm(routes.Sample17.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+		@myForm(routes.Sample08.index(), 'method -> "POST") {
 			@aForm.globalErrors.map { error =>
 			  @if(error.arguments.size > 0){
 				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
@@ -28,19 +24,31 @@
 			}
             @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 100)
 	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 100) 
-	        @inputFile(aForm("file"), '_label -> "File")
+	        @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 100)
+	        @inputText(aForm("pageNumber"), '_label -> "Page number", 'size -> 100, 'placeholder -> "0")
 	        <input type="submit" value="Make Request">
         }
    </div>
 
-@if(gdFile != null){
-   
+@if(thumbnailUrls != null){
+   <br/> 
    <div  style="padding:20px; border:1px solid black;">
-        
         <p> Results: </p>
-        <font color="green">Archive created and saved successfully as @gdFile</font> 
-       
+@for((url, i) <- thumbnailUrls.view.zipWithIndex){
+
+        <table style="border:1px double black;">
+          <tr>
+              <th>Field</th><th>Value</th>
+          </tr>
+          <tr>
+             <td>Page URL</td><td>@url</td>
+          </tr>
+       </table>
+       <font color="green">The page you requested:</font> <br />
+        <img src="@url">
+}
    </div>
+   
 }
 
 <h5 style="text-align:left;">Choose another one sample:</h5>

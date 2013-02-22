@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, gdFile: String, aForm: Form[Credentials])
+@(title: String, subTitle: String, userInfo: UserInfo, aForm: Form[Credentials])
 
 @import helper._
 
@@ -7,46 +7,58 @@
 <h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
 
 <div class='samplecontent' style="padding:10px;">
-   Sample is under development. <i>This sample will show how to upload a file into the storage and compress it into zip archive using Java SDK</i> <br/>
+   Sample is under development. <i>This sample will show how to use signer to be autorized at GroupDocs and to get GroupDocs user infromation using Java SDK</i> <br/>
    <br />
-    <a href="/docs/sample17.html">Docs for this sample</a>
+    <a href="/docs/sample01.html">Docs for this sample</a>
     <br />
    <br/>
-   <p><font color="green">You entered: </font></p>
-		<p>Client Id = @aForm.data.get("client_id")</p>
-		<p>Private Key = @aForm.data.get("private_key")</p>
-		
+   @if(userInfo != null){
+   <br/> 
+   <div  style="padding:20px; border:1px solid black;">
+        <p> Results: </p>
+        <table style="border:1px double black;">
+          <tr>
+              <th>Field</th><th>Value</th>
+          </tr>
+          <tr>
+               <td>First Name</td><td>@userInfo.getFirstname</td>
+          </tr>
+          <tr>
+               <td>Last Name</td><td>@userInfo.getLastname</td>
+          </tr>
+          <tr>
+               <td>Nick Name</td><td>@userInfo.getNickname</td>
+          </tr>
+          <tr>
+               <td>Primary Email</td><td>@userInfo.getPrimary_email</td>
+          </tr>
+        </table>
+   </div>
+   }
+
+   <br/>
    <div id="requestForm" style="padding:20px; border:1px solid black;">
 		<p>Enter data for request and press "Make request" button </p>
-		@myForm(routes.Sample17.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+		@myForm(routes.Sample01.index(), 'method -> "POST") {
 			@aForm.globalErrors.map { error =>
 			  @if(error.arguments.size > 0){
 				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
 			  } else {
 				  <div>@error.message</div>
 			  }
-			}
+			}	
             @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 100)
 	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 100) 
-	        @inputFile(aForm("file"), '_label -> "File")
 	        <input type="submit" value="Make Request">
         }
    </div>
 
-@if(gdFile != null){
-   
-   <div  style="padding:20px; border:1px solid black;">
-        
-        <p> Results: </p>
-        <font color="green">Archive created and saved successfully as @gdFile</font> 
-       
-   </div>
-}
+</div>
 
 <h5 style="text-align:left;">Choose another one sample:</h5>
-    <div style="padding:10px;">
-      <ul>
-        <li> <a href="sample01">Sample01 - How to login to GroupDocs using the API</a></li>
+<div style="padding:10px;">
+  <ul>
+    <li> <a href="sample01">Sample01 - How to login to GroupDocs using the API</a></li>
         <li> <a href="sample02">Sample02 - How to list files within GroupDocs Storage using the Storage API</a></li>
         <li> <a href="sample03">Sample03 - How to upload a file to GroupDocs using the Storage API</a></li>
         <li> <a href="sample04">Sample04 - How to download a file from GroupDocs Storage using the Storage API</a></li>
@@ -69,9 +81,7 @@
         <li> <a href="/sample21">Sample21 - How to Create and Upload Envelop to GroupDocs account using Java SDK</a></li>
         <li> <a href="/sample22">Sample22 - This sample will show how create or update user and add him to collaborators using Java SDK</a></li>
         <li> <a href="/sample23">Sample23 - How to View Document pages as images using Java SDK</a></li>
-      </ul>
-    </div>
-
+    
+  </ul>
 </div>
-
 }

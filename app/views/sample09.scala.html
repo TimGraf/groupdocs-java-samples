@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, gdFile: String, aForm: Form[Credentials])
+@(title: String, subTitle: String, data: HashMap[String, String], aForm: Form[Credentials])
 
 @import helper._
 
@@ -7,39 +7,43 @@
 <h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
 
 <div class='samplecontent' style="padding:10px;">
-   Sample is under development. <i>This sample will show how to upload a file into the storage and compress it into zip archive using Java SDK</i> <br/>
+   Sample is under development. <i>This sample will show how to generate a embedded Viewer URL for a Document using Java SDK</i> <br/>
    <br />
-    <a href="/docs/sample17.html">Docs for this sample</a>
+    <a href="/docs/sample09.html">Docs for this sample</a>
     <br />
    <br/>
-   <p><font color="green">You entered: </font></p>
-		<p>Client Id = @aForm.data.get("client_id")</p>
-		<p>Private Key = @aForm.data.get("private_key")</p>
-		
    <div id="requestForm" style="padding:20px; border:1px solid black;">
 		<p>Enter data for request and press "Make request" button </p>
-		@myForm(routes.Sample17.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
-			@aForm.globalErrors.map { error =>
+		@myForm(routes.Sample09.index(), 'method -> "POST") {
+	        @aForm.globalErrors.map { error =>
 			  @if(error.arguments.size > 0){
 				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
 			  } else {
 				  <div>@error.message</div>
 			  }
 			}
-            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 100)
-	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 100) 
-	        @inputFile(aForm("file"), '_label -> "File")
+
+	        @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 100)
+	        @inputText(aForm("height"), '_label -> "Height", 'size -> 100, 'placeholder -> "1000 or 1000px")
+            @inputText(aForm("width"), '_label -> "Width", 'size -> 100, 'placeholder -> "100%")
 	        <input type="submit" value="Make Request">
         }
    </div>
-
-@if(gdFile != null){
-   
+   <br/> 
+@if(data != null){
    <div  style="padding:20px; border:1px solid black;">
-        
         <p> Results: </p>
-        <font color="green">Archive created and saved successfully as @gdFile</font> 
-       
+        <table style="border:1px double black;">
+          <tr>
+              <th>Key</th><th>Value</th>
+          </tr>
+@for((key, value) <- data){
+          <tr>
+               <td>@key</td><td>@value</td>
+          </tr>
+}
+        </table>
+        <iframe src='https://apps.groupdocs.com/document-viewer/embed/@data.get("guid") ?frameborder="0" width=@data.get("width") height=@data.get("height") '></iframe>
    </div>
 }
 
@@ -71,7 +75,7 @@
         <li> <a href="/sample23">Sample23 - How to View Document pages as images using Java SDK</a></li>
       </ul>
     </div>
-
+    
 </div>
 
 }

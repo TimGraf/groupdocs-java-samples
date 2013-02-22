@@ -22,7 +22,7 @@ import com.groupdocs.sdk.model.FileMoveResponse;
 import com.groupdocs.sdk.model.FileMoveResult;
 import com.groupdocs.sdk.model.GetDocumentInfoResponse;
 
-public class Sample5 extends Controller {
+public class Sample05 extends Controller {
 	//###Set variables
 	static String title = "GroupDocs Java SDK Samples";
 	static Form<Credentials> form = form(Credentials.class);
@@ -36,7 +36,7 @@ public class Sample5 extends Controller {
 		if(request().method().equalsIgnoreCase("POST")){
 			filledForm = form.bindFromRequest();
 			if(filledForm.hasErrors()){
-				status = badRequest(views.html.sample5.render(title, sample, moveResult, filledForm));
+				status = badRequest(views.html.sample05.render(title, sample, moveResult, filledForm));
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
@@ -89,7 +89,7 @@ public class Sample5 extends Controller {
 						moveResult = response.getResult();
 					}
 					//If request was successfull - set moveResult variable for template
-					status = ok(views.html.sample5.render(title, sample, moveResult, filledForm));
+					status = ok(views.html.sample05.render(title, sample, moveResult, filledForm));
 				//###Definition of Api errors and conclusion of the corresponding message
 				} catch (ApiException e) {
 					if(e.getCode() == 401){
@@ -98,7 +98,7 @@ public class Sample5 extends Controller {
 					} else {
 						filledForm.reject("Failed to access API: " + e.getMessage());
 					}
-					status = badRequest(views.html.sample5.render(title, sample, moveResult, filledForm));
+					status = badRequest(views.html.sample05.render(title, sample, moveResult, filledForm));
 			    //###Definition of filledForm errors and conclusion of the corresponding message	
 				} catch (Exception e) {
 					if(srcPath == null){
@@ -108,12 +108,12 @@ public class Sample5 extends Controller {
 					} else {
 						filledForm.reject("srcPath", "Something wrong with your file: " + e.getMessage());
 					}
-					status = badRequest(views.html.sample5.render(title, sample, moveResult, filledForm));
+					status = badRequest(views.html.sample05.render(title, sample, moveResult, filledForm));
 				}
 			}
 		} else {
 			filledForm = form.bind(session());
-			status = ok(views.html.sample5.render(title, sample, moveResult, filledForm));
+			status = ok(views.html.sample05.render(title, sample, moveResult, filledForm));
 		}
 		//Process template
 		return status;

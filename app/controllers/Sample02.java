@@ -1,5 +1,4 @@
-//###<i>This sample will show how to use <b>Signer object</b> to be authorized at GroupDocs and how to get GroupDocs user infromation using PHP SDK</i>
-
+//###This sample will show how to use <b>ListEntities</b> method from Storage  API  to list files within GroupDocs Storage
 package controllers;
 //Import of necessary libraries
 import java.util.List;
@@ -10,52 +9,52 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import scala.actors.threadpool.Arrays;
 
-import com.groupdocs.sdk.api.MgmtApi;
+import com.groupdocs.sdk.api.StorageApi;
 import com.groupdocs.sdk.common.ApiException;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
-import com.groupdocs.sdk.model.UserInfo;
-import com.groupdocs.sdk.model.UserInfoResponse;
+import com.groupdocs.sdk.model.FileSystemDocument;
+import com.groupdocs.sdk.model.ListEntitiesResponse;
 
-public class Sample1 extends Controller {
+public class Sample02 extends Controller {
 	//###Set variables
 	static String title = "GroupDocs Java SDK Samples";
 	static Form<Credentials> form = form(Credentials.class);
 	
 	public static Result index() {
 		
-		UserInfo userInfo = null;
+		List<FileSystemDocument> files = null;
 		Form<Credentials> filledForm;
-		String sample = "Sample1";
+		String sample = "Sample2";
 		Status status;
 		//Check POST parameters
 		if(request().method().equalsIgnoreCase("POST")){
 			filledForm = form.bindFromRequest();
-			//If filledForm have errors return to template
 			if(filledForm.hasErrors()){
-				status = badRequest(views.html.sample1.render(title, sample, userInfo, filledForm));
+				status = badRequest(views.html.sample02.render(title, sample, files, filledForm));
 			} else {
-				//If filledForm have no errors get all parameters
+				//Get POST data
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
-				//###Create ApiInvoker and Management Api objects
-	            
-	            //Create ApiInvoker object
-				ApiInvoker.getInstance().setRequestSigner(
-						new GroupDocsRequestSigner(credentials.private_key));
-				//Create Management Api object
-				MgmtApi api = new MgmtApi();
 				
-				//###Make a request to Management API using clientId
+				//###Create ApiInvoker, Storage Api objects
 				try {
-					UserInfoResponse response = api.GetUserProfile(credentials.client_id);
-					//Check the result of the request
+					 //Create ApiInvoker object
+					ApiInvoker.getInstance().setRequestSigner(
+							new GroupDocsRequestSigner(credentials.private_key));
+					 //Create Storage api object
+					StorageApi api = new StorageApi();
+					//###Make a request to Storage API using clientId
+		            
+		            //Obtaining all Entities from current user
+					ListEntitiesResponse response = api.ListEntities(credentials.client_id, "", null, null, null, null, null, null, null);
+					//Check request result
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-						userInfo = response.getResult().getUser();
+						files = response.getResult().getFiles();
 					}
-					//If request was successfull - set userInfo variable for template
-					status = ok(views.html.sample1.render(title, sample, userInfo, filledForm));
+					//If request was successfull - set files variable for template
+					status = ok(views.html.sample02.render(title, sample, files, filledForm));
 				//###Definition of Api errors and conclusion of the corresponding message
 				} catch (ApiException e) {
 					if(e.getCode() == 401){
@@ -64,15 +63,15 @@ public class Sample1 extends Controller {
 					} else {
 						filledForm.reject("Failed to access API: " + e.getMessage());
 					}
-					status = badRequest(views.html.sample1.render(title, sample, userInfo, filledForm));
+					status = badRequest(views.html.sample02.render(title, sample, files, filledForm));
 				}
 			}
 		} else {
-			//Process template
 			filledForm = form.bind(session());
-			status = ok(views.html.sample1.render(title, sample, userInfo, filledForm));
+			status = ok(views.html.sample02.render(title, sample, files, filledForm));
 		}
+		//Process template
 		return status;
 	}
-	
+
 }

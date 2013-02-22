@@ -20,7 +20,7 @@ import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.UploadRequestResult;
 import com.groupdocs.sdk.model.UploadResponse;
 
-public class Sample3 extends Controller {
+public class Sample03 extends Controller {
 	//###Set variables
 	static String title = "GroupDocs Java SDK Samples";
 	static Form<Credentials> form = form(Credentials.class);
@@ -34,7 +34,7 @@ public class Sample3 extends Controller {
 		if(request().method().equalsIgnoreCase("POST")){
 			filledForm = form.bindFromRequest();
 			if(filledForm.hasErrors()){
-				status = badRequest(views.html.sample3.render(title, sample, file, filledForm));
+				status = badRequest(views.html.sample03.render(title, sample, file, filledForm));
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
@@ -63,7 +63,7 @@ public class Sample3 extends Controller {
 						file = response.getResult();
 					}
 					//If request was successfull - set file variable for template
-					status = ok(views.html.sample3.render(title, sample, file, filledForm));
+					status = ok(views.html.sample03.render(title, sample, file, filledForm));
 			    //###Definition of Api errors and conclusion of the corresponding message
 				} catch (ApiException e) {
 					if(e.getCode() == 401){
@@ -72,7 +72,7 @@ public class Sample3 extends Controller {
 					} else {
 						filledForm.reject("Failed to access API: " + e.getMessage());
 					}
-					status = badRequest(views.html.sample3.render(title, sample, file, filledForm));
+					status = badRequest(views.html.sample03.render(title, sample, file, filledForm));
 				//###Definition of filledForm errors and conclusion of the corresponding message
 				} catch (Exception e) {
 					if(filePart == null){
@@ -80,12 +80,12 @@ public class Sample3 extends Controller {
 					} else {
 						filledForm.reject("file", "Something wrong with your file: " + e.getMessage());
 					}
-					status = badRequest(views.html.sample3.render(title, sample, file, filledForm));
+					status = badRequest(views.html.sample03.render(title, sample, file, filledForm));
 				}
 			}
 		} else {
 			filledForm = form.bind(session());
-			status = ok(views.html.sample3.render(title, sample, file, filledForm));
+			status = ok(views.html.sample03.render(title, sample, file, filledForm));
 		}
 		//Process template
 		return status;

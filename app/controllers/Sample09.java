@@ -21,7 +21,7 @@ import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.model.GetDocumentInfoResponse;
 import com.groupdocs.sdk.model.GetDocumentInfoResult;
 
-public class Sample9 extends Controller {
+public class Sample09 extends Controller {
 	//###Set variables
 	static String title = "GroupDocs Java SDK Samples";
 	static Form<Credentials> form = form(Credentials.class);
@@ -56,7 +56,7 @@ public class Sample9 extends Controller {
 						throw new Exception("Not Found");
 						}
 					//If request was successfull - set  data variable for template
-					status = ok(views.html.sample9.render(title, sample, data, filledForm));
+					status = ok(views.html.sample09.render(title, sample, data, filledForm));
 				//###Definition of filledForm errors and conclusion of the corresponding message
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -69,12 +69,12 @@ public class Sample9 extends Controller {
 					} else {
 						filledForm.reject("fileId", "Something wrong with your file: " + e.getMessage());
 					}
-					status = badRequest(views.html.sample9.render(title, sample, data, filledForm));
+					status = badRequest(views.html.sample09.render(title, sample, data, filledForm));
 				}
 
 		} else {
 			filledForm = form.bind(session());
-			status = ok(views.html.sample9.render(title, sample, data, filledForm));
+			status = ok(views.html.sample09.render(title, sample, data, filledForm));
 		}
 		//Process template
 		return status;
