@@ -25,7 +25,7 @@ public class Sample23 extends Controller {
 	static Form<Credentials> form = form(Credentials.class);
 	
 	public static Result index() {
-		String result = "";
+		String result = null;
 		Form<Credentials> filledForm;
 		String sample = "Sample23";
 		Status status;

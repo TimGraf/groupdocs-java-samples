@@ -54,26 +54,26 @@ public class Sample11 extends Controller {
 				fileId = StringUtils.isBlank(fileId) ? null : fileId.trim();
 				String annotation_type = formData.get("annotation_type") != null ? formData.get("annotation_type")[0] : null;
 				annotation_type = StringUtils.isBlank(annotation_type) ? null : annotation_type.trim();
-				String delete_annotation = formData.get("delete_annotation") != null ? formData.get("delete_annotation")[0] : null;
-				String annotationId = formData.get("annotationId") != null ? formData.get("annotationId")[0] : null;
-				String box_x = formData.get("box.x") != null ? formData.get("box.x")[0] : null;
-				box_x = StringUtils.isBlank(box_x) ? null : box_x.trim();
-				String box_y = formData.get("box.y") != null ? formData.get("box.y")[0] : null;
-				box_y = StringUtils.isBlank(box_y) ? null : box_y.trim();
-				String box_width = formData.get("box.width") != null ? formData.get("box.width")[0] : null;
-				box_width = StringUtils.isBlank(box_width) ? null : box_width.trim();
-				String box_height = formData.get("box.height") != null ? formData.get("box.height")[0] : null;
-				box_height = StringUtils.isBlank(box_height) ? null : box_height.trim();
-				String annotationPosition_x = formData.get("annotationPosition.x") != null ? formData.get("annotationPosition.x")[0] : null;
-				annotationPosition_x = StringUtils.isBlank(annotationPosition_x) ? null : annotationPosition_x.trim();
-				String annotationPosition_y = formData.get("annotationPosition.y") != null ? formData.get("annotationPosition.y")[0] : null;
-				annotationPosition_y = StringUtils.isBlank(annotationPosition_y) ? null : annotationPosition_y.trim();
-				String range_position = formData.get("range.position") != null ? formData.get("range.position")[0] : null;
-				range_position = StringUtils.isBlank(range_position) ? null : range_position.trim();
-				String range_length = formData.get("range.length") != null ? formData.get("range.length")[0] : null;
-				range_length = StringUtils.isBlank(range_length) ? null : range_length.trim();
-				String text = formData.get("text") != null ? formData.get("text")[0] : null;
-				text = StringUtils.isBlank(text) ? null : text.trim();
+//				String delete_annotation = formData.get("delete_annotation") != null ? formData.get("delete_annotation")[0] : null;
+//				String annotationId = formData.get("annotationId") != null ? formData.get("annotationId")[0] : null;
+				String box_x = formData.get("box_x") != null ? formData.get("box_x")[0] : "0.0";
+				box_x = StringUtils.isBlank(box_x) ? "0.0" : box_x.trim();
+				String box_y = formData.get("box_y") != null ? formData.get("box_y")[0] : "0.0";
+				box_y = StringUtils.isBlank(box_y) ? "0.0" : box_y.trim();
+				String box_width = formData.get("box_width") != null ? formData.get("box_width")[0] : "0.0";
+				box_width = StringUtils.isBlank(box_width) ? "0.0" : box_width.trim();
+				String box_height = formData.get("box_height") != null ? formData.get("box_height")[0] : "0.0";
+				box_height = StringUtils.isBlank(box_height) ? "0.0" : box_height.trim();
+				String annotationPosition_x = formData.get("annotationPosition.x") != null ? formData.get("annotationPosition.x")[0] : "0.0";
+				annotationPosition_x = StringUtils.isBlank(annotationPosition_x) ? "0.0" : annotationPosition_x.trim();
+				String annotationPosition_y = formData.get("annotationPosition.y") != null ? formData.get("annotationPosition.y")[0] : "0.0";
+				annotationPosition_y = StringUtils.isBlank(annotationPosition_y) ? "0.0" : annotationPosition_y.trim();
+				String range_position = formData.get("range.position") != null ? formData.get("range.position")[0] : "0";
+				range_position = StringUtils.isBlank(range_position) ? "0" : range_position.trim();
+				String range_length = formData.get("range.length") != null ? formData.get("range.length")[0] : "0";
+				range_length = StringUtils.isBlank(range_length) ? "0" : range_length.trim();
+				String text = formData.get("text") != null ? formData.get("text")[0] : "";
+				text = StringUtils.isBlank(text) ? "" : text.trim();
 				
 				
 				try {

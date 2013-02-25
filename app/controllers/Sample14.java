@@ -49,7 +49,7 @@ public class Sample14 extends Controller {
 				session().put("private_key", credentials.private_key);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
-				String srcPath = formData.get("srcPath") != null ? formData.get("srcPath")[0] : null;
+				String srcPath = formData.get("path") != null ? formData.get("path")[0] : null;
 				srcPath = StringUtils.isBlank(srcPath) ? null : srcPath.trim();
 						        
 				try {
@@ -82,18 +82,24 @@ public class Sample14 extends Controller {
 					}
 					//Get folder name from entered path
 					String folderName = pathList.get(pathList.size()-1);
+					String properPath = null;
 					//Remove last element of the List
-					pathList.remove(pathList.size()-1);
-					//Create proper path from list
-					StringBuilder newPath = new StringBuilder();
-					  
-					for (int i = 0; i < pathList.size(); i++){
-				      						    
-						newPath.append( pathList.get(i) + "/");
-						    
+					if (pathList.size() > 1) {
+						pathList.remove(pathList.size()-1);
+						//Create proper path from list
+						StringBuilder newPath = new StringBuilder();
+						  
+						for (int i = 0; i < pathList.size(); i++){
+					      						    
+							newPath.append( pathList.get(i) + "/");
+							    
+						}
+						//Delete last slash from path
+						properPath = newPath.deleteCharAt(newPath.length()-1).toString();
+					} else {
+						properPath = "";
 					}
-					//Delete last slash from path
-					String properPath = newPath.deleteCharAt(newPath.length()-1).toString();
+					
 					//###Make request to Storage Api to get list of elements in the storage
 					ListEntitiesResponse listResponse = storage.ListEntities(credentials.client_id, properPath, null, null, null, null, null, null, null);
 					//Check request result

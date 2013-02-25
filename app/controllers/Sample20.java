@@ -57,7 +57,7 @@ public class Sample20 extends Controller {
 				session().put("private_key", credentials.private_key);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
-				String file_id = formData.get("fileId") != null ? formData.get("fileId")[0] : null;
+				String file_id = formData.get("resultFileId") != null ? formData.get("resultFileId")[0] : null;
 				file_id = StringUtils.isBlank(file_id) ? null : file_id.trim();
 				
 				

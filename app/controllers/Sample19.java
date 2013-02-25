@@ -82,6 +82,7 @@ public class Sample19 extends Controller {
 					//###Check request status
 					
 					if (compare.getStatus().trim().equalsIgnoreCase("Ok")) {
+						Thread.sleep(5000);
 						//If status Ok create AsyncApi 
 						AsyncApi async = new AsyncApi();
 						//Choose server to use

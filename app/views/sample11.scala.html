@@ -47,22 +47,22 @@
            <fieldset style="border: thin solid #333; padding: 1em; margin-bottom: 5px;">
                         <legend>Parameters (all are required)</legend>
                         <div>
-                        	@inputText(aForm("box.x"), '_label -> "Box X", 'minlength -> 0)
+                        	@inputText(aForm("box_x"), '_label -> "Box X", 'minlength -> 0)
                         </div>
                         <div>
-                            @inputText(aForm("box.y"), '_label -> "Box Y", 'minlength -> 0)
+                            @inputText(aForm("box_y"), '_label -> "Box Y", 'minlength -> 0)
                         </div>
 
-                        <div id="box-params">
+                        <div id="box-params" style="display:none;">
                             <div>
-                            	@inputText(aForm("box.width"), '_label -> "Box Width", 'placeholder -> "double")
+                            	@inputText(aForm("box_width"), '_label -> "Box Width", 'placeholder -> "double")
                             </div>
                             <div>
-                            	@inputText(aForm("box.height"), '_label -> "Box Height", 'placeholder -> "double")
+                            	@inputText(aForm("box_height"), '_label -> "Box Height", 'placeholder -> "double")
                             </div>
                         </div>
 
-                        <div id="annotation-position">
+                        <div id="annotation-position" style="display:none;">
                             <div>
                             	@inputText(aForm("annotationPosition.x"), '_label -> "Annotation Position X", 'placeholder -> "double")
                             </div>
@@ -72,7 +72,7 @@
                         </div>
 
 
-                        <div id="text-params">
+                        <div id="text-params" style="display:none;">
                             <div>
                             	@inputText(aForm("range.position"), '_label -> "Range Position", 'placeholder -> "double")
                             </div>
@@ -130,6 +130,15 @@
 <script type="text/javascript">
 	function show_hide(_element_id) {
 		 
+		  if (_element_id == "point") {
+		 	var element1 = document.getElementById("box-params");
+		 	var element2 = document.getElementById("annotation-position");
+		 	var element3 = document.getElementById("text-params");
+		 	element1.style.display = "none";
+		 	element2.style.display = "none";
+		 	element3.style.display = "none";
+		 }
+		 
 		 if (_element_id == "text") {
 		 	var element1 = document.getElementById("box-params");
 		 	var element2 = document.getElementById("annotation-position");
@@ -148,14 +157,6 @@
 		 	element3.style.display = "none";
 		 }
 		 
-		 if (_element_id == "point") {
-		 	var element1 = document.getElementById("box-params");
-		 	var element2 = document.getElementById("annotation-position");
-		 	var element3 = document.getElementById("text-params");
-		 	element1.style.display = "none";
-		 	element2.style.display = "none";
-		 	element3.style.display = "none";
-		 }
 	}
 </script>
 
