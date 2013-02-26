@@ -7,14 +7,14 @@
 <h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
 
 <div class='samplecontent' style="padding:10px;">
-   Sample is under development. <i>This sample will show how to use StorageApi to upload file to GroupDocs using Java SDK</i> <br/>
+   Sample is under development. <i>This sample will show how to use StorageApi to upload file from URL to GroupDocs account using Java SDK</i> <br/>
    <br />
-    <a href="/docs/sample03.html">Docs for this sample</a>
+    <a href="/docs/sample24.html">Docs for this sample</a>
     <br />
    <br/>
    <div id="requestForm" style="padding:20px; border:1px solid black;">
 		<p>Enter data for request and press "Make request" button </p>
-		@myForm(routes.Sample03.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+		@myForm(routes.Sample24.index(), 'method -> "POST") {
 			@aForm.globalErrors.map { error =>
 			  @if(error.arguments.size > 0){
 				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
@@ -24,7 +24,7 @@
 			}
             @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 100)
 	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 100) 
-	        @inputFile(aForm("file"), '_label -> "File")
+	        @inputText(aForm("url"), '_label -> "File URL")
 	        <input type="submit" value="Make Request">
         }
    </div>
