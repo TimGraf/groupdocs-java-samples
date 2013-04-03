@@ -108,7 +108,7 @@ public class Sample07 extends Controller {
 								//Get separator symbol from system
 								String separator = System.getProperty("file.separator");
 								//Get dir where samples placed
-				                String path = System.getProperty("user.dir");
+				                String path = new File(".").getAbsolutePath();
 				                //Create path for downloaded thumbnails
 				                String downloadPath = path + separator + "public" + separator + "images" + separator;
 				                //Create image file 

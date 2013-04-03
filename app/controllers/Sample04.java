@@ -81,7 +81,7 @@ public class Sample04 extends Controller {
 					}
 					//###Obtaining file stream of downloading file and definition of folder where to download file
 					String separator = System.getProperty("file.separator");
-	                String path = System.getProperty("user.dir");
+	                String path = new File(".").getAbsolutePath();
 	                String downloadPath = path + separator + "public" + separator + "images" + separator;
 	                FileOutputStream newFile = new FileOutputStream(downloadPath + file.getFileName());
 	                //Write file to local folder
