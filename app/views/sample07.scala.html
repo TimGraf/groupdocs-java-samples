@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, thumbnailUrls: List[String], aForm: Form[Credentials])
+@(title: String, subTitle: String, thumbnail: String, aForm: Form[Credentials])
 
 @import helper._
 
@@ -28,20 +28,19 @@
         }
    </div>
 
-@if(thumbnailUrls != null){
+@if(thumbnail != null){
    <br/> 
    <div  style="padding:20px; border:1px solid black;">
         <p> Results: </p>
         <table style="border:1px double black;">
           <tr>
-              <th>Thumbnail</th>
+              <th>Field</th><th>Value</th>
           </tr>
-@for((url, i) <- thumbnailUrls.view.zipWithIndex){
           <tr>
-              <td><img src="@url" /></td>
+              <td>@Html(thumbnail)</td>
           </tr>
-}
         </table>
+        
    </div>
 }
 

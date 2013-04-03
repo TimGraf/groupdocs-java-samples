@@ -6,13 +6,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.lang.reflect.Array;
+import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import javax.imageio.ImageIO;
 
 
 import models.Credentials;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 
@@ -36,6 +44,7 @@ import com.groupdocs.sdk.model.UserInfo;
 import com.groupdocs.sdk.model.UserInfoResponse;
 import com.groupdocs.sdk.model.GetDocumentInfoResponse;
 import com.groupdocs.sdk.model.GetDocumentInfoResult;
+import com.ning.http.util.Base64;
 
 public class Sample07 extends Controller {
 	//###Set variables
@@ -44,6 +53,7 @@ public class Sample07 extends Controller {
 	
 	public static Result index() {
 		List<String> thumbnailUrls = new ArrayList<String>();
+		String thumbnail = "";
 		List<FileSystemDocument> documents = null;
 		Form<Credentials> filledForm;
 		String sample = "Sample7";
@@ -52,7 +62,7 @@ public class Sample07 extends Controller {
 		if(request().method().equalsIgnoreCase("POST")){
 			filledForm = form.bindFromRequest();
 			if(filledForm.hasErrors()){
-				status = badRequest(views.html.sample07.render(title, sample, thumbnailUrls, filledForm));
+				status = badRequest(views.html.sample07.render(title, sample, thumbnail, filledForm));
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
@@ -80,7 +90,7 @@ public class Sample07 extends Controller {
 
 		            //Geting all Entities with thumbnails from current user
 					ListEntitiesResponse response = api.ListEntities(
-							credentials.client_id, "", 0, null, null, null,
+							credentials.client_id, "", null, null, null, null,
 							null, null, true);
 					//Check request result
 					if (response != null
@@ -93,44 +103,29 @@ public class Sample07 extends Controller {
 
 							FileSystemDocument document = documents.get(i);
 							//Check if file have thumbnail 
+							BufferedImage image = null;
 							if (document.getThumbnail() != null) {
-								//Create Doc api object
-								DocApi Docapi = new DocApi();
-								//Get document metadata
-								GetDocumentInfoResponse info = Docapi
-										.GetDocumentMetadata(
-												credentials.client_id,
-												document.getGuid());
-								Integer pageCount = null;
-								//Check file info
-								if (info != null
-										&& info.getStatus().trim()
-												.equalsIgnoreCase("Ok")) {
-									//Get number of pages
-									pageCount = info.getResult()
-											.getPage_count();
-								} else {
-									throw new Exception("Not Found");
-								}
-								String dimention = "65x65";
-								//###Make request to DocApi
-								
-								//Get list of URLs for document pages
-								List<String> temp = Docapi
-										.GetDocumentPagesImageUrls(
-												credentials.client_id,
-												document.getGuid(), 0,
-												pageCount, dimention, null,
-												null, null).getResult()
-										.getUrl();
-								//Add all thumbnails to URLs list
-								thumbnailUrls.addAll(temp);
-
+								//Get separator symbol from system
+								String separator = System.getProperty("file.separator");
+								//Get dir where samples placed
+				                String path = System.getProperty("user.dir");
+				                //Create path for downloaded thumbnails
+				                String downloadPath = path + separator + "public" + separator + "images" + separator;
+				                //Create image file 
+				                File destinationFile = new File(downloadPath + "thumbnail" + i + ".jpg");
+				                //Generate Output stream from created image file
+				                OutputStream out = new FileOutputStream(destinationFile);
+				                //Decode thumbnail string data to Base64 data and write to the image file
+				                out.write(Base64.decode(document.getThumbnail()));
+				                out.close();
+				                //Generate HTML code for template
+				                thumbnail += "<img src= '/images/thumbnail" + i + ".jpg' , width=40px, height=40px>" + document.getName().toString() + "</img><br>";
+							
 							}
 
 						}
 						//If request was successfull - set  thumbnailUrls variable for template
-			                status = ok(views.html.sample07.render(title, sample, thumbnailUrls, filledForm));
+			                status = ok(views.html.sample07.render(title, sample, thumbnail, filledForm));
 			            } else {
 			                throw new Exception("Result error!");
 			            }
@@ -142,16 +137,16 @@ public class Sample07 extends Controller {
 					} else {
 						filledForm.reject("Failed to access API: " + e.getMessage());
 					}
-					status = badRequest(views.html.sample07.render(title, sample, thumbnailUrls, filledForm));
+					status = badRequest(views.html.sample07.render(title, sample, thumbnail, filledForm));
 				//###Definition of filledForm errors and conclusion of the corresponding message	
 				} catch (Exception e) {
 					e.printStackTrace();
-					status = badRequest(views.html.sample07.render(title, sample, thumbnailUrls, filledForm));
+					status = badRequest(views.html.sample07.render(title, sample, thumbnail, filledForm));
 				}
 			}
 		} else {
 			filledForm = form.bind(session());
-			status = ok(views.html.sample07.render(title, sample, thumbnailUrls, filledForm));
+			status = ok(views.html.sample07.render(title, sample, thumbnail, filledForm));
 		}
 		//Process template
 		return status;
