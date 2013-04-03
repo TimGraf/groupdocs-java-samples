@@ -99,27 +99,28 @@ public class Sample07 extends Controller {
 						//Get all files
 						documents = response.getResult().getFiles();
 						//Get thumbnails for all files
+						//Get separator symbol from system
+						String separator = System.getProperty("file.separator");
+						//Get dir where samples placed
+						String path = System.getProperty("user.dir");
 						for (int i = 0; i <= documents.size(); i++) {
 
 							FileSystemDocument document = documents.get(i);
 							//Check if file have thumbnail 
 							BufferedImage image = null;
 							if (document.getThumbnail() != null) {
-								//Get separator symbol from system
-								String separator = System.getProperty("file.separator");
-								//Get dir where samples placed
-				                String path = new File(".").getAbsolutePath();
+								
 				                //Create path for downloaded thumbnails
-				                String downloadPath = path + separator + "public" + separator + "images" + separator;
-				                //Create image file 
-				                File destinationFile = new File(downloadPath + "thumbnail" + i + ".jpg");
-				                //Generate Output stream from created image file
-				                OutputStream out = new FileOutputStream(destinationFile);
-				                //Decode thumbnail string data to Base64 data and write to the image file
-				                out.write(Base64.decode(document.getThumbnail()));
-				                out.close();
+//				                String downloadPath = path + separator + separator + "public" + separator + "images" + separator;
+//				                //Create image file 
+//				                File destinationFile = new File(downloadPath + "thumbnail" + i + ".jpg");
+//				                //Generate Output stream from created image file
+//				                OutputStream out = new FileOutputStream(destinationFile);
+//				                //Decode thumbnail string data to Base64 data and write to the image file
+//				                out.write(Base64.decode(document.getThumbnail()));
+//				                out.close();
 				                //Generate HTML code for template
-				                thumbnail += "<img src= '/images/thumbnail" + i + ".jpg' , width=40px, height=40px>" + document.getName().toString() + "</img><br>";
+								thumbnail += "<img src= 'data:image/jpg;base64,"+document.getThumbnail()+"', width=40px, height=40px>" + document.getName().toString() + "</img><br>";
 							
 							}
 
