@@ -64,6 +64,7 @@ public class Sample21 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
+				session().put("baseurl", credentials.baseurl);
 				
 				MultipartFormData body = request().body().asMultipartFormData();
 				Map<String, String[]> formData = body.asFormUrlEncoded();
@@ -73,8 +74,7 @@ public class Sample21 extends Controller {
 		        FilePart fi_document = body.getFile("file");
 		        String callback = formData.get("callbackUrl") != null ? formData.get("callbackUrl")[0] : null;
 				callback = StringUtils.isBlank(callback) ? null : callback.trim();
-				String basePath = formData.get("server_type") != null ? formData.get("server_type")[0] : null;
-				basePath = StringUtils.isBlank(basePath) ? null : basePath.trim();
+				String basePath = credentials.baseurl;
 		        
 				try {
 					//Check if all form fields are filled in
@@ -205,6 +205,7 @@ public class Sample21 extends Controller {
 			sampleValues.put("lastName", "Smith");
 			
 			filledForm = form.bind(sampleValues);
+			session().put("baseurl", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample21.render(title, sample, embedUrl, filledForm));
 		}
 		//Process template

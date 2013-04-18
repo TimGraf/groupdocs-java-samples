@@ -2,6 +2,9 @@
 
 @import helper._
 
+@* Register customInput as field constructor for this page (customize input field) *@
+@implicitField = @{ FieldConstructor(customInput.f) }
+
 @main(title) {
 
 <h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
@@ -12,7 +15,7 @@
     <a href="/docs/sample14.html">Docs for this sample</a>
     <br />
    <br/>
-  		<p><font color="green">You entered: </font></p>
+  		<p style="color: green;">You entered: </p>
 		<p>Client Id = @aForm.data.get("client_id")</p>
 		<p>Private Key = @aForm.data.get("private_key")</p>
 		<p>Path = @aForm.data.get("path") </p>
@@ -28,24 +31,20 @@
 				  <div>@error.message</div>
 			  }
 			}
-            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 100)
-	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 100) 
-	        @inputText(aForm("path"), '_label -> "Source Path", 'size -> 100, 'placeholder -> "myFolder")
-	        <input type="submit" value="Make Request">
+            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
+	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
+	        @inputText(aForm("baseurl"), '_label -> "Base URL", 'size -> 50)
+	        @inputText(aForm("path"), '_label -> "Source Path", 'size -> 50, 'placeholder -> "myFolder", 'required -> true)
+	        <input type="submit" value="Make Request" />
         }
    </div>
    <div  style="padding:20px; border:1px solid black;">
         <p> Results: </p>
         @if(Result != null){
 			@for(name <- Result){
-				<p>Shared users: <font color="green">@name.getNickname</font> </p>
+				<p>Shared users: <span style="color: green;">@name.getNickname</span> </p>
 			}
 		}
-        
    </div>
-
-
-
 </div>
-
 }

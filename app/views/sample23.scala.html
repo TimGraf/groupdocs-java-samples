@@ -2,6 +2,9 @@
 
 @import helper._
 
+@* Register customInput as field constructor for this page (customize input field) *@
+@implicitField = @{ FieldConstructor(customInput.f) }
+
 @main(title) {
 
 <h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
@@ -26,17 +29,11 @@
 				  <div>@error.message</div>
 			  }
 			}
-            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 100)
-	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 100) 
-	        @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 100)
+            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
+	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
+	        @inputText(aForm("baseurl"), '_label -> "Base URL", 'size -> 50)
+	        @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
 	        <br />
-	        <label for='server_type'>Choose Server</label>
-                <select name="server_type" id="server_type">
-                    <option selected value="https://api.groupdocs.com/v2.0">Prod</option>
-                    <option value="https://dev-api.groupdocs.com/v2.0">Dev</option>
-                    <option value="https://stage-api.groupdocs.com/v2.0">Stage</option>
-                </select>
-            <br />
 	        <input type="submit" value="Make Request">
         }
    </div>
@@ -46,7 +43,7 @@
    <div  style="padding:20px; border:1px solid black;">
         Result: 
         <br />
-        <iframe src=@url></iframe>
+        <iframe src="@url"></iframe>
    </div>
    
 }

@@ -1,0 +1,15 @@
+@(elements: helper.FieldElements)
+
+<div class="input-block @if(elements.hasErrors) {error}">
+    <div class="input">
+        <label for="@elements.id" class="field-label">@elements.label
+            @{
+                if (elements.infos.contains("Required") || elements.args.toMap.contains('required)) {
+                    <span class="required-field">*</span>
+                }
+            }
+        </label>
+        @elements.input
+        <span class="field-error">@elements.errors</span>
+    </div>
+</div>

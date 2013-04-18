@@ -51,7 +51,7 @@ public class Sample22 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
-				
+				session().put("baseurl", credentials.baseurl);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 				String fileId = formData.get("fileId") != null ? formData.get("fileId")[0] : null;
@@ -64,8 +64,7 @@ public class Sample22 extends Controller {
 				last_name = StringUtils.isBlank(last_name) ? null : last_name.trim();
 				String callback = formData.get("callbackUrl") != null ? formData.get("callbackUrl")[0] : null;
 				callback = StringUtils.isBlank(callback) ? null : callback.trim();
-				String basePath = formData.get("server_type") != null ? formData.get("server_type")[0] : null;
-				basePath = StringUtils.isBlank(basePath) ? null : basePath.trim();
+				String basePath = credentials.baseurl;
 				
 				try {
 					//### Check is all parameters entered
@@ -166,6 +165,7 @@ public class Sample22 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
+			session().put("baseurl", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample22.render(title, sample, result, filledForm));
 		}
 		//Process template

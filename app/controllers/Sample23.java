@@ -39,12 +39,12 @@ public class Sample23 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
+				session().put("baseurl", credentials.baseurl);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 				String fileGuid = formData.get("fileId") != null ? formData.get("fileId")[0] : null;
 				fileGuid = StringUtils.isBlank(fileGuid) ? null : fileGuid.trim();
-				String basePath = formData.get("server_type") != null ? formData.get("server_type")[0] : null;
-				basePath = StringUtils.isBlank(basePath) ? null : basePath.trim();
+				String basePath = credentials.baseurl;
 				
 				try {
 					//Check fileGuid
@@ -102,6 +102,7 @@ public class Sample23 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
+			session().put("baseurl", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample23.render(title, sample, result, filledForm));
 		}
 		//Process template

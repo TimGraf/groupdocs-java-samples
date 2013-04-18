@@ -54,6 +54,7 @@ public class Sample18 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
+				session().put("baseurl", credentials.baseurl);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 				String fileId = formData.get("fileId") != null ? formData.get("fileId")[0] : null;
@@ -73,6 +74,7 @@ public class Sample18 extends Controller {
 							new GroupDocsRequestSigner(credentials.private_key));
 					//Create AntApi object
 					AsyncApi api = new AsyncApi();
+					api.setBasePath(credentials.baseurl);
 		
 					//###Make request to Annotation api for setting collaborator for document  
 					ConvertResponse response = api.Convert(credentials.client_id, fileId, convert_type, null, null, null, null, null);
@@ -118,6 +120,7 @@ public class Sample18 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
+			session().put("baseurl", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample18.render(title, sample, result, filledForm));
 		}
 		//Process template

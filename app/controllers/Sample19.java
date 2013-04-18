@@ -48,6 +48,7 @@ public class Sample19 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
+				session().put("baseurl", credentials.baseurl);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 				String source_file_id = formData.get("sourceFileId") != null ? formData.get("sourceFileId")[0] : null;
@@ -56,7 +57,7 @@ public class Sample19 extends Controller {
 				target_file_id = StringUtils.isBlank(target_file_id) ? null : target_file_id.trim();
 				String callback = formData.get("callbackUrl") != null ? formData.get("callbackUrl")[0] : null;
 				callback = StringUtils.isBlank(callback) ? null : callback.trim();
-				String basePath = formData.get("server_type") != null ? formData.get("server_type")[0] : null;
+				String basePath = credentials.baseurl;
 				basePath = StringUtils.isBlank(basePath) ? null : basePath.trim();
 				
 				try {
@@ -135,6 +136,7 @@ public class Sample19 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
+			session().put("baseurl", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample19.render(title, sample, result, filledForm));
 		}
 		//Process template

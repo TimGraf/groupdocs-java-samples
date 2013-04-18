@@ -2,6 +2,9 @@
 
 @import helper._
 
+@* Register customInput as field constructor for this page (customize input field) *@
+@implicitField = @{ FieldConstructor(customInput.f) }
+
 @main(title) {
 
 <h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
@@ -27,7 +30,7 @@
 			  }
 			}
 
-	        @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 100)
+	        @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
 	      
 	        <input type="submit" value="Make Request">
         }

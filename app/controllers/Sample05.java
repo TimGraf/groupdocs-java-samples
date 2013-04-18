@@ -42,6 +42,7 @@ public class Sample05 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
+				session().put("baseurl", credentials.baseurl);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 				String srcPath = formData.get("srcPath") != null ? formData.get("srcPath")[0] : null;
@@ -77,6 +78,7 @@ public class Sample05 extends Controller {
 					}
 					//Create Storage object
 					StorageApi api = new StorageApi();
+					api.setBasePath(credentials.baseurl);
 					FileMoveResponse response;
 					//###Make a request to Storage API using clientId
 					if(isCopy){
@@ -113,6 +115,7 @@ public class Sample05 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
+			session().put("baseurl", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample05.render(title, sample, moveResult, filledForm));
 		}
 		//Process template

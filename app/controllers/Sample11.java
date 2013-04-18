@@ -48,6 +48,7 @@ public class Sample11 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
+				session().put("baseurl", credentials.baseurl);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 				String fileId = formData.get("fileId") != null ? formData.get("fileId")[0] : null;
@@ -85,6 +86,7 @@ public class Sample11 extends Controller {
 					ApiInvoker.getInstance().setRequestSigner(
 							new GroupDocsRequestSigner(credentials.private_key));
 					AntApi ant = new AntApi();
+					ant.setBasePath(credentials.baseurl);
 					//Convert from String to Double entered parameters
 					double x = Double.parseDouble(box_x);
 					double y = Double.parseDouble(box_y);
@@ -220,6 +222,7 @@ public class Sample11 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
+			session().put("baseurl", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample11.render(title, sample, result, filledForm));
 		}
 		//Process template

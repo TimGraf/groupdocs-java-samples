@@ -39,6 +39,7 @@ public class Sample01 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
+				session().put("baseurl", credentials.baseurl);
 				//###Create ApiInvoker and Management Api objects
 	            
 	            //Create ApiInvoker object
@@ -46,6 +47,7 @@ public class Sample01 extends Controller {
 						new GroupDocsRequestSigner(credentials.private_key));
 				//Create Management Api object
 				MgmtApi api = new MgmtApi();
+				api.setBasePath(credentials.baseurl);
 				
 				//###Make a request to Management API using clientId
 				try {
@@ -70,6 +72,7 @@ public class Sample01 extends Controller {
 		} else {
 			//Process template
 			filledForm = form.bind(session());
+			session().put("baseurl", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample01.render(title, sample, userInfo, filledForm));
 		}
 		return status;

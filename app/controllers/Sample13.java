@@ -43,6 +43,7 @@ public class Sample13 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
+				session().put("baseurl", credentials.baseurl);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 				String fileId = formData.get("fileId") != null ? formData.get("fileId")[0] : null;
@@ -62,6 +63,7 @@ public class Sample13 extends Controller {
 							new GroupDocsRequestSigner(credentials.private_key));
 					//Create AntApi object
 					AntApi ant = new AntApi();
+					ant.setBasePath(credentials.baseurl);
 					//Create List object
 					List<String> emailList = new ArrayList<String>();
 					//Add email to the list
@@ -103,6 +105,7 @@ public class Sample13 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
+			session().put("baseurl", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample13.render(title, sample, result, filledForm));
 		}
 		//Process template

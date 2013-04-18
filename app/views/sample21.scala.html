@@ -2,6 +2,9 @@
 
 @import helper._
 
+@* Register customInput as field constructor for this page (customize input field) *@
+@implicitField = @{ FieldConstructor(customInput.f) }
+
 @main(title) {
 
 <h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
@@ -22,21 +25,15 @@
 				  <div>@error.message</div>
 			  }
 			}
-            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 100)
-	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 100) 
-	        @inputText(aForm("email"), '_label -> "Recipient Email", 'size -> 100) 
-	        @inputText(aForm("name"), '_label -> "First Name", 'size -> 100) 
-	        @inputText(aForm("lastName"), '_label -> "Last Name", 'size -> 100) 
-	        @inputFile(aForm("file"), '_label -> "Document to sign")
-	        @inputText(aForm("callbackUrl"), '_label -> "Callback URL", 'size -> 100)
+            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
+	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
+	        @inputText(aForm("baseurl"), '_label -> "Base URL", 'size -> 50)
+	        @inputText(aForm("email"), '_label -> "Recipient Email", 'size -> 50, 'required -> true)
+	        @inputText(aForm("name"), '_label -> "First Name", 'size -> 50, 'required -> true)
+	        @inputText(aForm("lastName"), '_label -> "Last Name", 'size -> 50, 'required -> true)
+	        @inputFile(aForm("file"), '_label -> "Document to sign", 'required -> true)
+	        @inputText(aForm("callbackUrl"), '_label -> "Callback URL", 'size -> 50)
 	        <br />
-	        <label for='server_type'>Choose Server</label>
-                <select name="server_type" id="server_type">
-                    <option selected value="https://api.groupdocs.com/v2.0">Prod</option>
-                    <option value="https://dev-api.groupdocs.com/v2.0">Dev</option>
-                    <option value="https://stage-api.groupdocs.com/v2.0">Stage</option>
-                </select>
-            <br />
 	        <input type="submit" id='btnLoad' value="Make Request">
         }
    </div>

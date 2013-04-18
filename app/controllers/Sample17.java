@@ -42,6 +42,7 @@ public class Sample17 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
+				session().put("baseurl", credentials.baseurl);
 				
 				MultipartFormData body = request().body().asMultipartFormData();
 		        FilePart filePart = body.getFile("file");
@@ -53,6 +54,7 @@ public class Sample17 extends Controller {
 							new GroupDocsRequestSigner(credentials.private_key));
 					//Create Storage object
 					StorageApi api = new StorageApi();
+					api.setBasePath(credentials.baseurl);
 					//Create FileInputStream object 
 					FileInputStream is = new FileInputStream(filePart.getFile());
 					//###Make a request to Storage API using clientId
@@ -99,6 +101,7 @@ public class Sample17 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
+			session().put("baseurl", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample17.render(title, sample, result, filledForm));
 		}
 		//Process template

@@ -8,5 +8,6 @@ public class Credentials {
 	public String client_id;
 	@Required
 	public String private_key;
-
+	@Required
+	public String baseurl;
 }

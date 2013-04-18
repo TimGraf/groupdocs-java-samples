@@ -40,6 +40,7 @@ public class Sample15 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
+				session().put("baseurl", credentials.baseurl);
 								
 				try {
 					//Check client id and private key 
@@ -53,6 +54,7 @@ public class Sample15 extends Controller {
 							new GroupDocsRequestSigner(credentials.private_key));
 					//Create Doc Api object and get document metadata
 					DocApi metadata = new DocApi();
+					metadata.setBasePath(credentials.baseurl);
 					
 					//###Make request to Doc api to get documents views
 					DocumentViewsResponse viewes = metadata.GetDocumentViews(credentials.client_id, null, null);
@@ -85,6 +87,7 @@ public class Sample15 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
+			session().put("baseurl", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample15.render(title, sample, result, filledForm));
 		}
 		//Process template

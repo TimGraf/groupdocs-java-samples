@@ -39,6 +39,7 @@ public class Sample12 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
+				session().put("baseurl", credentials.baseurl);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 				String fileId = formData.get("fileId") != null ? formData.get("fileId")[0] : null;
@@ -55,6 +56,7 @@ public class Sample12 extends Controller {
 							new GroupDocsRequestSigner(credentials.private_key));
 					//Create Annotation api object
 					AntApi ant = new AntApi(); 
+					ant.setBasePath(credentials.baseurl);
 					//Make request to Annotation api to receive list of annotations
 					ListAnnotationsResponse response = ant.ListAnnotations(credentials.client_id, fileId);
 					//Check request status
@@ -83,6 +85,7 @@ public class Sample12 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
+			session().put("baseurl", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample12.render(title, sample, annotations, filledForm));
 		}
 		//Process template

@@ -37,6 +37,7 @@ public class Sample02 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
+				session().put("baseurl", credentials.baseurl);
 				
 				//###Create ApiInvoker, Storage Api objects
 				try {
@@ -45,6 +46,7 @@ public class Sample02 extends Controller {
 							new GroupDocsRequestSigner(credentials.private_key));
 					 //Create Storage api object
 					StorageApi api = new StorageApi();
+					api.setBasePath(credentials.baseurl);
 					//###Make a request to Storage API using clientId
 		            
 		            //Obtaining all Entities from current user
@@ -68,6 +70,7 @@ public class Sample02 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
+			session().put("baseurl", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample02.render(title, sample, files, filledForm));
 		}
 		//Process template

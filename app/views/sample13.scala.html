@@ -2,6 +2,10 @@
 
 @import helper._
 
+@* Register customInput as field constructor for this page (customize input field) *@
+@implicitField = @{ FieldConstructor(customInput.f) }
+
+
 @main(title) {
 
 <h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
@@ -27,10 +31,11 @@
 				  <div>@error.message</div>
 			  }
 			}
-            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 100)
-	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 100) 
-	        @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 100)
-	        @inputText(aForm("email"), '_label -> "Collaboration Email", 'size -> 100, 'placeholder -> "SomeoneRegisteredInGroupdocs@mydomain.com")
+            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
+	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
+	        @inputText(aForm("baseurl"), '_label -> "Base URL", 'size -> 50)
+	        @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
+	        @inputText(aForm("email"), '_label -> "Collaboration Email", 'size -> 50, 'placeholder -> "SomeoneRegisteredInGroupdocs@mydomain.com", 'required -> true)
 	        <input type="submit" value="Make Request">
         }
    </div>

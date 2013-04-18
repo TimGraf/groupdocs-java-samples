@@ -1,0 +1,31 @@
+
+.form-label {
+    width: 150px;
+    display: block;
+    float: left;
+}
+
+.error-block {
+    color: red;
+}
+
+.field-label {
+    min-width: 150px;
+    display: block;
+    float: left;
+    margin-top: 3px;
+}
+
+.required-field {
+    color: #ff1493;
+    font-size: 18px;
+}
+
+.field-error {
+    color: red;
+    font-size: 10px;
+}
+
+.input-block {
+    clear: both;
+}

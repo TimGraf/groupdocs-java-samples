@@ -2,6 +2,9 @@
 
 @import helper._
 
+@* Register customInput as field constructor for this page (customize input field) *@
+@implicitField = @{ FieldConstructor(customInput.f) }
+
 @main(title) {
 
 <h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
@@ -12,7 +15,7 @@
     <a href="/docs/sample11.html">Docs for this sample</a>
     <br />
    <br/>
-		<p><font color="green">You entered: </font></p>
+		<p style="color: green;">You entered: </p>
 		<p>Client Id = @aForm.data.get("client_id")</p>
 		<p>Private Key = @aForm.data.get("private_key")</p>
 		@if(data != null){
@@ -29,19 +32,20 @@
 			  @if(error.arguments.size > 0){
 				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
 			  } else {
-				  <div><font color="red">@error.message</font></div>
+				  <div style="color: red;">@error.message</div>
 			  }
 			}
 			<input type="hidden" name="annotationId" value="annotationId">
-            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 100)
-	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 100) 
-	        @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 100)
+            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
+	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
+	        @inputText(aForm("baseurl"), '_label -> "Base URL", 'size -> 50)
+	        @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
 	        <br />
 	        <label for='annotation_type'>Annotation Type</label>
                         <select name="annotation_type" id="annotation_type">
-                            <option value="text" onclick="show_hide('text')";>Text</option>
-                            <option value="area" onclick="show_hide('area')";>Area</option>
-                            <option selected value="point" onclick="show_hide('point')";>Point</option>
+                            <option value="text" onclick="show_hide('text');">Text</option>
+                            <option value="area" onclick="show_hide('area');">Area</option>
+                            <option selected value="point" onclick="show_hide('point');">Point</option>
                         </select>
                         <br />
            <fieldset style="border: thin solid #333; padding: 1em; margin-bottom: 5px;">

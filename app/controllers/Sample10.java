@@ -43,6 +43,7 @@ public class Sample10 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
+				session().put("baseurl", credentials.baseurl);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 				String fileId = formData.get("fileId") != null ? formData.get("fileId")[0] : null;
@@ -62,6 +63,7 @@ public class Sample10 extends Controller {
 							new GroupDocsRequestSigner(credentials.private_key));
 					//Create DocApi obect
 					DocApi api = new DocApi();
+					api.setBasePath(credentials.baseurl);
 					//###Make a request to DocApi to get document metadeta for entered fileId
 					GetDocumentInfoResponse metadata = new DocApi().GetDocumentMetadata(credentials.client_id, fileId);
 					String file_Id = null;
@@ -105,6 +107,7 @@ public class Sample10 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
+			session().put("baseurl", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample10.render(title, sample, result, filledForm));
 		}
 		//Process template
