@@ -29,3 +29,12 @@
 .input-block {
     clear: both;
 }
+
+.file-choice-label {
+    margin-right: 25px;
+}
+
+.file-choice-block {
+    margin-top: 15px;
+    margin-bottom: 5px;
+}

@@ -11,6 +11,9 @@ import java.io.File;
 import java.io.InputStream;
 
 
+import com.groupdocs.sdk.model.UploadRequestResult;
+import com.groupdocs.sdk.model.UploadResponse;
+import common.Utils;
 import models.Credentials;
 
 import org.apache.commons.io.IOUtils;
@@ -18,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import play.data.Form;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import scala.actors.threadpool.Arrays;
 
@@ -49,12 +53,43 @@ public class Sample04 extends Controller {
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
 				session().put("baseurl", credentials.baseurl);
-				
-				Map<String, String[]> formData = request().body().asFormUrlEncoded();
-				String file_id = formData.get("fileId") != null ? formData.get("fileId")[0] : null;
-				file_id = StringUtils.isBlank(file_id) ? null : file_id.trim();
-				
-				try {
+                String file_id = null;
+
+                try {
+                    /////////////////////////////////////// -- //////////////////////////////////////
+                    Http.MultipartFormData formData = request().body().asMultipartFormData();
+                    Map<String, String[]> fieldsData = formData.asFormUrlEncoded();
+
+                    String fileData = Utils.getFormValue(fieldsData, "fileData");
+                    if ("IDfileId".equals(fileData)) { // File GUID
+                        file_id = Utils.getFormValue(fieldsData, "fileId");
+                    }
+                    else if ("IDfileUrl".equals(fileData)) { // Upload file fron URL
+                        String fileUrl = Utils.getFormValue(fieldsData, "fileUrl");
+                        ApiInvoker.getInstance().setRequestSigner(
+                                new GroupDocsRequestSigner(credentials.private_key));
+                        StorageApi storageApi = new StorageApi();
+                        storageApi.setBasePath(credentials.baseurl);
+                        UploadResponse response = storageApi.UploadWeb(credentials.client_id, fileUrl);
+                        if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
+                            file_id = response.getResult().getGuid();
+                        }
+                    }
+                    else if ("IDfilePart".equals(fileData)) { // Upload local file
+                        Http.MultipartFormData.FilePart filePart = formData.getFile("filePart");
+                        ApiInvoker.getInstance().setRequestSigner(
+                                new GroupDocsRequestSigner(credentials.private_key));
+                        StorageApi storageApi = new StorageApi();
+                        storageApi.setBasePath(credentials.baseurl);
+                        FileInputStream is = new FileInputStream(filePart.getFile());
+                        UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), null, new FileStream(is));
+                        if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
+                            file_id = response.getResult().getGuid();
+                        }
+                    }
+                    /////////////////////////////////////// -- //////////////////////////////////////
+                    // Sample:
+
 					//Check entered file id
 					if(file_id == null){
 						throw new Exception();
@@ -120,5 +155,4 @@ public class Sample04 extends Controller {
 		//Process template
 		return status;
 	}
-	
 }

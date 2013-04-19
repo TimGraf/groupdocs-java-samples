@@ -1,16 +1,23 @@
 //###<i>This sample will show how to use <b>GuId</b> of file to generate an embedded Viewer URL for a Document</i>
 package controllers;
 //Import of necessary libraries
+import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.groupdocs.sdk.api.StorageApi;
+import com.groupdocs.sdk.common.FileStream;
+import com.groupdocs.sdk.common.GroupDocsRequestSigner;
+import com.groupdocs.sdk.model.UploadResponse;
+import common.Utils;
 import models.Credentials;
 
 import org.apache.commons.lang3.StringUtils;
 
 import play.data.Form;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import scala.actors.threadpool.Arrays;
 
@@ -34,44 +41,86 @@ public class Sample09 extends Controller {
 		//Check POST parameters
 		if(request().method().equalsIgnoreCase("POST")){
 			filledForm = form.bindFromRequest();
-				//Get POST data
-				Map<String, String[]> formData = request().body().asFormUrlEncoded();
-				String fileId = formData.get("fileId") != null ? formData.get("fileId")[0] : null;
-				fileId = StringUtils.isBlank(fileId) ? null : fileId.trim();
-				String width = formData.get("width") != null ? formData.get("width")[0] : null;
-				width = StringUtils.isBlank(width) ? null : width.trim();
-				String height = formData.get("height") != null ? formData.get("height")[0] : null;
-				height = StringUtils.isBlank(height) ? null : height.trim();
-				
-				try {
-					//CHeck fileId, width and height
-					if(fileId != null || width != null || height != null){
-						//Put entered parameters to data HashMap
-						data = new HashMap<String, String>();
-						data.put("guid", fileId);
-						data.put("width", width);
-						data.put("height", height);
-									
-					} else {
-						throw new Exception("Not Found");
-						}
-					//If request was successfull - set  data variable for template
-					status = ok(views.html.sample09.render(title, sample, data, filledForm));
-				//###Definition of filledForm errors and conclusion of the corresponding message
-				} catch (Exception e) {
-					e.printStackTrace();
-					if(fileId == null){
-						filledForm.reject("fileId", "This field is required");
-					} else if(width == null){
-						filledForm.reject("width", "This field is required");
-					} else if(height == null){
-						filledForm.reject("height", "This field is required");
-					} else {
-						filledForm.reject("fileId", "Something wrong with your file: " + e.getMessage());
-					}
-					status = badRequest(views.html.sample09.render(title, sample, data, filledForm));
-				}
+            String fileId = null;
+            String width = null;
+            String height = null;
 
+            try {
+            /////////////////////////////////////// -- //////////////////////////////////////
+            Http.MultipartFormData formData = request().body().asMultipartFormData();
+            Map<String, String[]> fieldsData = formData.asFormUrlEncoded();
+
+            String fileData = Utils.getFormValue(fieldsData, "fileData");
+            if ("IDfileId".equals(fileData)) { // File GUID
+                fileId = Utils.getFormValue(fieldsData, "fileId");
+            }
+            else {
+                //Get POST data
+                Credentials credentials = filledForm.get();
+                session().put("client_id", credentials.client_id);
+                session().put("private_key", credentials.private_key);
+                session().put("baseurl", credentials.baseurl);
+                if (StringUtils.isEmpty(credentials.client_id) || StringUtils.isEmpty(credentials.private_key) || StringUtils.isEmpty(credentials.baseurl)) {
+                    throw  new Exception();
+                }
+                if ("IDfileUrl".equals(fileData)) { // Upload file fron URL
+                    String fileUrl = Utils.getFormValue(fieldsData, "fileUrl");
+                    ApiInvoker.getInstance().setRequestSigner(
+                            new GroupDocsRequestSigner(credentials.private_key));
+                    StorageApi storageApi = new StorageApi();
+                    storageApi.setBasePath(credentials.baseurl);
+                    UploadResponse response = storageApi.UploadWeb(credentials.client_id, fileUrl);
+                    if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
+                        fileId = response.getResult().getGuid();
+                    }
+                }
+                else if ("IDfilePart".equals(fileData)) { // Upload local file
+                    Http.MultipartFormData.FilePart filePart = formData.getFile("filePart");
+                    ApiInvoker.getInstance().setRequestSigner(
+                            new GroupDocsRequestSigner(credentials.private_key));
+                    StorageApi storageApi = new StorageApi();
+                    storageApi.setBasePath(credentials.baseurl);
+                    FileInputStream is = new FileInputStream(filePart.getFile());
+                    UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), null, new FileStream(is));
+                    if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
+                        fileId = response.getResult().getGuid();
+                    }
+                }
+            }
+            /////////////////////////////////////// -- //////////////////////////////////////
+            status = badRequest(views.html.sample09.render(title, sample, data, filledForm));
+            //###Definition of filledForm errors and conclusion of the corresponding message
+            // Sample:
+
+                width = Utils.getFormValue(fieldsData, "width");
+                height = Utils.getFormValue(fieldsData, "height");
+                //CHeck fileId, width and height
+                if(fileId != null || width != null || height != null){
+                    //Put entered parameters to data HashMap
+                    data = new HashMap<String, String>();
+                    data.put("guid", fileId);
+                    data.put("width", width);
+                    data.put("height", height);
+
+                } else {
+                    throw new Exception("Not Found");
+                    }
+                //If request was successfull - set  data variable for template
+                status = ok(views.html.sample09.render(title, sample, data, filledForm));
+            //###Definition of filledForm errors and conclusion of the corresponding message
+            } catch (Exception e) {
+                e.printStackTrace();
+                if(fileId == null){
+                    filledForm.reject("fileId", "This field is required");
+                } else if(width == null){
+                    filledForm.reject("width", "This field is required");
+                } else if(height == null){
+                    filledForm.reject("height", "This field is required");
+                } else {
+                    filledForm.reject("fileId", "Something wrong with your file: " + e.getMessage());
+                }
+                status = badRequest(views.html.sample09.render(title, sample, data, filledForm));
+            }
 		} else {
 			filledForm = form.bind(session());
 			status = ok(views.html.sample09.render(title, sample, data, filledForm));

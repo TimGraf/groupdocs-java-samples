@@ -17,7 +17,7 @@
    <br/>
    <div id="requestForm" style="padding:20px; border:1px solid black;">
 		<p>Enter data for request and press "Make request" button </p>
-		@myForm(routes.Sample10.index(), 'method -> "POST") {
+		@myForm(routes.Sample10.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
 	        @aForm.globalErrors.map { error =>
 			  @if(error.arguments.size > 0){
 				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
@@ -28,7 +28,25 @@
             @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
 	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
 	        @inputText(aForm("baseurl"), '_label -> "Base URL", 'size -> 50)
-	        @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
+            <div>
+                <div id="IDtypeChoice" class="file-choice-block">
+                <input type="radio" value="IDfileId" onclick="" id="IDfileIdRadio" name="fileData" />
+                    <label for="IDfileIdRadio" class="file-choice-label">File GUID</label>
+                <input type="radio" value="IDfileUrl" onclick="" id="IDfileUrlRadio" name="fileData" />
+                    <label for="IDfileUrlRadio" class="file-choice-label">File URL</label>
+                <input type="radio" value="IDfilePart" onclick="" id="IDfilePartRadio" name="fileData" />
+                    <label for="IDfilePartRadio" class="file-choice-label">Local file</label>
+                </div>
+                <div id="IDfileId">
+                @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
+                </div>
+                <div id="IDfileUrl">
+                @inputText(aForm("fileUrl"), '_label -> "File Url", 'size -> 50, 'required -> true)
+                </div>
+                <div id="IDfilePart">
+                @inputFile(aForm("filePart"), '_label -> "Select file", 'required -> true)
+                </div>
+            </div>
 	        @inputText(aForm("email"), '_label -> "Recipient Email", 'size -> 50, 'placeholder -> "SomeoneRegisteredInGroupdocs@mydomain.com", 'required -> true)
 	        <input type="submit" value="Make Request" />
         }

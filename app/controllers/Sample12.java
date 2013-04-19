@@ -1,14 +1,20 @@
 //###This sample will show how to use <b>ListAnnotations</b> method from Storage  API  to list annotations for document
 package controllers;
 //Import of necessary libraries
+import java.io.FileInputStream;
 import java.util.List;
 import java.util.Map;
 
+import com.groupdocs.sdk.api.StorageApi;
+import com.groupdocs.sdk.common.FileStream;
+import com.groupdocs.sdk.model.UploadResponse;
+import common.Utils;
 import org.apache.commons.lang3.StringUtils;
 
 import models.Credentials;
 import play.data.Form;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import scala.actors.threadpool.Arrays;
 
@@ -40,14 +46,44 @@ public class Sample12 extends Controller {
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
 				session().put("baseurl", credentials.baseurl);
-				
-				Map<String, String[]> formData = request().body().asFormUrlEncoded();
-				String fileId = formData.get("fileId") != null ? formData.get("fileId")[0] : null;
-				fileId = StringUtils.isBlank(fileId) ? null : fileId.trim();
-				
-				//###Create ApiInvoker, Annotation API objects
-				try {
-					
+                String fileId = null;
+
+                try {
+                    /////////////////////////////////////// -- //////////////////////////////////////
+                    Http.MultipartFormData formData = request().body().asMultipartFormData();
+                    Map<String, String[]> fieldsData = formData.asFormUrlEncoded();
+
+                    String fileData = Utils.getFormValue(fieldsData, "fileData");
+                    if ("IDfileId".equals(fileData)) { // File GUID
+                        fileId = Utils.getFormValue(fieldsData, "fileId");
+                    }
+                    else if ("IDfileUrl".equals(fileData)) { // Upload file fron URL
+                        String fileUrl = Utils.getFormValue(fieldsData, "fileUrl");
+                        ApiInvoker.getInstance().setRequestSigner(
+                                new GroupDocsRequestSigner(credentials.private_key));
+                        StorageApi storageApi = new StorageApi();
+                        storageApi.setBasePath(credentials.baseurl);
+                        UploadResponse response = storageApi.UploadWeb(credentials.client_id, fileUrl);
+                        if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
+                            fileId = response.getResult().getGuid();
+                        }
+                    }
+                    else if ("IDfilePart".equals(fileData)) { // Upload local file
+                        Http.MultipartFormData.FilePart filePart = formData.getFile("filePart");
+                        ApiInvoker.getInstance().setRequestSigner(
+                                new GroupDocsRequestSigner(credentials.private_key));
+                        StorageApi storageApi = new StorageApi();
+                        storageApi.setBasePath(credentials.baseurl);
+                        FileInputStream is = new FileInputStream(filePart.getFile());
+                        UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), null, new FileStream(is));
+                        if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
+                            fileId = response.getResult().getGuid();
+                        }
+                    }
+                    /////////////////////////////////////// -- //////////////////////////////////////
+                    // Sample:
+
+                    //###Create ApiInvoker, Annotation API objects
 					if(credentials.client_id == null || credentials.private_key == null || fileId == null){
 						throw new Exception();
 					}

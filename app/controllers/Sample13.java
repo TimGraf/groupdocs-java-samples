@@ -44,13 +44,13 @@ public class Sample13 extends Controller {
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
 				session().put("baseurl", credentials.baseurl);
-				
+
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 				String fileId = formData.get("fileId") != null ? formData.get("fileId")[0] : null;
 				fileId = StringUtils.isBlank(fileId) ? null : fileId.trim();
 				String email = formData.get("email") != null ? formData.get("email")[0] : null;
 				email = StringUtils.isBlank(email) ? null : email.trim();
-				
+
 				try {
 					//### Check client_id, private_key, fileId and email
 					if(credentials.client_id == null || credentials.private_key == null || fileId == null || email == null){

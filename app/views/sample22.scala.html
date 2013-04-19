@@ -15,14 +15,14 @@
     <a href="/docs/sample22.html">Docs for this sample</a>
     <br />
    <br/>
-   <p><font color="green">You entered: </font></p>
+   <p style="color: green">You entered: </p>
 		<p>Client Id = @aForm.data.get("client_id")</p>
 		<p>Private Key = @aForm.data.get("private_key")</p>
 		<p>File Id = @aForm.data.get("fileId") </p>
 		<p>Collaboration = @aForm.data.get("email") </p>
    <div id="requestForm" style="padding:20px; border:1px solid black;">
 		<p>Enter data for request and press "Make request" button </p>
-		@myForm(routes.Sample22.index(), 'method -> "POST") {
+		@myForm(routes.Sample22.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
 	        @aForm.globalErrors.map { error =>
 			  @if(error.arguments.size > 0){
 				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
@@ -36,7 +36,25 @@
 	        @inputText(aForm("email"), '_label -> "Email", 'size -> 50, 'required -> true)
 	        @inputText(aForm("first_name"), '_label -> "First Name", 'size -> 50, 'required -> true)
 	        @inputText(aForm("last_name"), '_label -> "Last Name", 'size -> 50, 'required -> true)
-	        @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
+            <div>
+                <div id="IDtypeChoice" class="file-choice-block">
+                <input type="radio" value="IDfileId" onclick="" id="IDfileIdRadio" name="fileData" />
+                    <label for="IDfileIdRadio" class="file-choice-label">File GUID</label>
+                <input type="radio" value="IDfileUrl" onclick="" id="IDfileUrlRadio" name="fileData" />
+                    <label for="IDfileUrlRadio" class="file-choice-label">File URL</label>
+                <input type="radio" value="IDfilePart" onclick="" id="IDfilePartRadio" name="fileData" />
+                    <label for="IDfilePartRadio" class="file-choice-label">Local file</label>
+                </div>
+                <div id="IDfileId">
+                @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
+                </div>
+                <div id="IDfileUrl">
+                @inputText(aForm("fileUrl"), '_label -> "File Url", 'size -> 50, 'required -> true)
+                </div>
+                <div id="IDfilePart">
+                @inputFile(aForm("filePart"), '_label -> "Select file", 'required -> true)
+                </div>
+            </div>
 	        @inputText(aForm("callbackUrl"), '_label -> "Callback URL", 'size -> 50)
 	        <br />
 	        <input type="submit" value="Make Request">

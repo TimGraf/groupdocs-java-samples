@@ -1,30 +1,29 @@
 //###<i>This sample will show how to use <b>CreateAnnotation</b> method from Annotation Api to annotate a document</i>
 package controllers;
 //Import of necessary libraries
+import java.io.FileInputStream;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 
+import com.groupdocs.sdk.api.StorageApi;
+import com.groupdocs.sdk.common.FileStream;
+import com.groupdocs.sdk.model.*;
+import common.Utils;
 import models.Credentials;
 
 import org.apache.commons.lang3.StringUtils;
 
 import play.data.Form;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import scala.actors.threadpool.Arrays;
 
 import com.groupdocs.sdk.common.ApiException;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
-import com.groupdocs.sdk.model.AnnotationReplyInfo;
-import com.groupdocs.sdk.model.CreateAnnotationResponse;
-import com.groupdocs.sdk.model.CreateAnnotationResult;
-import com.groupdocs.sdk.model.Point;
-import com.groupdocs.sdk.model.Range;
-import com.groupdocs.sdk.model.Rectangle;
 import com.groupdocs.sdk.api.AntApi;
-import com.groupdocs.sdk.model.AnnotationInfo;
 
 public class Sample11 extends Controller {
 	//###Set variables
@@ -49,35 +48,55 @@ public class Sample11 extends Controller {
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
 				session().put("baseurl", credentials.baseurl);
-				
-				Map<String, String[]> formData = request().body().asFormUrlEncoded();
-				String fileId = formData.get("fileId") != null ? formData.get("fileId")[0] : null;
-				fileId = StringUtils.isBlank(fileId) ? null : fileId.trim();
-				String annotation_type = formData.get("annotation_type") != null ? formData.get("annotation_type")[0] : null;
-				annotation_type = StringUtils.isBlank(annotation_type) ? null : annotation_type.trim();
-//				String delete_annotation = formData.get("delete_annotation") != null ? formData.get("delete_annotation")[0] : null;
-//				String annotationId = formData.get("annotationId") != null ? formData.get("annotationId")[0] : null;
-				String box_x = formData.get("box_x") != null ? formData.get("box_x")[0] : "0.0";
-				box_x = StringUtils.isBlank(box_x) ? "0.0" : box_x.trim();
-				String box_y = formData.get("box_y") != null ? formData.get("box_y")[0] : "0.0";
-				box_y = StringUtils.isBlank(box_y) ? "0.0" : box_y.trim();
-				String box_width = formData.get("box_width") != null ? formData.get("box_width")[0] : "0.0";
-				box_width = StringUtils.isBlank(box_width) ? "0.0" : box_width.trim();
-				String box_height = formData.get("box_height") != null ? formData.get("box_height")[0] : "0.0";
-				box_height = StringUtils.isBlank(box_height) ? "0.0" : box_height.trim();
-				String annotationPosition_x = formData.get("annotationPosition.x") != null ? formData.get("annotationPosition.x")[0] : "0.0";
-				annotationPosition_x = StringUtils.isBlank(annotationPosition_x) ? "0.0" : annotationPosition_x.trim();
-				String annotationPosition_y = formData.get("annotationPosition.y") != null ? formData.get("annotationPosition.y")[0] : "0.0";
-				annotationPosition_y = StringUtils.isBlank(annotationPosition_y) ? "0.0" : annotationPosition_y.trim();
-				String range_position = formData.get("range.position") != null ? formData.get("range.position")[0] : "0";
-				range_position = StringUtils.isBlank(range_position) ? "0" : range_position.trim();
-				String range_length = formData.get("range.length") != null ? formData.get("range.length")[0] : "0";
-				range_length = StringUtils.isBlank(range_length) ? "0" : range_length.trim();
-				String text = formData.get("text") != null ? formData.get("text")[0] : "";
-				text = StringUtils.isBlank(text) ? "" : text.trim();
-				
-				
-				try {
+                String fileId = null;
+
+                Http.MultipartFormData formData = request().body().asMultipartFormData();
+                Map<String, String[]> fieldsData = formData.asFormUrlEncoded();
+                String annotation_type = Utils.getFormValue(fieldsData, "annotation_type");
+//				String delete_annotation = Utils.getFormValue(fieldsData, "delete_annotation");
+                String box_x = Utils.getFormValue(fieldsData, "box_x");
+                String box_y = Utils.getFormValue(fieldsData, "box_y");
+                String box_width = Utils.getFormValue(fieldsData, "box_width");
+                String box_height = Utils.getFormValue(fieldsData, "box_height");
+                String annotationPosition_x = Utils.getFormValue(fieldsData, "annotationPosition.x");
+                String annotationPosition_y = Utils.getFormValue(fieldsData, "annotationPosition.y");
+                String range_position = Utils.getFormValue(fieldsData, "range.position");
+                String range_length = Utils.getFormValue(fieldsData, "range.length");
+                String text = Utils.getFormValue(fieldsData, "text");
+
+                try {
+                    /////////////////////////////////////// -- //////////////////////////////////////
+
+                    String fileData = Utils.getFormValue(fieldsData, "fileData");
+                    if ("IDfileId".equals(fileData)) { // File GUID
+                        fileId = Utils.getFormValue(fieldsData, "fileId");
+                    }
+                    else if ("IDfileUrl".equals(fileData)) { // Upload file fron URL
+                        String fileUrl = Utils.getFormValue(fieldsData, "fileUrl");
+                        ApiInvoker.getInstance().setRequestSigner(
+                                new GroupDocsRequestSigner(credentials.private_key));
+                        StorageApi storageApi = new StorageApi();
+                        storageApi.setBasePath(credentials.baseurl);
+                        UploadResponse response = storageApi.UploadWeb(credentials.client_id, fileUrl);
+                        if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
+                            fileId = response.getResult().getGuid();
+                        }
+                    }
+                    else if ("IDfilePart".equals(fileData)) { // Upload local file
+                        Http.MultipartFormData.FilePart filePart = formData.getFile("filePart");
+                        ApiInvoker.getInstance().setRequestSigner(
+                                new GroupDocsRequestSigner(credentials.private_key));
+                        StorageApi storageApi = new StorageApi();
+                        storageApi.setBasePath(credentials.baseurl);
+                        FileInputStream is = new FileInputStream(filePart.getFile());
+                        UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), null, new FileStream(is));
+                        if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
+                            fileId = response.getResult().getGuid();
+                        }
+                    }
+                    /////////////////////////////////////// -- //////////////////////////////////////
+                    // Sample:
+
 					//### Check fileId amd annotation_type
 					if(credentials.client_id == null || credentials.private_key == null || fileId == null || annotation_type == null){
 						throw new Exception();
@@ -90,13 +109,7 @@ public class Sample11 extends Controller {
 					//Convert from String to Double entered parameters
 					double x = Double.parseDouble(box_x);
 					double y = Double.parseDouble(box_y);
-					double w = Double.parseDouble(box_width);
-					double ann_pos_x = Double.parseDouble(annotationPosition_x);
-					double ann_pos_y = Double.parseDouble(annotationPosition_y);
-					double h = Double.parseDouble(box_height);
-					Integer range_pos = Integer.parseInt(range_position);
-					Integer range_len = Integer.parseInt(range_length);
-					//###Create AnnotationReplyInfo object and fill it with data 
+					//###Create AnnotationReplyInfo object and fill it with data
 					AnnotationReplyInfo ann_text = new AnnotationReplyInfo();
 					//add entered text for annotation
 					ann_text.setText(text);
@@ -113,6 +126,12 @@ public class Sample11 extends Controller {
 					//###Check what type it was chosen
 					//If annotation type is text set all parameters
 					if (annotation_type.equals("text")) {
+                        double w = Double.parseDouble(box_width);
+                        double h = Double.parseDouble(box_height);
+                        double ann_pos_x = Double.parseDouble(annotationPosition_x);
+                        double ann_pos_y = Double.parseDouble(annotationPosition_y);
+                        Integer range_pos = Integer.parseInt(range_position);
+                        Integer range_len = Integer.parseInt(range_length);
 						//Create rectangle object
 						Rectangle box = new Rectangle();
 						//Set rectangle parameters
@@ -136,6 +155,8 @@ public class Sample11 extends Controller {
 						requestBody.setAnnotationPosition(annotationPosition);
 					//if annotation type is area set only box and position parameters	
 					} else if (annotation_type.equals("area")) {
+                        double w = Double.parseDouble(box_width);
+                        double h = Double.parseDouble(box_height);
 						//Create rectangle object
 						Rectangle box = new Rectangle();
 						//Set rectangle parameters
