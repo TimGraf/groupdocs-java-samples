@@ -60,7 +60,7 @@ public class Sample17 extends Controller {
 					//###Make a request to Storage API using clientId
 					
 					//Upload file to current user storage
-					UploadResponse response = api.Upload(credentials.client_id, filePart.getFilename(), null, new FileStream(is));
+					UploadResponse response = api.Upload(credentials.client_id, filePart.getFilename(), "uploaded", "", new FileStream(is));
 					//Check request status
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
 						//If status Ok get file Guid

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import models.Credentials;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import play.data.Form;
@@ -19,10 +20,10 @@ import scala.actors.threadpool.Arrays;
 import com.groupdocs.sdk.api.SignatureApi;
 import com.groupdocs.sdk.common.ApiException;
 import com.groupdocs.sdk.common.ApiInvoker;
-import com.groupdocs.sdk.common.MimeUtils;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
+import com.groupdocs.sdk.common.MimeUtils;
 import com.groupdocs.sdk.model.SignatureSignDocumentDocumentSettings;
-import com.groupdocs.sdk.model.SignatureSignDocumentsResponse;
+import com.groupdocs.sdk.model.SignatureSignDocumentResponse;
 import com.groupdocs.sdk.model.SignatureSignDocumentSettings;
 import com.groupdocs.sdk.model.SignatureSignDocumentSignerSettings;
 
@@ -96,7 +97,7 @@ public class Sample06 extends Controller {
 					//Sign document using current user id and sign settings
 					SignatureApi sapi = new SignatureApi();
 					sapi.setBasePath(credentials.baseurl);
-					SignatureSignDocumentsResponse response = sapi.SignDocument(credentials.client_id, requestBody);
+					SignatureSignDocumentResponse response = sapi.SignDocument(credentials.client_id, requestBody);
 					//Check request result
 					System.err.println(response.getError_message());
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){

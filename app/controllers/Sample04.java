@@ -82,7 +82,7 @@ public class Sample04 extends Controller {
                         StorageApi storageApi = new StorageApi();
                         storageApi.setBasePath(credentials.baseurl);
                         FileInputStream is = new FileInputStream(filePart.getFile());
-                        UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), null, new FileStream(is));
+                        UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), "uploaded", "", new FileStream(is));
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                             file_id = response.getResult().getGuid();
                         }

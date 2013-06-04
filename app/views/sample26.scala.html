@@ -1,0 +1,69 @@
+@(title: String, subTitle: String, userInfo: UserInfo, aForm: Form[Credentials])
+
+@import helper._
+
+@* Register customInput as field constructor for this page (customize input field) *@
+@implicitField = @{ FieldConstructor(customInput.f) }
+
+@main(title) {
+
+<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+
+<div class='samplecontent' style="padding:10px;">
+   Sample is under development. <i>This sample will show how to Login and to get GroupDocs user infromation using Java SDK</i> <br/>
+   <br />
+    <a href="/docs/sample26.html">Docs for this sample</a>
+    <br />
+   <br/>
+   @if(userInfo != null){
+   <br/> 
+   <div  style="padding:20px; border:1px solid black;">
+        <p> Results: </p>
+        <table style="border:1px double black;">
+          <tr>
+              <th>Field</th><th>Value</th>
+          </tr>
+          <tr>
+               <td>First Name</td><td>@userInfo.getFirstname</td>
+          </tr>
+          <tr>
+               <td>Last Name</td><td>@userInfo.getLastname</td>
+          </tr>
+          <tr>
+               <td>Nick Name</td><td>@userInfo.getNickname</td>
+          </tr>
+          <tr>
+               <td>Primary Email</td><td>@userInfo.getPrimary_email</td>
+          </tr>
+           <tr>
+               <td>Client ID</td><td>@userInfo.getGuid</td>
+          </tr>
+           <tr>
+               <td>Private key</td><td>@userInfo.getPkey</td>
+          </tr>
+        </table>
+   </div>
+   }
+
+   <br/>
+   <div id="requestForm" style="padding:20px; border:1px solid black;">
+		<p>Enter data for request and press "Make request" button </p>
+		@myForm(routes.Sample26.index(), 'method -> "POST") {
+			@aForm.globalErrors.map { error =>
+			  @if(error.arguments.size > 0){
+				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
+			  } else {
+				  <div>@error.message</div>
+			  }
+			}
+            @inputText(aForm("login"), '_label -> "Login", 'size -> 50)
+	        @inputText(aForm("password"), '_label -> "Password", 'size -> 50)
+	        @inputText(aForm("baseurl"), '_label -> "Base URL", 'size -> 50)
+	        <input type="submit" value="Make Request">
+        }
+   </div>
+
+</div>
+
+
+}

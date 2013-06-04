@@ -80,7 +80,7 @@ public class Sample18 extends Controller {
                         StorageApi storageApi = new StorageApi();
                         storageApi.setBasePath(credentials.baseurl);
                         FileInputStream is = new FileInputStream(filePart.getFile());
-                        UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), null, new FileStream(is));
+                        UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), "uploaded", "", new FileStream(is));
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                             fileId = response.getResult().getGuid();
                         }
@@ -104,7 +104,7 @@ public class Sample18 extends Controller {
 					api.setBasePath(credentials.baseurl);
 		
 					//###Make request to Annotation api for setting collaborator for document  
-					ConvertResponse response = api.Convert(credentials.client_id, fileId, convert_type, null, null, null, null, null);
+					ConvertResponse response = api.Convert(credentials.client_id, fileId, null, null, null, null, convert_type);
 					//Check request result
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
 						//If request status Ok get results

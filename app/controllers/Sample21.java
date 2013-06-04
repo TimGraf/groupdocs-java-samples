@@ -90,7 +90,7 @@ public class Sample21 extends Controller {
 					storage.setBasePath(basePath);
 					//###Make request to Storage Api to upload document
 					FileStream fs = new FileStream(new FileInputStream(fi_document.getFile()));
-					String documentId = storage.Upload(credentials.client_id, "samples/signature/" + fi_document.getFilename(), null, fs).getResult().getGuid();
+					String documentId = storage.Upload(credentials.client_id, "samples/signature/" + fi_document.getFilename(), "uploaded", "", fs).getResult().getGuid();
 					IOUtils.closeQuietly(fs.getInputStream());
 					//Create Signature api object
 					SignatureApi api = new SignatureApi();
@@ -99,7 +99,7 @@ public class Sample21 extends Controller {
 					//Make a requests to Signature Api to create an envelope
 					SignatureEnvelopeSettings env = new SignatureEnvelopeSettings();
 					env.setEmailSubject("Sign this!");
-					SignatureEnvelopeResponse envelopeResponse = api.CreateSignatureEnvelope(credentials.client_id, "SampleEnvelope_" + UUID.randomUUID(), env, null, null);
+					SignatureEnvelopeResponse envelopeResponse = api.CreateSignatureEnvelope(credentials.client_id, "SampleEnvelope_" + UUID.randomUUID(), null, null, null, env);
 					//Get an ID of created envelope
 					final String envelopeId = envelopeResponse.getResult().getEnvelope().getId();
 					
@@ -109,12 +109,12 @@ public class Sample21 extends Controller {
 					documentId = envelopeDocument.getResult().getDocument().getDocumentId();
 
 					//###Make a request to Signature Api to get all available roles
-					String roleId = null;
+					Integer roleId = null;
 					List<SignatureRoleInfo> roles = api.GetRolesList(credentials.client_id, null).getResult().getRoles();
 					for(SignatureRoleInfo role : roles){
 						//Get an ID of Signer role
 						if(role.getName().equalsIgnoreCase("Signer")){
-							roleId = role.getId();
+							roleId = Integer.parseInt(role.getId());
 						}
 					}
 					//###Make a request to Signature Api to add new recipient to envelope

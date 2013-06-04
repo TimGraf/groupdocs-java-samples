@@ -1,0 +1,51 @@
+@(title: String, subTitle: String, result: HashMap[String, String], aForm: Form[Credentials])
+
+@import helper._
+
+@* Register customInput as field constructor for this page (customize input field) *@
+@implicitField = @{ FieldConstructor(customInput.f) }
+
+@main(title) {
+
+<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+
+<div class='samplecontent' style="padding:10px;">
+   Sample is under development. <i>This sample will show how to merge data fields in docx file with data source and get result file as PDF file using Java SDK</i> <br/>
+   <br />
+    <a href="/docs/sample25.html">Docs for this sample</a>
+    <br />
+   <br/>
+   <div id="requestForm" style="padding:20px; border:1px solid black;">
+		<p>Enter data for request and press "Make request" button </p>
+		@myForm(routes.Sample25.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+			@aForm.globalErrors.map { error =>
+			  @if(error.arguments.size > 0){
+				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
+			  } else {
+				  <div>@error.message</div>
+			  }
+			}
+            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
+	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
+	        @inputText(aForm("baseurl"), '_label -> "Base URL", 'size -> 50)
+	        @inputFile(aForm("file"), '_label -> "File", 'required -> true)
+	        <input type="submit" value="Make Request">
+        }
+   </div>
+
+@if(result != null){
+   
+   <div  style="padding:20px; border:1px solid black;">
+        
+        <p> Results: </p>
+        <font color="green">@result.get("message")</font>
+        <iframe frameborder="0" width="800" height="650" src='@result.get("url")'></iframe>
+
+   </div>
+}
+
+
+
+</div>
+
+}
