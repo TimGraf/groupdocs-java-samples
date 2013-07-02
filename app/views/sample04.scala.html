@@ -53,7 +53,7 @@
            }
            
            @if(gdFile != null){
-            <span style="color: green;">File was downloaded to the <span style="color: blue;"> @gdFile.getFileName </span> file</span>
+            <span style="color: green;">File was downloaded to the <span style="color: blue; text-decoration: underline;"><a href="/images/@gdFile.getFileName">@gdFile.getFileName </a> </span> file</span>
            }
    </div>
 

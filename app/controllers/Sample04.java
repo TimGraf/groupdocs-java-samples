@@ -11,6 +11,10 @@ import java.io.File;
 import java.io.InputStream;
 
 
+import com.groupdocs.sdk.api.DocApi;
+import com.groupdocs.sdk.api.SharedApi;
+import com.groupdocs.sdk.model.GetDocumentInfoResponse;
+import com.groupdocs.sdk.model.GetDocumentInfoResult;
 import com.groupdocs.sdk.model.UploadRequestResult;
 import com.groupdocs.sdk.model.UploadResponse;
 import common.Utils;
@@ -94,18 +98,25 @@ public class Sample04 extends Controller {
 					if(file_id == null){
 						throw new Exception();
 					}
+
+                    //Create ApiInvoker object
+                    ApiInvoker.getInstance().setRequestSigner(
+                            new GroupDocsRequestSigner(credentials.private_key));
+
+                    DocApi docApi = new DocApi();
+                    docApi.setBasePath(credentials.baseurl);
+                    GetDocumentInfoResponse docInfoResponse = docApi.GetDocumentMetadata(credentials.client_id, file_id);
+                    GetDocumentInfoResult docInfoResult = docInfoResponse.getResult();
+                    String fileName = docInfoResult.getLast_view().getDocument().getName();
 					//###Create ApiInvoker, Storage Api objects
 					
-					//Create ApiInvoker object
-					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.private_key));
 					//Create StorageApi object
-					StorageApi api = new StorageApi();
+                    SharedApi api = new SharedApi();
 					api.setBasePath(credentials.baseurl);
 					//###Make a request to Storage API using clientId
 					
 					//Get file from storage
-					FileStream resp = api.GetFile(credentials.client_id, file_id);
+					FileStream resp = api.Download(file_id, fileName, false);
 					//Check request result
 					if(resp != null && resp.getInputStream() != null){
 						file = resp;
@@ -113,8 +124,10 @@ public class Sample04 extends Controller {
 						throw new Exception("Not Found");
 					}
 					//Check file name
+                    System.out.println("file.getFileName() = " + file.getFileName());
+                    System.out.println("fileName = " + fileName);
 					if(file.getFileName() == null){
-						file.setFileName(file_id);
+						file.setFileName(fileName);
 					}
 					//###Obtaining file stream of downloading file and definition of folder where to download file
 					String separator = System.getProperty("file.separator");
