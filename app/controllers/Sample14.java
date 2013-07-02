@@ -78,13 +78,16 @@ public class Sample14 extends Controller {
 					//###Division of a path string on the specified symbols
 					StringTokenizer path = new StringTokenizer(srcPath, "\\/");
 					//While path has tokens add them to the list object
+                    if (path.countTokens() == 0) {
+                        pathList.add("");
+                    }
 					while (path.hasMoreTokens()) {
 						
 						pathList.add(path.nextToken());
 					
 					}
 					//Get folder name from entered path
-					String folderName = pathList.get(pathList.size()-1);
+					String folderName = "";
 					String properPath = null;
 					//Remove last element of the List
 					if (pathList.size() > 1) {
