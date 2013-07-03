@@ -27,27 +27,35 @@
 			}
             @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
 	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-	        @inputText(aForm("baseurl"), '_label -> "Base URL", 'size -> 50)
+	        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
 	        <input type="submit" value="Make Request">
         }
    </div>
 
-@if(gdFiles != null){
-   <br/> 
-   <div  style="padding:20px; border:1px solid black;">
-        <p> Results: </p>
-        <table style="border:1px double black;">
-          <tr>
-              <th>File Name</th><th>File Guid</th>
-          </tr>
-@for(file <- gdFiles){
-          <tr>
-               <td>@file.getName</td><td>@file.getGuid</td>
-          </tr>
-}
-        </table>
-   </div>
-}
+    @if(gdFiles != null){
+       <br/>
+
+
+        <div style="padding:20px; border:1px solid black;">
+            <p>Results:</p>
+            <table style="border:1px double black;">
+                <tbody>
+                    <tr>
+                        <th>Field</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Files list</td>
+                        <td>
+                            @for(file <- gdFiles){
+                                @file.getName<br />
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
 
 
 }
