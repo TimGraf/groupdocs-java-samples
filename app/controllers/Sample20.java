@@ -55,7 +55,7 @@ public class Sample20 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
-				session().put("baseurl", credentials.baseurl);
+				session().put("server_type", credentials.server_type);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 				String file_id = formData.get("resultFileId") != null ? formData.get("resultFileId")[0] : null;
@@ -74,7 +74,7 @@ public class Sample20 extends Controller {
 							new GroupDocsRequestSigner(credentials.private_key));
 					//Create StorageApi object
 					ComparisonApi api = new ComparisonApi();
-					api.setBasePath(credentials.baseurl);
+					api.setBasePath(credentials.server_type);
 					
 					ChangesResponse getChanges = api.GetChanges(credentials.client_id, file_id);
 					
@@ -148,7 +148,7 @@ public class Sample20 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
-			session().put("baseurl", "https://api.groupdocs.com/v2.0");
+			session().put("server_type", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample20.render(title, sample, result, filledForm));
 		}
 		//Process template

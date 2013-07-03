@@ -43,7 +43,7 @@ public class Sample24 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
-				session().put("baseurl", credentials.baseurl);
+				session().put("server_type", credentials.server_type);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 				String fileurl = formData.get("url") != null ? formData.get("url")[0] : null;
@@ -56,7 +56,7 @@ public class Sample24 extends Controller {
 							new GroupDocsRequestSigner(credentials.private_key));
 					//Create Storage object
 					StorageApi api = new StorageApi();
-					api.setBasePath(credentials.baseurl);
+					api.setBasePath(credentials.server_type);
 					//###Make a request to Storage API using clientId
 					
 					//Upload file to current user storage
@@ -89,7 +89,7 @@ public class Sample24 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
-			session().put("baseurl", "https://api.groupdocs.com/v2.0");
+			session().put("server_type", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample24.render(title, sample, file, filledForm));
 		}
 		//Process template

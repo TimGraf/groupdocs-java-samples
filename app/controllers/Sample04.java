@@ -56,7 +56,7 @@ public class Sample04 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
-				session().put("baseurl", credentials.baseurl);
+				session().put("server_type", credentials.server_type);
                 String file_id = null;
 
                 try {
@@ -73,7 +73,7 @@ public class Sample04 extends Controller {
                         ApiInvoker.getInstance().setRequestSigner(
                                 new GroupDocsRequestSigner(credentials.private_key));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.baseurl);
+                        storageApi.setBasePath(credentials.server_type);
                         UploadResponse response = storageApi.UploadWeb(credentials.client_id, fileUrl);
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                             file_id = response.getResult().getGuid();
@@ -84,7 +84,7 @@ public class Sample04 extends Controller {
                         ApiInvoker.getInstance().setRequestSigner(
                                 new GroupDocsRequestSigner(credentials.private_key));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.baseurl);
+                        storageApi.setBasePath(credentials.server_type);
                         FileInputStream is = new FileInputStream(filePart.getFile());
                         UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), "uploaded", "", new FileStream(is));
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
@@ -104,7 +104,7 @@ public class Sample04 extends Controller {
                             new GroupDocsRequestSigner(credentials.private_key));
 
                     DocApi docApi = new DocApi();
-                    docApi.setBasePath(credentials.baseurl);
+                    docApi.setBasePath(credentials.server_type);
                     GetDocumentInfoResponse docInfoResponse = docApi.GetDocumentMetadata(credentials.client_id, file_id);
                     GetDocumentInfoResult docInfoResult = docInfoResponse.getResult();
                     String fileName = docInfoResult.getLast_view().getDocument().getName();
@@ -112,7 +112,7 @@ public class Sample04 extends Controller {
 					
 					//Create StorageApi object
                     SharedApi api = new SharedApi();
-					api.setBasePath(credentials.baseurl);
+					api.setBasePath(credentials.server_type);
 					//###Make a request to Storage API using clientId
 					
 					//Get file from storage
@@ -162,7 +162,7 @@ public class Sample04 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
-			session().put("baseurl", "https://api.groupdocs.com/v2.0");
+			session().put("server_type", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample04.render(title, sample, file, filledForm));
 		}
 		//Process template

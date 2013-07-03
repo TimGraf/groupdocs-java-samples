@@ -47,7 +47,7 @@ public class Sample14 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
-				session().put("baseurl", credentials.baseurl);
+				session().put("server_type", credentials.server_type);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 				String srcPath = formData.get("path") != null ? formData.get("path")[0] : null;
@@ -65,10 +65,10 @@ public class Sample14 extends Controller {
 							new GroupDocsRequestSigner(credentials.private_key));
 					//Create Doc Api object and get document metadata
 					DocApi metadata = new DocApi();
-					metadata.setBasePath(credentials.baseurl);
+					metadata.setBasePath(credentials.server_type);
 					//Create Storage Api object
 					StorageApi storage = new StorageApi();
-					storage.setBasePath(credentials.baseurl);
+					storage.setBasePath(credentials.server_type);
 					
 					String folderId = "";
 					//Delete gaps before and after entered path
@@ -153,7 +153,7 @@ public class Sample14 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
-			session().put("baseurl", "https://api.groupdocs.com/v2.0");
+			session().put("server_type", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample14.render(title, sample, sharer, filledForm));
 		}
 		//Process template

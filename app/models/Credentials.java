@@ -9,5 +9,5 @@ public class Credentials {
 	@Required
 	public String private_key;
 	@Required
-	public String baseurl;
+	public String server_type;
 }

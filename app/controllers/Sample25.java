@@ -60,14 +60,14 @@ public class Sample25 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
-				session().put("baseurl", credentials.baseurl);
+				session().put("server_type", credentials.server_type);
 				
 				MultipartFormData body = request().body().asMultipartFormData();
 		        FilePart filePart = body.getFile("file");
 		       
 		        //###Create ApiInvoker, Storage Api and FileInputStream objects
 				try {
-					String basePath = credentials.baseurl;
+					String basePath = credentials.server_type;
 					if (basePath.equals("")) {
 						basePath = "https://api.groupdocs.com/v2.0";
 					}
@@ -221,7 +221,7 @@ public class Sample25 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
-			session().put("baseurl", "https://api.groupdocs.com/v2.0");
+			session().put("server_type", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample25.render(title, sample, iframe, filledForm));
 		}
 		//Process template

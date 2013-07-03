@@ -68,7 +68,7 @@ public class Sample07 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
-				session().put("baseurl", credentials.baseurl);
+				session().put("server_type", credentials.server_type);
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 
@@ -87,7 +87,7 @@ public class Sample07 extends Controller {
 											credentials.private_key));
 					//Create Storage Api object
 					StorageApi api = new StorageApi();
-					api.setBasePath(credentials.baseurl);
+					api.setBasePath(credentials.server_type);
 					//###Make request to Storage
 
 		            //Geting all Entities with thumbnails from current user
@@ -149,7 +149,7 @@ public class Sample07 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
-			session().put("baseurl", "https://api.groupdocs.com/v2.0");
+			session().put("server_type", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample07.render(title, sample, thumbnail, filledForm));
 		}
 		//Process template

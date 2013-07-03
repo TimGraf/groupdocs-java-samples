@@ -49,7 +49,7 @@ public class Sample22 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
-				session().put("baseurl", credentials.baseurl);
+				session().put("server_type", credentials.server_type);
                 String fileId = null;
                 String email = null;
 
@@ -67,7 +67,7 @@ public class Sample22 extends Controller {
                         ApiInvoker.getInstance().setRequestSigner(
                                 new GroupDocsRequestSigner(credentials.private_key));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.baseurl);
+                        storageApi.setBasePath(credentials.server_type);
                         UploadResponse response = storageApi.UploadWeb(credentials.client_id, fileUrl);
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                             fileId = response.getResult().getGuid();
@@ -78,7 +78,7 @@ public class Sample22 extends Controller {
                         ApiInvoker.getInstance().setRequestSigner(
                                 new GroupDocsRequestSigner(credentials.private_key));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.baseurl);
+                        storageApi.setBasePath(credentials.server_type);
                         FileInputStream is = new FileInputStream(filePart.getFile());
                         UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), "uploaded", null, new FileStream(is));
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
@@ -92,7 +92,7 @@ public class Sample22 extends Controller {
                     String first_name = Utils.getFormValue(fieldsData, "first_name");
                     String last_name = Utils.getFormValue(fieldsData, "last_name");
                     String callback = Utils.getFormValue(fieldsData, "callbackUrl");
-                    String basePath = credentials.baseurl;
+                    String basePath = credentials.server_type;
 
 					//### Check is all parameters entered
 					if(credentials.client_id == null || credentials.private_key == null || fileId == null || email == null || first_name == null || last_name == null){
@@ -192,7 +192,7 @@ public class Sample22 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
-			session().put("baseurl", "https://api.groupdocs.com/v2.0");
+			session().put("server_type", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample22.render(title, sample, result, filledForm));
 		}
 		//Process template

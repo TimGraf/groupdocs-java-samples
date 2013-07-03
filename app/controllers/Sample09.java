@@ -59,8 +59,8 @@ public class Sample09 extends Controller {
                 Credentials credentials = filledForm.get();
                 session().put("client_id", credentials.client_id);
                 session().put("private_key", credentials.private_key);
-                session().put("baseurl", credentials.baseurl);
-                if (StringUtils.isEmpty(credentials.client_id) || StringUtils.isEmpty(credentials.private_key) || StringUtils.isEmpty(credentials.baseurl)) {
+                session().put("server_type", credentials.server_type);
+                if (StringUtils.isEmpty(credentials.client_id) || StringUtils.isEmpty(credentials.private_key) || StringUtils.isEmpty(credentials.server_type)) {
                     throw  new Exception();
                 }
                 if ("IDfileUrl".equals(fileData)) { // Upload file fron URL
@@ -68,7 +68,7 @@ public class Sample09 extends Controller {
                     ApiInvoker.getInstance().setRequestSigner(
                             new GroupDocsRequestSigner(credentials.private_key));
                     StorageApi storageApi = new StorageApi();
-                    storageApi.setBasePath(credentials.baseurl);
+                    storageApi.setBasePath(credentials.server_type);
                     UploadResponse response = storageApi.UploadWeb(credentials.client_id, fileUrl);
                     if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                         fileId = response.getResult().getGuid();
@@ -79,7 +79,7 @@ public class Sample09 extends Controller {
                     ApiInvoker.getInstance().setRequestSigner(
                             new GroupDocsRequestSigner(credentials.private_key));
                     StorageApi storageApi = new StorageApi();
-                    storageApi.setBasePath(credentials.baseurl);
+                    storageApi.setBasePath(credentials.server_type);
                     FileInputStream is = new FileInputStream(filePart.getFile());
                     UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), "uploaded", "", new FileStream(is));
                     if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){

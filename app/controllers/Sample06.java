@@ -47,7 +47,7 @@ public class Sample06 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
-				session().put("baseurl", credentials.baseurl);
+				session().put("server_type", credentials.server_type);
 				
 				MultipartFormData body = request().body().asMultipartFormData();
 				Map<String, String[]> formData = body.asFormUrlEncoded();
@@ -96,7 +96,7 @@ public class Sample06 extends Controller {
 
 					//Sign document using current user id and sign settings
 					SignatureApi sapi = new SignatureApi();
-					sapi.setBasePath(credentials.baseurl);
+					sapi.setBasePath(credentials.server_type);
 					SignatureSignDocumentResponse response = sapi.SignDocument(credentials.client_id, requestBody);
 					//Check request result
 					System.err.println(response.getError_message());
@@ -134,7 +134,7 @@ public class Sample06 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
-			session().put("baseurl", "https://api.groupdocs.com/v2.0");
+			session().put("server_type", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample06.render(title, sample, fileGuid, filledForm));
 		}
 		//Process template

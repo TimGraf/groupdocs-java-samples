@@ -45,7 +45,7 @@ public class Sample08 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
-				session().put("baseurl", credentials.baseurl);
+				session().put("server_type", credentials.server_type);
                 String fileGuid = null;
                 String pageNumber = null;
 
@@ -63,7 +63,7 @@ public class Sample08 extends Controller {
                         ApiInvoker.getInstance().setRequestSigner(
                                 new GroupDocsRequestSigner(credentials.private_key));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.baseurl);
+                        storageApi.setBasePath(credentials.server_type);
                         UploadResponse response = storageApi.UploadWeb(credentials.client_id, fileUrl);
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                             fileGuid = response.getResult().getGuid();
@@ -74,7 +74,7 @@ public class Sample08 extends Controller {
                         ApiInvoker.getInstance().setRequestSigner(
                                 new GroupDocsRequestSigner(credentials.private_key));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.baseurl);
+                        storageApi.setBasePath(credentials.server_type);
                         FileInputStream is = new FileInputStream(filePart.getFile());
                         UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), "uploaded", "", new FileStream(is));
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
@@ -96,7 +96,7 @@ public class Sample08 extends Controller {
 							new GroupDocsRequestSigner(credentials.private_key));
 					//Create DocApi object
 					DocApi api = new DocApi();
-					api.setBasePath(credentials.baseurl);
+					api.setBasePath(credentials.server_type);
 					//Get document metadata
 					GetDocumentInfoResponse response = api.GetDocumentMetadata(credentials.client_id, fileGuid);
 					//Convert pageNumber from String to Integer
@@ -131,7 +131,7 @@ public class Sample08 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
-			session().put("baseurl", "https://api.groupdocs.com/v2.0");
+			session().put("server_type", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample08.render(title, sample, thumbnailUrls, filledForm));
 		}
 		//Process template

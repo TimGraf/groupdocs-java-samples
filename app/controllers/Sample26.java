@@ -38,7 +38,7 @@ public class Sample26 extends Controller {
 			Map<String, String[]> formData = request().body().asFormUrlEncoded();
 			String login = formData.get("login") != null ? formData.get("login")[0] : null;
 			String password = formData.get("password") != null ? formData.get("password")[0] : null;
-			String basePath = formData.get("baseurl") != null ? formData.get("baseurl")[0] : null;
+			String basePath = formData.get("server_type") != null ? formData.get("server_type")[0] : null;
 			if(login.equalsIgnoreCase("") || password.equalsIgnoreCase("")){
 				status = badRequest(views.html.sample26.render(title, sample, userInfo, filledForm));
 			} else {
@@ -80,7 +80,7 @@ public class Sample26 extends Controller {
 		} else {
 			//Process template
 			filledForm = form.bind(session());
-			session().put("baseurl", "https://api.groupdocs.com/v2.0");
+			session().put("server_type", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample26.render(title, sample, userInfo, filledForm));
 		}
 		return status;

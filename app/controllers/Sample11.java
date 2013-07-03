@@ -47,7 +47,7 @@ public class Sample11 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
-				session().put("baseurl", credentials.baseurl);
+				session().put("server_type", credentials.server_type);
                 String fileId = null;
 
                 Http.MultipartFormData formData = request().body().asMultipartFormData();
@@ -76,7 +76,7 @@ public class Sample11 extends Controller {
                         ApiInvoker.getInstance().setRequestSigner(
                                 new GroupDocsRequestSigner(credentials.private_key));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.baseurl);
+                        storageApi.setBasePath(credentials.server_type);
                         UploadResponse response = storageApi.UploadWeb(credentials.client_id, fileUrl);
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                             fileId = response.getResult().getGuid();
@@ -87,7 +87,7 @@ public class Sample11 extends Controller {
                         ApiInvoker.getInstance().setRequestSigner(
                                 new GroupDocsRequestSigner(credentials.private_key));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.baseurl);
+                        storageApi.setBasePath(credentials.server_type);
                         FileInputStream is = new FileInputStream(filePart.getFile());
                         UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), "uploaded", "", new FileStream(is));
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
@@ -105,7 +105,7 @@ public class Sample11 extends Controller {
 					ApiInvoker.getInstance().setRequestSigner(
 							new GroupDocsRequestSigner(credentials.private_key));
 					AntApi ant = new AntApi();
-					ant.setBasePath(credentials.baseurl);
+					ant.setBasePath(credentials.server_type);
 					//Convert from String to Double entered parameters
 					double x = Double.parseDouble(box_x);
 					double y = Double.parseDouble(box_y);
@@ -243,7 +243,7 @@ public class Sample11 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
-			session().put("baseurl", "https://api.groupdocs.com/v2.0");
+			session().put("server_type", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample11.render(title, sample, result, filledForm));
 		}
 		//Process template

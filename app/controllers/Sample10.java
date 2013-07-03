@@ -49,7 +49,7 @@ public class Sample10 extends Controller {
 				Credentials credentials = filledForm.get();
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
-				session().put("baseurl", credentials.baseurl);
+				session().put("server_type", credentials.server_type);
                 String fileId = null;
                 String email = null;
 
@@ -67,7 +67,7 @@ public class Sample10 extends Controller {
                         ApiInvoker.getInstance().setRequestSigner(
                                 new GroupDocsRequestSigner(credentials.private_key));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.baseurl);
+                        storageApi.setBasePath(credentials.server_type);
                         UploadResponse response = storageApi.UploadWeb(credentials.client_id, fileUrl);
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                             fileId = response.getResult().getGuid();
@@ -78,7 +78,7 @@ public class Sample10 extends Controller {
                         ApiInvoker.getInstance().setRequestSigner(
                                 new GroupDocsRequestSigner(credentials.private_key));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.baseurl);
+                        storageApi.setBasePath(credentials.server_type);
                         FileInputStream is = new FileInputStream(filePart.getFile());
                         UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), "uploaded", "", new FileStream(is));
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
@@ -101,7 +101,7 @@ public class Sample10 extends Controller {
 							new GroupDocsRequestSigner(credentials.private_key));
 					//Create DocApi obect
 					DocApi api = new DocApi();
-					api.setBasePath(credentials.baseurl);
+					api.setBasePath(credentials.server_type);
 					//###Make a request to DocApi to get document metadeta for entered fileId
 					GetDocumentInfoResponse metadata = new DocApi().GetDocumentMetadata(credentials.client_id, fileId);
 					String file_Id = null;
@@ -145,7 +145,7 @@ public class Sample10 extends Controller {
 			}
 		} else {
 			filledForm = form.bind(session());
-			session().put("baseurl", "https://api.groupdocs.com/v2.0");
+			session().put("server_type", "https://api.groupdocs.com/v2.0");
 			status = ok(views.html.sample10.render(title, sample, result, filledForm));
 		}
 		//Process template
