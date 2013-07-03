@@ -3,7 +3,9 @@ package controllers;
 //Import of necessary libraries
 import java.io.FileInputStream;
 import java.util.List;
+import java.util.Map;
 
+import common.Utils;
 import models.Credentials;
 import play.data.Form;
 import play.mvc.Controller;
@@ -43,8 +45,8 @@ public class Sample03 extends Controller {
 				session().put("server_type", credentials.server_type);
 				
 				MultipartFormData body = request().body().asMultipartFormData();
-		        FilePart filePart = body.getFile("file");
-		       
+                String sourse = Utils.getFormValue(body.asFormUrlEncoded(), "sourse");
+
 		        //###Create ApiInvoker, Storage Api and FileInputStream objects
 				try {
 					//Create ApiInvoker object
@@ -53,19 +55,28 @@ public class Sample03 extends Controller {
 					//Create Storage object
 					StorageApi api = new StorageApi();
 					api.setBasePath(credentials.server_type);
-					//Create FileInputStream object 
-					FileInputStream is = new FileInputStream(filePart.getFile());
-					//###Make a request to Storage API using clientId
-					
-					////Upload file to current user storage
-					UploadResponse response = api.Upload(credentials.client_id, filePart.getFilename(), "uploaded", "", new FileStream(is));
-					UploadRequestResult fileResult;
-					//Check request result
-					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-						file = response.getResult();
-					}
-					//If request was successfull - set file variable for template
-					status = ok(views.html.sample03.render(title, sample, file, filledForm));
+
+                    UploadResponse response = null;
+                    if ("local".equals(sourse)) {
+                        FilePart filePart = body.getFile("file");
+                        //Create FileInputStream object
+                        FileInputStream is = new FileInputStream(filePart.getFile());
+                        String callbackUrl = Utils.getFormValue(body.asFormUrlEncoded(), "callbackUrl");
+                        //###Make a request to Storage API using clientId
+                        ////Upload file to current user storage
+                        response = api.Upload(credentials.client_id, filePart.getFilename(), "uploaded", callbackUrl, new FileStream(is));
+                    }
+                    else if ("url".equals(sourse)){
+                        String url = Utils.getFormValue(body.asFormUrlEncoded(), "url");
+                        response = api.UploadWeb(credentials.client_id, url);
+                    }
+                    UploadRequestResult fileResult;
+                    //Check request result
+                    if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
+                        file = response.getResult();
+                    }
+                    //If request was successfull - set file variable for template
+                    status = ok(views.html.sample03.render(title, sample, file, filledForm));
 			    //###Definition of Api errors and conclusion of the corresponding message
 				} catch (ApiException e) {
 					if(e.getCode() == 401){
@@ -77,11 +88,7 @@ public class Sample03 extends Controller {
 					status = badRequest(views.html.sample03.render(title, sample, file, filledForm));
 				//###Definition of filledForm errors and conclusion of the corresponding message
 				} catch (Exception e) {
-					if(filePart == null){
-						filledForm.reject("file", "This field is required");
-					} else {
-						filledForm.reject("file", "Something wrong with your file: " + e.getMessage());
-					}
+                    filledForm.reject("file", "Something wrong with your file: " + e.getMessage());
 					status = badRequest(views.html.sample03.render(title, sample, file, filledForm));
 				}
 			}
@@ -93,5 +100,4 @@ public class Sample03 extends Controller {
 		//Process template
 		return status;
 	}
-	
 }

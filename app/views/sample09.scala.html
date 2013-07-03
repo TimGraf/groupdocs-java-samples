@@ -14,7 +14,7 @@
    <br />
     <a href="/docs/sample09.html">Docs for this sample</a>
     <br />
-   <br/>
+   <br />
    <div id="requestForm" style="padding:20px; border:1px solid black;">
 		<p>Enter data for request and press "Make request" button </p>
 		@myForm(routes.Sample09.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
@@ -47,7 +47,7 @@
                 <div id="IDfilePart">
                     @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
                     @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-                    @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                    @inputText(aForm("baseurl"), '_label -> "Base URL", 'size -> 50)
                     @inputFile(aForm("filePart"), '_label -> "Select file", 'required -> true)
                 </div>
             </div>
