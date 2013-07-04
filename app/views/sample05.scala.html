@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, moveResult: FileMoveResult, aForm: Form[Credentials])
+@(title: String, subTitle: String, moveResult: FileMoveResult, aForm: Form[Credentials], action: String)
 
 @import helper._
 
@@ -14,15 +14,18 @@
    <br />
     <a href="/docs/sample05.html">Docs for this sample</a>
     <br />
+    @if(aForm != null){
+        <br/>
+        <p>You entered:</p>
+        <p>ClientID = @aForm.data.get("client_id")</p>
+        <p>PrivateKey = @aForm.data.get("private_key")</p>
+        <p>Base path = @aForm.data.get("server_type")</p>
+    }
    <br/>
-   @if(moveResult != null){
-       <p>file is processed successfully:</p>
-       <p> @moveResult.getDst_file.getDocument_path</p>
-   }
    <div id="requestForm" style="padding:20px; border:1px solid black;">
        <p>Enter data for request and press "Make request" button </p>
        	
-		@myForm(routes.Sample05.index(), 'method -> "POST") {
+		@myForm(routes.Sample05.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
 			@aForm.globalErrors.map { error =>
 			  @if(error.arguments.size > 0){
 				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
@@ -32,39 +35,77 @@
 			}
             @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
 	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-	        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
-	        @inputText(aForm("srcPath"), '_label -> "Source Path", 'size -> 50, 'placeholder -> "myFile.doc or myFolder/myFile.doc", 'required -> true)
-	        @inputText(aForm("destPath"), '_label -> "Destination Path", 'size -> 50, 'placeholder -> "myNewFile.doc or myFolder/myNewFile.doc", 'required -> true)
+            <div id="GuidDiv" style="margin-top: 10px">
+                <input type="radio" name="sourse" value="guid" id="GuidInput" checked />
+                <label for="GuidInput">File ID (GUID)</label>
+            </div>
+            <div id="LocalDiv">
+                <input type="radio" name="sourse" value="local" id="LocalInput" />
+                <label for="LocalInput">Upload local file</label>
+            </div>
+            <div id="UrlDiv" style="margin-bottom: 10px">
+                <input type="radio" name="sourse" value="url" id="UrlInput" />
+                <label for="UrlInput">Upload file from URL</label>
+            </div>
+
+            <div id="guidBlock" style="display: block;">
+                @inputText(aForm("srcPath"), '_label -> "GUID", 'id -> "guidfield", 'size -> 50, 'required -> true)
+            </div>
+            <div id="fileBlock" style="display: none;">
+                @inputFile(aForm("file"), '_label -> "Local File", 'id -> "filefield", 'required -> true)
+            </div>
+            <div id="urlBlock" style="display: none;">
+                @inputText(aForm("url"), '_label -> "File URL", 'id -> "urlfield", 'size -> 50, 'required -> true)
+            </div>
+            @inputText(aForm("destPath"), '_label -> "Destination folder", 'size -> 50, 'required -> true)
+            @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
 	        <input type="submit" name="copy" value="Copy" />
             <input type="submit" name="move" value="Move" />
         }
    </div>
 
-@if(moveResult != null){
-   <br/> 
-   <div  style="padding:20px; border:1px solid black;">
-        <p> Results: </p>
-        <table style="border:1px double black;">
-          <tr>
-              <th>Source File</th><th>Destination File</th>
-          </tr>
-          <tr>
-               <td>@moveResult.getSrc_file.getName</td><td>@moveResult.getDst_file.getName</td>
-          </tr>
-          <tr>
-               <td>@moveResult.getSrc_file.getDocument_path</td><td>@moveResult.getDst_file.getDocument_path</td>
-          </tr>
-          <tr>
-               <td>@moveResult.getSrc_file.getGuid</td><td>@moveResult.getDst_file.getGuid</td>
-          </tr>
-          <tr>
-               <td>@moveResult.getSrc_file.getId</td><td>@moveResult.getDst_file.getId</td>
-          </tr>
-        </table>
-   </div>
-}
+    @if(moveResult != null && action == "move"){
+        <h4><span style="color: green">File was Move'ed to the @moveResult.getDst_file.getDocument_path folder</span></h4>
+    }
+    @if(moveResult != null && action == "copy"){
+            <h4><span style="color: green">File was Copy'ed to the @moveResult.getDst_file.getDocument_path folder</span></h4>
+    }
+    <br/>
+    <script type="text/javascript" language="JavaScript">
+        (function (){
+            document.getElementById('GuidDiv').onclick = function (){
+                document.getElementById('guidBlock').style.display = 'block';
+                document.getElementById('guidfield').setAttribute('required', 'required');
 
+                document.getElementById('fileBlock').style.display = 'none';
+                document.getElementById('filefield').removeAttribute('required');
 
+                document.getElementById('urlBlock').style.display = 'none';
+                document.getElementById('urlfield').removeAttribute('required');
+            };
+            document.getElementById('LocalDiv').onclick = function (){
+                document.getElementById('fileBlock').style.display = 'block';
+                document.getElementById('filefield').setAttribute('required', 'required');
+
+                document.getElementById('guidBlock').style.display = 'none';
+                document.getElementById('guidfield').removeAttribute('required');
+
+                document.getElementById('urlBlock').style.display = 'none';
+                document.getElementById('urlfield').removeAttribute('required');
+            };
+            document.getElementById('UrlDiv').onclick = function (){
+                document.getElementById('urlBlock').style.display = 'block';
+                document.getElementById('urlfield').setAttribute('required', 'required');
+
+                document.getElementById('guidBlock').style.display = 'none';
+                document.getElementById('guidfield').removeAttribute('required');
+
+                document.getElementById('fileBlock').style.display = 'none';
+                document.getElementById('filefield').removeAttribute('required');
+            };
+            document.getElementById('GuidDiv').onclick();
+        })();
+    </script>
 </div>
 
 }
