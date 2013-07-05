@@ -28,9 +28,9 @@
 			}
             @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
 	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-	        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
 	        @inputFile(aForm("fi_document"), '_label -> "Document to sign", 'required -> true)
 	        @inputFile(aForm("fi_signature"), '_label -> "Signature image", 'required -> true)
+            @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
 	        <input type="submit" id='btnLoad' value="Make Request">
         }
    </div>

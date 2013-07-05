@@ -41,20 +41,20 @@
 	        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
             <div>
                 <div id="IDtypeChoice" class="file-choice-block">
-                <input type="radio" value="IDfileId" onclick="" id="IDfileIdRadio" name="fileData" />
+                <input type="radio" value="guid" onclick="" id="IDfileIdRadio" name="sourse" />
                     <label for="IDfileIdRadio" class="file-choice-label">File GUID</label>
-                <input type="radio" value="IDfileUrl" onclick="" id="IDfileUrlRadio" name="fileData" />
+                <input type="radio" value="url" onclick="" id="IDfileUrlRadio" name="sourse" />
                     <label for="IDfileUrlRadio" class="file-choice-label">File URL</label>
-                <input type="radio" value="IDfilePart" onclick="" id="IDfilePartRadio" name="fileData" />
+                <input type="radio" value="local" onclick="" id="IDfilePartRadio" name="sourse" />
                     <label for="IDfilePartRadio" class="file-choice-label">Local file</label>
                 </div>
-                <div id="IDfileId">
+                <div id="guid">
                 @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
                 </div>
-                <div id="IDfileUrl">
+                <div id="url">
                 @inputText(aForm("fileUrl"), '_label -> "File Url", 'size -> 50, 'required -> true)
                 </div>
-                <div id="IDfilePart">
+                <div id="local">
                 @inputFile(aForm("filePart"), '_label -> "Select file", 'required -> true)
                 </div>
             </div>
@@ -86,20 +86,20 @@
 
                         <div id="annotation-position" style="display:none;">
                             <div>
-                            	@inputText(aForm("annotationPosition.x"), '_label -> "Annotation Position X", 'placeholder -> "double")
+                            	@inputText(aForm("annotationPosition_x"), '_label -> "Annotation Position X", 'placeholder -> "double")
                             </div>
                             <div>
-                                @inputText(aForm("annotationPosition.y"), '_label -> "Annotation Position Y", 'placeholder -> "double")
+                                @inputText(aForm("annotationPosition_Y"), '_label -> "Annotation Position Y", 'placeholder -> "double")
                             </div>
                         </div>
 
 
                         <div id="text-params" style="display:none;">
                             <div>
-                            	@inputText(aForm("range.position"), '_label -> "Range Position", 'placeholder -> "double")
+                            	@inputText(aForm("range_position"), '_label -> "Range Position", 'placeholder -> "double")
                             </div>
                             <div>
-                            	@inputText(aForm("range.length"), '_label -> "Range Length", 'placeholder -> "double")
+                            	@inputText(aForm("range_length"), '_label -> "Range Length", 'placeholder -> "double")
                             </div>
                         </div>
 
@@ -120,7 +120,13 @@
 
 
 </div>
-
+    <script type="text/javascript" language="JavaScript">
+        $(function(){
+        changeType.allChk = ['guid', 'url', 'local'];
+        $('#IDfileIdRadio, #IDfileUrlRadio, #IDfilePartRadio').click(changeType);
+        $('#IDfileIdRadio').click();
+    });
+    </script>
 <script type="text/javascript">
 	function show_hide(_element_id) {
 		 

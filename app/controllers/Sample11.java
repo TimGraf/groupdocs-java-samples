@@ -58,20 +58,20 @@ public class Sample11 extends Controller {
                 String box_y = Utils.getFormValue(fieldsData, "box_y");
                 String box_width = Utils.getFormValue(fieldsData, "box_width");
                 String box_height = Utils.getFormValue(fieldsData, "box_height");
-                String annotationPosition_x = Utils.getFormValue(fieldsData, "annotationPosition.x");
-                String annotationPosition_y = Utils.getFormValue(fieldsData, "annotationPosition.y");
-                String range_position = Utils.getFormValue(fieldsData, "range.position");
-                String range_length = Utils.getFormValue(fieldsData, "range.length");
+                String annotationPosition_x = Utils.getFormValue(fieldsData, "annotationPosition_x");
+                String annotationPosition_y = Utils.getFormValue(fieldsData, "annotationPosition_Y");
+                String range_position = Utils.getFormValue(fieldsData, "range_position");
+                String range_length = Utils.getFormValue(fieldsData, "range_length");
                 String text = Utils.getFormValue(fieldsData, "text");
 
                 try {
                     /////////////////////////////////////// -- //////////////////////////////////////
 
-                    String fileData = Utils.getFormValue(fieldsData, "fileData");
-                    if ("IDfileId".equals(fileData)) { // File GUID
+                    String sourse = Utils.getFormValue(fieldsData, "sourse");
+                    if ("guid".equals(sourse)) { // File GUID
                         fileId = Utils.getFormValue(fieldsData, "fileId");
                     }
-                    else if ("IDfileUrl".equals(fileData)) { // Upload file fron URL
+                    else if ("url".equals(sourse)) { // Upload file fron URL
                         String fileUrl = Utils.getFormValue(fieldsData, "fileUrl");
                         ApiInvoker.getInstance().setRequestSigner(
                                 new GroupDocsRequestSigner(credentials.private_key));
@@ -82,7 +82,7 @@ public class Sample11 extends Controller {
                             fileId = response.getResult().getGuid();
                         }
                     }
-                    else if ("IDfilePart".equals(fileData)) { // Upload local file
+                    else if ("local".equals(sourse)) { // Upload local file
                         Http.MultipartFormData.FilePart filePart = formData.getFile("filePart");
                         ApiInvoker.getInstance().setRequestSigner(
                                 new GroupDocsRequestSigner(credentials.private_key));

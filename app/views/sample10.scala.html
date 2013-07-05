@@ -30,21 +30,21 @@
 	        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
             <div>
                 <div id="IDtypeChoice" class="file-choice-block">
-                <input type="radio" value="IDfileId" onclick="" id="IDfileIdRadio" name="fileData" />
+                <input type="radio" value="guid" onclick="" id="IDfileIdRadio" name="sourse" />
                     <label for="IDfileIdRadio" class="file-choice-label">File GUID</label>
-                <input type="radio" value="IDfileUrl" onclick="" id="IDfileUrlRadio" name="fileData" />
+                <input type="radio" value="url" onclick="" id="IDfileUrlRadio" name="sourse" />
                     <label for="IDfileUrlRadio" class="file-choice-label">File URL</label>
-                <input type="radio" value="IDfilePart" onclick="" id="IDfilePartRadio" name="fileData" />
+                <input type="radio" value="local" onclick="" id="IDfilePartRadio" name="sourse" />
                     <label for="IDfilePartRadio" class="file-choice-label">Local file</label>
                 </div>
-                <div id="IDfileId">
-                @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
+                <div id="guid">
+                @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true, 'id -> "guidfield")
                 </div>
-                <div id="IDfileUrl">
-                @inputText(aForm("fileUrl"), '_label -> "File Url", 'size -> 50, 'required -> true)
+                <div id="url">
+                @inputText(aForm("fileUrl"), '_label -> "File Url", 'size -> 50, 'required -> true, 'id -> "urlfield")
                 </div>
-                <div id="IDfilePart">
-                @inputFile(aForm("filePart"), '_label -> "Select file", 'required -> true)
+                <div id="local">
+                @inputFile(aForm("filePart"), '_label -> "Select file", 'required -> true, 'id -> "filefield")
                 </div>
             </div>
 	        @inputText(aForm("email"), '_label -> "Recipient Email", 'size -> 50, 'placeholder -> "SomeoneRegisteredInGroupdocs@mydomain.com", 'required -> true)
@@ -56,7 +56,7 @@
    <br/> 
    <div  style="padding:20px; border:1px solid black;">
        @for(user <- data.getShared_users){
-       <p><h3><font color="green">Document shared to user with e-mail <h1>@user.getPrimary_email</h1></font></h3>
+       <p><h3><span style="color: green">Document shared to user with e-mail <h1>@user.getPrimary_email</h1></span></h3>
        }
    </div>
 }
@@ -64,5 +64,11 @@
 
 
 </div>
-
+    <script type="text/javascript" language="JavaScript">
+        $(function(){
+        changeType.allChk = ['guid', 'url', 'local'];
+        $('#IDfileIdRadio, #IDfileUrlRadio, #IDfilePartRadio').click(changeType);
+        $('#IDfileIdRadio').click();
+    });
+    </script>
 }

@@ -1,16 +1,22 @@
 //###<i>This sample will show how to use <b>SetAnnotationCollaborators</b> method from Annotation Api to set collaborator for document</i>
 package controllers;
 //Import of necessary libraries
+import java.io.FileInputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 
+import com.groupdocs.sdk.api.StorageApi;
+import com.groupdocs.sdk.common.FileStream;
+import com.groupdocs.sdk.model.UploadResponse;
+import common.Utils;
 import models.Credentials;
 
 import org.apache.commons.lang3.StringUtils;
 
 import play.data.Form;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import scala.actors.threadpool.Arrays;
 
@@ -31,6 +37,9 @@ public class Sample13 extends Controller {
 		SetCollaboratorsResult result = null;
 		Form<Credentials> filledForm;
 		String sample = "Sample13";
+        String guid = null;
+        String email = null;
+        String uploadDir = "";
 		Status status;
 		//Check POST parameters
 		if(request().method().equalsIgnoreCase("POST")){
@@ -45,15 +54,14 @@ public class Sample13 extends Controller {
 				session().put("private_key", credentials.private_key);
 				session().put("server_type", credentials.server_type);
 
-				Map<String, String[]> formData = request().body().asFormUrlEncoded();
-				String fileId = formData.get("fileId") != null ? formData.get("fileId")[0] : null;
-				fileId = StringUtils.isBlank(fileId) ? null : fileId.trim();
-				String email = formData.get("email") != null ? formData.get("email")[0] : null;
-				email = StringUtils.isBlank(email) ? null : email.trim();
+//				Map<String, String[]> formData = request().body().asFormUrlEncoded();
+//				String fileId = Utils.getFormValue(formData, "fileId");
+//				String email = formData.get("email") != null ? formData.get("email")[0] : null;
+//				email = StringUtils.isBlank(email) ? null : email.trim();
 
 				try {
 					//### Check client_id, private_key, fileId and email
-					if(credentials.client_id == null || credentials.private_key == null || fileId == null || email == null){
+					if(credentials.client_id == null || credentials.private_key == null){
 						throw new Exception();
 					}
 					//###Create ApiInvoker, AntApi objects
@@ -61,6 +69,44 @@ public class Sample13 extends Controller {
 		            //Create ApiInvoker object
 					ApiInvoker.getInstance().setRequestSigner(
 							new GroupDocsRequestSigner(credentials.private_key));
+                    StorageApi api = new StorageApi();
+                    api.setBasePath(credentials.server_type);
+                    Http.MultipartFormData multipartFormData = request().body().asMultipartFormData();
+                    Map<String, String[]> formData = multipartFormData.asFormUrlEncoded();
+                    String sourse = Utils.getFormValue(formData, "sourse");
+                    email = Utils.getFormValue(formData, "email");
+                    guid = Utils.getFormValue(formData, "fileId");
+                    if ("local".equals(sourse)){
+                        Http.MultipartFormData.FilePart filePart = multipartFormData.getFile("local");
+                        FileInputStream is = new FileInputStream(filePart.getFile());
+                        UploadResponse response = api.Upload(credentials.client_id, uploadDir + filePart.getFilename(), "comment", "", new FileStream(is));
+
+                        if (response != null && "Ok".equalsIgnoreCase(response.getStatus())) {
+                            guid = response.getResult().getGuid();
+                        }
+                        else {
+                            throw new Exception(response.getError_message());
+                        }
+                    }
+                    else if ("url".equals(sourse)){
+                        String url = Utils.getFormValue(formData, "url");
+                        UploadResponse response = api.UploadWeb(credentials.client_id, url);
+
+                        if (response != null && "Ok".equalsIgnoreCase(response.getStatus())) {
+                            guid = response.getResult().getGuid();
+                        }
+                        else {
+                            throw new Exception(response.getError_message());
+                        }
+                    }
+                    if (StringUtils.isEmpty(guid) || StringUtils.isEmpty(email)){
+                        throw new Exception();
+                    }
+
+
+
+
+
 					//Create AntApi object
 					AntApi ant = new AntApi();
 					ant.setBasePath(credentials.server_type);
@@ -69,7 +115,7 @@ public class Sample13 extends Controller {
 					//Add email to the list
 					emailList.add(email);
 					//###Make request to Annotation api for setting collaborator for document  
-					SetCollaboratorsResponse response = ant.SetAnnotationCollaborators(credentials.client_id, fileId, "v2.0", emailList);
+					SetCollaboratorsResponse response = ant.SetAnnotationCollaborators(credentials.client_id, guid, "v2.0", emailList);
 					//Check request result
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
 						//If request status Ok get results
@@ -93,7 +139,7 @@ public class Sample13 extends Controller {
 				//###Definition of filledForm errors and conclusion of the corresponding message
 				} catch (Exception e) {
 					e.printStackTrace();
-					if(fileId == null){
+					if(guid == null){
 						filledForm.reject("fileId", "This field is required");
 					} else if(email == null){
 						filledForm.reject("email", "This field is required");

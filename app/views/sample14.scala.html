@@ -40,13 +40,13 @@
    </div>
    <div  style="padding:20px; border:1px solid black;">
         <p> Results: </p>
-        @if(Result != null){
+       <p>Shared users:
+       @if(Result != null){
 			@for(name <- Result){
-				<p>Shared users: <span style="color: green;">@name.getNickname</span> </p>
+				<span style="color: green;">@name.getNickname</span><br />
 			}
-		}else{
-            Empty result
-        }
+		}
+       </p>
    </div>
 </div>
 }

@@ -46,45 +46,45 @@ public class Sample12 extends Controller {
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
 				session().put("server_type", credentials.server_type);
-                String fileId = null;
+                String guid = null;
 
                 try {
                     /////////////////////////////////////// -- //////////////////////////////////////
                     Http.MultipartFormData formData = request().body().asMultipartFormData();
                     Map<String, String[]> fieldsData = formData.asFormUrlEncoded();
 
-                    String fileData = Utils.getFormValue(fieldsData, "fileData");
-                    if ("IDfileId".equals(fileData)) { // File GUID
-                        fileId = Utils.getFormValue(fieldsData, "fileId");
+                    String sourse = Utils.getFormValue(fieldsData, "sourse");
+                    if ("guid".equals(sourse)) { // File GUID
+                        guid = Utils.getFormValue(fieldsData, "fileId");
                     }
-                    else if ("IDfileUrl".equals(fileData)) { // Upload file fron URL
-                        String fileUrl = Utils.getFormValue(fieldsData, "fileUrl");
+                    else if ("url".equals(sourse)) { // Upload file fron URL
+                        String url = Utils.getFormValue(fieldsData, "url");
                         ApiInvoker.getInstance().setRequestSigner(
                                 new GroupDocsRequestSigner(credentials.private_key));
                         StorageApi storageApi = new StorageApi();
                         storageApi.setBasePath(credentials.server_type);
-                        UploadResponse response = storageApi.UploadWeb(credentials.client_id, fileUrl);
+                        UploadResponse response = storageApi.UploadWeb(credentials.client_id, url);
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-                            fileId = response.getResult().getGuid();
+                            guid = response.getResult().getGuid();
                         }
                     }
-                    else if ("IDfilePart".equals(fileData)) { // Upload local file
-                        Http.MultipartFormData.FilePart filePart = formData.getFile("filePart");
+                    else if ("local".equals(sourse)) { // Upload local file
+                        Http.MultipartFormData.FilePart local = formData.getFile("local");
                         ApiInvoker.getInstance().setRequestSigner(
                                 new GroupDocsRequestSigner(credentials.private_key));
                         StorageApi storageApi = new StorageApi();
                         storageApi.setBasePath(credentials.server_type);
-                        FileInputStream is = new FileInputStream(filePart.getFile());
-                        UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), "uploaded", "", new FileStream(is));
+                        FileInputStream is = new FileInputStream(local.getFile());
+                        UploadResponse response = storageApi.Upload(credentials.client_id, local.getFilename(), "comment", "", new FileStream(is));
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-                            fileId = response.getResult().getGuid();
+                            guid = response.getResult().getGuid();
                         }
                     }
                     /////////////////////////////////////// -- //////////////////////////////////////
                     // Sample:
 
                     //###Create ApiInvoker, Annotation API objects
-					if(credentials.client_id == null || credentials.private_key == null || fileId == null){
+					if(credentials.client_id == null || credentials.private_key == null || guid == null){
 						throw new Exception();
 					}
 					 //Create ApiInvoker object
@@ -94,7 +94,7 @@ public class Sample12 extends Controller {
 					AntApi ant = new AntApi(); 
 					ant.setBasePath(credentials.server_type);
 					//Make request to Annotation api to receive list of annotations
-					ListAnnotationsResponse response = ant.ListAnnotations(credentials.client_id, fileId);
+					ListAnnotationsResponse response = ant.ListAnnotations(credentials.client_id, guid);
 					//Check request status
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
 						//If status Ok get annotations

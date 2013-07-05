@@ -7,15 +7,15 @@
  */
 
 $(function (){
-    function changeType(event) {
-        var allChk = ['IDfileId', 'IDfileUrl', 'IDfilePart'];
-        $(allChk).each(function(index){
+    window.changeType = function (event) {
+        if (typeof  window.changeType.allChk == 'undefined'){
+            window.changeType.allChk = [];
+        }
+        $(window.changeType.allChk).each(function(index){
             $('#' + this).hide();
             $('#' + this + ' input').removeAttr('required');
         });
         $('#' + this.value).show();
         $('#' + this.value + ' input').attr('required', true);
-    }
-    $('#IDfileIdRadio, #IDfileUrlRadio, #IDfilePartRadio').click(changeType);
-    $('#IDfileIdRadio').click();
+    };
 });
