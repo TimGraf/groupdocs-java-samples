@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, gdFile: String, aForm: Form[Credentials])
+@(title: String, subTitle: String, data: HashMap[String, String], aForm: Form[Credentials])
 
 @import helper._
 
@@ -10,7 +10,7 @@
 <h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
 
 <div class='samplecontent' style="padding:10px;">
-   Sample is under development. <i>This sample will show how to upload a file into the storage and compress it into zip archive using Java SDK</i> <br/>
+   <i>This sample will show how to upload a file into the storage and compress it into zip archive using Java SDK</i> <br/>
    <br />
     <a href="/docs/sample17.html">Docs for this sample</a>
     <br />
@@ -32,21 +32,42 @@
             @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
 	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
 	        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
-	        @inputFile(aForm("file"), '_label -> "File", 'required -> true)
+            <div>
+                <div id="IDtypeChoice" class="file-choice-block">
+                <input type="radio" value="guid" onclick="" id="IDfileIdRadio" name="sourse" />
+                    <label for="IDfileIdRadio" class="file-choice-label">File GUID</label>
+                <input type="radio" value="url" onclick="" id="IDfileUrlRadio" name="sourse" />
+                    <label for="IDfileUrlRadio" class="file-choice-label">File URL</label>
+                <input type="radio" value="local" onclick="" id="IDfilePartRadio" name="sourse" />
+                    <label for="IDfilePartRadio" class="file-choice-label">Local file</label>
+                </div>
+                <div id="guid">
+                @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
+                </div>
+                <div id="url">
+                @inputText(aForm("url"), '_label -> "File Url", 'size -> 50, 'required -> true)
+                </div>
+                <div id="local">
+                @inputFile(aForm("local"), '_label -> "Select file", 'required -> true)
+                </div>
+            </div>
 	        <input type="submit" value="Make Request" />
         }
    </div>
 
-@if(gdFile != null){
+@if(data.get("gdFile") != null){
    
    <div  style="padding:20px; border:1px solid black;">
         <p>Results:</p>
-        <p>Archive created and saved successfully as <span style="color: green;">@gdFile</span></p>
+        <p>Archive created and saved successfully as <span style="color: green;">@data.get("gdFile")</span></p>
     </div>
 }
-
-
-
 </div>
-
+    <script type="text/javascript" language="JavaScript">
+        $(function(){
+        changeType.allChk = ['guid', 'url', 'local'];
+        $('#IDfileIdRadio, #IDfileUrlRadio, #IDfilePartRadio').click(changeType);
+        $('#IDfileIdRadio').click();
+    });
+    </script>
 }

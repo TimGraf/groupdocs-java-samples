@@ -50,7 +50,7 @@ public class Sample22 extends Controller {
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
 				session().put("server_type", credentials.server_type);
-                String fileId = null;
+                String guid = null;
                 String email = null;
 
                 try {
@@ -58,11 +58,11 @@ public class Sample22 extends Controller {
                     Http.MultipartFormData formData = request().body().asMultipartFormData();
                     Map<String, String[]> fieldsData = formData.asFormUrlEncoded();
 
-                    String fileData = Utils.getFormValue(fieldsData, "fileData");
-                    if ("IDfileId".equals(fileData)) { // File GUID
-                        fileId = Utils.getFormValue(fieldsData, "fileId");
+                    String sourse = Utils.getFormValue(fieldsData, "sourse");
+                    if ("guid".equals(sourse)) { // File GUID
+                        guid = Utils.getFormValue(fieldsData, "guid");
                     }
-                    else if ("IDfileUrl".equals(fileData)) { // Upload file fron URL
+                    else if ("url".equals(sourse)) { // Upload file fron URL
                         String fileUrl = Utils.getFormValue(fieldsData, "fileUrl");
                         ApiInvoker.getInstance().setRequestSigner(
                                 new GroupDocsRequestSigner(credentials.private_key));
@@ -70,19 +70,19 @@ public class Sample22 extends Controller {
                         storageApi.setBasePath(credentials.server_type);
                         UploadResponse response = storageApi.UploadWeb(credentials.client_id, fileUrl);
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-                            fileId = response.getResult().getGuid();
+                            guid = response.getResult().getGuid();
                         }
                     }
-                    else if ("IDfilePart".equals(fileData)) { // Upload local file
-                        Http.MultipartFormData.FilePart filePart = formData.getFile("filePart");
+                    else if ("local".equals(sourse)) { // Upload local file
+                        Http.MultipartFormData.FilePart file = formData.getFile("file");
                         ApiInvoker.getInstance().setRequestSigner(
                                 new GroupDocsRequestSigner(credentials.private_key));
                         StorageApi storageApi = new StorageApi();
                         storageApi.setBasePath(credentials.server_type);
-                        FileInputStream is = new FileInputStream(filePart.getFile());
-                        UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), "uploaded", null, new FileStream(is));
+                        FileInputStream is = new FileInputStream(file.getFile());
+                        UploadResponse response = storageApi.Upload(credentials.client_id, file.getFilename(), "uploaded", null, new FileStream(is));
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-                            fileId = response.getResult().getGuid();
+                            guid = response.getResult().getGuid();
                         }
                     }
                     /////////////////////////////////////// -- //////////////////////////////////////
@@ -95,7 +95,7 @@ public class Sample22 extends Controller {
                     String basePath = credentials.server_type;
 
 					//### Check is all parameters entered
-					if(credentials.client_id == null || credentials.private_key == null || fileId == null || email == null || first_name == null || last_name == null){
+					if(credentials.client_id == null || credentials.private_key == null || guid == null || email == null || first_name == null || last_name == null){
 						throw new Exception();
 					}
 					//###Create ApiInvoker, AntApi objects
@@ -140,29 +140,29 @@ public class Sample22 extends Controller {
 						//Add email to the list
 						emailList.add(email);
 						//###Make request to Annotation api for setting collaborator for document  
-						SetCollaboratorsResponse response = ant.SetAnnotationCollaborators(credentials.client_id, fileId, "v2.0", emailList);
+						SetCollaboratorsResponse response = ant.SetAnnotationCollaborators(credentials.client_id, guid, "v2.0", emailList);
 						//Make request to Annotation api to receive all collaborators for entered file id
-						GetCollaboratorsResponse getCollaborators = ant.GetAnnotationCollaborators(credentials.client_id, fileId);
-						//Set reviewers rights for new user. $newUser->result->guid - GuId of created user, $fileId - entered file id, 
+						GetCollaboratorsResponse getCollaborators = ant.GetAnnotationCollaborators(credentials.client_id, guid);
+						//Set reviewers rights for new user. $newUser->result->guid - GuId of created user, $guid - entered file id,
 		                //$getCollaborators->result->collaborators - array of collabotors in which new user will be added
-						SetReviewerRightsResponse setReviewer = ant.SetReviewerRights(newUser.getResult().getGuid(), fileId, getCollaborators.getResult().getCollaborators());
+						SetReviewerRightsResponse setReviewer = ant.SetReviewerRights(newUser.getResult().getGuid(), guid, getCollaborators.getResult().getCollaborators());
 						//Check is callback entered
 						if (callback == null) {
 							callback = "";
 						}
 						//Set callback url. CallBack work results you can see here: http://groupdocs-php-samples.herokuapp.com/callbacks/annotation_check_file
-		                SetSessionCallbackUrlResponse setCallBack = ant.SetSessionCallbackUrl(newUser.getResult().getGuid(), fileId, callback);
+		                SetSessionCallbackUrlResponse setCallBack = ant.SetSessionCallbackUrl(newUser.getResult().getGuid(), guid, callback);
 		                //###Generation of iframe URL using $pageImage->result->guid
 		                
 		                //iframe to prodaction server
 		                if (basePath.equals("https://api.groupdocs.com/v2.0")) {
-		                    result = "https://apps.groupdocs.com//document-annotation2/embed/" + fileId + "?&uid=" + newUser.getResult().getGuid() + "&download=true frameborder=0 width=720 height=600";
+		                    result = "https://apps.groupdocs.com//document-annotation2/embed/" + guid + "?&uid=" + newUser.getResult().getGuid() + "&download=true frameborder=0 width=720 height=600";
 		                //iframe to dev server
 		                } else if(basePath.equals("https://dev-api.groupdocs.com/v2.0")) {
-		                    result = "https://dev-apps.groupdocs.com//document-annotation2/embed/" + fileId + "?&uid=" + newUser.getResult().getGuid() + "&download=true frameborder=0 width=720 height=600";
+		                    result = "https://dev-apps.groupdocs.com//document-annotation2/embed/" + guid + "?&uid=" + newUser.getResult().getGuid() + "&download=true frameborder=0 width=720 height=600";
 		                //iframe to test server
 		                } else if(basePath.equals("https://stage-api.groupdocs.com/v2.0")) {
-		                    result = "https://stage-apps.groupdocs.com//document-annotation2/embed/" + fileId + "?&uid=" + newUser.getResult().getGuid() + "&download=true frameborder=0 width=720 height=600";;
+		                    result = "https://stage-apps.groupdocs.com//document-annotation2/embed/" + guid + "?&uid=" + newUser.getResult().getGuid() + "&download=true frameborder=0 width=720 height=600";;
 		                }
 		               
 		            }
@@ -180,12 +180,12 @@ public class Sample22 extends Controller {
 				//###Definition of filledForm errors and conclusion of the corresponding message
 				} catch (Exception e) {
 					e.printStackTrace();
-					if(fileId == null){
-						filledForm.reject("fileId", "This field is required");
+					if(guid == null){
+						filledForm.reject("guid", "This field is required");
 					} else if(email == null){
 						filledForm.reject("email", "This field is required");
 					} else {
-						filledForm.reject("fileId", "Something wrong with your file: " + e.getMessage());
+						filledForm.reject("guid", "Something wrong with your file: " + e.getMessage());
 					}
 					status = badRequest(views.html.sample22.render(title, sample, result, filledForm));
 				} 

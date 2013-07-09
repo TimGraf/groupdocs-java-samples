@@ -10,7 +10,7 @@
 <h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
 
 <div class='samplecontent' style="padding:10px;">
-   Sample is under development. <i>This sample will show how to use Signature Api to Create and Send Envelope for signing using Java SDK</i> <br/>
+   <i>This sample will show how to use Signature Api to Create and Send Envelope for signing using Java SDK</i> <br/>
    <br />
     <a href="/docs/sample21.html">Docs for this sample</a>
     <br />
@@ -31,24 +31,41 @@
 	        @inputText(aForm("email"), '_label -> "Recipient Email", 'size -> 50, 'required -> true)
 	        @inputText(aForm("name"), '_label -> "First Name", 'size -> 50, 'required -> true)
 	        @inputText(aForm("lastName"), '_label -> "Last Name", 'size -> 50, 'required -> true)
-	        @inputFile(aForm("file"), '_label -> "Document to sign", 'required -> true)
+            <div>
+                <div id="IDtypeChoice" class="file-choice-block">
+                <input type="radio" value="guid" onclick="" id="IDfileIdRadio" name="sourse" />
+                    <label for="IDfileIdRadio" class="file-choice-label">File GUID</label>
+                <input type="radio" value="url" onclick="" id="IDfileUrlRadio" name="sourse" />
+                    <label for="IDfileUrlRadio" class="file-choice-label">File URL</label>
+                <input type="radio" value="local" onclick="" id="IDfilePartRadio" name="sourse" />
+                    <label for="IDfilePartRadio" class="file-choice-label">Local file</label>
+                </div>
+                <div id="guid">
+                @inputText(aForm("fileId"), '_label -> "Document to sign", 'size -> 50, 'required -> true, 'id -> "guidfield")
+                </div>
+                <div id="url">
+                @inputText(aForm("url"), '_label -> "File Url", 'size -> 50, 'required -> true, 'id -> "urlfield")
+                </div>
+                <div id="local">
+                @inputFile(aForm("file"), '_label -> "Select file", 'required -> true, 'id -> "filefield")
+                </div>
+            </div>
 	        @inputText(aForm("callbackUrl"), '_label -> "Callback URL", 'size -> 50)
-	        <br />
+            <div style="color: #808080; font-size: 10px">
+                For test Callback you can use this URL: http://groupdocs-java-samples.herokuapp.com/callbacks/signature_callback
+            </div>
+            <br />
 	        <input type="submit" id='btnLoad' value="Make Request">
         }
    </div>
 
 @if(embedUrl != null){
-   <br/> 
-   <div  style="padding:20px; border:1px solid black;">
-        <p> Results: <span id="results_status" style="color:red;"> (Please sign the envelope below) </span></p>
+    <div id="result" style="padding:20px; border:1px solid black;">
+        <p>Results:</p>
+        <p></p>
         <iframe id="viewer" src="@embedUrl" frameborder="0" width="720" height="600"></iframe>
-  </div>
-  
+    </div>
 }
-
-
-
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
@@ -66,5 +83,12 @@
 	}
 	$(document).ready(checkCallbackStatus);
 	
+</script>
+<script type="text/javascript" language="JavaScript">
+    $(function(){
+    changeType.allChk = ['guid', 'url', 'local'];
+    $('#IDfileIdRadio, #IDfileUrlRadio, #IDfilePartRadio').click(changeType);
+    $('#IDfileIdRadio').click();
+    });
 </script>
 }

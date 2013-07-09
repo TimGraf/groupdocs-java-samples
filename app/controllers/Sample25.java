@@ -7,14 +7,18 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import common.Utils;
 import org.apache.commons.io.IOUtils;
 
 import net.sf.ehcache.search.aggregator.Count;
 
 import models.Credentials;
+import org.apache.commons.lang3.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
@@ -88,18 +92,45 @@ public class Sample25 extends Controller {
 					docApi.setBasePath(basePath);
 					asyncApi.setBasePath(basePath);
 					mergeApi.setBasePath(basePath);
-					//Create FileInputStream object 
-					FileInputStream is = new FileInputStream(filePart.getFile());
-					//###Make a request to Storage API using clientId
-					
-					////Upload file to current user storage
-					UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), "uploaded", null, new FileStream(is));
-					UploadRequestResult fileResult;
-					//Check request result
-					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-						file = response.getResult();
+					//Create FileInputStream object
+
+                    Http.MultipartFormData multipartFormData = request().body().asMultipartFormData();
+                    Map<String, String[]> formUrlEncodedData = multipartFormData.asFormUrlEncoded();
+                    String sourse = Utils.getFormValue(formUrlEncodedData, "sourse");
+                    if ("guid".equalsIgnoreCase(sourse)){
+                        guid = Utils.getFormValue(formUrlEncodedData, "fileId");
+                    }
+                    else if ("url".equalsIgnoreCase(sourse)) {
+                        try {
+                            String url = Utils.getFormValue(formUrlEncodedData, "url");
+                            guid = Utils.getGuidByUrl(credentials.client_id, credentials.private_key, credentials.server_type, url);
+                        }
+                        catch (Exception e) {
+                            filledForm.reject(e.getMessage());
+                            e.printStackTrace();
+                            return ok(views.html.sample25.render(title, sample, iframe, filledForm));
+                        }
+                    }
+                    else if ("local".equalsIgnoreCase(sourse)) {
+                        try {
+                            Http.MultipartFormData.FilePart local = multipartFormData.getFile("file");
+                            guid = Utils.getGuidByFile(credentials.client_id, credentials.private_key, credentials.server_type, local.getFilename(), new FileStream(new FileInputStream(local.getFile())));
+                        }
+                        catch (Exception e) {
+                            filledForm.reject(e.getMessage());
+                            e.printStackTrace();
+                            return ok(views.html.sample25.render(title, sample, iframe, filledForm));
+                        }
+                    }
+                    if (StringUtils.isEmpty(guid)) {
+                        filledForm.reject("GUID is empty or null!");
+                        return ok(views.html.sample25.render(title, sample, iframe, filledForm));
+                    }
+
+
+
 						//Get all fields from template
-						TemplateFieldsResponse fields = docApi.GetTemplateFields(credentials.client_id, file.getGuid(), false);
+						TemplateFieldsResponse fields = docApi.GetTemplateFields(credentials.client_id, guid, false);
 						if (fields != null && fields.getStatus().trim().equalsIgnoreCase("Ok")) {
 							//Create DataSource object
 							Datasource dataSource = new Datasource();
@@ -122,9 +153,12 @@ public class Sample25 extends Controller {
 							dataSource.setFields(list);
 							//Add DataSource to the GroupDocs
 							AddDatasourceResponse addDataSource = mergeApi.AddDataSource(credentials.client_id, dataSource);
+
+
+
 							if (addDataSource.getStatus().trim().equalsIgnoreCase("Ok")) {
 								//Merge DataSource and convert to the pdf
-								MergeTemplateResponse merge = mergeApi.MergeDatasource(credentials.client_id, file.getGuid(), Double.toString(addDataSource.getResult().getDatasource_id()), "pdf", "");
+								MergeTemplateResponse merge = mergeApi.MergeDatasource(credentials.client_id, guid, Double.toString(addDataSource.getResult().getDatasource_id()), "pdf", "");
 								if (merge.getStatus().trim().equalsIgnoreCase("Ok")) {
 									Thread.sleep(2000);
 									//Check job status
@@ -194,10 +228,7 @@ public class Sample25 extends Controller {
 						} else {
 							throw new Exception(fields.getError_message());
 						}
-						
-					} else {
-						throw new Exception(response.getError_message());
-					}
+
 					//If request was successfull - set file variable for template
 					status = ok(views.html.sample25.render(title, sample, iframe, filledForm));
 			    //###Definition of Api errors and conclusion of the corresponding message

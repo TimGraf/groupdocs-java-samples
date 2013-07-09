@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import common.Utils;
 import models.Credentials;
 
 import org.apache.commons.io.IOUtils;
@@ -17,6 +18,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
@@ -52,6 +54,7 @@ public class Sample21 extends Controller {
 	public static Result index() {
 		String embedUrl = null;
 		Form<Credentials> filledForm;
+        HashMap<String, String> data = new HashMap<String, String>();
 		String sample = "Sample21";
 		Status status;
 		//Check POST parameters
@@ -65,33 +68,65 @@ public class Sample21 extends Controller {
 				session().put("client_id", credentials.client_id);
 				session().put("private_key", credentials.private_key);
 				session().put("server_type", credentials.server_type);
-				
-				MultipartFormData body = request().body().asMultipartFormData();
-				Map<String, String[]> formData = body.asFormUrlEncoded();
-				String email = formData.get("email") != null ? formData.get("email")[0] : null;
-				String firstName = formData.get("name") != null ? formData.get("name")[0] : null;
-				String lastName = formData.get("lastName") != null ? formData.get("lastName")[0] : null;
-		        FilePart fi_document = body.getFile("file");
-		        String callback = formData.get("callbackUrl") != null ? formData.get("callbackUrl")[0] : null;
-				callback = StringUtils.isBlank(callback) ? null : callback.trim();
+
+                Http.MultipartFormData multipartFormData = request().body().asMultipartFormData();
+                Map<String, String[]> formUrlEncodedData = multipartFormData.asFormUrlEncoded();
+
+                String sourse = Utils.getFormValue(formUrlEncodedData, "sourse");
+				String email = Utils.getFormValue(formUrlEncodedData, "email");
+				String firstName = Utils.getFormValue(formUrlEncodedData, "name");
+				String lastName = Utils.getFormValue(formUrlEncodedData, "lastName");
+		        String callback = Utils.getFormValue(formUrlEncodedData, "callbackUrl");
 				String basePath = credentials.server_type;
+                FilePart filePart = multipartFormData.getFile("file");
 		        
 				try {
 					//Check if all form fields are filled in
-					if(fi_document == null || email == null || firstName == null || lastName == null){
-						throw new Exception();
+					if(email == null || firstName == null || lastName == null){
+						throw new Exception("email or firstName or lastName is null!");
 					}
-					//Create ApiInvoker using given private_key
-					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.private_key));
-					//Create Storage Api object
-					StorageApi storage = new StorageApi();
-					//Choose server to use
-					storage.setBasePath(basePath);
-					//###Make request to Storage Api to upload document
-					FileStream fs = new FileStream(new FileInputStream(fi_document.getFile()));
-					String documentId = storage.Upload(credentials.client_id, "samples/signature/" + fi_document.getFilename(), "uploaded", "", fs).getResult().getGuid();
-					IOUtils.closeQuietly(fs.getInputStream());
+                    String documentId = null;
+
+
+                    if ("guid".equalsIgnoreCase(sourse)) {
+                        documentId = Utils.getFormValue(formUrlEncodedData, "fileId");
+                    } else if ("url".equalsIgnoreCase(sourse)) {
+                        try {
+                            String url = Utils.getFormValue(formUrlEncodedData, "url");
+                            documentId = Utils.getGuidByUrl(credentials.client_id, credentials.private_key, credentials.server_type, url);
+                        } catch (Exception e) {
+                            filledForm.reject(e.getMessage());
+                            e.printStackTrace();
+                            return ok(views.html.sample21.render(title, sample, embedUrl, filledForm));
+                        }
+                    } else if ("local".equalsIgnoreCase(sourse)) {
+                        try {
+                            documentId = Utils.getGuidByFile(credentials.client_id, credentials.private_key, credentials.server_type, "samples/signature/" + filePart.getFilename(), new FileStream(new FileInputStream(filePart.getFile())));
+                        } catch (Exception e) {
+                            filledForm.reject(e.getMessage());
+                            e.printStackTrace();
+                            return ok(views.html.sample21.render(title, sample, embedUrl, filledForm));
+                        }
+                    }
+                    if (StringUtils.isEmpty(documentId)) {
+                        filledForm.reject("GUID is empty or null!");
+                        return ok(views.html.sample21.render(title, sample, embedUrl, filledForm));
+                    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 					//Create Signature api object
 					SignatureApi api = new SignatureApi();
 					//Choose Server to use
@@ -105,20 +140,21 @@ public class Sample21 extends Controller {
 					
 					//###Make a request to Signature Api to add document to envelope
 					SignatureEnvelopeDocumentResponse envelopeDocument = api.AddSignatureEnvelopeDocument(credentials.client_id, envelopeId, documentId, null);
+                    envelopeResponse = Utils.assertResponse(envelopeResponse);
 					//Update document ID after it's added to envelope
 					documentId = envelopeDocument.getResult().getDocument().getDocumentId();
 
 					//###Make a request to Signature Api to get all available roles
-					Integer roleId = null;
+					String roleGuid = null;
 					List<SignatureRoleInfo> roles = api.GetRolesList(credentials.client_id, null).getResult().getRoles();
 					for(SignatureRoleInfo role : roles){
 						//Get an ID of Signer role
 						if(role.getName().equalsIgnoreCase("Signer")){
-							roleId = Integer.parseInt(role.getId());
+                            roleGuid = role.getId();break;
 						}
 					}
 					//###Make a request to Signature Api to add new recipient to envelope
-					String recipientId = api.AddSignatureEnvelopeRecipient(credentials.client_id, envelopeId, email, firstName, lastName, null, roleId).getResult().getRecipient().getId();
+					String recipientId = api.AddSignatureEnvelopeRecipient(credentials.client_id, envelopeId, email, firstName, lastName, roleGuid, null).getResult().getRecipient().getId();
 					
 					//###Make a request to Signature Api to get all available fields
 					String fieldId = null;
@@ -126,7 +162,7 @@ public class Sample21 extends Controller {
 					for(SignatureFieldInfo field : fields){
 						//Get an ID of single line field
 						if(field.getFieldType() == 2){ // single line, see http://scotland.groupdocs.com/wiki/display/SDS/field.type
-							fieldId = field.getId();
+							fieldId = field.getId();break;
 						}
 					}
 					//Create new field called City
@@ -143,7 +179,7 @@ public class Sample21 extends Controller {
 					for(SignatureFieldInfo field : fields){
 						//Get an ID of signature field
 						if(field.getFieldType() == 1){ // signature, see http://scotland.groupdocs.com/wiki/display/SDS/field.type
-							fieldId = field.getId();
+							fieldId = field.getId();break;
 						}
 					}
 					envField.setLocationX(0.3);
@@ -187,9 +223,9 @@ public class Sample21 extends Controller {
 					status = badRequest(views.html.sample21.render(title, sample, embedUrl, filledForm));
 				//###Definition of filledForm errors and conclusion of the corresponding message	
 				} catch (Exception e) {
-					if(fi_document == null){
+					if(filePart == null){
 
-						if(fi_document == null){
+						if(filePart == null){
 							filledForm.reject("fi_document", "This field is required");
 						}
 					} else {

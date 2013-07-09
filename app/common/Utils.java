@@ -1,10 +1,13 @@
 package common;
 
+import com.groupdocs.sdk.api.DocApi;
 import com.groupdocs.sdk.api.StorageApi;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
+import com.groupdocs.sdk.model.GetDocumentInfoResponse;
 import com.groupdocs.sdk.model.UploadResponse;
+import com.groupdocs.sdk.model.ViewDocumentResponse;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
@@ -56,8 +59,8 @@ public abstract class Utils {
      * @return
      * @throws Exception
      */
-    public static String getGuidByFile(String cid, String pkey, String bpath, FileStream fileStream) throws Exception{
-        return getGuidByFile(cid, pkey, bpath, fileStream, "", "");
+    public static String getGuidByFile(String cid, String pkey, String bpath, String pathWithName, FileStream fileStream) throws Exception{
+        return getGuidByFile(cid, pkey, bpath, fileStream, pathWithName, "");
     }
 
     /**
@@ -85,5 +88,62 @@ public abstract class Utils {
             throw new Exception(response.getError_message());
         }
         return guid;
+    }
+
+    /**
+     * Load document info by guid and return file name
+     * @param cid
+     * @param pkey
+     * @param bpath
+     * @param guid
+     * @return
+     * @throws Exception
+     */
+    public static String getFileNameByGuid(String cid, String pkey, String bpath, String guid) throws Exception{
+        ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(pkey));
+        DocApi docApi = new DocApi();
+        docApi.setBasePath(bpath);
+        GetDocumentInfoResponse documentInfoResponse = docApi.GetDocumentMetadata(cid, guid);
+        if (documentInfoResponse == null || !"Ok".equalsIgnoreCase(documentInfoResponse.getStatus())){
+            throw new Exception(documentInfoResponse.getError_message());
+        }
+        return  documentInfoResponse.getResult().getLast_view().getDocument().getName();
+    }
+
+    /**
+     * Load document metadata by guid and return file ID
+     * @param cid
+     * @param pkey
+     * @param bpath
+     * @param guid
+     * @return
+     * @throws Exception
+     */
+    public static Double getFileIdByGuid(String cid, String pkey, String bpath, String guid) throws Exception{
+        ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(pkey));
+        DocApi docApi = new DocApi();
+        docApi.setBasePath(bpath);
+        ViewDocumentResponse viewDocumentResponse = docApi.ViewDocument(cid, guid, null, null, null, null, null);
+        if (viewDocumentResponse == null || !"Ok".equalsIgnoreCase(viewDocumentResponse.getStatus())){
+            throw new Exception(viewDocumentResponse.getError_message());
+        }
+        return  viewDocumentResponse.getResult().getId();
+    }
+
+    /**
+     *
+     * @param r
+     * @param <R>
+     * @return
+     * @throws Exception
+     */
+    public static <R> R assertResponse(R r) throws Exception{
+        if (r == null) {
+            throw new Exception("response is null!");
+        }
+        if (!"Ok".equalsIgnoreCase((String)r.getClass().getDeclaredMethod("getStatus").invoke(r))) {
+            throw new Exception((String)r.getClass().getDeclaredMethod("getError_message").invoke(r));
+        }
+        return r;
     }
 }

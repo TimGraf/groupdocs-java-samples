@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, iframe: String, aForm: Form[Credentials])
+@(title: String, subTitle: String, data: HashMap[String, String], aForm: Form[Credentials])
 
 @import helper._
 
@@ -10,14 +10,14 @@
 <h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
 
 <div class='samplecontent' style="padding:10px;">
-   Sample is under development. <i>This sample will show how to Compare documents using JAVA SDK</i> <br/>
+   <i>This sample will show how to Compare documents using JAVA SDK</i> <br/>
    <br />
     <a href="/docs/sample19.html">Docs for this sample</a>
     <br />
    <br/>
    <div id="requestForm" style="padding:20px; border:1px solid black;">
 		<p>Enter data for request and press "Make request" button </p>
-		@myForm(routes.Sample19.index(), 'method -> "POST") {
+		@myForm(routes.Sample19.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
 			@aForm.globalErrors.map { error =>
 			  @if(error.arguments.size > 0){
 				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
@@ -28,19 +28,77 @@
             @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
 	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
 	        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
-	        @inputText(aForm("sourceFileId"), '_label -> "Source file GUID", 'size -> 50, 'required -> true)
-	        @inputText(aForm("targetFileId"), '_label -> "Target file GUID", 'size -> 50, 'required -> true)
+	        <div style="background-color: #ccffcc; margin: 10px 0px; padding: 5px;">
+                <div style="font-size: 14px;">Source File:</div>
+                <div id="IDtypeChoice" class="file-choice-block">
+                <input type="radio" value="guid" onclick="" id="IDfileIdRadio" name="sourse" />
+                    <label for="IDfileIdRadio" class="file-choice-label">File GUID</label>
+                <input type="radio" value="url" onclick="" id="IDfileUrlRadio" name="sourse" />
+                    <label for="IDfileUrlRadio" class="file-choice-label">File URL</label>
+                <input type="radio" value="local" onclick="" id="IDfilePartRadio" name="sourse" />
+                    <label for="IDfilePartRadio" class="file-choice-label">Local file</label>
+                </div>
+                <div id="guid">
+                @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
+                </div>
+                <div id="url">
+                @inputText(aForm("url"), '_label -> "File Url", 'size -> 50, 'required -> true)
+                </div>
+                <div id="local">
+                @inputFile(aForm("local"), '_label -> "Select file", 'required -> true)
+                </div>
+                <script type="text/javascript" language="JavaScript">
+                    $(function(){
+                        changeType.allChk = ['guid', 'url', 'local'];
+                        $('#IDfileIdRadio, #IDfileUrlRadio, #IDfilePartRadio').click(changeType);
+                        $('#IDfileIdRadio').click();
+                    });
+                </script>
+            </div>
+            <div style="background-color: #ffcccc; margin: 10px 0px; padding: 5px;">
+                <div style="font-size: 14px;">Target File:</div>
+                <div id="IDtypeChoiceTarget" class="file-choice-block">
+                    <input type="radio" value="guid" onchange="targetChanged(this.value);" id="IDfileIdRadioTarget" name="target" />
+                    <label for="IDfileIdRadioTarget" class="file-choice-label">File GUID</label>
+                    <input type="radio" value="target_url" onchange="targetChanged(this.value);" id="IDfileUrlRadioTarget" name="target" />
+                    <label for="IDfileUrlRadioTarget" class="file-choice-label">File URL</label>
+                    <input type="radio" value="local" onchange="targetChanged(this.value);" id="IDfilePartRadioTarget" name="target" />
+                    <label for="IDfilePartRadioTarget" class="file-choice-label">Local file</label>
+                </div>
+                <div id="guidTarget">
+                @inputText(aForm("target_fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
+                </div>
+                <div id="target_urlTarget">
+                @inputText(aForm("target_url"), '_label -> "File Url", 'size -> 50, 'required -> true)
+                </div>
+                <div id="localTarget">
+                @inputFile(aForm("target_local"), '_label -> "Select file", 'required -> true)
+                </div>
+                <script type="text/javascript" language="JavaScript">
+                    function targetChanged(id){
+                        $.each(['guidTarget', 'target_urlTarget', 'localTarget'], function (index){
+                            $('#' + this).hide();
+                            $('#' + this + ' input').removeAttr('required');
+                        });
+                        $('#' + id + 'Target').show();
+                        $('#' + id + 'Target input').attr('required', true);
+                    }
+                    $('#IDfileIdRadioTarget').click();
+                </script>
+            </div>
 	        @inputText(aForm("callbackUrl"), '_label -> "Callback URL", 'size -> 50)
+            <div style="color: #808080; font-size: 10px">
+                For test Callback you can use this URL: http://groupdocs-java-samples.herokuapp.com/callbacks/compare_callback
+            </div>
 	        <br />
 	        <input type="submit" value="Make Request" />
-                        
        }
- @if(iframe != null){
-   <div  style="padding:20px; border:1px solid black;">
-        <p> Results: </p>
-        	 <iframe src="@iframe"></iframe>
-   </div>
- }
+     @if(data.get("guid") != null){
+       <div  style="padding:20px; border:1px solid black;">
+            <p> Results: </p>
+                 <iframe src="@data.get("server")/document-comparison/embed/@data.get("compareKey")/@data.get("guid")" width="875" height="800"></iframe>
+       </div>
+     }
    </div>
 </div>
 }

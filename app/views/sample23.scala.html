@@ -10,7 +10,7 @@
 <h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
 
 <div class='samplecontent' style="padding:10px;">
-   Sample is under development. <i>This sample will show how to to View Document pages as images using Java SDK</i> <br/>
+   <i>This sample will show how to to View Document pages as images using Java SDK</i> <br/>
    <br />
     <a href="/docs/sample23.html">Docs for this sample</a>
     <br />
@@ -34,21 +34,21 @@
 	        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
             <div>
                 <div id="IDtypeChoice" class="file-choice-block">
-                <input type="radio" value="IDfileId" onclick="" id="IDfileIdRadio" name="fileData" />
+                <input type="radio" value="guid" onclick="" id="IDfileIdRadio" name="sourse" />
                     <label for="IDfileIdRadio" class="file-choice-label">File GUID</label>
-                <input type="radio" value="IDfileUrl" onclick="" id="IDfileUrlRadio" name="fileData" />
+                <input type="radio" value="url" onclick="" id="IDfileUrlRadio" name="sourse" />
                     <label for="IDfileUrlRadio" class="file-choice-label">File URL</label>
-                <input type="radio" value="IDfilePart" onclick="" id="IDfilePartRadio" name="fileData" />
+                <input type="radio" value="local" onclick="" id="IDfilePartRadio" name="sourse" />
                     <label for="IDfilePartRadio" class="file-choice-label">Local file</label>
                 </div>
-                <div id="IDfileId">
+                <div id="guid">
                 @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
                 </div>
-                <div id="IDfileUrl">
-                @inputText(aForm("fileUrl"), '_label -> "File Url", 'size -> 50, 'required -> true)
+                <div id="url">
+                @inputText(aForm("url"), '_label -> "File Url", 'size -> 50, 'required -> true)
                 </div>
-                <div id="IDfilePart">
-                @inputFile(aForm("filePart"), '_label -> "Select file", 'required -> true)
+                <div id="local">
+                @inputFile(aForm("file"), '_label -> "Select file", 'required -> true)
                 </div>
             </div>
 	        <br />
@@ -59,15 +59,15 @@
 @if(url != null){
    <br/> 
    <div  style="padding:20px; border:1px solid black;">
-        Result: 
-        <br />
-        <iframe src="@url"></iframe>
+        <iframe src="@url" width="875" height="800"></iframe>
    </div>
-   
 }
-
-
-
 </div>
-
+    <script type="text/javascript" language="JavaScript">
+        $(function(){
+            changeType.allChk = ['guid', 'url', 'local'];
+            $('#IDfileIdRadio, #IDfileUrlRadio, #IDfilePartRadio').click(changeType);
+            $('#IDfileIdRadio').click();
+        });
+    </script>
 }

@@ -10,7 +10,7 @@
 <h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
 
 <div class='samplecontent' style="padding:10px;">
-   Sample is under development. <i>This sample will show how to use StorageApi to upload file from URL to GroupDocs account using Java SDK</i> <br/>
+   <i>This sample will show how to use StorageApi to upload file from URL to GroupDocs account using Java SDK</i> <br/>
    <br />
     <a href="/docs/sample24.html">Docs for this sample</a>
     <br />
@@ -32,21 +32,12 @@
 	        <input type="submit" value="Make Request">
         }
    </div>
-
-@if(gdFile != null){
-   
-   <div  style="padding:20px; border:1px solid black;">
-        
-        <p> Results: </p>
-        <span style="color: green;">File uploaded successful: </span>
-        <br />
-        <iframe src="https://apps.groupdocs.com/document-viewer/Embed/@gdFile.getGuid" frameborder="0" width="720" height="600"></iframe>
-
-   </div>
-}
-
-
-
+    @if(gdFile != null){
+        <div  style="padding:20px; border:1px solid black;">
+            <p>Results:</p>
+            <p>File was uploaded to GroupDocs. Here you can see your file in the GroupDocs Embedded Viewer.</p>
+            <iframe src="https://apps.groupdocs.com/document-viewer/Embed/@gdFile.getGuid" frameborder="0" width="875" height="800"></iframe>
+        </div>
+    }
 </div>
-
 }
