@@ -31,7 +31,7 @@ import com.groupdocs.sdk.api.AsyncApi;
 import com.groupdocs.sdk.api.StorageApi;
 
 public class Sample18 extends Controller {
-    public static String USER_INFO_FILE = "UserInfo.tmp";
+    public static String USER_INFO_FILE = "UserInfo_sample18.tmp";
     static String title = "GroupDocs Java SDK Samples";
     static String sample = "Sample18";
     static Form<Credentials> form = form(Credentials.class);

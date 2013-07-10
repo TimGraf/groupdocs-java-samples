@@ -35,6 +35,7 @@ import com.groupdocs.sdk.api.AsyncApi;
 import com.groupdocs.sdk.model.GetJobDocumentsResponse;
 
 public class Sample19 extends Controller {
+    public static String USER_INFO_FILE = "UserInfo_sample19.tmp";
     static String title = "GroupDocs Java SDK Samples";
     static String sample = "Sample19";
     static Form<Credentials> form = form(Credentials.class);
