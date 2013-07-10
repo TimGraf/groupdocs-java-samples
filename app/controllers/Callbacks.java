@@ -70,6 +70,7 @@ public class Callbacks extends Controller {
             if (new File(outDir + "/" + resultName).exists()) {
                 new File(outDir + "/" + resultName).delete();
             }
+            new File(outDir + "/" + resultName).createNewFile();
             FileOutputStream fileOutputStream = new FileOutputStream(outDir + "/" + resultName);
             StreamUtils.copy(fileStream.getInputStream(), fileOutputStream);
             fileOutputStream.close();
@@ -117,6 +118,7 @@ public class Callbacks extends Controller {
             if (new File(outDir + "/" + resultName).exists()) {
                 new File(outDir + "/" + resultName).delete();
             }
+            new File(outDir + "/" + resultName).createNewFile();
             FileOutputStream fileOutputStream = new FileOutputStream(outDir + "/" + resultName);
             StreamUtils.copy(fileStream.getInputStream(), fileOutputStream);
             fileOutputStream.close();
@@ -167,6 +169,7 @@ public class Callbacks extends Controller {
             if (new File(outDir + "/" + resultName).exists()) {
                 new File(outDir + "/" + resultName).delete();
             }
+            new File(outDir + "/" + resultName).createNewFile();
             FileOutputStream fileOutputStream = new FileOutputStream(outDir + "/" + resultName);
             StreamUtils.copy(fileStream.getInputStream(), fileOutputStream);
             fileOutputStream.close();
