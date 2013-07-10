@@ -62,5 +62,8 @@ PUT 	/dummyCallbackHandler 		controllers.DummyCallbackHandler.index()
 GET 	/checkCallbackStatus 		controllers.Sample21.checkCallbackStatus()
 GET 	/downloadEnvelope 			controllers.Sample21.downloadEnvelope()
 
+GET     /callbacks/convert_callback controllers.Callbacks.convert_callback()
+POST    /callbacks/convert_callback controllers.Callbacks.convert_callback()
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /*file               controllers.Assets.at(path="/public", file)

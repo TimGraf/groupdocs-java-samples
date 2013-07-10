@@ -1,7 +1,11 @@
 //###<i>This sample will show how to use <b>SetAnnotationCollaborators</b> method from Annotation Api to set collaborator for document</i>
 package controllers;
 //Import of necessary libraries
+
+import java.io.DataOutputStream;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +31,7 @@ import com.groupdocs.sdk.api.AsyncApi;
 import com.groupdocs.sdk.api.StorageApi;
 
 public class Sample18 extends Controller {
+    public static String USER_INFO_FILE = "UserInfo.tmp";
     static String title = "GroupDocs Java SDK Samples";
     static String sample = "Sample18";
     static Form<Credentials> form = form(Credentials.class);
@@ -52,8 +57,9 @@ public class Sample18 extends Controller {
             Map<String, String[]> formUrlEncodedData = multipartFormData.asFormUrlEncoded();
 
             String sourse = Utils.getFormValue(formUrlEncodedData, "sourse");
-            String callbackUrl = Utils.getFormValue(formUrlEncodedData, "callbackUrl");
             String convert_type = Utils.getFormValue(formUrlEncodedData, "convert_type");
+            String callbackUrl = Utils.getFormValue(formUrlEncodedData, "callbackUrl");
+            callbackUrl = (callbackUrl == null) ? "" : callbackUrl;
             String guid = null;
             if ("guid".equalsIgnoreCase(sourse)) {
                 guid = Utils.getFormValue(formUrlEncodedData, "fileId");
@@ -82,21 +88,35 @@ public class Sample18 extends Controller {
             }
 
             try {
-                Double fileID = Utils.getFileIdByGuid(credentials.client_id, credentials.private_key, credentials.server_type, guid);
 
+                ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(credentials.private_key));
                 AsyncApi api = new AsyncApi();
                 api.setBasePath(credentials.server_type);
-                ConvertResponse response = api.Convert(credentials.client_id, Double.toString(fileID), null, "description", null, callbackUrl, convert_type);
-                if (response != null && response.getStatus().trim().equalsIgnoreCase("Ok")) {
-                    Double jobId = response.getResult().getJob_id();
-                    Thread.sleep(5000);
-                    GetJobDocumentsResponse jobDocumentsResponse = api.GetJobDocuments(credentials.client_id, jobId.toString(), "");
+                ConvertResponse response = api.Convert(credentials.client_id, guid, "", "description", false, callbackUrl, convert_type);
+                response = Utils.assertResponse(response);
+                Double jobId = response.getResult().getJob_id();
+                Thread.sleep(5000);
+                GetJobDocumentsResponse jobDocumentsResponse = api.GetJobDocuments(credentials.client_id, jobId.toString(), "");
+                jobDocumentsResponse = Utils.assertResponse(jobDocumentsResponse);
 
-                    if (jobDocumentsResponse != null && jobDocumentsResponse.getStatus().trim().equalsIgnoreCase("Ok")) {
+                String resultGuid = jobDocumentsResponse.getResult().getInputs().get(0).getOutputs().get(0).getGuid();
+                data.put("data", resultGuid);
 
-                        String resultGuid = jobDocumentsResponse.getResult().getInputs().get(0).getOutputs().get(0).getGuid();
-                        data.put("data", resultGuid);
-                    }
+                if (!StringUtils.isEmpty(callbackUrl)) {
+                    FileOutputStream fileOutputStream = new FileOutputStream(USER_INFO_FILE);
+                    DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
+
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.append(credentials.client_id);
+                    stringBuilder.append("|");
+                    stringBuilder.append(credentials.private_key);
+                    stringBuilder.append("|");
+                    stringBuilder.append(credentials.server_type);
+
+                    dataOutputStream.writeUTF(stringBuilder.toString());
+
+                    dataOutputStream.flush();
+                    fileOutputStream.close();
                 }
             } catch (Exception e) {
                 filledForm.reject(e.getMessage());
@@ -105,135 +125,4 @@ public class Sample18 extends Controller {
         }
         return ok(views.html.sample18.render(title, sample, data, filledForm));
     }
-
-
-
-//	//###Set variables
-//	static String title = "GroupDocs Java SDK Samples";
-//	static Form<Credentials> form = form(Credentials.class);
-//
-//	public static Result index() {
-//
-//		String result = null;
-//		GetJobDocumentsResponse jobInfo = null;
-//
-//		Double jobId = null;
-//		Form<Credentials> filledForm;
-//		String sample = "Sample18";
-//		Status status;
-//		//Check POST parameters
-//		if(request().method().equalsIgnoreCase("POST")){
-//			filledForm = form.bindFromRequest();
-//			if(filledForm.hasErrors()){
-//				//If filledForm have errors return to template
-//				status = badRequest(views.html.sample18.render(title, sample, result, filledForm));
-//			} else {
-//				//If filledForm have no errors get all parameters
-//				Credentials credentials = filledForm.get();
-//				session().put("client_id", credentials.client_id);
-//				session().put("private_key", credentials.private_key);
-//				session().put("server_type", credentials.server_type);
-//                String fileId = null;
-//
-//                try {
-//                    /////////////////////////////////////// -- //////////////////////////////////////
-//                    Http.MultipartFormData formData = request().body().asMultipartFormData();
-//                    Map<String, String[]> fieldsData = formData.asFormUrlEncoded();
-//
-//                    String fileData = Utils.getFormValue(fieldsData, "fileData");
-//                    if ("IDfileId".equals(fileData)) { // File GUID
-//                        fileId = Utils.getFormValue(fieldsData, "fileId");
-//                    }
-//                    else if ("IDfileUrl".equals(fileData)) { // Upload file fron URL
-//                        String fileUrl = Utils.getFormValue(fieldsData, "fileUrl");
-//                        ApiInvoker.getInstance().setRequestSigner(
-//                                new GroupDocsRequestSigner(credentials.private_key));
-//                        StorageApi storageApi = new StorageApi();
-//                        storageApi.setBasePath(credentials.server_type);
-//                        UploadResponse response = storageApi.UploadWeb(credentials.client_id, fileUrl);
-//                        if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-//                            fileId = response.getResult().getGuid();
-//                        }
-//                    }
-//                    else if ("IDfilePart".equals(fileData)) { // Upload local file
-//                        Http.MultipartFormData.FilePart filePart = formData.getFile("filePart");
-//                        ApiInvoker.getInstance().setRequestSigner(
-//                                new GroupDocsRequestSigner(credentials.private_key));
-//                        StorageApi storageApi = new StorageApi();
-//                        storageApi.setBasePath(credentials.server_type);
-//                        FileInputStream is = new FileInputStream(filePart.getFile());
-//                        UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), "uploaded", "", new FileStream(is));
-//                        if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-//                            fileId = response.getResult().getGuid();
-//                        }
-//                    }
-//                    /////////////////////////////////////// -- //////////////////////////////////////
-//                    // Sample:
-//
-//				    String convert_type = Utils.getFormValue(fieldsData, "convert_type");
-//
-//					//### Check client_id, private_key, fileId and email
-//					if(credentials.client_id == null || credentials.private_key == null || fileId == null || convert_type == null){
-//						throw new Exception();
-//					}
-//					//###Create ApiInvoker, AntApi objects
-//
-//		            //Create ApiInvoker object
-//					ApiInvoker.getInstance().setRequestSigner(
-//							new GroupDocsRequestSigner(credentials.private_key));
-//					//Create AntApi object
-//					AsyncApi api = new AsyncApi();
-//					api.setBasePath(credentials.server_type);
-//
-//					//###Make request to Annotation api for setting collaborator for document
-//					ConvertResponse response = api.Convert(credentials.client_id, fileId, null, null, null, null, convert_type);
-//					//Check request result
-//					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-//						//If request status Ok get results
-//
-//						jobId = response.getResult().getJob_id();
-//						Thread.sleep(5000);
-//						jobInfo = api.GetJobDocuments(credentials.client_id, jobId.toString(), "");
-//
-//						if(jobInfo != null && jobInfo.getStatus().trim().equalsIgnoreCase("Ok")){
-//
-//							result = jobInfo.getResult().getInputs().get(0).getOutputs().get(0).getGuid();
-//
-//						}
-//
-//					} else {
-//						//If status error throw exception massage
-//						throw new Exception("User identified by " + " not Found");
-//					}
-//					//If request was successful - set result variable for template
-//					status = ok(views.html.sample18.render(title, sample, result, filledForm));
-//				//###Definition of Api errors and conclusion of the corresponding message
-//				} catch (ApiException e) {
-//					if(e.getCode() == 401){
-//						List<Object> args = Arrays.asList(new Object[]{"https://apps.groupdocs.com/My/Manage", "Production Server"});
-//						filledForm.reject("Wrong Credentials. Please make sure to use credentials from", args);
-//					} else {
-//						filledForm.reject("Failed to access API: " + e.getMessage());
-//					}
-//					status = badRequest(views.html.sample18.render(title, sample, result, filledForm));
-//				//###Definition of filledForm errors and conclusion of the corresponding message
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//					if(fileId == null){
-//						filledForm.reject("fileId", "This field is required");
-//					} else {
-//						filledForm.reject("fileId", "Something wrong with your file: " + e.getMessage());
-//					}
-//					status = badRequest(views.html.sample18.render(title, sample, result, filledForm));
-//				}
-//			}
-//		} else {
-//			filledForm = form.bind(session());
-//			session().put("server_type", "https://api.groupdocs.com/v2.0");
-//			status = ok(views.html.sample18.render(title, sample, result, filledForm));
-//		}
-//		//Process template
-//		return status;
-//	}
-	
 }

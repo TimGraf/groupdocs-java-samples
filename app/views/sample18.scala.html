@@ -23,13 +23,16 @@
    <div id="requestForm" style="padding:20px; border:1px solid black;">
 		<p>Enter data for request and press "Make request" button </p>
 		@myForm(routes.Sample18.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
-	        @aForm.globalErrors.map { error =>
-			  @if(error.arguments.size > 0){
-				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
-			  } else {
-				  <div>@error.message</div>
-			  }
-			}
+
+            @if(aForm.hasGlobalErrors){
+                <p>
+                    Error:
+                    @for(validationError <- aForm.globalErrors){
+                        <span style="display: block; color: red; font-size: 12px;">@validationError.message</span>
+                    }
+                </p>
+            }
+
             @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
 	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
 	        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
@@ -67,9 +70,11 @@
         }
    </div>
 @if(data.get("data") != null){
-	<div>
-		<iframe src="https://apps.groupdocs.com/document-viewer/Embed/@data.get("data")" frameborder="0" width="720" height="600"></iframe>
-	</div>
+    <div  id="result" style="padding:20px; border:1px solid black;">
+        <p> Results: </p>
+        <p><span style="color: red"></span>
+        <iframe src="https://apps.groupdocs.com/document-viewer/Embed/@data.get("data")" frameborder="0" width="720" height="600"></iframe>
+    </div>
 }
 </div>
     <script type="text/javascript" language="JavaScript">
