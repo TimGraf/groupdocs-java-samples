@@ -46,6 +46,7 @@ public class Sample18 extends Controller {
             return ok(views.html.sample18.render(title, sample, data, filledForm));
         }
         if ("POST".equalsIgnoreCase(request.method())) {
+            filledForm = form.bindFromRequest();
             Credentials credentials = filledForm.get();
 
             if (StringUtils.isNotEmpty(credentials.client_id) || StringUtils.isNotEmpty(credentials.private_key)) {

@@ -50,6 +50,7 @@ public class Sample19 extends Controller {
             return ok(views.html.sample19.render(title, sample, data, filledForm));
         }
         if ("POST".equalsIgnoreCase(request.method())){
+            filledForm = form.bindFromRequest();
             Credentials credentials = filledForm.get();
             if (StringUtils.isNotEmpty(credentials.client_id) || StringUtils.isNotEmpty(credentials.private_key)){
                 session().put("client_id", credentials.client_id);
