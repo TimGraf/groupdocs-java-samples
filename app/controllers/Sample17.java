@@ -38,7 +38,7 @@ public class Sample17 extends Controller {
         Http.Request request = request();
 
         if ("GET".equalsIgnoreCase(request.method())){
-            filledForm = form.bind(session());
+            session().put("server_type", "https://api.groupdocs.com/v2.0");
             return ok(views.html.sample17.render(title, sample, data, filledForm));
         }
         if ("POST".equalsIgnoreCase(request.method())){

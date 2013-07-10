@@ -41,6 +41,7 @@ public class Sample16 extends Controller {
         Request request = request();
 
         if ("GET".equalsIgnoreCase(request.method())){
+            session().put("server_type", "https://api.groupdocs.com/v2.0");
             return ok(views.html.sample16.render(title, sample, data, filledForm));
         }
         if ("POST".equalsIgnoreCase(request.method())){

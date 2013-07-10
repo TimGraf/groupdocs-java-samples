@@ -42,6 +42,7 @@ public class Sample18 extends Controller {
         Form<Credentials> filledForm = form.bind(session());
 
         if ("GET".equalsIgnoreCase(request.method())) {
+            session().put("server_type", "https://api.groupdocs.com/v2.0");
             return ok(views.html.sample18.render(title, sample, data, filledForm));
         }
         if ("POST".equalsIgnoreCase(request.method())) {
