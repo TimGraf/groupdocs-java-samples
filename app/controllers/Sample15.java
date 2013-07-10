@@ -18,7 +18,7 @@ import com.groupdocs.sdk.common.ApiException;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.DocumentViewsResponse;
-import com.groupdocs.sdk.model.DocumentViewInfo;;
+import com.groupdocs.sdk.model.DocumentViewInfo;
 
 public class Sample15 extends Controller {
 	//###Set variables
