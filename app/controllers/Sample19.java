@@ -1,15 +1,10 @@
  //###<i>This sample will show how to use <b>GetFile</b> method from Storage Api to download a file from GroupDocs Storage</i>
 package controllers;
 //Import of necessary libraries
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.File;
-import java.io.InputStream;
 
 
 import com.groupdocs.sdk.api.MgmtApi;
@@ -147,6 +142,23 @@ public class Sample19 extends Controller {
                 GetUserEmbedKeyResponse userEmbedKeyResponse = mgmtApi.GetUserEmbedKey(credentials.client_id, "comparison");
                 Utils.assertResponse(userEmbedKeyResponse);
                 compareKey = userEmbedKeyResponse.getResult().getKey().getGuid();
+
+                if (!StringUtils.isEmpty(callbackUrl)) {
+                    FileOutputStream fileOutputStream = new FileOutputStream(USER_INFO_FILE);
+                    DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
+
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.append(credentials.client_id);
+                    stringBuilder.append("|");
+                    stringBuilder.append(credentials.private_key);
+                    stringBuilder.append("|");
+                    stringBuilder.append(credentials.server_type);
+
+                    dataOutputStream.writeUTF(stringBuilder.toString());
+
+                    dataOutputStream.flush();
+                    fileOutputStream.close();
+                }
             }
             catch (Exception e){
                 filledForm.reject(e.getMessage());

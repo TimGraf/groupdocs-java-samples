@@ -1,8 +1,10 @@
 //###<i>This sample will show how to use Signature Api to Create and Send Envelope for signing using Java SDK</i>
 package controllers;
 //Import of necessary libraries
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +41,7 @@ import com.groupdocs.sdk.model.SignatureRoleInfo;
 import com.sun.jersey.core.header.ContentDisposition;
 
 public class Sample21 extends Controller {
+    public static String USER_INFO_FILE = "UserInfo_sample21.tmp";
 	//###Set variables
 	static String title = "GroupDocs Java SDK Samples";
 	static Form<Credentials> form = form(Credentials.class);
@@ -112,21 +115,6 @@ public class Sample21 extends Controller {
                         filledForm.reject("GUID is empty or null!");
                         return ok(views.html.sample21.render(title, sample, embedUrl, filledForm));
                     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 					//Create Signature api object
 					SignatureApi api = new SignatureApi();
 					//Choose Server to use
@@ -210,6 +198,23 @@ public class Sample21 extends Controller {
 	                } else if(basePath.equals("https://stage-api.groupdocs.com/v2.0")) {
 	                	embedUrl = "https://stage-apps.groupdocs.com/signature/signembed/" + envelopeId + "/" + recipientId;
 	                }
+
+                    if (!StringUtils.isEmpty(callback)) {
+                        FileOutputStream fileOutputStream = new FileOutputStream(USER_INFO_FILE);
+                        DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
+
+                        StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.append(credentials.client_id);
+                        stringBuilder.append("|");
+                        stringBuilder.append(credentials.private_key);
+                        stringBuilder.append("|");
+                        stringBuilder.append(credentials.server_type);
+
+                        dataOutputStream.writeUTF(stringBuilder.toString());
+
+                        dataOutputStream.flush();
+                        fileOutputStream.close();
+                    }
 					//Use embedded signature url in template
 					status = ok(views.html.sample21.render(title, sample, embedUrl, filledForm));
 			    //###Definition of Api errors and conclusion of the corresponding message

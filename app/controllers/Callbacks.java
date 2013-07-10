@@ -33,7 +33,7 @@ public class Callbacks extends Controller {
 
     public static Result convert_callback() {
         try {
-            FileInputStream fileInputStream = new FileInputStream(Sample19.USER_INFO_FILE);
+            FileInputStream fileInputStream = new FileInputStream(Sample18.USER_INFO_FILE);
             DataInputStream dataInputStream = new DataInputStream(fileInputStream);
             String data = dataInputStream.readUTF();
             fileInputStream.close();
@@ -131,7 +131,7 @@ public class Callbacks extends Controller {
 
     public static Result signature_callback() {
         try {
-            FileInputStream fileInputStream = new FileInputStream(Sample19.USER_INFO_FILE);
+            FileInputStream fileInputStream = new FileInputStream(Sample21.USER_INFO_FILE);
             DataInputStream dataInputStream = new DataInputStream(fileInputStream);
             String data = dataInputStream.readUTF();
             fileInputStream.close();
