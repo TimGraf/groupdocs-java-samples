@@ -37,22 +37,22 @@ public class Sample18 extends Controller {
     static Form<Credentials> form = form(Credentials.class);
 
     public static Result index() {
-        Form<Credentials> filledForm = form.bind(session());
-        Credentials credentials = filledForm.get();
         HashMap<String, String> data = new HashMap<String, String>();
         Http.Request request = request();
-
-        if (StringUtils.isNotEmpty(credentials.client_id) || StringUtils.isNotEmpty(credentials.private_key)) {
-            session().put("client_id", credentials.client_id);
-            session().put("private_key", credentials.private_key);
-            session().put("server_type", credentials.server_type);
-        }
+        Form<Credentials> filledForm = form.bind(session());
 
         if ("GET".equalsIgnoreCase(request.method())) {
-            filledForm = form.bind(session());
             return ok(views.html.sample18.render(title, sample, data, filledForm));
         }
         if ("POST".equalsIgnoreCase(request.method())) {
+            Credentials credentials = filledForm.get();
+
+            if (StringUtils.isNotEmpty(credentials.client_id) || StringUtils.isNotEmpty(credentials.private_key)) {
+                session().put("client_id", credentials.client_id);
+                session().put("private_key", credentials.private_key);
+                session().put("server_type", credentials.server_type);
+            }
+
             Http.MultipartFormData multipartFormData = request.body().asMultipartFormData();
             Map<String, String[]> formUrlEncodedData = multipartFormData.asFormUrlEncoded();
 
