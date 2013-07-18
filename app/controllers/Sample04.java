@@ -124,8 +124,6 @@ public class Sample04 extends Controller {
 						throw new Exception("Not Found");
 					}
 					//Check file name
-                    System.out.println("file.getFileName() = " + file.getFileName());
-                    System.out.println("fileName = " + fileName);
 					if(file.getFileName() == null){
 						file.setFileName(fileName);
 					}
