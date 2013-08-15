@@ -43,9 +43,9 @@ public class Sample08 extends Controller {
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.client_id);
-				session().put("private_key", credentials.private_key);
-				session().put("server_type", credentials.server_type);
+				session().put("client_id", credentials.getClient_id());
+				session().put("private_key", credentials.getPrivate_key());
+				session().put("server_type", credentials.getServer_type());
                 String fileGuid = null;
                 String pageNumber = null;
 
@@ -61,10 +61,10 @@ public class Sample08 extends Controller {
                     else if ("url".equals(sourse)) { // Upload file fron URL
                         String url = Utils.getFormValue(fieldsData, "url");
                         ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.private_key));
+                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.server_type);
-                        UploadResponse response = storageApi.UploadWeb(credentials.client_id, url);
+                        storageApi.setBasePath(credentials.getServer_type());
+                        UploadResponse response = storageApi.UploadWeb(credentials.getClient_id(), url);
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                             fileGuid = response.getResult().getGuid();
                         }
@@ -72,11 +72,11 @@ public class Sample08 extends Controller {
                     else if ("local".equals(sourse)) { // Upload local file
                         Http.MultipartFormData.FilePart file = formData.getFile("file");
                         ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.private_key));
+                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.server_type);
+                        storageApi.setBasePath(credentials.getServer_type());
                         FileInputStream is = new FileInputStream(file.getFile());
-                        UploadResponse response = storageApi.Upload(credentials.client_id, file.getFilename(), "uploaded", "", new FileStream(is));
+                        UploadResponse response = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                             fileGuid = response.getResult().getGuid();
                         }
@@ -93,18 +93,18 @@ public class Sample08 extends Controller {
 
 		            //Create ApiInvoker object
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.private_key));
+							new GroupDocsRequestSigner(credentials.getPrivate_key()));
 					//Create DocApi object
 					DocApi api = new DocApi();
-					api.setBasePath(credentials.server_type);
+					api.setBasePath(credentials.getServer_type());
 					//Get document metadata
-					GetDocumentInfoResponse response = api.GetDocumentMetadata(credentials.client_id, fileGuid);
+					GetDocumentInfoResponse response = api.GetDocumentMetadata(credentials.getClient_id(), fileGuid);
 					//Convert pageNumber from String to Integer
 					int page = Integer.parseInt( pageNumber );
 					//###Make request to DocApi using client_id
 		            
 		            //Obtaining URl of entered page 
-					thumbnailUrls = api.GetDocumentPagesImageUrls(credentials.client_id, fileGuid, page, 1, "150x150", null, null, null).getResult().getUrl();
+					thumbnailUrls = api.GetDocumentPagesImageUrls(credentials.getClient_id(), fileGuid, page, 1, "150x150", null, null, null).getResult().getUrl();
 					//If request was successfull - set  thumbnailUrls variable for template
 					status = ok(views.html.sample08.render(title, sample, thumbnailUrls, filledForm));
 				//###Definition of Api errors and conclusion of the corresponding message

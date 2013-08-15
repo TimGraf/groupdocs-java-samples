@@ -7,12 +7,14 @@ import java.util.Map;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import common.Utils;
 import models.Credentials;
 
 import org.apache.commons.lang3.StringUtils;
 
 import play.data.Form;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import scala.actors.threadpool.Arrays;
 
@@ -45,69 +47,37 @@ public class Sample14 extends Controller {
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.client_id);
-				session().put("private_key", credentials.private_key);
-				session().put("server_type", credentials.server_type);
+				session().put("client_id", credentials.getClient_id());
+				session().put("private_key", credentials.getPrivate_key());
+				session().put("server_type", credentials.getServer_type());
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
-				String srcPath = formData.get("path") != null ? formData.get("path")[0] : null;
-				srcPath = StringUtils.isBlank(srcPath) ? null : srcPath.trim();
+                Http.MultipartFormData multipartFormData = request().body().asMultipartFormData();
+                Map<String, String[]> formUrlEncodedData = multipartFormData.asFormUrlEncoded();
+                String path = Utils.getFormValue(formUrlEncodedData, "path");
 						        
 				try {
 					//Check source and destination path 
-					if(srcPath == null || credentials.client_id == null || credentials.private_key == null){
+					if(path == null || credentials.getClient_id() == null || credentials.getPrivate_key() == null){
 						throw new Exception();
 					}
 					//###Create ApiInvoker, Doc and Storage Api objects
 					
 					//Create ApiInvoker object
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.private_key));
+							new GroupDocsRequestSigner(credentials.getPrivate_key()));
 					//Create Doc Api object and get document metadata
 					DocApi metadata = new DocApi();
-					metadata.setBasePath(credentials.server_type);
+					metadata.setBasePath(credentials.getServer_type());
 					//Create Storage Api object
 					StorageApi storage = new StorageApi();
-					storage.setBasePath(credentials.server_type);
+					storage.setBasePath(credentials.getServer_type());
 					
-					String folderId = "";
-					//Delete gaps before and after entered path
-					srcPath = srcPath.trim();
-					//Create List object
-					List<String> pathList = new ArrayList<String>();
-					//###Division of a path string on the specified symbols
-					StringTokenizer path = new StringTokenizer(srcPath, "\\/");
-					//While path has tokens add them to the list object
-                    if (path.countTokens() == 0) {
-                        pathList.add("");
-                    }
-					while (path.hasMoreTokens()) {
-						
-						pathList.add(path.nextToken());
-					
-					}
-					//Get folder name from entered path
-					String folderName = "";
-					String properPath = null;
-					//Remove last element of the List
-					if (pathList.size() > 1) {
-						pathList.remove(pathList.size()-1);
-						//Create proper path from list
-						StringBuilder newPath = new StringBuilder();
-						  
-						for (int i = 0; i < pathList.size(); i++){
-					      						    
-							newPath.append( pathList.get(i) + "/");
-							    
-						}
-						//Delete last slash from path
-						properPath = newPath.deleteCharAt(newPath.length()-1).toString();
-					} else {
-						properPath = "";
-					}
-					
+
+
+                    String folderId  ="";
 					//###Make request to Storage Api to get list of elements in the storage
-					ListEntitiesResponse listResponse = storage.ListEntities(credentials.client_id, properPath, null, null, null, null, null, null, null);
+					ListEntitiesResponse listResponse = storage.ListEntities(credentials.getClient_id(), "", null, null, null, null, null, null, null);
 					//Check request result
 					if(listResponse != null && listResponse.getStatus().trim().equalsIgnoreCase("Ok")){
 						//If request status is Ok get folders info from storage 
@@ -115,16 +85,14 @@ public class Sample14 extends Controller {
 						//Get folder id by folder name
 						for(int col = 0; col < folders.size(); col++){
 							//Check if folder name equal to entered folder name
-							if(folderName.equals(folders.get(col).getName())){
+							if(path.equals(folders.get(col).getName())){
 								//Get folder id
 								folderId = folders.get(col).getId().toString();
-								 
 							}
-							
 						}
 					}
 					//###Make request to Doc Api to get folder sharers
-					SharedUsersResponse shares = metadata.GetFolderSharers(credentials.client_id, folderId);
+					SharedUsersResponse shares = metadata.GetFolderSharers(credentials.getClient_id(), folderId);
 					//Check request status
 					if(shares != null && shares.getStatus().trim().equalsIgnoreCase("Ok")){
 						//If status Ok get shared users
@@ -143,7 +111,7 @@ public class Sample14 extends Controller {
 					status = badRequest(views.html.sample14.render(title, sample, sharer, filledForm));
 			    //###Definition of filledForm errors and conclusion of the corresponding message	
 				} catch (Exception e) {
-					if(srcPath == null){
+					if(path == null){
 						filledForm.reject("srcPath", "This field is required");
 					} else {
 						filledForm.reject("srcPath", "Something wrong with your folder: " + e.getMessage());

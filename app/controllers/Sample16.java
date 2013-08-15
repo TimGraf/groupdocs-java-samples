@@ -47,10 +47,10 @@ public class Sample16 extends Controller {
         if ("POST".equalsIgnoreCase(request.method())){
             filledForm = form.bindFromRequest();
             Credentials credentials = filledForm.get();
-            if (StringUtils.isNotEmpty(credentials.client_id) || StringUtils.isNotEmpty(credentials.private_key)){
-                session().put("client_id", credentials.client_id);
-                session().put("private_key", credentials.private_key);
-                session().put("server_type", credentials.server_type);
+            if (StringUtils.isNotEmpty(credentials.getClient_id()) || StringUtils.isNotEmpty(credentials.getPrivate_key())){
+                session().put("client_id", credentials.getClient_id());
+                session().put("private_key", credentials.getPrivate_key());
+                session().put("server_type", credentials.getServer_type());
             }
 
             Http.MultipartFormData multipartFormData = request.body().asMultipartFormData();
@@ -64,7 +64,7 @@ public class Sample16 extends Controller {
             else if ("url".equalsIgnoreCase(sourse)) {
                 try {
                     String url = Utils.getFormValue(formUrlEncodedData, "url");
-                    guid = Utils.getGuidByUrl(credentials.client_id, credentials.private_key, credentials.server_type, url);
+                    guid = Utils.getGuidByUrl(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), url);
                 }
                 catch (Exception e) {
                     filledForm.reject(e.getMessage());
@@ -75,7 +75,7 @@ public class Sample16 extends Controller {
             else if ("local".equalsIgnoreCase(sourse)) {
                 try {
                     Http.MultipartFormData.FilePart local = multipartFormData.getFile("local");
-                    guid = Utils.getGuidByFile(credentials.client_id, credentials.private_key, credentials.server_type, local.getFilename(), new FileStream(new FileInputStream(local.getFile())));
+                    guid = Utils.getGuidByFile(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), local.getFilename(), new FileStream(new FileInputStream(local.getFile())));
                 }
                 catch (Exception e) {
                     filledForm.reject(e.getMessage());

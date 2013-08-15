@@ -47,10 +47,10 @@ public class Sample19 extends Controller {
         if ("POST".equalsIgnoreCase(request.method())){
             filledForm = form.bindFromRequest();
             Credentials credentials = filledForm.get();
-            if (StringUtils.isNotEmpty(credentials.client_id) || StringUtils.isNotEmpty(credentials.private_key)){
-                session().put("client_id", credentials.client_id);
-                session().put("private_key", credentials.private_key);
-                session().put("server_type", credentials.server_type);
+            if (StringUtils.isNotEmpty(credentials.getClient_id()) || StringUtils.isNotEmpty(credentials.getPrivate_key())){
+                session().put("client_id", credentials.getClient_id());
+                session().put("private_key", credentials.getPrivate_key());
+                session().put("server_type", credentials.getServer_type());
             }
             Http.MultipartFormData multipartFormData = request.body().asMultipartFormData();
             Map<String, String[]> formUrlEncodedData = multipartFormData.asFormUrlEncoded();
@@ -69,7 +69,7 @@ public class Sample19 extends Controller {
             else if ("url".equalsIgnoreCase(sourse)) {
                 try {
                     String url = Utils.getFormValue(formUrlEncodedData, "url");
-                    sourseGuid = Utils.getGuidByUrl(credentials.client_id, credentials.private_key, credentials.server_type, url);
+                    sourseGuid = Utils.getGuidByUrl(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), url);
                 }
                 catch (Exception e) {
                     filledForm.reject(e.getMessage());
@@ -80,7 +80,7 @@ public class Sample19 extends Controller {
             else if ("local".equalsIgnoreCase(sourse)) {
                 try {
                     Http.MultipartFormData.FilePart local = multipartFormData.getFile("local");
-                    sourseGuid = Utils.getGuidByFile(credentials.client_id, credentials.private_key, credentials.server_type, local.getFilename(), new FileStream(new FileInputStream(local.getFile())));
+                    sourseGuid = Utils.getGuidByFile(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), local.getFilename(), new FileStream(new FileInputStream(local.getFile())));
                 }
                 catch (Exception e) {
                     filledForm.reject(e.getMessage());
@@ -95,7 +95,7 @@ public class Sample19 extends Controller {
             else if ("target_url".equalsIgnoreCase(target)) {
                 try {
                     String url = Utils.getFormValue(formUrlEncodedData, "target_url");
-                    targetGuid = Utils.getGuidByUrl(credentials.client_id, credentials.private_key, credentials.server_type, url);
+                    targetGuid = Utils.getGuidByUrl(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), url);
                 }
                 catch (Exception e) {
                     filledForm.reject(e.getMessage());
@@ -106,7 +106,7 @@ public class Sample19 extends Controller {
             else if ("local".equalsIgnoreCase(target)) {
                 try {
                     Http.MultipartFormData.FilePart local = multipartFormData.getFile("target_local");
-                    targetGuid = Utils.getGuidByFile(credentials.client_id, credentials.private_key, credentials.server_type, local.getFilename(), new FileStream(new FileInputStream(local.getFile())));
+                    targetGuid = Utils.getGuidByFile(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), local.getFilename(), new FileStream(new FileInputStream(local.getFile())));
                 }
                 catch (Exception e) {
                     filledForm.reject(e.getMessage());
@@ -121,25 +121,25 @@ public class Sample19 extends Controller {
             }
             // Compare functional
             try {
-                ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(credentials.private_key));
+                ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(credentials.getPrivate_key()));
                 ComparisonApi api = new ComparisonApi();
-                api.setBasePath(credentials.server_type);
+                api.setBasePath(credentials.getServer_type());
                 if(callbackUrl == null){
                     callbackUrl = "";
                 }
-                CompareResponse compareResponse = api.Compare(credentials.client_id, sourseGuid, targetGuid, callbackUrl);
+                CompareResponse compareResponse = api.Compare(credentials.getClient_id(), sourseGuid, targetGuid, callbackUrl);
                 compareResponse = Utils.assertResponse(compareResponse);
-                Thread.sleep(5000);
+                Thread.sleep(8000);
 
                 AsyncApi asyncApi = new AsyncApi();
-                asyncApi.setBasePath(credentials.server_type);
-                GetJobDocumentsResponse job_info = asyncApi.GetJobDocuments(credentials.client_id, compareResponse.getResult().getJob_id().toString(), "");
+                asyncApi.setBasePath(credentials.getServer_type());
+                GetJobDocumentsResponse job_info = asyncApi.GetJobDocuments(credentials.getClient_id(), compareResponse.getResult().getJob_id().toString(), "");
                 Utils.assertResponse(job_info);
                 resultGuid = job_info.getResult().getOutputs().get(0).getGuid();
 
                 MgmtApi mgmtApi = new MgmtApi();
-                mgmtApi.setBasePath(credentials.server_type);
-                GetUserEmbedKeyResponse userEmbedKeyResponse = mgmtApi.GetUserEmbedKey(credentials.client_id, "comparison");
+                mgmtApi.setBasePath(credentials.getServer_type());
+                GetUserEmbedKeyResponse userEmbedKeyResponse = mgmtApi.GetUserEmbedKey(credentials.getClient_id(), "comparison");
                 Utils.assertResponse(userEmbedKeyResponse);
                 compareKey = userEmbedKeyResponse.getResult().getKey().getGuid();
 
@@ -148,11 +148,11 @@ public class Sample19 extends Controller {
                     DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
 
                     StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append(credentials.client_id);
+                    stringBuilder.append(credentials.getClient_id());
                     stringBuilder.append("|");
-                    stringBuilder.append(credentials.private_key);
+                    stringBuilder.append(credentials.getPrivate_key());
                     stringBuilder.append("|");
-                    stringBuilder.append(credentials.server_type);
+                    stringBuilder.append(credentials.getServer_type());
 
                     dataOutputStream.writeUTF(stringBuilder.toString());
 
@@ -167,7 +167,7 @@ public class Sample19 extends Controller {
             }
             data.put("guid", resultGuid);
             data.put("compareKey", compareKey);
-            data.put("server", credentials.server_type.substring(0, credentials.server_type.indexOf(".com") + 4).replace("api", "apps"));
+            data.put("server", credentials.getServer_type().substring(0, credentials.getServer_type().indexOf(".com") + 4).replace("api", "apps"));
         }
         return ok(views.html.sample19.render(title, sample, data, filledForm));
     }

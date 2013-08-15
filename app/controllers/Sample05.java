@@ -44,17 +44,17 @@ public class Sample05 extends Controller {
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.client_id);
-				session().put("private_key", credentials.private_key);
-				session().put("server_type", credentials.server_type);
+				session().put("client_id", credentials.getClient_id());
+				session().put("private_key", credentials.getPrivate_key());
+				session().put("server_type", credentials.getServer_type());
                 try {
                     String guid = null;
                     String fileName = null;
                     Double fileId = 0d;
                     ApiInvoker.getInstance().setRequestSigner(
-                            new GroupDocsRequestSigner(credentials.private_key));
+                            new GroupDocsRequestSigner(credentials.getPrivate_key()));
                     StorageApi api = new StorageApi();
-                    api.setBasePath(credentials.server_type);
+                    api.setBasePath(credentials.getServer_type());
                     Http.MultipartFormData multipartFormData = request().body().asMultipartFormData();
                     Map<String, String[]> formData = multipartFormData.asFormUrlEncoded();
                     String sourse = Utils.getFormValue(formData, "sourse");
@@ -62,7 +62,7 @@ public class Sample05 extends Controller {
                     if ("local".equals(sourse)){
                         Http.MultipartFormData.FilePart filePart = multipartFormData.getFile("file");
                         FileInputStream is = new FileInputStream(filePart.getFile());
-                        UploadResponse response = api.Upload(credentials.client_id, uploadDir + filePart.getFilename(), "comment", "", new FileStream(is));
+                        UploadResponse response = api.Upload(credentials.getClient_id(), uploadDir + filePart.getFilename(), "comment", "", new FileStream(is));
 
                         if (response != null && "Ok".equalsIgnoreCase(response.getStatus())) {
                             guid = response.getResult().getGuid();
@@ -73,7 +73,7 @@ public class Sample05 extends Controller {
                     }
                     else if ("url".equals(sourse)){
                         String url = Utils.getFormValue(formData, "url");
-                        UploadResponse response = api.UploadWeb(credentials.client_id, url);
+                        UploadResponse response = api.UploadWeb(credentials.getClient_id(), url);
 
                         if (response != null && "Ok".equalsIgnoreCase(response.getStatus())) {
                             guid = response.getResult().getGuid();
@@ -89,7 +89,7 @@ public class Sample05 extends Controller {
                         throw new Exception();
                     }
 
-                    ListEntitiesResponse response =  api.ListEntities(credentials.client_id, uploadDir, 0, null, null, null, null, null, null);
+                    ListEntitiesResponse response =  api.ListEntities(credentials.getClient_id(), uploadDir, 0, null, null, null, null, null, null);
                     for (FileSystemDocument document : response.getResult().getFiles()){
                         if (guid.equals(document.getGuid())){
                             fileName = document.getName();
@@ -103,11 +103,11 @@ public class Sample05 extends Controller {
                     String copyToPath = (destPath + "/" + fileName).replaceAll("//", "/");
                     FileMoveResponse moveResponse = null;
                     if (Utils.getFormValue(formData, "copy") != null){
-                        moveResponse = api.MoveFile(credentials.client_id, copyToPath, null, Double.toString(fileId), null);
+                        moveResponse = api.MoveFile(credentials.getClient_id(), copyToPath, null, Double.toString(fileId), null);
                         action = "copy";
                     }
                     else if (Utils.getFormValue(formData, "move") != null){
-                        moveResponse = api.MoveFile(credentials.client_id, copyToPath, null, null, Double.toString(fileId));
+                        moveResponse = api.MoveFile(credentials.getClient_id(), copyToPath, null, null, Double.toString(fileId));
                         action = "move";
                     }
                     status = ok(views.html.sample05.render(title, sample, moveResponse.getResult(), filledForm, action));

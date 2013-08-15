@@ -45,9 +45,9 @@ public class Sample11 extends Controller {
 			} else {
 				//If filledForm have no errors get all parameters
 				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.client_id);
-				session().put("private_key", credentials.private_key);
-				session().put("server_type", credentials.server_type);
+				session().put("client_id", credentials.getClient_id());
+				session().put("private_key", credentials.getPrivate_key());
+				session().put("server_type", credentials.getServer_type());
                 String fileId = null;
 
                 Http.MultipartFormData formData = request().body().asMultipartFormData();
@@ -74,10 +74,10 @@ public class Sample11 extends Controller {
                     else if ("url".equals(sourse)) { // Upload file fron URL
                         String fileUrl = Utils.getFormValue(fieldsData, "fileUrl");
                         ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.private_key));
+                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.server_type);
-                        UploadResponse response = storageApi.UploadWeb(credentials.client_id, fileUrl);
+                        storageApi.setBasePath(credentials.getServer_type());
+                        UploadResponse response = storageApi.UploadWeb(credentials.getClient_id(), fileUrl);
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                             fileId = response.getResult().getGuid();
                         }
@@ -85,11 +85,11 @@ public class Sample11 extends Controller {
                     else if ("local".equals(sourse)) { // Upload local file
                         Http.MultipartFormData.FilePart filePart = formData.getFile("filePart");
                         ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.private_key));
+                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.server_type);
+                        storageApi.setBasePath(credentials.getServer_type());
                         FileInputStream is = new FileInputStream(filePart.getFile());
-                        UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), "uploaded", "", new FileStream(is));
+                        UploadResponse response = storageApi.Upload(credentials.getClient_id(), filePart.getFilename(), "uploaded", "", new FileStream(is));
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                             fileId = response.getResult().getGuid();
                         }
@@ -98,14 +98,14 @@ public class Sample11 extends Controller {
                     // Sample:
 
 					//### Check fileId amd annotation_type
-					if(credentials.client_id == null || credentials.private_key == null || fileId == null || annotation_type == null){
+					if(credentials.getClient_id() == null || credentials.getPrivate_key() == null || fileId == null || annotation_type == null){
 						throw new Exception();
 					}
 					//### Create Signer, ApiClient and Annotation Api objects
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.private_key));
+							new GroupDocsRequestSigner(credentials.getPrivate_key()));
 					AntApi ant = new AntApi();
-					ant.setBasePath(credentials.server_type);
+					ant.setBasePath(credentials.getServer_type());
 					//Convert from String to Double entered parameters
 					double x = Double.parseDouble(box_x);
 					double y = Double.parseDouble(box_y);
@@ -192,7 +192,7 @@ public class Sample11 extends Controller {
 						
 					}
 					//###Make a request to Annotation API using client_id, fileId and requestBody
-					CreateAnnotationResponse response = ant.CreateAnnotation(credentials.client_id, fileId, requestBody);
+					CreateAnnotationResponse response = ant.CreateAnnotation(credentials.getClient_id(), fileId, requestBody);
 					//Check request status
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
 						//Get results of request

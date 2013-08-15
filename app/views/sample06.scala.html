@@ -21,9 +21,9 @@
 		@myForm(routes.Sample06.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
 			@aForm.globalErrors.map { error =>
 			  @if(error.arguments.size > 0){
-				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
+				  <div style="color: red">@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
 			  } else {
-				  <div>@error.message</div>
+				  <div style="color: red">@error.message</div>
 			  }
 			}
             @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)

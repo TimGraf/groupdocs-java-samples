@@ -47,9 +47,9 @@ public class Sample22 extends Controller {
 			} else {
 				//If filledForm have no errors get all parameters
 				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.client_id);
-				session().put("private_key", credentials.private_key);
-				session().put("server_type", credentials.server_type);
+				session().put("client_id", credentials.getClient_id());
+				session().put("private_key", credentials.getPrivate_key());
+				session().put("server_type", credentials.getServer_type());
                 String guid = null;
                 String email = null;
 
@@ -60,15 +60,15 @@ public class Sample22 extends Controller {
 
                     String sourse = Utils.getFormValue(fieldsData, "sourse");
                     if ("guid".equals(sourse)) { // File GUID
-                        guid = Utils.getFormValue(fieldsData, "guid");
+                        guid = Utils.getFormValue(fieldsData, "fileId");
                     }
                     else if ("url".equals(sourse)) { // Upload file fron URL
                         String fileUrl = Utils.getFormValue(fieldsData, "fileUrl");
                         ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.private_key));
+                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.server_type);
-                        UploadResponse response = storageApi.UploadWeb(credentials.client_id, fileUrl);
+                        storageApi.setBasePath(credentials.getServer_type());
+                        UploadResponse response = storageApi.UploadWeb(credentials.getClient_id(), fileUrl);
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                             guid = response.getResult().getGuid();
                         }
@@ -76,11 +76,11 @@ public class Sample22 extends Controller {
                     else if ("local".equals(sourse)) { // Upload local file
                         Http.MultipartFormData.FilePart file = formData.getFile("file");
                         ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.private_key));
+                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.server_type);
+                        storageApi.setBasePath(credentials.getServer_type());
                         FileInputStream is = new FileInputStream(file.getFile());
-                        UploadResponse response = storageApi.Upload(credentials.client_id, file.getFilename(), "uploaded", null, new FileStream(is));
+                        UploadResponse response = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", null, new FileStream(is));
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                             guid = response.getResult().getGuid();
                         }
@@ -92,17 +92,17 @@ public class Sample22 extends Controller {
                     String first_name = Utils.getFormValue(fieldsData, "first_name");
                     String last_name = Utils.getFormValue(fieldsData, "last_name");
                     String callback = Utils.getFormValue(fieldsData, "callbackUrl");
-                    String basePath = credentials.server_type;
+                    String basePath = credentials.getServer_type();
 
 					//### Check is all parameters entered
-					if(credentials.client_id == null || credentials.private_key == null || guid == null || email == null || first_name == null || last_name == null){
+					if(credentials.getClient_id() == null || credentials.getPrivate_key() == null || guid == null || email == null || first_name == null || last_name == null){
 						throw new Exception();
 					}
 					//###Create ApiInvoker, AntApi objects
 
 		            //Create ApiInvoker object
 					ApiInvoker.getInstance().setRequestSigner(
-								new GroupDocsRequestSigner(credentials.private_key));
+								new GroupDocsRequestSigner(credentials.getPrivate_key()));
 					//Create AntApi object
 					MgmtApi api = new MgmtApi();
 					//Set selected server
@@ -128,44 +128,42 @@ public class Sample22 extends Controller {
 		            //Set email as entered email
 		            user.setPrimary_email(email);
 		            //Creating of new user. $clientId - user id, $firstName - entered first name, $user - object with new user info
-		            UpdateAccountUserResponse newUser = api.UpdateAccountUser(credentials.client_id, email, user);
+		            UpdateAccountUserResponse newUser = api.UpdateAccountUser(credentials.getClient_id(), email, user);
 		            
-		            if (newUser.getStatus().equals("Ok")) {
-		            	//Create AntApi object
-						AntApi ant = new AntApi();
-						//Set selected server
-						ant.setBasePath(basePath);
-		            	//Create List object
-						List<String> emailList = new ArrayList<String>();
-						//Add email to the list
-						emailList.add(email);
-						//###Make request to Annotation api for setting collaborator for document  
-						SetCollaboratorsResponse response = ant.SetAnnotationCollaborators(credentials.client_id, guid, "v2.0", emailList);
-						//Make request to Annotation api to receive all collaborators for entered file id
-						GetCollaboratorsResponse getCollaborators = ant.GetAnnotationCollaborators(credentials.client_id, guid);
-						//Set reviewers rights for new user. $newUser->result->guid - GuId of created user, $guid - entered file id,
-		                //$getCollaborators->result->collaborators - array of collabotors in which new user will be added
-						SetReviewerRightsResponse setReviewer = ant.SetReviewerRights(newUser.getResult().getGuid(), guid, getCollaborators.getResult().getCollaborators());
-						//Check is callback entered
-						if (callback == null) {
-							callback = "";
-						}
-						//Set callback url. CallBack work results you can see here: http://groupdocs-php-samples.herokuapp.com/callbacks/annotation_check_file
-		                SetSessionCallbackUrlResponse setCallBack = ant.SetSessionCallbackUrl(newUser.getResult().getGuid(), guid, callback);
-		                //###Generation of iframe URL using $pageImage->result->guid
-		                
-		                //iframe to prodaction server
-		                if (basePath.equals("https://api.groupdocs.com/v2.0")) {
-		                    result = "https://apps.groupdocs.com//document-annotation2/embed/" + guid + "?&uid=" + newUser.getResult().getGuid() + "&download=true frameborder=0 width=720 height=600";
-		                //iframe to dev server
-		                } else if(basePath.equals("https://dev-api.groupdocs.com/v2.0")) {
-		                    result = "https://dev-apps.groupdocs.com//document-annotation2/embed/" + guid + "?&uid=" + newUser.getResult().getGuid() + "&download=true frameborder=0 width=720 height=600";
-		                //iframe to test server
-		                } else if(basePath.equals("https://stage-api.groupdocs.com/v2.0")) {
-		                    result = "https://stage-apps.groupdocs.com//document-annotation2/embed/" + guid + "?&uid=" + newUser.getResult().getGuid() + "&download=true frameborder=0 width=720 height=600";;
-		                }
-		               
-		            }
+		            newUser = Utils.assertResponse(newUser);
+                    //Create AntApi object
+                    AntApi ant = new AntApi();
+                    //Set selected server
+                    ant.setBasePath(basePath);
+                    //Create List object
+                    List<String> emailList = new ArrayList<String>();
+                    //Add email to the list
+                    emailList.add(email);
+                    //###Make request to Annotation api for setting collaborator for document
+                    SetCollaboratorsResponse response = ant.SetAnnotationCollaborators(credentials.getClient_id(), guid, "v2.0", emailList);
+                    //Make request to Annotation api to receive all collaborators for entered file id
+                    GetCollaboratorsResponse getCollaborators = ant.GetAnnotationCollaborators(credentials.getClient_id(), guid);
+                    //Set reviewers rights for new user. $newUser->result->guid - GuId of created user, $guid - entered file id,
+                    //$getCollaborators->result->collaborators - array of collabotors in which new user will be added
+                    SetReviewerRightsResponse setReviewer = ant.SetReviewerRights(newUser.getResult().getGuid(), guid, getCollaborators.getResult().getCollaborators());
+                    //Check is callback entered
+                    if (callback == null) {
+                        callback = "";
+                    }
+                    //Set callback url. CallBack work results you can see here: http://groupdocs-php-samples.herokuapp.com/callbacks/annotation_check_file
+                    SetSessionCallbackUrlResponse setCallBack = ant.SetSessionCallbackUrl(newUser.getResult().getGuid(), guid, callback);
+                    //###Generation of iframe URL using $pageImage->result->guid
+
+                    //iframe to prodaction server
+                    if (basePath.equals("https://api.groupdocs.com/v2.0")) {
+                        result = "https://apps.groupdocs.com//document-annotation2/embed/" + guid + "?&uid=" + newUser.getResult().getGuid() + "&download=true frameborder=0 width=720 height=600";
+                    //iframe to dev server
+                    } else if(basePath.equals("https://dev-api.groupdocs.com/v2.0")) {
+                        result = "https://dev-apps.groupdocs.com//document-annotation2/embed/" + guid + "?&uid=" + newUser.getResult().getGuid() + "&download=true frameborder=0 width=720 height=600";
+                    //iframe to test server
+                    } else if(basePath.equals("https://stage-api.groupdocs.com/v2.0")) {
+                        result = "https://stage-apps.groupdocs.com//document-annotation2/embed/" + guid + "?&uid=" + newUser.getResult().getGuid() + "&download=true frameborder=0 width=720 height=600";;
+                    }
 					//If request was successful - set result variable for template
 					status = ok(views.html.sample22.render(title, sample, result, filledForm));
 				//###Definition of Api errors and conclusion of the corresponding message

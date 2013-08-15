@@ -49,10 +49,10 @@ public class Sample18 extends Controller {
             filledForm = form.bindFromRequest();
             Credentials credentials = filledForm.get();
 
-            if (StringUtils.isNotEmpty(credentials.client_id) || StringUtils.isNotEmpty(credentials.private_key)) {
-                session().put("client_id", credentials.client_id);
-                session().put("private_key", credentials.private_key);
-                session().put("server_type", credentials.server_type);
+            if (StringUtils.isNotEmpty(credentials.getClient_id()) || StringUtils.isNotEmpty(credentials.getPrivate_key())) {
+                session().put("client_id", credentials.getClient_id());
+                session().put("private_key", credentials.getPrivate_key());
+                session().put("server_type", credentials.getServer_type());
             }
 
             Http.MultipartFormData multipartFormData = request.body().asMultipartFormData();
@@ -68,7 +68,7 @@ public class Sample18 extends Controller {
             } else if ("url".equalsIgnoreCase(sourse)) {
                 try {
                     String url = Utils.getFormValue(formUrlEncodedData, "url");
-                    guid = Utils.getGuidByUrl(credentials.client_id, credentials.private_key, credentials.server_type, url);
+                    guid = Utils.getGuidByUrl(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), url);
                 } catch (Exception e) {
                     filledForm.reject(e.getMessage());
                     e.printStackTrace();
@@ -77,7 +77,7 @@ public class Sample18 extends Controller {
             } else if ("local".equalsIgnoreCase(sourse)) {
                 try {
                     Http.MultipartFormData.FilePart local = multipartFormData.getFile("local");
-                    guid = Utils.getGuidByFile(credentials.client_id, credentials.private_key, credentials.server_type, local.getFilename(), new FileStream(new FileInputStream(local.getFile())));
+                    guid = Utils.getGuidByFile(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), local.getFilename(), new FileStream(new FileInputStream(local.getFile())));
                 } catch (Exception e) {
                     filledForm.reject(e.getMessage());
                     e.printStackTrace();
@@ -91,14 +91,14 @@ public class Sample18 extends Controller {
 
             try {
 
-                ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(credentials.private_key));
+                ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(credentials.getPrivate_key()));
                 AsyncApi api = new AsyncApi();
-                api.setBasePath(credentials.server_type);
-                ConvertResponse response = api.Convert(credentials.client_id, guid, "", "description", false, callbackUrl, convert_type);
+                api.setBasePath(credentials.getServer_type());
+                ConvertResponse response = api.Convert(credentials.getClient_id(), guid, "", "description", false, callbackUrl, convert_type);
                 response = Utils.assertResponse(response);
                 Double jobId = response.getResult().getJob_id();
                 Thread.sleep(5000);
-                GetJobDocumentsResponse jobDocumentsResponse = api.GetJobDocuments(credentials.client_id, jobId.toString(), "");
+                GetJobDocumentsResponse jobDocumentsResponse = api.GetJobDocuments(credentials.getClient_id(), jobId.toString(), "");
                 jobDocumentsResponse = Utils.assertResponse(jobDocumentsResponse);
 
                 String resultGuid = jobDocumentsResponse.getResult().getInputs().get(0).getOutputs().get(0).getGuid();
@@ -109,11 +109,11 @@ public class Sample18 extends Controller {
                     DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
 
                     StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append(credentials.client_id);
+                    stringBuilder.append(credentials.getClient_id());
                     stringBuilder.append("|");
-                    stringBuilder.append(credentials.private_key);
+                    stringBuilder.append(credentials.getPrivate_key());
                     stringBuilder.append("|");
-                    stringBuilder.append(credentials.server_type);
+                    stringBuilder.append(credentials.getServer_type());
 
                     dataOutputStream.writeUTF(stringBuilder.toString());
 

@@ -54,9 +54,9 @@ public class Sample04 extends Controller {
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.client_id);
-				session().put("private_key", credentials.private_key);
-				session().put("server_type", credentials.server_type);
+				session().put("client_id", credentials.getClient_id());
+				session().put("private_key", credentials.getPrivate_key());
+				session().put("server_type", credentials.getServer_type());
                 String file_id = null;
 
                 try {
@@ -71,10 +71,10 @@ public class Sample04 extends Controller {
                     else if ("IDfileUrl".equals(fileData)) { // Upload file fron URL
                         String fileUrl = Utils.getFormValue(fieldsData, "fileUrl");
                         ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.private_key));
+                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.server_type);
-                        UploadResponse response = storageApi.UploadWeb(credentials.client_id, fileUrl);
+                        storageApi.setBasePath(credentials.getServer_type());
+                        UploadResponse response = storageApi.UploadWeb(credentials.getClient_id(), fileUrl);
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                             file_id = response.getResult().getGuid();
                         }
@@ -82,11 +82,11 @@ public class Sample04 extends Controller {
                     else if ("IDfilePart".equals(fileData)) { // Upload local file
                         Http.MultipartFormData.FilePart filePart = formData.getFile("filePart");
                         ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.private_key));
+                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.server_type);
+                        storageApi.setBasePath(credentials.getServer_type());
                         FileInputStream is = new FileInputStream(filePart.getFile());
-                        UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), "uploaded", "", new FileStream(is));
+                        UploadResponse response = storageApi.Upload(credentials.getClient_id(), filePart.getFilename(), "uploaded", "", new FileStream(is));
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                             file_id = response.getResult().getGuid();
                         }
@@ -101,18 +101,18 @@ public class Sample04 extends Controller {
 
                     //Create ApiInvoker object
                     ApiInvoker.getInstance().setRequestSigner(
-                            new GroupDocsRequestSigner(credentials.private_key));
+                            new GroupDocsRequestSigner(credentials.getPrivate_key()));
 
                     DocApi docApi = new DocApi();
-                    docApi.setBasePath(credentials.server_type);
-                    GetDocumentInfoResponse docInfoResponse = docApi.GetDocumentMetadata(credentials.client_id, file_id);
+                    docApi.setBasePath(credentials.getServer_type());
+                    GetDocumentInfoResponse docInfoResponse = docApi.GetDocumentMetadata(credentials.getClient_id(), file_id);
                     GetDocumentInfoResult docInfoResult = docInfoResponse.getResult();
                     String fileName = docInfoResult.getLast_view().getDocument().getName();
 					//###Create ApiInvoker, Storage Api objects
 					
 					//Create StorageApi object
                     SharedApi api = new SharedApi();
-					api.setBasePath(credentials.server_type);
+					api.setBasePath(credentials.getServer_type());
 					//###Make a request to Storage API using clientId
 					
 					//Get file from storage

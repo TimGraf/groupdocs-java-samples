@@ -57,19 +57,19 @@ public class Sample09 extends Controller {
             else {
                 //Get POST data
                 Credentials credentials = filledForm.get();
-                session().put("client_id", credentials.client_id);
-                session().put("private_key", credentials.private_key);
-                session().put("server_type", credentials.server_type);
-                if (StringUtils.isEmpty(credentials.client_id) || StringUtils.isEmpty(credentials.private_key) || StringUtils.isEmpty(credentials.server_type)) {
+                session().put("client_id", credentials.getClient_id());
+                session().put("private_key", credentials.getPrivate_key());
+                session().put("server_type", credentials.getServer_type());
+                if (StringUtils.isEmpty(credentials.getClient_id()) || StringUtils.isEmpty(credentials.getPrivate_key()) || StringUtils.isEmpty(credentials.getServer_type())) {
                     throw  new Exception();
                 }
                 if ("url".equals(sourse)) { // Upload file fron URL
                     String url = Utils.getFormValue(fieldsData, "url");
                     ApiInvoker.getInstance().setRequestSigner(
-                            new GroupDocsRequestSigner(credentials.private_key));
+                            new GroupDocsRequestSigner(credentials.getPrivate_key()));
                     StorageApi storageApi = new StorageApi();
-                    storageApi.setBasePath(credentials.server_type);
-                    UploadResponse response = storageApi.UploadWeb(credentials.client_id, url);
+                    storageApi.setBasePath(credentials.getServer_type());
+                    UploadResponse response = storageApi.UploadWeb(credentials.getClient_id(), url);
                     if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                         fileId = response.getResult().getGuid();
                     }
@@ -77,11 +77,11 @@ public class Sample09 extends Controller {
                 else if ("local".equals(sourse)) { // Upload local file
                     Http.MultipartFormData.FilePart file = formData.getFile("file");
                     ApiInvoker.getInstance().setRequestSigner(
-                            new GroupDocsRequestSigner(credentials.private_key));
+                            new GroupDocsRequestSigner(credentials.getPrivate_key()));
                     StorageApi storageApi = new StorageApi();
-                    storageApi.setBasePath(credentials.server_type);
+                    storageApi.setBasePath(credentials.getServer_type());
                     FileInputStream is = new FileInputStream(file.getFile());
-                    UploadResponse response = storageApi.Upload(credentials.client_id, file.getFilename(), "uploaded", "", new FileStream(is));
+                    UploadResponse response = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
                     if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                         fileId = response.getResult().getGuid();
                     }

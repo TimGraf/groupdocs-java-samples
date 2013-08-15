@@ -47,10 +47,10 @@ public class Sample27 extends Controller {
             filledForm = form.bindFromRequest();
             Credentials credentials = filledForm.get();
 
-            if (StringUtils.isNotEmpty(credentials.client_id) || StringUtils.isNotEmpty(credentials.private_key)) {
-                session().put("client_id", credentials.client_id);
-                session().put("private_key", credentials.private_key);
-                session().put("server_type", credentials.server_type);
+            if (StringUtils.isNotEmpty(credentials.getClient_id()) || StringUtils.isNotEmpty(credentials.getPrivate_key())) {
+                session().put("client_id", credentials.getClient_id());
+                session().put("private_key", credentials.getPrivate_key());
+                session().put("server_type", credentials.getServer_type());
             }
 
             Http.MultipartFormData multipartFormData = request.body().asMultipartFormData();
@@ -72,7 +72,7 @@ public class Sample27 extends Controller {
             } else if ("url".equalsIgnoreCase(sourse)) {
                 try {
                     String url = Utils.getFormValue(formUrlEncodedData, "url");
-                    guid = Utils.getGuidByUrl(credentials.client_id, credentials.private_key, credentials.server_type, url);
+                    guid = Utils.getGuidByUrl(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), url);
                 } catch (Exception e) {
                     filledForm.reject(e.getMessage());
                     e.printStackTrace();
@@ -81,7 +81,7 @@ public class Sample27 extends Controller {
             } else if ("local".equalsIgnoreCase(sourse)) {
                 try {
                     Http.MultipartFormData.FilePart file = multipartFormData.getFile("file");
-                    guid = Utils.getGuidByFile(credentials.client_id, credentials.private_key, credentials.server_type, file.getFilename(), new FileStream(new FileInputStream(file.getFile())));
+                    guid = Utils.getGuidByFile(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), file.getFilename(), new FileStream(new FileInputStream(file.getFile())));
                 } catch (Exception e) {
                     filledForm.reject(e.getMessage());
                     e.printStackTrace();
@@ -95,9 +95,9 @@ public class Sample27 extends Controller {
 
             try {
 
-                ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(credentials.private_key));
+                ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(credentials.getPrivate_key()));
                 MergeApi mergeApi = new MergeApi();
-                mergeApi.setBasePath(credentials.server_type);
+                mergeApi.setBasePath(credentials.getServer_type());
 
                 Datasource datasource = new Datasource();
                 datasource.setFields(new ArrayList<DatasourceField>());
@@ -132,18 +132,18 @@ public class Sample27 extends Controller {
                 datasourceField.getValues().add(name);
                 datasource.getFields().add(datasourceField);
 
-                AddDatasourceResponse datasourceResponse = mergeApi.AddDataSource(credentials.client_id, datasource);
+                AddDatasourceResponse datasourceResponse = mergeApi.AddDataSource(credentials.getClient_id(), datasource);
                 datasourceResponse = Utils.assertResponse(datasourceResponse);
 
-                MergeTemplateResponse mergeTemplateResponse = mergeApi.MergeDatasource(credentials.client_id, guid, Double.toString(datasourceResponse.getResult().getDatasource_id()), type, null);
+                MergeTemplateResponse mergeTemplateResponse = mergeApi.MergeDatasource(credentials.getClient_id(), guid, Double.toString(datasourceResponse.getResult().getDatasource_id()), type, null);
                 mergeTemplateResponse = Utils.assertResponse(mergeTemplateResponse);
 
-                Thread.sleep(5000);
+                Thread.sleep(8000);
 
                 AsyncApi asyncApi = new AsyncApi();
-                asyncApi.setBasePath(credentials.server_type);
+                asyncApi.setBasePath(credentials.getServer_type());
 
-                GetJobDocumentsResponse jobDocumentsResponse = asyncApi.GetJobDocuments(credentials.client_id, Double.toString(mergeTemplateResponse.getResult().getJob_id()), null);
+                GetJobDocumentsResponse jobDocumentsResponse = asyncApi.GetJobDocuments(credentials.getClient_id(), Double.toString(mergeTemplateResponse.getResult().getJob_id()), null);
                 jobDocumentsResponse = Utils.assertResponse(jobDocumentsResponse);
 
                 if ("Postponed".equalsIgnoreCase(jobDocumentsResponse.getResult().getJob_status())){
@@ -159,7 +159,7 @@ public class Sample27 extends Controller {
 
                 // Download filr
                 SharedApi api = new SharedApi();
-                api.setBasePath(credentials.server_type);
+                api.setBasePath(credentials.getServer_type());
                 //###Make a request to Storage API using clientId
 
                 //Get file from storage

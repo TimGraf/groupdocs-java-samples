@@ -50,9 +50,9 @@ public class Sample13 extends Controller {
 			} else {
 				//If filledForm have no errors get all parameters
 				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.client_id);
-				session().put("private_key", credentials.private_key);
-				session().put("server_type", credentials.server_type);
+				session().put("client_id", credentials.getClient_id());
+				session().put("private_key", credentials.getPrivate_key());
+				session().put("server_type", credentials.getServer_type());
 
 //				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 //				String fileId = Utils.getFormValue(formData, "fileId");
@@ -61,16 +61,16 @@ public class Sample13 extends Controller {
 
 				try {
 					//### Check client_id, private_key, fileId and email
-					if(credentials.client_id == null || credentials.private_key == null){
+					if(credentials.getClient_id() == null || credentials.getPrivate_key() == null){
 						throw new Exception();
 					}
 					//###Create ApiInvoker, AntApi objects
 
 		            //Create ApiInvoker object
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.private_key));
+							new GroupDocsRequestSigner(credentials.getPrivate_key()));
                     StorageApi api = new StorageApi();
-                    api.setBasePath(credentials.server_type);
+                    api.setBasePath(credentials.getServer_type());
                     Http.MultipartFormData multipartFormData = request().body().asMultipartFormData();
                     Map<String, String[]> formData = multipartFormData.asFormUrlEncoded();
                     String sourse = Utils.getFormValue(formData, "sourse");
@@ -79,7 +79,7 @@ public class Sample13 extends Controller {
                     if ("local".equals(sourse)){
                         Http.MultipartFormData.FilePart filePart = multipartFormData.getFile("local");
                         FileInputStream is = new FileInputStream(filePart.getFile());
-                        UploadResponse response = api.Upload(credentials.client_id, uploadDir + filePart.getFilename(), "comment", "", new FileStream(is));
+                        UploadResponse response = api.Upload(credentials.getClient_id(), uploadDir + filePart.getFilename(), "comment", "", new FileStream(is));
 
                         if (response != null && "Ok".equalsIgnoreCase(response.getStatus())) {
                             guid = response.getResult().getGuid();
@@ -90,7 +90,7 @@ public class Sample13 extends Controller {
                     }
                     else if ("url".equals(sourse)){
                         String url = Utils.getFormValue(formData, "url");
-                        UploadResponse response = api.UploadWeb(credentials.client_id, url);
+                        UploadResponse response = api.UploadWeb(credentials.getClient_id(), url);
 
                         if (response != null && "Ok".equalsIgnoreCase(response.getStatus())) {
                             guid = response.getResult().getGuid();
@@ -109,13 +109,13 @@ public class Sample13 extends Controller {
 
 					//Create AntApi object
 					AntApi ant = new AntApi();
-					ant.setBasePath(credentials.server_type);
+					ant.setBasePath(credentials.getServer_type());
 					//Create List object
 					List<String> emailList = new ArrayList<String>();
 					//Add email to the list
 					emailList.add(email);
 					//###Make request to Annotation api for setting collaborator for document  
-					SetCollaboratorsResponse response = ant.SetAnnotationCollaborators(credentials.client_id, guid, "v2.0", emailList);
+					SetCollaboratorsResponse response = ant.SetAnnotationCollaborators(credentials.getClient_id(), guid, "v2.0", emailList);
 					//Check request result
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
 						//If request status Ok get results

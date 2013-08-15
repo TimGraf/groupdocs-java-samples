@@ -41,9 +41,9 @@ public class Sample24 extends Controller {
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.client_id);
-				session().put("private_key", credentials.private_key);
-				session().put("server_type", credentials.server_type);
+				session().put("client_id", credentials.getClient_id());
+				session().put("private_key", credentials.getPrivate_key());
+				session().put("server_type", credentials.getServer_type());
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 				String fileurl = formData.get("url") != null ? formData.get("url")[0] : null;
@@ -53,14 +53,14 @@ public class Sample24 extends Controller {
 				try {
 					//Create ApiInvoker object
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.private_key));
+							new GroupDocsRequestSigner(credentials.getPrivate_key()));
 					//Create Storage object
 					StorageApi api = new StorageApi();
-					api.setBasePath(credentials.server_type);
+					api.setBasePath(credentials.getServer_type());
 					//###Make a request to Storage API using clientId
 					
 					//Upload file to current user storage
-					UploadResponse response = api.UploadWeb(credentials.client_id, fileurl);
+					UploadResponse response = api.UploadWeb(credentials.getClient_id(), fileurl);
 					
 					//Check request result
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){

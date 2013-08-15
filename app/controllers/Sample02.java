@@ -35,22 +35,22 @@ public class Sample02 extends Controller {
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.client_id);
-				session().put("private_key", credentials.private_key);
-				session().put("server_type", credentials.server_type);
+				session().put("client_id", credentials.getClient_id());
+				session().put("private_key", credentials.getPrivate_key());
+				session().put("server_type", credentials.getServer_type());
 				
 				//###Create ApiInvoker, Storage Api objects
 				try {
 					 //Create ApiInvoker object
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.private_key));
+							new GroupDocsRequestSigner(credentials.getPrivate_key()));
 					 //Create Storage api object
 					StorageApi api = new StorageApi();
-					api.setBasePath(credentials.server_type);
+					api.setBasePath(credentials.getServer_type());
 					//###Make a request to Storage API using clientId
 		            
 		            //Obtaining all Entities from current user
-					ListEntitiesResponse response = api.ListEntities(credentials.client_id, "", null, null, null, null, null, null, null);
+					ListEntitiesResponse response = api.ListEntities(credentials.getClient_id(), "", null, null, null, null, null, null, null);
 					//Check request result
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
 						files = response.getResult().getFiles();

@@ -47,9 +47,9 @@ public class Sample10 extends Controller {
 			} else {
 				//If filledForm have no errors get all parameters
 				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.client_id);
-				session().put("private_key", credentials.private_key);
-				session().put("server_type", credentials.server_type);
+				session().put("client_id", credentials.getClient_id());
+				session().put("private_key", credentials.getPrivate_key());
+				session().put("server_type", credentials.getServer_type());
                 String fileId = null;
                 String email = null;
 
@@ -65,10 +65,10 @@ public class Sample10 extends Controller {
                     else if ("url".equals(sourse)) { // Upload file fron URL
                         String fileUrl = Utils.getFormValue(fieldsData, "fileUrl");
                         ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.private_key));
+                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.server_type);
-                        UploadResponse response = storageApi.UploadWeb(credentials.client_id, fileUrl);
+                        storageApi.setBasePath(credentials.getServer_type());
+                        UploadResponse response = storageApi.UploadWeb(credentials.getClient_id(), fileUrl);
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                             fileId = response.getResult().getGuid();
                         }
@@ -76,11 +76,11 @@ public class Sample10 extends Controller {
                     else if ("local".equals(sourse)) { // Upload local file
                         Http.MultipartFormData.FilePart filePart = formData.getFile("filePart");
                         ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.private_key));
+                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.server_type);
+                        storageApi.setBasePath(credentials.getServer_type());
                         FileInputStream is = new FileInputStream(filePart.getFile());
-                        UploadResponse response = storageApi.Upload(credentials.client_id, filePart.getFilename(), "uploaded", "", new FileStream(is));
+                        UploadResponse response = storageApi.Upload(credentials.getClient_id(), filePart.getFilename(), "uploaded", "", new FileStream(is));
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                             fileId = response.getResult().getGuid();
                         }
@@ -98,12 +98,12 @@ public class Sample10 extends Controller {
 
 		            //Create ApiInvoker object
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.private_key));
+							new GroupDocsRequestSigner(credentials.getPrivate_key()));
 					//Create DocApi obect
 					DocApi api = new DocApi();
-					api.setBasePath(credentials.server_type);
+					api.setBasePath(credentials.getServer_type());
 					//###Make a request to DocApi to get document metadeta for entered fileId
-					GetDocumentInfoResponse metadata = new DocApi().GetDocumentMetadata(credentials.client_id, fileId);
+					GetDocumentInfoResponse metadata = new DocApi().GetDocumentMetadata(credentials.getClient_id(), fileId);
 					String file_Id = null;
 					//Check request result
 					if(metadata != null && metadata.getStatus().trim().equalsIgnoreCase("Ok")){
@@ -112,7 +112,7 @@ public class Sample10 extends Controller {
 						throw new Exception("Not Found");
 					}
 					//###Make a request to DocApi to share document
-					SharedUsersResponse response = api.ShareDocument(credentials.client_id, file_Id, Arrays.asList(new String[]{email}));
+					SharedUsersResponse response = api.ShareDocument(credentials.getClient_id(), file_Id, Arrays.asList(new String[]{email}));
 					//Check request result
 					if(response != null && metadata.getStatus().trim().equalsIgnoreCase("Ok")){
 						result = response.getResult();

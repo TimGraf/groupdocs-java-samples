@@ -11,6 +11,7 @@ import java.lang.reflect.Array;
 
 import javax.swing.text.html.HTML;
 
+import common.Utils;
 import models.Credentials;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -53,9 +54,9 @@ public class Sample20 extends Controller {
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.client_id);
-				session().put("private_key", credentials.private_key);
-				session().put("server_type", credentials.server_type);
+				session().put("client_id", credentials.getClient_id());
+				session().put("private_key", credentials.getPrivate_key());
+				session().put("server_type", credentials.getServer_type());
 				
 				Map<String, String[]> formData = request().body().asFormUrlEncoded();
 				String file_id = formData.get("resultFileId") != null ? formData.get("resultFileId")[0] : null;
@@ -71,14 +72,14 @@ public class Sample20 extends Controller {
 					
 					//Create ApiInvoker object
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.private_key));
+							new GroupDocsRequestSigner(credentials.getPrivate_key()));
 					//Create StorageApi object
 					ComparisonApi api = new ComparisonApi();
-					api.setBasePath(credentials.server_type);
+					api.setBasePath(credentials.getServer_type());
 					
-					ChangesResponse getChanges = api.GetChanges(credentials.client_id, file_id);
-					
-					System.err.println(getChanges.getError_message() + "--------------"); //TODO: 
+					ChangesResponse getChanges = api.GetChanges(credentials.getClient_id(), file_id);
+
+                    getChanges = Utils.assertResponse(getChanges);
 					if (getChanges.getStatus().trim().equalsIgnoreCase("Ok")) {
 
 						table = "<table border=1>";

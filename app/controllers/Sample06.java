@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.groupdocs.sdk.model.*;
+import common.Utils;
 import models.Credentials;
 
 import org.apache.commons.io.FileUtils;
@@ -22,10 +24,6 @@ import com.groupdocs.sdk.common.ApiException;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.common.MimeUtils;
-import com.groupdocs.sdk.model.SignatureSignDocumentDocumentSettings;
-import com.groupdocs.sdk.model.SignatureSignDocumentResponse;
-import com.groupdocs.sdk.model.SignatureSignDocumentSettings;
-import com.groupdocs.sdk.model.SignatureSignDocumentSignerSettings;
 
 public class Sample06 extends Controller {
 	//###Set variables
@@ -45,9 +43,9 @@ public class Sample06 extends Controller {
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.client_id);
-				session().put("private_key", credentials.private_key);
-				session().put("server_type", credentials.server_type);
+				session().put("client_id", credentials.getClient_id());
+				session().put("private_key", credentials.getPrivate_key());
+				session().put("server_type", credentials.getServer_type());
 				
 				MultipartFormData body = request().body().asMultipartFormData();
 				Map<String, String[]> formData = body.asFormUrlEncoded();
@@ -62,7 +60,7 @@ public class Sample06 extends Controller {
 					}
 					//Create ApiInvoker,
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.private_key));
+							new GroupDocsRequestSigner(credentials.getPrivate_key()));
 					//Read document to sign from URL
 					String base64file = MimeUtils.readAsDataURL(fi_document.getFile(), fi_document.getContentType());
 					//Read signature file from URL
@@ -96,15 +94,16 @@ public class Sample06 extends Controller {
 
 					//Sign document using current user id and sign settings
 					SignatureApi sapi = new SignatureApi();
-					sapi.setBasePath(credentials.server_type);
-					SignatureSignDocumentResponse response = sapi.SignDocument(credentials.client_id, requestBody);
-					//Check request result
-					System.err.println(response.getError_message());
-					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-						fileGuid = response.getResult().getDocuments().get(0).getDocumentId();
-					} else {
-						throw new ApiException(400, response.getError_message());
-					}
+					sapi.setBasePath(credentials.getServer_type());
+					SignatureSignDocumentResponse response = sapi.SignDocument(credentials.getClient_id(), requestBody);
+                    //Check request result
+                    response = Utils.assertResponse(response);
+                    String jobId = response.getResult().getJobId();
+                    Thread.sleep(5000);
+                    SignatureSignDocumentStatusResponse signResponse = sapi.GetSignDocumentStatus(credentials.getClient_id(), jobId);
+                    signResponse = Utils.assertResponse(signResponse);
+                    fileGuid = signResponse.getResult().getDocuments().get(0).getDocumentId();
+                    fileGuid = Utils.assertNotNull(fileGuid);
 					//If request was successfull - set fileGuid variable for template
 					status = ok(views.html.sample06.render(title, sample, fileGuid, filledForm));
 			    //###Definition of Api errors and conclusion of the corresponding message

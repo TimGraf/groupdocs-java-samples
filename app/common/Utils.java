@@ -123,7 +123,7 @@ public abstract class Utils {
         ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(pkey));
         DocApi docApi = new DocApi();
         docApi.setBasePath(bpath);
-        ViewDocumentResponse viewDocumentResponse = docApi.ViewDocument(cid, guid, null, null, null, null, null);
+        ViewDocumentResponse viewDocumentResponse = docApi.ViewDocument(cid, guid, null, null, null, null, null, null);
         if (viewDocumentResponse == null || !"Ok".equalsIgnoreCase(viewDocumentResponse.getStatus())){
             throw new Exception(viewDocumentResponse.getError_message());
         }
@@ -143,6 +143,20 @@ public abstract class Utils {
         }
         if (!"Ok".equalsIgnoreCase((String)r.getClass().getDeclaredMethod("getStatus").invoke(r))) {
             throw new Exception((String)r.getClass().getDeclaredMethod("getError_message").invoke(r));
+        }
+        return r;
+    }
+
+    /**
+     *
+     * @param r
+     * @param <R>
+     * @return
+     * @throws Exception
+     */
+    public static <R> R assertNotNull(R r) throws Exception{
+        if (r == null) {
+            throw new Exception("Utils.assertNotNull calls with null value");
         }
         return r;
     }

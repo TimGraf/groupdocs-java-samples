@@ -46,10 +46,10 @@ public class Sample23 extends Controller {
         if ("POST".equalsIgnoreCase(request.method())) {
             filledForm = form.bindFromRequest();
             Credentials credentials = filledForm.get();
-            if (StringUtils.isNotEmpty(credentials.client_id) || StringUtils.isNotEmpty(credentials.private_key)) {
-                session().put("client_id", credentials.client_id);
-                session().put("private_key", credentials.private_key);
-                session().put("server_type", credentials.server_type);
+            if (StringUtils.isNotEmpty(credentials.getClient_id()) || StringUtils.isNotEmpty(credentials.getPrivate_key())) {
+                session().put("client_id", credentials.getClient_id());
+                session().put("private_key", credentials.getPrivate_key());
+                session().put("server_type", credentials.getServer_type());
             }
 
             Http.MultipartFormData multipartFormData = request.body().asMultipartFormData();
@@ -62,7 +62,7 @@ public class Sample23 extends Controller {
             } else if ("url".equalsIgnoreCase(sourse)) {
                 try {
                     String url = Utils.getFormValue(formUrlEncodedData, "url");
-                    guid = Utils.getGuidByUrl(credentials.client_id, credentials.private_key, credentials.server_type, url);
+                    guid = Utils.getGuidByUrl(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), url);
                 } catch (Exception e) {
                     filledForm.reject(e.getMessage());
                     e.printStackTrace();
@@ -71,7 +71,7 @@ public class Sample23 extends Controller {
             } else if ("local".equalsIgnoreCase(sourse)) {
                 try {
                     Http.MultipartFormData.FilePart local = multipartFormData.getFile("file");
-                    guid = Utils.getGuidByFile(credentials.client_id, credentials.private_key, credentials.server_type, local.getFilename(), new FileStream(new FileInputStream(local.getFile())));
+                    guid = Utils.getGuidByFile(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), local.getFilename(), new FileStream(new FileInputStream(local.getFile())));
                 } catch (Exception e) {
                     filledForm.reject(e.getMessage());
                     e.printStackTrace();
@@ -85,18 +85,18 @@ public class Sample23 extends Controller {
 
             try {
                 ApiInvoker.getInstance().setRequestSigner(
-                        new GroupDocsRequestSigner(credentials.private_key));
+                        new GroupDocsRequestSigner(credentials.getPrivate_key()));
                 //Create DocApi object
                 DocApi api = new DocApi();
-                api.setBasePath(credentials.server_type);
+                api.setBasePath(credentials.getServer_type());
                 //Get document metadata
-                ViewDocumentResponse response = api.ViewDocument(credentials.client_id, guid, "0", "-1", "", "100", "");
+                ViewDocumentResponse response = api.ViewDocument(credentials.getClient_id(), guid, "0", "-1", "", "100", "", null);
 
-                if (credentials.server_type.equals("https://api.groupdocs.com/v2.0")) {
+                if (credentials.getServer_type().equals("https://api.groupdocs.com/v2.0")) {
                     frameUrl = "https://apps.groupdocs.com/document-viewer/embed/" + response.getResult().getGuid() + "?frameborder=0 width=500 height=650";
-                } else if (credentials.server_type.equals("https://dev-api.groupdocs.com/v2.0")) {
+                } else if (credentials.getServer_type().equals("https://dev-api.groupdocs.com/v2.0")) {
                     frameUrl = "https://dev-apps.groupdocs.com/document-viewer/embed/" + response.getResult().getGuid() + "?frameborder=0 width=500 height=650";
-                } else if (credentials.server_type.equals("https://stage-api.groupdocs.com/v2.0")) {
+                } else if (credentials.getServer_type().equals("https://stage-api.groupdocs.com/v2.0")) {
                     frameUrl = "https://stage-apps.groupdocs.com/document-viewer/embed/" + response.getResult().getGuid() + "?frameborder=0 width=500 height=650";
                 }
 

@@ -38,26 +38,26 @@ public class Sample15 extends Controller {
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.client_id);
-				session().put("private_key", credentials.private_key);
-				session().put("server_type", credentials.server_type);
+				session().put("client_id", credentials.getClient_id());
+				session().put("private_key", credentials.getPrivate_key());
+				session().put("server_type", credentials.getServer_type());
 								
 				try {
 					//Check client id and private key 
-					if(credentials.client_id == null || credentials.private_key == null){
+					if(credentials.getClient_id() == null || credentials.getPrivate_key() == null){
 						throw new Exception();
 					}
 					//###Create ApiInvoker, Doc Api objects
 					
 					//Create ApiInvoker object
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.private_key));
+							new GroupDocsRequestSigner(credentials.getPrivate_key()));
 					//Create Doc Api object and get document metadata
 					DocApi metadata = new DocApi();
-					metadata.setBasePath(credentials.server_type);
+					metadata.setBasePath(credentials.getServer_type());
 					
 					//###Make request to Doc api to get documents views
-					DocumentViewsResponse viewes = metadata.GetDocumentViews(credentials.client_id, null, null);
+					DocumentViewsResponse viewes = metadata.GetDocumentViews(credentials.getClient_id(), null, null);
 					//Check request status
 					if(viewes != null && viewes.getStatus().trim().equalsIgnoreCase("Ok")){
 						//If requst status is Ok get views

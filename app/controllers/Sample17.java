@@ -44,10 +44,10 @@ public class Sample17 extends Controller {
         if ("POST".equalsIgnoreCase(request.method())){
             filledForm = form.bindFromRequest();
             Credentials credentials = filledForm.get();
-            if (StringUtils.isNotEmpty(credentials.client_id) || StringUtils.isNotEmpty(credentials.private_key)){
-                session().put("client_id", credentials.client_id);
-                session().put("private_key", credentials.private_key);
-                session().put("server_type", credentials.server_type);
+            if (StringUtils.isNotEmpty(credentials.getClient_id()) || StringUtils.isNotEmpty(credentials.getPrivate_key())){
+                session().put("client_id", credentials.getClient_id());
+                session().put("private_key", credentials.getPrivate_key());
+                session().put("server_type", credentials.getServer_type());
             }
             Http.MultipartFormData multipartFormData = request.body().asMultipartFormData();
             Map<String, String[]> formUrlEncodedData = multipartFormData.asFormUrlEncoded();
@@ -60,7 +60,7 @@ public class Sample17 extends Controller {
             else if ("url".equalsIgnoreCase(sourse)) {
                 try {
                     String url = Utils.getFormValue(formUrlEncodedData, "url");
-                    guid = Utils.getGuidByUrl(credentials.client_id, credentials.private_key, credentials.server_type, url);
+                    guid = Utils.getGuidByUrl(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), url);
                 }
                 catch (Exception e) {
                     filledForm.reject(e.getMessage());
@@ -71,7 +71,7 @@ public class Sample17 extends Controller {
             else if ("local".equalsIgnoreCase(sourse)) {
                 try {
                     Http.MultipartFormData.FilePart local = multipartFormData.getFile("local");
-                    guid = Utils.getGuidByFile(credentials.client_id, credentials.private_key, credentials.server_type, local.getFilename(), new FileStream(new FileInputStream(local.getFile())));
+                    guid = Utils.getGuidByFile(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), local.getFilename(), new FileStream(new FileInputStream(local.getFile())));
                 }
                 catch (Exception e) {
                     filledForm.reject(e.getMessage());
@@ -85,15 +85,15 @@ public class Sample17 extends Controller {
             }
 
             try {
-                Double fileID = Utils.getFileIdByGuid(credentials.client_id, credentials.private_key, credentials.server_type, guid);
+                Double fileID = Utils.getFileIdByGuid(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), guid);
 
-                ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(credentials.private_key));
+                ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(credentials.getPrivate_key()));
                 StorageApi api = new StorageApi();
-                api.setBasePath(credentials.server_type);
-                CompressResponse compressResponse = api.Compress(credentials.client_id, Double.toString(fileID), "zip");
+                api.setBasePath(credentials.getServer_type());
+                CompressResponse compressResponse = api.Compress(credentials.getClient_id(), Double.toString(fileID), "zip");
 
                 if (compressResponse != null && "Ok".equalsIgnoreCase(compressResponse.getStatus())){
-                    String fileName = Utils.getFileNameByGuid(credentials.client_id, credentials.private_key, credentials.server_type, guid);
+                    String fileName = Utils.getFileNameByGuid(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), guid);
                     data.put("gdFile", fileName.replaceAll("\\.[a-z]{3}", ".zip"));
                 }
                 else {

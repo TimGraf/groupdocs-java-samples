@@ -37,21 +37,21 @@ public class Sample01 extends Controller {
 			} else {
 				//If filledForm have no errors get all parameters
 				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.client_id);
-				session().put("private_key", credentials.private_key);
-				session().put("server_type", credentials.server_type);
+				session().put("client_id", credentials.getClient_id());
+				session().put("private_key", credentials.getPrivate_key());
+				session().put("server_type", credentials.getServer_type());
 				//###Create ApiInvoker and Management Api objects
 	            
 	            //Create ApiInvoker object
 				ApiInvoker.getInstance().setRequestSigner(
-						new GroupDocsRequestSigner(credentials.private_key));
+						new GroupDocsRequestSigner(credentials.getPrivate_key()));
 				//Create Management Api object
 				MgmtApi api = new MgmtApi();
-				api.setBasePath(credentials.server_type);
+				api.setBasePath(credentials.getServer_type());
 				
 				//###Make a request to Management API using clientId
 				try {
-					UserInfoResponse response = api.GetUserProfile(credentials.client_id);
+					UserInfoResponse response = api.GetUserProfile(credentials.getClient_id());
 					//Check the result of the request
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
 						userInfo = response.getResult().getUser();

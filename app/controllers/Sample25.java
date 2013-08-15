@@ -62,23 +62,23 @@ public class Sample25 extends Controller {
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.client_id);
-				session().put("private_key", credentials.private_key);
-				session().put("server_type", credentials.server_type);
+				session().put("client_id", credentials.getClient_id());
+				session().put("private_key", credentials.getPrivate_key());
+				session().put("server_type", credentials.getServer_type());
 				
 				MultipartFormData body = request().body().asMultipartFormData();
 		        FilePart filePart = body.getFile("file");
 		       
 		        //###Create ApiInvoker, Storage Api and FileInputStream objects
 				try {
-					String basePath = credentials.server_type;
+					String basePath = credentials.getServer_type();
 					if (basePath.equals("")) {
 						basePath = "https://api.groupdocs.com/v2.0";
 					}
 					//Create ApiInvoker object
 					
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.private_key));
+							new GroupDocsRequestSigner(credentials.getPrivate_key()));
 					//Create Storage object
 					StorageApi storageApi = new StorageApi();
 					//Create DocApi object
@@ -103,7 +103,7 @@ public class Sample25 extends Controller {
                     else if ("url".equalsIgnoreCase(sourse)) {
                         try {
                             String url = Utils.getFormValue(formUrlEncodedData, "url");
-                            guid = Utils.getGuidByUrl(credentials.client_id, credentials.private_key, credentials.server_type, url);
+                            guid = Utils.getGuidByUrl(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), url);
                         }
                         catch (Exception e) {
                             filledForm.reject(e.getMessage());
@@ -114,7 +114,7 @@ public class Sample25 extends Controller {
                     else if ("local".equalsIgnoreCase(sourse)) {
                         try {
                             Http.MultipartFormData.FilePart local = multipartFormData.getFile("file");
-                            guid = Utils.getGuidByFile(credentials.client_id, credentials.private_key, credentials.server_type, local.getFilename(), new FileStream(new FileInputStream(local.getFile())));
+                            guid = Utils.getGuidByFile(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), local.getFilename(), new FileStream(new FileInputStream(local.getFile())));
                         }
                         catch (Exception e) {
                             filledForm.reject(e.getMessage());
@@ -130,7 +130,7 @@ public class Sample25 extends Controller {
 
 
 						//Get all fields from template
-						TemplateFieldsResponse fields = docApi.GetTemplateFields(credentials.client_id, guid, false);
+						TemplateFieldsResponse fields = docApi.GetTemplateFields(credentials.getClient_id(), guid, false);
 						if (fields != null && fields.getStatus().trim().equalsIgnoreCase("Ok")) {
 							//Create DataSource object
 							Datasource dataSource = new Datasource();
@@ -152,20 +152,20 @@ public class Sample25 extends Controller {
 							//Set fields list to the DataSource
 							dataSource.setFields(list);
 							//Add DataSource to the GroupDocs
-							AddDatasourceResponse addDataSource = mergeApi.AddDataSource(credentials.client_id, dataSource);
+							AddDatasourceResponse addDataSource = mergeApi.AddDataSource(credentials.getClient_id(), dataSource);
 
 
 
 							if (addDataSource.getStatus().trim().equalsIgnoreCase("Ok")) {
 								//Merge DataSource and convert to the pdf
-								MergeTemplateResponse merge = mergeApi.MergeDatasource(credentials.client_id, guid, Double.toString(addDataSource.getResult().getDatasource_id()), "pdf", "");
+								MergeTemplateResponse merge = mergeApi.MergeDatasource(credentials.getClient_id(), guid, Double.toString(addDataSource.getResult().getDatasource_id()), "pdf", "");
 								if (merge.getStatus().trim().equalsIgnoreCase("Ok")) {
 									Thread.sleep(2000);
 									//Check job status
 									GetJobDocumentsResponse job = new GetJobDocumentsResponse();
 									for (int n = 0; n < 5; n++) {
 										
-										job = asyncApi.GetJobDocuments(credentials.client_id, Double.toString(merge.getResult().getJob_id()), "");
+										job = asyncApi.GetJobDocuments(credentials.getClient_id(), Double.toString(merge.getResult().getJob_id()), "");
 										if (job.getStatus().trim().equalsIgnoreCase("Ok")) {
 											if (job.getResult().getJob_status().trim().equalsIgnoreCase("Completed") || job.getResult().getJob_status().trim().equalsIgnoreCase("Archived")) {
 												break;
@@ -184,7 +184,7 @@ public class Sample25 extends Controller {
 									//###Make a request to Storage API using clientId
 									
 									//Get file from storage
-									FileStream resp = storageApi.GetFile(credentials.client_id, guid);
+									FileStream resp = storageApi.GetFile(credentials.getClient_id(), guid);
 									//Check request result
 									FileStream  dowloadedFile = null;
 									if(resp != null && resp.getInputStream() != null){
@@ -204,6 +204,7 @@ public class Sample25 extends Controller {
 					                //Write file to local folder
 					                IOUtils.copy(dowloadedFile.getInputStream(), newFile);
 					                IOUtils.closeQuietly(dowloadedFile.getInputStream());
+                                    newFile.close();
 					                iframe.put("message", "File was converted and downloaded to the " + downloadPath + dowloadedFile.getFileName());
 					                //### If request was successfull
 			                         //Generation of iframe URL using $pageImage->result->guid

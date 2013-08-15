@@ -68,9 +68,9 @@ public class Sample21 extends Controller {
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.client_id);
-				session().put("private_key", credentials.private_key);
-				session().put("server_type", credentials.server_type);
+				session().put("client_id", credentials.getClient_id());
+				session().put("private_key", credentials.getPrivate_key());
+				session().put("server_type", credentials.getServer_type());
 
                 Http.MultipartFormData multipartFormData = request().body().asMultipartFormData();
                 Map<String, String[]> formUrlEncodedData = multipartFormData.asFormUrlEncoded();
@@ -80,7 +80,7 @@ public class Sample21 extends Controller {
 				String firstName = Utils.getFormValue(formUrlEncodedData, "name");
 				String lastName = Utils.getFormValue(formUrlEncodedData, "lastName");
 		        String callback = Utils.getFormValue(formUrlEncodedData, "callbackUrl");
-				String basePath = credentials.server_type;
+				String basePath = credentials.getServer_type();
                 FilePart filePart = multipartFormData.getFile("file");
 		        
 				try {
@@ -96,7 +96,7 @@ public class Sample21 extends Controller {
                     } else if ("url".equalsIgnoreCase(sourse)) {
                         try {
                             String url = Utils.getFormValue(formUrlEncodedData, "url");
-                            documentId = Utils.getGuidByUrl(credentials.client_id, credentials.private_key, credentials.server_type, url);
+                            documentId = Utils.getGuidByUrl(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), url);
                         } catch (Exception e) {
                             filledForm.reject(e.getMessage());
                             e.printStackTrace();
@@ -104,7 +104,7 @@ public class Sample21 extends Controller {
                         }
                     } else if ("local".equalsIgnoreCase(sourse)) {
                         try {
-                            documentId = Utils.getGuidByFile(credentials.client_id, credentials.private_key, credentials.server_type, "samples/signature/" + filePart.getFilename(), new FileStream(new FileInputStream(filePart.getFile())));
+                            documentId = Utils.getGuidByFile(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), "samples/signature/" + filePart.getFilename(), new FileStream(new FileInputStream(filePart.getFile())));
                         } catch (Exception e) {
                             filledForm.reject(e.getMessage());
                             e.printStackTrace();
@@ -122,19 +122,19 @@ public class Sample21 extends Controller {
 					//Make a requests to Signature Api to create an envelope
 					SignatureEnvelopeSettings env = new SignatureEnvelopeSettings();
 					env.setEmailSubject("Sign this!");
-					SignatureEnvelopeResponse envelopeResponse = api.CreateSignatureEnvelope(credentials.client_id, "SampleEnvelope_" + UUID.randomUUID(), null, null, null, env);
+					SignatureEnvelopeResponse envelopeResponse = api.CreateSignatureEnvelope(credentials.getClient_id(), "SampleEnvelope_" + UUID.randomUUID(), null, null, null, true, env);
 					//Get an ID of created envelope
 					final String envelopeId = envelopeResponse.getResult().getEnvelope().getId();
 					
 					//###Make a request to Signature Api to add document to envelope
-					SignatureEnvelopeDocumentResponse envelopeDocument = api.AddSignatureEnvelopeDocument(credentials.client_id, envelopeId, documentId, null);
+					SignatureEnvelopeDocumentResponse envelopeDocument = api.AddSignatureEnvelopeDocument(credentials.getClient_id(), envelopeId, documentId, null, true);
                     envelopeResponse = Utils.assertResponse(envelopeResponse);
 					//Update document ID after it's added to envelope
 					documentId = envelopeDocument.getResult().getDocument().getDocumentId();
 
 					//###Make a request to Signature Api to get all available roles
 					String roleGuid = null;
-					List<SignatureRoleInfo> roles = api.GetRolesList(credentials.client_id, null).getResult().getRoles();
+					List<SignatureRoleInfo> roles = api.GetRolesList(credentials.getClient_id(), null).getResult().getRoles();
 					for(SignatureRoleInfo role : roles){
 						//Get an ID of Signer role
 						if(role.getName().equalsIgnoreCase("Signer")){
@@ -142,11 +142,11 @@ public class Sample21 extends Controller {
 						}
 					}
 					//###Make a request to Signature Api to add new recipient to envelope
-					String recipientId = api.AddSignatureEnvelopeRecipient(credentials.client_id, envelopeId, email, firstName, lastName, roleGuid, null).getResult().getRecipient().getId();
+					String recipientId = api.AddSignatureEnvelopeRecipient(credentials.getClient_id(), envelopeId, email, firstName, lastName, roleGuid, null).getResult().getRecipient().getId();
 					
 					//###Make a request to Signature Api to get all available fields
 					String fieldId = null;
-					List<SignatureFieldInfo> fields = api.GetFieldsList(credentials.client_id, null).getResult().getFields();
+					List<SignatureFieldInfo> fields = api.GetFieldsList(credentials.getClient_id(), null).getResult().getFields();
 					for(SignatureFieldInfo field : fields){
 						//Get an ID of single line field
 						if(field.getFieldType() == 2){ // single line, see http://scotland.groupdocs.com/wiki/display/SDS/field.type
@@ -160,7 +160,7 @@ public class Sample21 extends Controller {
 					envField.setLocationY(0.2);
 					envField.setPage(1);
 					//###Make a request to Signature Api to add city field to envelope
-					api.AddSignatureEnvelopeField(credentials.client_id, envelopeId, documentId, recipientId, fieldId, envField);
+					api.AddSignatureEnvelopeField(credentials.getClient_id(), envelopeId, documentId, recipientId, fieldId, envField);
 					
 					fieldId = null;
 					envField = new SignatureEnvelopeFieldSettings();
@@ -174,7 +174,7 @@ public class Sample21 extends Controller {
 					envField.setLocationY(0.3);
 					envField.setPage(1);
 					//###Make a request to Signature Api to add signature field to envelope
-					api.AddSignatureEnvelopeField(credentials.client_id, envelopeId, documentId, recipientId, fieldId, envField);
+					api.AddSignatureEnvelopeField(credentials.getClient_id(), envelopeId, documentId, recipientId, fieldId, envField);
 					
 					//###Make a request to Signature Api to send envelope for signing
 					
@@ -183,7 +183,7 @@ public class Sample21 extends Controller {
 						callback = "";
 					}
 					FileStream stream = new FileStream(IOUtils.toInputStream(callback));
-					api.SignatureEnvelopeSend(credentials.client_id, envelopeId, stream);
+					api.SignatureEnvelopeSend(credentials.getClient_id(), envelopeId, stream);
 					
 					//Store envelopeId in session for later ues in checkCallbackStatus action
 					session().put("envelopeId", envelopeId);
@@ -204,11 +204,11 @@ public class Sample21 extends Controller {
                         DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
 
                         StringBuilder stringBuilder = new StringBuilder();
-                        stringBuilder.append(credentials.client_id);
+                        stringBuilder.append(credentials.getClient_id());
                         stringBuilder.append("|");
-                        stringBuilder.append(credentials.private_key);
+                        stringBuilder.append(credentials.getPrivate_key());
                         stringBuilder.append("|");
-                        stringBuilder.append(credentials.server_type);
+                        stringBuilder.append(credentials.getServer_type());
 
                         dataOutputStream.writeUTF(stringBuilder.toString());
 

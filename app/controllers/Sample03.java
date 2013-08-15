@@ -40,9 +40,9 @@ public class Sample03 extends Controller {
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.client_id);
-				session().put("private_key", credentials.private_key);
-				session().put("server_type", credentials.server_type);
+				session().put("client_id", credentials.getClient_id());
+				session().put("private_key", credentials.getPrivate_key());
+				session().put("server_type", credentials.getServer_type());
 				
 				MultipartFormData body = request().body().asMultipartFormData();
                 String sourse = Utils.getFormValue(body.asFormUrlEncoded(), "sourse");
@@ -51,10 +51,10 @@ public class Sample03 extends Controller {
 				try {
 					//Create ApiInvoker object
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.private_key));
+							new GroupDocsRequestSigner(credentials.getPrivate_key()));
 					//Create Storage object
 					StorageApi api = new StorageApi();
-					api.setBasePath(credentials.server_type);
+					api.setBasePath(credentials.getServer_type());
 
                     UploadResponse response = null;
                     if ("local".equals(sourse)) {
@@ -64,11 +64,11 @@ public class Sample03 extends Controller {
                         String callbackUrl = Utils.getFormValue(body.asFormUrlEncoded(), "callbackUrl");
                         //###Make a request to Storage API using clientId
                         ////Upload file to current user storage
-                        response = api.Upload(credentials.client_id, filePart.getFilename(), "uploaded", callbackUrl, new FileStream(is));
+                        response = api.Upload(credentials.getClient_id(), filePart.getFilename(), "uploaded", callbackUrl, new FileStream(is));
                     }
                     else if ("url".equals(sourse)){
                         String url = Utils.getFormValue(body.asFormUrlEncoded(), "url");
-                        response = api.UploadWeb(credentials.client_id, url);
+                        response = api.UploadWeb(credentials.getClient_id(), url);
                     }
                     UploadRequestResult fileResult;
                     //Check request result

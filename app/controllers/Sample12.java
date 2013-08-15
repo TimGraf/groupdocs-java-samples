@@ -43,9 +43,9 @@ public class Sample12 extends Controller {
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.client_id);
-				session().put("private_key", credentials.private_key);
-				session().put("server_type", credentials.server_type);
+				session().put("client_id", credentials.getClient_id());
+				session().put("private_key", credentials.getPrivate_key());
+				session().put("server_type", credentials.getServer_type());
                 String guid = null;
 
                 try {
@@ -60,10 +60,10 @@ public class Sample12 extends Controller {
                     else if ("url".equals(sourse)) { // Upload file fron URL
                         String url = Utils.getFormValue(fieldsData, "url");
                         ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.private_key));
+                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.server_type);
-                        UploadResponse response = storageApi.UploadWeb(credentials.client_id, url);
+                        storageApi.setBasePath(credentials.getServer_type());
+                        UploadResponse response = storageApi.UploadWeb(credentials.getClient_id(), url);
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                             guid = response.getResult().getGuid();
                         }
@@ -71,11 +71,11 @@ public class Sample12 extends Controller {
                     else if ("local".equals(sourse)) { // Upload local file
                         Http.MultipartFormData.FilePart local = formData.getFile("local");
                         ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.private_key));
+                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
                         StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.server_type);
+                        storageApi.setBasePath(credentials.getServer_type());
                         FileInputStream is = new FileInputStream(local.getFile());
-                        UploadResponse response = storageApi.Upload(credentials.client_id, local.getFilename(), "comment", "", new FileStream(is));
+                        UploadResponse response = storageApi.Upload(credentials.getClient_id(), local.getFilename(), "comment", "", new FileStream(is));
                         if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
                             guid = response.getResult().getGuid();
                         }
@@ -84,17 +84,17 @@ public class Sample12 extends Controller {
                     // Sample:
 
                     //###Create ApiInvoker, Annotation API objects
-					if(credentials.client_id == null || credentials.private_key == null || guid == null){
+					if(credentials.getClient_id() == null || credentials.getPrivate_key() == null || guid == null){
 						throw new Exception();
 					}
 					 //Create ApiInvoker object
 					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.private_key));
+							new GroupDocsRequestSigner(credentials.getPrivate_key()));
 					//Create Annotation api object
 					AntApi ant = new AntApi(); 
-					ant.setBasePath(credentials.server_type);
+					ant.setBasePath(credentials.getServer_type());
 					//Make request to Annotation api to receive list of annotations
-					ListAnnotationsResponse response = ant.ListAnnotations(credentials.client_id, guid);
+					ListAnnotationsResponse response = ant.ListAnnotations(credentials.getClient_id(), guid);
 					//Check request status
 					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
 						//If status Ok get annotations
