@@ -64,7 +64,7 @@ public class Sample21 extends Controller {
 		if(request().method().equalsIgnoreCase("POST")){
 			filledForm = form.bindFromRequest();
 			if(filledForm.hasErrors()){
-				status = badRequest(views.html.sample21.render(title, sample, embedUrl, filledForm));
+				status = badRequest(views.html.sample21.render(sample, embedUrl, filledForm));
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
@@ -100,7 +100,7 @@ public class Sample21 extends Controller {
                         } catch (Exception e) {
                             filledForm.reject(e.getMessage());
                             e.printStackTrace();
-                            return ok(views.html.sample21.render(title, sample, embedUrl, filledForm));
+                            return ok(views.html.sample21.render(sample, embedUrl, filledForm));
                         }
                     } else if ("local".equalsIgnoreCase(sourse)) {
                         try {
@@ -108,12 +108,12 @@ public class Sample21 extends Controller {
                         } catch (Exception e) {
                             filledForm.reject(e.getMessage());
                             e.printStackTrace();
-                            return ok(views.html.sample21.render(title, sample, embedUrl, filledForm));
+                            return ok(views.html.sample21.render(sample, embedUrl, filledForm));
                         }
                     }
                     if (StringUtils.isEmpty(documentId)) {
                         filledForm.reject("GUID is empty or null!");
-                        return ok(views.html.sample21.render(title, sample, embedUrl, filledForm));
+                        return ok(views.html.sample21.render(sample, embedUrl, filledForm));
                     }
 					//Create Signature api object
 					SignatureApi api = new SignatureApi();
@@ -216,7 +216,7 @@ public class Sample21 extends Controller {
                         fileOutputStream.close();
                     }
 					//Use embedded signature url in template
-					status = ok(views.html.sample21.render(title, sample, embedUrl, filledForm));
+					status = ok(views.html.sample21.render(sample, embedUrl, filledForm));
 			    //###Definition of Api errors and conclusion of the corresponding message
 				} catch (ApiException e) {
 					if(e.getCode() == 401){
@@ -225,7 +225,7 @@ public class Sample21 extends Controller {
 					} else {
 						filledForm.reject("Failed to access API: " + e.getMessage());
 					}
-					status = badRequest(views.html.sample21.render(title, sample, embedUrl, filledForm));
+					status = badRequest(views.html.sample21.render(sample, embedUrl, filledForm));
 				//###Definition of filledForm errors and conclusion of the corresponding message	
 				} catch (Exception e) {
 					if(filePart == null){
@@ -236,7 +236,7 @@ public class Sample21 extends Controller {
 					} else {
 						filledForm.reject("Unknown Error: " + e.getMessage());
 					}
-					status = badRequest(views.html.sample21.render(title, sample, embedUrl, filledForm));
+					status = badRequest(views.html.sample21.render(sample, embedUrl, filledForm));
 				}
 			}
 		} else {
@@ -247,7 +247,7 @@ public class Sample21 extends Controller {
 			
 			filledForm = form.bind(sampleValues);
 			session().put("server_type", "https://api.groupdocs.com/v2.0");
-			status = ok(views.html.sample21.render(title, sample, embedUrl, filledForm));
+			status = ok(views.html.sample21.render(sample, embedUrl, filledForm));
 		}
 		//Process template
 		return status;

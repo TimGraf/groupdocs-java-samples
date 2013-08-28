@@ -1,13 +1,13 @@
-@(title: String, subTitle: String, gdFile: FileStream, aForm: Form[Credentials])
+@(success: Boolean, downloadedFile: FileStream, aForm: Form[Credentials])
 
 @import helper._
 
 @* Register customInput as field constructor for this page (customize input field) *@
 @implicitField = @{ FieldConstructor(customInput.f) }
 
-@main(title) {
+@main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 4</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to use StorageApi to download file from GroupDocs using Java SDK</i> <br/>
@@ -59,8 +59,8 @@
 
            }
 
-           @if(gdFile != null){
-            <span style="color: green;">File was downloaded to the <span style="color: blue; text-decoration: underline;"><a href="/images/@gdFile.getFileName">/public/images/@gdFile.getFileName </a> </span> file</span>
+           @if(success){
+            <span style="color: green;">File was downloaded to the <span style="color: blue; text-decoration: underline;"><a href="/images/@downloadedFile.getFileName">/public/images/@downloadedFile.getFileName </a> </span> file</span>
            }
    </div>
 

@@ -50,7 +50,7 @@ public class Sample20 extends Controller {
 		if(request().method().equalsIgnoreCase("POST")){
 			filledForm = form.bindFromRequest();
 			if(filledForm.hasErrors()){
-				status = badRequest(views.html.sample20.render(title, sample, result, filledForm));
+				status = badRequest(views.html.sample20.render(sample, result, filledForm));
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
@@ -125,7 +125,7 @@ public class Sample20 extends Controller {
 					}
 										
 	                //If request was successfull - set file variable for template
-	                status = ok(views.html.sample20.render(title, sample, result, filledForm));
+	                status = ok(views.html.sample20.render(sample, result, filledForm));
 	            //###Definition of Api errors and conclusion of the corresponding message
 				} catch (ApiException e) {
 					if(e.getCode() == 401){
@@ -134,7 +134,7 @@ public class Sample20 extends Controller {
 					} else {
 						filledForm.reject("Failed to access API: " + e.getMessage());
 					}
-					status = badRequest(views.html.sample20.render(title, sample, result, filledForm));
+					status = badRequest(views.html.sample20.render(sample, result, filledForm));
 				//###Definition of filledForm errors and conclusion of the corresponding message
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -143,14 +143,14 @@ public class Sample20 extends Controller {
 					} else {
 						filledForm.reject("file_id", "Something wrong with your file: " + e.getMessage());
 					}
-					status = badRequest(views.html.sample20.render(title, sample, result, filledForm));
+					status = badRequest(views.html.sample20.render(sample, result, filledForm));
 				} 
 
 			}
 		} else {
 			filledForm = form.bind(session());
 			session().put("server_type", "https://api.groupdocs.com/v2.0");
-			status = ok(views.html.sample20.render(title, sample, result, filledForm));
+			status = ok(views.html.sample20.render(sample, result, filledForm));
 		}
 		//Process template
 		return status;

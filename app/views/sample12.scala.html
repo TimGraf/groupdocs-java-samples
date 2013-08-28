@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, annotationList: List[AnnotationInfo], aForm: Form[Credentials])
+@(success: Boolean, annotationList: List[com.groupdocs.sdk.model.AnnotationInfo], aForm: Form[Credentials])
 
 @import helper._
 
@@ -6,9 +6,9 @@
 @implicitField = @{ FieldConstructor(customInput.f) }
 
 
-@main(title) {
+@main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 12</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to list all annotations from document using Java SDK</i> <br/>
@@ -16,7 +16,7 @@
     <a href="@routes.Assets.at("docs/Sample12.html")">Docs for this sample</a>
     <br />
    <br/>
-   		<p><font color="green">You entered: </font></p>
+   		<p><span style="color: green">You entered: </span></p>
 		<p>Client Id = @aForm.data.get("client_id")</p>
 		<p>Private Key = @aForm.data.get("private_key")</p>
 		<p>File Id = @aForm.data.get("fileId") </p>
@@ -57,29 +57,27 @@
         }
    </div>
 
-@if(annotationList != null){
-   <div  style="padding:20px; border:1px solid black;">
-	
-				@for(annotation <- annotationList){
-                
-                <div>
-                    Access: @annotation.getAccess<br />
-                    Type: @annotation.getType<br />
-                    Replies:
-                    <ul>
-                    	@for(replies <- annotation.getReplies){
-                        	
-                        	<li>@replies.getUserName : @replies.getText</li>
-                        	
-                        }
-                    </ul>
-                    <hr />
-                </div>
-				
-				}
-				
-   </div>
-}
+    @if(success){
+       <div  style="padding:20px; border:1px solid black;">
+
+                    @for(annotation <- annotationList){
+
+                    <div>
+                        Access: @annotation.getAccess<br />
+                        Type: @annotation.getType<br />
+                        Replies:
+                        <ul>
+                            @for(replies <- annotation.getReplies){
+                                <li>@replies.getUserName : @replies.getText</li>
+                            }
+                        </ul>
+                        <hr />
+                    </div>
+
+                    }
+
+       </div>
+    }
 
 </div>
     <script type="text/javascript" language="JavaScript">

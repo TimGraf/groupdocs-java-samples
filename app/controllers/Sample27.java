@@ -41,7 +41,7 @@ public class Sample27 extends Controller {
 
         if ("GET".equalsIgnoreCase(request.method())) {
             session().put("server_type", "https://api.groupdocs.com/v2.0");
-            return ok(views.html.sample27.render(title, sample, data, filledForm));
+            return ok(views.html.sample27.render(sample, data, filledForm));
         }
         if ("POST".equalsIgnoreCase(request.method())) {
             filledForm = form.bindFromRequest();
@@ -76,7 +76,7 @@ public class Sample27 extends Controller {
                 } catch (Exception e) {
                     filledForm.reject(e.getMessage());
                     e.printStackTrace();
-                    return ok(views.html.sample27.render(title, sample, data, filledForm));
+                    return ok(views.html.sample27.render(sample, data, filledForm));
                 }
             } else if ("local".equalsIgnoreCase(sourse)) {
                 try {
@@ -85,12 +85,12 @@ public class Sample27 extends Controller {
                 } catch (Exception e) {
                     filledForm.reject(e.getMessage());
                     e.printStackTrace();
-                    return ok(views.html.sample27.render(title, sample, data, filledForm));
+                    return ok(views.html.sample27.render(sample, data, filledForm));
                 }
             }
             if (StringUtils.isEmpty(guid)) {
                 filledForm.reject("GUID is empty or null!");
-                return ok(views.html.sample27.render(title, sample, data, filledForm));
+                return ok(views.html.sample27.render(sample, data, filledForm));
             }
 
             try {
@@ -185,9 +185,9 @@ public class Sample27 extends Controller {
 
             } catch (Exception e) {
                 filledForm.reject(e.getMessage());
-                return ok(views.html.sample27.render(title, sample, data, filledForm));
+                return ok(views.html.sample27.render(sample, data, filledForm));
             }
         }
-        return ok(views.html.sample27.render(title, sample, data, filledForm));
+        return ok(views.html.sample27.render(sample, data, filledForm));
     }
 }

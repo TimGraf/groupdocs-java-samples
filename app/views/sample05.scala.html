@@ -1,13 +1,13 @@
-@(title: String, subTitle: String, moveResult: FileMoveResult, aForm: Form[Credentials], action: String)
+@(success: Boolean, moveResult: FileMoveResult, aForm: Form[Credentials], action: String)
 
 @import helper._
 
 @* Register customInput as field constructor for this page (customize input field) *@
 @implicitField = @{ FieldConstructor(customInput.f) }
 
-@main(title) {
+@main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 5</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to use StorageApi to Copy/Move file in GroupDocs using Java SDK</i> <br/>
@@ -64,10 +64,10 @@
         }
    </div>
 
-    @if(moveResult != null && action == "move"){
+    @if(success && action == "move"){
         <h4><span style="color: green">File was Move'ed to the @moveResult.getDst_file.getDocument_path folder</span></h4>
     }
-    @if(moveResult != null && action == "copy"){
+    @if(success && action == "copy"){
             <h4><span style="color: green">File was Copy'ed to the @moveResult.getDst_file.getDocument_path folder</span></h4>
     }
     <br/>

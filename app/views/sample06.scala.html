@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, fileGuid: String, aForm: Form[Credentials])
+@(success: Boolean, guid: String, aForm: Form[Credentials])
 
 @import helper._
 
@@ -6,9 +6,9 @@
 @implicitField = @{ FieldConstructor(customInput.f) }
 
 
-@main(title) {
+@main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 6</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to use StorageApi to upload file to GroupDocs using Java SDK</i> <br/>
@@ -35,11 +35,11 @@
         }
    </div>
 
-@if(fileGuid != null){
+@if(success){
    <br/> 
    <div  style="padding:20px; border:1px solid black;">
         <p> Results: <span id="results_status" style="color:red;display:none;"> (Please wait for ajax response) </span></p>
-        <iframe id="viewer" src="https://apps.groupdocs.com/document-viewer/embed/@fileGuid" frameborder="0" width="600" height="500"></iframe>
+        <iframe id="viewer" src="https://apps.groupdocs.com/document-viewer/embed/@guid" frameborder="0" width="600" height="500"></iframe>
   </div>
   
 }

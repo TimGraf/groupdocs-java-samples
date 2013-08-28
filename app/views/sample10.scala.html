@@ -1,13 +1,13 @@
-@(title: String, subTitle: String, data: SharedUsersResult, aForm: Form[Credentials])
+@(success: Boolean, data: SharedUsersResult, aForm: Form[Credentials])
 
 @import helper._
 
 @* Register customInput as field constructor for this page (customize input field) *@
 @implicitField = @{ FieldConstructor(customInput.f) }
 
-@main(title) {
+@main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 10</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to share a document to other users using Java SDK</i> <br/>
@@ -52,14 +52,14 @@
         }
    </div>
 
-@if(data != null){
-   <br/> 
-   <div  style="padding:20px; border:1px solid black;">
-       @for(user <- data.getShared_users){
-       <p><h3><span style="color: green">Document shared to user with e-mail <h1>@user.getPrimary_email</h1></span></h3>
-       }
-   </div>
-}
+    @if(success){
+       <br/>
+       <div  style="padding:20px; border:1px solid black;">
+           @for(user <- data.getShared_users){
+           <p><h3><span style="color: green">Document shared to user with e-mail <h1>@user.getPrimary_email</h1></span></h3>
+           }
+       </div>
+    }
 
 
 

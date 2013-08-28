@@ -23,81 +23,59 @@ import com.groupdocs.sdk.model.UploadRequestResult;
 import com.groupdocs.sdk.model.UploadResponse;
 
 public class Sample03 extends Controller {
-	//###Set variables
-	static String title = "GroupDocs Java SDK Samples";
-	static Form<Credentials> form = form(Credentials.class);
-	
-	public static Result index() {
-		UploadRequestResult file = null;
-		Form<Credentials> filledForm;
-		String sample = "Sample3";
-		Status status;
-		//Check POST parameters
-		if(request().method().equalsIgnoreCase("POST")){
-			filledForm = form.bindFromRequest();
-			if(filledForm.hasErrors()){
-				status = badRequest(views.html.sample03.render(title, sample, file, filledForm));
-			} else {
-				//Get POST data
-				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.getClient_id());
-				session().put("private_key", credentials.getPrivate_key());
-				session().put("server_type", credentials.getServer_type());
-				
-				MultipartFormData body = request().body().asMultipartFormData();
-                String sourse = Utils.getFormValue(body.asFormUrlEncoded(), "sourse");
+    //
+    protected static Form<Credentials> form = form(Credentials.class);
 
-		        //###Create ApiInvoker, Storage Api and FileInputStream objects
-				try {
-					//Create ApiInvoker object
-					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.getPrivate_key()));
-					//Create Storage object
-					StorageApi api = new StorageApi();
-					api.setBasePath(credentials.getServer_type());
+    public static Result index() {
 
-                    UploadResponse response = null;
-                    if ("local".equals(sourse)) {
-                        FilePart filePart = body.getFile("file");
-                        //Create FileInputStream object
-                        FileInputStream is = new FileInputStream(filePart.getFile());
-                        String callbackUrl = Utils.getFormValue(body.asFormUrlEncoded(), "callbackUrl");
-                        //###Make a request to Storage API using clientId
-                        ////Upload file to current user storage
-                        response = api.Upload(credentials.getClient_id(), filePart.getFilename(), "uploaded", callbackUrl, new FileStream(is));
-                    }
-                    else if ("url".equals(sourse)){
-                        String url = Utils.getFormValue(body.asFormUrlEncoded(), "url");
-                        response = api.UploadWeb(credentials.getClient_id(), url);
-                    }
-                    UploadRequestResult fileResult;
-                    //Check request result
-                    if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-                        file = response.getResult();
-                    }
-                    //If request was successfull - set file variable for template
-                    status = ok(views.html.sample03.render(title, sample, file, filledForm));
-			    //###Definition of Api errors and conclusion of the corresponding message
-				} catch (ApiException e) {
-					if(e.getCode() == 401){
-						List<Object> args = Arrays.asList(new Object[]{"https://apps.groupdocs.com/My/Manage", "Production Server"});
-						filledForm.reject("Wrong Credentials. Please make sure to use credentials from", args);
-					} else {
-						filledForm.reject("Failed to access API: " + e.getMessage());
-					}
-					status = badRequest(views.html.sample03.render(title, sample, file, filledForm));
-				//###Definition of filledForm errors and conclusion of the corresponding message
-				} catch (Exception e) {
-                    filledForm.reject("file", "Something wrong with your file: " + e.getMessage());
-					status = badRequest(views.html.sample03.render(title, sample, file, filledForm));
-				}
-			}
-		} else {
-			filledForm = form.bind(session());
-			session().put("server_type", "https://api.groupdocs.com/v2.0");
-			status = ok(views.html.sample03.render(title, sample, file, filledForm));
-		}
-		//Process template
-		return status;
-	}
+        if (Utils.isPOST(request())) {
+            form = form.bindFromRequest();
+            // Check errors
+            if (form.hasErrors()) {
+                return badRequest(views.html.sample03.render(false, null, form));
+            }
+            // Save credentials to session
+            Credentials credentials = form.get();
+            session().put("client_id", credentials.getClient_id());
+            session().put("private_key", credentials.getPrivate_key());
+            session().put("server_type", credentials.getServer_type());
+            // Get request parameters
+            MultipartFormData body = request().body().asMultipartFormData();
+            String sourse = Utils.getFormValue(body.asFormUrlEncoded(), "sourse");
+            // Initialize SDK with private key
+            ApiInvoker.getInstance().setRequestSigner(
+                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+
+            try {
+                //
+                StorageApi storageApi = new StorageApi();
+                // Initialize API with base path
+                storageApi.setBasePath(credentials.getServer_type());
+                //
+                UploadResponse uploadResponse = null;
+                if ("local".equals(sourse)) {
+                    FilePart filePart = body.getFile("file");
+                    FileInputStream is = new FileInputStream(filePart.getFile());
+                    String callbackUrl = Utils.getFormValue(body.asFormUrlEncoded(), "callbackUrl");
+                    // Upload file to current user storage from local computer
+                    uploadResponse = storageApi.Upload(credentials.getClient_id(), filePart.getFilename(), "uploaded", callbackUrl, new FileStream(is));
+                }
+                else if ("url".equals(sourse)){
+                    String url = Utils.getFormValue(body.asFormUrlEncoded(), "url");
+                    // Upload file to current user storage from url
+                    uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
+                }
+                // Check response status
+                uploadResponse = Utils.assertResponse(uploadResponse);
+                // Render view
+                return ok(views.html.sample03.render(true, uploadResponse.getResult(), form));
+            } catch (Exception e) {
+                return badRequest(views.html.sample03.render(false, null, form));
+            }
+        } else if (Utils.isGET(request())) {
+            form = form.bind(session());
+            session().put("server_type", "https://api.groupdocs.com/v2.0");
+        }
+        return ok(views.html.sample03.render(false, null, form));
+    }
 }

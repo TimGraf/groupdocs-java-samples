@@ -1,13 +1,13 @@
-@(title: String, subTitle: String, thumbnail: String, aForm: Form[Credentials])
+@(success: Boolean, documents: List[com.groupdocs.sdk.model.FileSystemDocument], aForm: Form[Credentials])
 
 @import helper._
 
 @* Register customInput as field constructor for this page (customize input field) *@
 @implicitField = @{ FieldConstructor(customInput.f) }
 
-@main(title) {
+@main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 7</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to use Document Api to list thumbnails for a document using Java SDK</i> <br/>
@@ -32,24 +32,24 @@
         }
    </div>
 
-@if(thumbnail != null){
-   <br/> 
-   <div  style="padding:20px; border:1px solid black;">
-        <p> Results: </p>
-        <table style="border:1px double black;">
-          <tr>
-              <th>Field</th><th>Value</th>
-          </tr>
-          <tr>
-              <td>@Html(thumbnail)</td>
-          </tr>
-        </table>
-        
-   </div>
-}
+    @if(success){
+       <br/>
+       <div  style="padding:20px; border:1px solid black;">
+            <p> Results: </p>
+            <table style="border:1px double black;">
+              <tr>
+                  <th>Field</th><th>Value</th>
+              </tr>
+              <tr>
+                  <td>
+                      @for(document <- documents){
+                          <img src= "data:image/jpg;base64,@document.getThumbnail" width="40" height="40" />@document.getName<br />
+                      }
+                  </td>
+              </tr>
+            </table>
 
-
-
-</div>
-
+       </div>
+    }
+    </div>
 }

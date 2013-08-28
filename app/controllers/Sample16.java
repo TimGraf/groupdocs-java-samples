@@ -42,7 +42,7 @@ public class Sample16 extends Controller {
 
         if ("GET".equalsIgnoreCase(request.method())){
             session().put("server_type", "https://api.groupdocs.com/v2.0");
-            return ok(views.html.sample16.render(title, sample, data, filledForm));
+            return ok(views.html.sample16.render(sample, data, filledForm));
         }
         if ("POST".equalsIgnoreCase(request.method())){
             filledForm = form.bindFromRequest();
@@ -69,7 +69,7 @@ public class Sample16 extends Controller {
                 catch (Exception e) {
                     filledForm.reject(e.getMessage());
                     e.printStackTrace();
-                    return ok(views.html.sample16.render(title, sample, data, filledForm));
+                    return ok(views.html.sample16.render(sample, data, filledForm));
                 }
             }
             else if ("local".equalsIgnoreCase(sourse)) {
@@ -80,15 +80,15 @@ public class Sample16 extends Controller {
                 catch (Exception e) {
                     filledForm.reject(e.getMessage());
                     e.printStackTrace();
-                    return ok(views.html.sample16.render(title, sample, data, filledForm));
+                    return ok(views.html.sample16.render(sample, data, filledForm));
                 }
             }
             if (StringUtils.isEmpty(guid)) {
                 filledForm.reject("GUID is empty or null!");
-                return ok(views.html.sample16.render(title, sample, data, filledForm));
+                return ok(views.html.sample16.render(sample, data, filledForm));
             }
             data.put("guid", guid);
         }
-		return ok(views.html.sample16.render(title, sample, data, filledForm));
+		return ok(views.html.sample16.render(sample, data, filledForm));
 	}
 }

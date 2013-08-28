@@ -1,13 +1,13 @@
-@(title: String, subTitle: String, gdFile: UploadRequestResult, aForm: Form[Credentials])
+@(success: Boolean, uploadedFile: com.groupdocs.sdk.model.UploadRequestResult, aForm: Form[Credentials])
 
 @import helper._
 
 @* Register customInput as field constructor for this page (customize input field) *@
 @implicitField = @{ FieldConstructor(customInput.f) }
 
-@main(title) {
+@main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 3</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to use StorageApi to upload file to GroupDocs using Java SDK</i> <br/>
@@ -54,14 +54,14 @@
         }
    </div>
 
-@if(gdFile != null){
+@if(success){
    
    <div  style="padding:20px; border:1px solid black;">
         
         <p> Results: </p>
         <span style="color:green">File uploaded successful: </span>
         <br />
-        <iframe src="https://apps.groupdocs.com/document-viewer/Embed/@gdFile.getGuid" frameborder="0" width="720" height="600"></iframe>
+        <iframe src="https://apps.groupdocs.com/document-viewer/Embed/@uploadedFile.getGuid" frameborder="0" width="720" height="600"></iframe>
 
    </div>
 }

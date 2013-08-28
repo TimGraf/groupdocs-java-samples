@@ -1,13 +1,13 @@
-@(title: String, subTitle: String, data: CreateAnnotationResult, aForm: Form[Credentials])
+@(success: Boolean, data: com.groupdocs.sdk.model.CreateAnnotationResult, aForm: Form[Credentials])
 
 @import helper._
 
 @* Register customInput as field constructor for this page (customize input field) *@
 @implicitField = @{ FieldConstructor(customInput.f) }
 
-@main(title) {
+@main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 11</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to create and post an annotation into document using Java SDK</i> <br/>
@@ -111,10 +111,10 @@
         }
    </div>
 
-@if(data != null){
+@if(success){
    <br/> 
    <div  style="padding:20px; border:1px solid black;">
-      <iframe src="https://apps.groupdocs.com//document-annotation2/embed/@data.getDocumentGuid ?frameborder="0" width="720" height="600""></iframe>
+      <iframe src="https://apps.groupdocs.com//document-annotation2/embed/@data.getDocumentGuid" frameborder="0" width="720" height="600"></iframe>
    </div>
 }
 

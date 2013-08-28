@@ -28,128 +28,85 @@ import com.groupdocs.sdk.model.SharedUsersResponse;
 import com.groupdocs.sdk.model.SharedUsersResult;
 
 public class Sample10 extends Controller {
-	//###Set variables
-	static String title = "GroupDocs Java SDK Samples";
-	static Form<Credentials> form = form(Credentials.class);
-	
-	public static Result index() {
-		
-		SharedUsersResult result = null;
-		Form<Credentials> filledForm;
-		String sample = "Sample10";
-		Status status;
-		//Check POST parameters
-		if(request().method().equalsIgnoreCase("POST")){
-			filledForm = form.bindFromRequest();
-			if(filledForm.hasErrors()){
-				//If filledForm have errors return to template
-				status = badRequest(views.html.sample10.render(title, sample, result, filledForm));
-			} else {
-				//If filledForm have no errors get all parameters
-				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.getClient_id());
-				session().put("private_key", credentials.getPrivate_key());
-				session().put("server_type", credentials.getServer_type());
-                String fileId = null;
-                String email = null;
+    //
+    protected static Form<Credentials> form = form(Credentials.class);
 
-                try {
-                    /////////////////////////////////////// -- //////////////////////////////////////
-                    Http.MultipartFormData formData = request().body().asMultipartFormData();
-                    Map<String, String[]> fieldsData = formData.asFormUrlEncoded();
+    public static Result index() {
 
-                    String sourse = Utils.getFormValue(fieldsData, "sourse");
-                    if ("guid".equals(sourse)) { // File GUID
-                        fileId = Utils.getFormValue(fieldsData, "fileId");
-                    }
-                    else if ("url".equals(sourse)) { // Upload file fron URL
-                        String fileUrl = Utils.getFormValue(fieldsData, "fileUrl");
-                        ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
-                        StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.getServer_type());
-                        UploadResponse response = storageApi.UploadWeb(credentials.getClient_id(), fileUrl);
-                        if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-                            fileId = response.getResult().getGuid();
-                        }
-                    }
-                    else if ("local".equals(sourse)) { // Upload local file
-                        Http.MultipartFormData.FilePart filePart = formData.getFile("filePart");
-                        ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
-                        StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.getServer_type());
-                        FileInputStream is = new FileInputStream(filePart.getFile());
-                        UploadResponse response = storageApi.Upload(credentials.getClient_id(), filePart.getFilename(), "uploaded", "", new FileStream(is));
-                        if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-                            fileId = response.getResult().getGuid();
-                        }
-                    }
-                    /////////////////////////////////////// -- //////////////////////////////////////
-                    // Sample:
+        if (Utils.isPOST(request())) {
+            form = form.bindFromRequest();
+            // Check errors
+            if (form.hasErrors()) {
+                return badRequest(views.html.sample10.render(false, null, form));
+            }
+            // Save credentials to session
+            Credentials credentials = form.get();
+            session().put("client_id", credentials.getClient_id());
+            session().put("private_key", credentials.getPrivate_key());
+            session().put("server_type", credentials.getServer_type());
+            // Get request parameters
+            Http.MultipartFormData body = request().body().asMultipartFormData();
+            String email = Utils.getFormValue(body, "email");
+            String sourse = Utils.getFormValue(body, "sourse");
+            // Initialize SDK with private key
+            ApiInvoker.getInstance().setRequestSigner(
+                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
 
-                    email = Utils.getFormValue(fieldsData, "email");
-				
-					//### Check fileId amd email
-					if(fileId == null || email == null){
-						throw new Exception();
-					}
-					//###Create ApiInvoker, DocApi objects
+            try {
+                //
+                String guid = null;
+                //
+                if ("guid".equals(sourse)) { // File GUID
+                    guid = Utils.getFormValue(body, "fileId");
+                }
+                else if ("url".equals(sourse)) { // Upload file fron URL
+                    String url = Utils.getFormValue(body, "url");
+                    ApiInvoker.getInstance().setRequestSigner(
+                            new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    StorageApi storageApi = new StorageApi();
+                    // Initialize API with base path
+                    storageApi.setBasePath(credentials.getServer_type());
+                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
+                    // Check response status
+                    uploadResponse = Utils.assertResponse(uploadResponse);
+                    guid = uploadResponse.getResult().getGuid();
+                }
+                else if ("local".equals(sourse)) { // Upload local file
+                    Http.MultipartFormData.FilePart file = body.getFile("filePart");
+                    ApiInvoker.getInstance().setRequestSigner(
+                            new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    StorageApi storageApi = new StorageApi();
+                    // Initialize API with base path
+                    storageApi.setBasePath(credentials.getServer_type());
+                    FileInputStream is = new FileInputStream(file.getFile());
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
+                    // Check response status
+                    uploadResponse = Utils.assertResponse(uploadResponse);
+                    guid = uploadResponse.getResult().getGuid();
+                }
+                guid = Utils.assertNotNull(guid);
+                //
+                DocApi docApi = new DocApi();
+                // Initialize API with base path
+                docApi.setBasePath(credentials.getServer_type());
+                // Get document metadeta for entered fileId
+                GetDocumentInfoResponse documentInfoResponse = docApi.GetDocumentMetadata(credentials.getClient_id(), guid);
+                documentInfoResponse = Utils.assertResponse(documentInfoResponse);
+                String file_Id = documentInfoResponse.getResult().getId().toString();
 
-		            //Create ApiInvoker object
-					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.getPrivate_key()));
-					//Create DocApi obect
-					DocApi api = new DocApi();
-					api.setBasePath(credentials.getServer_type());
-					//###Make a request to DocApi to get document metadeta for entered fileId
-					GetDocumentInfoResponse metadata = new DocApi().GetDocumentMetadata(credentials.getClient_id(), fileId);
-					String file_Id = null;
-					//Check request result
-					if(metadata != null && metadata.getStatus().trim().equalsIgnoreCase("Ok")){
-						file_Id = metadata.getResult().getId().toString();
-					} else {
-						throw new Exception("Not Found");
-					}
-					//###Make a request to DocApi to share document
-					SharedUsersResponse response = api.ShareDocument(credentials.getClient_id(), file_Id, Arrays.asList(new String[]{email}));
-					//Check request result
-					if(response != null && metadata.getStatus().trim().equalsIgnoreCase("Ok")){
-						result = response.getResult();
-					} else {
-						throw new Exception("User identified by " + " not Found");
-					}
-					//If request was successfull - set result variable for template
-					status = ok(views.html.sample10.render(title, sample, result, filledForm));
-				//###Definition of Api errors and conclusion of the corresponding message
-				} catch (ApiException e) {
-					if(e.getCode() == 401){
-						List<Object> args = Arrays.asList(new Object[]{"https://apps.groupdocs.com/My/Manage", "Production Server"});
-						filledForm.reject("Wrong Credentials. Please make sure to use credentials from", args);
-					} else {
-						filledForm.reject("Failed to access API: " + e.getMessage());
-					}
-					status = badRequest(views.html.sample10.render(title, sample, result, filledForm));
-				//###Definition of filledForm errors and conclusion of the corresponding message
-				} catch (Exception e) {
-					e.printStackTrace();
-					if(fileId == null){
-						filledForm.reject("fileId", "This field is required");
-					} else if(email == null){
-						filledForm.reject("email", "This field is required");
-					} else {
-						filledForm.reject("fileId", "Something wrong with your file: " + e.getMessage());
-					}
-					status = badRequest(views.html.sample10.render(title, sample, result, filledForm));
-				} 
-			}
-		} else {
-			filledForm = form.bind(session());
-			session().put("server_type", "https://api.groupdocs.com/v2.0");
-			status = ok(views.html.sample10.render(title, sample, result, filledForm));
-		}
-		//Process template
-		return status;
-	}
-	
+                // Make a request to DocApi to share document
+                SharedUsersResponse sharedUsersResponse = docApi.ShareDocument(credentials.getClient_id(), file_Id, Arrays.asList(new String[]{email}));
+                // Check request status
+                sharedUsersResponse = Utils.assertResponse(sharedUsersResponse);
+                // Render view
+                return ok(views.html.sample10.render(true, sharedUsersResponse.getResult(), form));
+            } catch (Exception e) {
+                return badRequest(views.html.sample10.render(false, null, form));
+            }
+        } else if (Utils.isGET(request())) {
+            form = form.bind(session());
+            session().put("server_type", "https://api.groupdocs.com/v2.0");
+        }
+        return ok(views.html.sample10.render(false, null, form));
+    }
 }

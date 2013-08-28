@@ -1,8 +1,10 @@
 //###This sample will show how to use <b>ListEntities</b> method from Storage  API  to list files within GroupDocs Storage
 package controllers;
 //Import of necessary libraries
+import java.util.HashMap;
 import java.util.List;
 
+import common.Utils;
 import models.Credentials;
 import play.data.Form;
 import play.mvc.Controller;
@@ -17,64 +19,45 @@ import com.groupdocs.sdk.model.FileSystemDocument;
 import com.groupdocs.sdk.model.ListEntitiesResponse;
 
 public class Sample02 extends Controller {
-	//###Set variables
-	static String title = "GroupDocs Java SDK Samples";
-	static Form<Credentials> form = form(Credentials.class);
-	
-	public static Result index() {
-		
-		List<FileSystemDocument> files = null;
-		Form<Credentials> filledForm;
-		String sample = "Sample2";
-		Status status;
-		//Check POST parameters
-		if(request().method().equalsIgnoreCase("POST")){
-			filledForm = form.bindFromRequest();
-			if(filledForm.hasErrors()){
-				status = badRequest(views.html.sample02.render(title, sample, files, filledForm));
-			} else {
-				//Get POST data
-				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.getClient_id());
-				session().put("private_key", credentials.getPrivate_key());
-				session().put("server_type", credentials.getServer_type());
-				
-				//###Create ApiInvoker, Storage Api objects
-				try {
-					 //Create ApiInvoker object
-					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.getPrivate_key()));
-					 //Create Storage api object
-					StorageApi api = new StorageApi();
-					api.setBasePath(credentials.getServer_type());
-					//###Make a request to Storage API using clientId
-		            
-		            //Obtaining all Entities from current user
-					ListEntitiesResponse response = api.ListEntities(credentials.getClient_id(), "", null, null, null, null, null, null, null);
-					//Check request result
-					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-						files = response.getResult().getFiles();
-					}
-					//If request was successfull - set files variable for template
-					status = ok(views.html.sample02.render(title, sample, files, filledForm));
-				//###Definition of Api errors and conclusion of the corresponding message
-				} catch (ApiException e) {
-					if(e.getCode() == 401){
-						List<Object> args = Arrays.asList(new Object[]{"https://apps.groupdocs.com/My/Manage", "Production Server"});
-						filledForm.reject("Wrong Credentials. Please make sure to use credentials from", args);
-					} else {
-						filledForm.reject("Failed to access API: " + e.getMessage());
-					}
-					status = badRequest(views.html.sample02.render(title, sample, files, filledForm));
-				}
-			}
-		} else {
-			filledForm = form.bind(session());
-			session().put("server_type", "https://api.groupdocs.com/v2.0");
-			status = ok(views.html.sample02.render(title, sample, files, filledForm));
-		}
-		//Process template
-		return status;
-	}
+    //
+    protected static Form<Credentials> form = form(Credentials.class);
 
+    public static Result index() {
+
+        if (Utils.isPOST(request())) {
+            form = form.bindFromRequest();
+            // Check errors
+            if (form.hasErrors()) {
+                return badRequest(views.html.sample02.render(false, null, form));
+            }
+            // Save credentials to session
+            Credentials credentials = form.get();
+            session().put("client_id", credentials.getClient_id());
+            session().put("private_key", credentials.getPrivate_key());
+            session().put("server_type", credentials.getServer_type());
+            // Initialize SDK with private key
+            ApiInvoker.getInstance().setRequestSigner(
+                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+
+            try {
+                //
+                StorageApi storageApi = new StorageApi();
+                // Initialize API with base path
+                storageApi.setBasePath(credentials.getServer_type());
+                // Call sample method
+                ListEntitiesResponse listEntitiesResponse = storageApi.ListEntities(credentials.getClient_id(), "", null, null, null, null, null, null, null);
+                // Check response status
+                listEntitiesResponse = Utils.assertResponse(listEntitiesResponse);
+
+                // Render view
+                return ok(views.html.sample02.render(true, listEntitiesResponse.getResult().getFiles(), form));
+            } catch (Exception e) {
+                return badRequest(views.html.sample02.render(false, null, form));
+            }
+        } else if (Utils.isGET(request())) {
+            form = form.bind(session());
+            session().put("server_type", "https://api.groupdocs.com/v2.0");
+        }
+        return ok(views.html.sample02.render(false, null, form));
+    }
 }

@@ -1,13 +1,13 @@
-@(title: String, subTitle: String, gdFiles: List[FileSystemDocument], aForm: Form[Credentials])
+@(success: Boolean, filesList: List[com.groupdocs.sdk.model.FileSystemDocument], aForm: Form[Credentials])
 
 @import helper._
 
 @* Register customInput as field constructor for this page (customize input field) *@
 @implicitField = @{ FieldConstructor(customInput.f) }
 
-@main(title) {
+@main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 2</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to use StorageApi to list user files using Java SDK</i> <br/>
@@ -39,7 +39,7 @@
         }
    </div>
 
-    @if(gdFiles != null){
+    @if(success) {
        <br/>
 
 
@@ -54,7 +54,7 @@
                     <tr>
                         <td>Files list</td>
                         <td>
-                            @for(file <- gdFiles){
+                            @for(file <- filesList){
                                 @file.getName<br />
                             }
                         </td>

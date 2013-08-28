@@ -1,13 +1,13 @@
-@(title: String, subTitle: String, thumbnailUrls: List[String], aForm: Form[Credentials])
+@(success: Boolean, thumbnailUrls: List[String], aForm: Form[Credentials])
 
 @import helper._
 
 @* Register customInput as field constructor for this page (customize input field) *@
 @implicitField = @{ FieldConstructor(customInput.f) }
 
-@main(title) {
+@main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 8</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to use Document Api to list thumbnails for a document using Java SDK</i> <br/>
@@ -52,23 +52,23 @@
         }
    </div>
 
-@if(thumbnailUrls != null){
+@if(success){
    <br/> 
    <div  style="padding:20px; border:1px solid black;">
         <p> Results: </p>
-@for((url, i) <- thumbnailUrls.view.zipWithIndex){
+        @for((url, i) <- thumbnailUrls.view.zipWithIndex){
 
-        <table style="border:1px double black;">
-          <tr>
-              <th>Field</th><th>Value</th>
-          </tr>
-          <tr>
-             <td>Page URL</td><td>@url</td>
-          </tr>
-       </table>
-       <span style="color: green">The page you requested:</span> <br />
-        <img src="@url">
-}
+                <table style="border:1px double black;">
+                  <tr>
+                      <th>Field</th><th>Value</th>
+                  </tr>
+                  <tr>
+                     <td>Page URL</td><td>@url</td>
+                  </tr>
+               </table>
+               <span style="color: green">The page you requested:</span> <br />
+                <img src="@url">
+        }
    </div>
    
 }

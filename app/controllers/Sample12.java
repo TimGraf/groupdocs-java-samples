@@ -25,107 +25,75 @@ import com.groupdocs.sdk.model.AnnotationInfo;
 import com.groupdocs.sdk.model.ListAnnotationsResponse;
 
 public class Sample12 extends Controller {
-	//###Set variables
-	static String title = "GroupDocs Java SDK Samples";
-	static Form<Credentials> form = form(Credentials.class);
-	
-	public static Result index() {
-		
-		List<AnnotationInfo> annotations = null;
-		Form<Credentials> filledForm;
-		String sample = "Sample12";
-		Status status;
-		//Check POST parameters
-		if(request().method().equalsIgnoreCase("POST")){
-			filledForm = form.bindFromRequest();
-			if(filledForm.hasErrors()){
-				status = badRequest(views.html.sample12.render(title, sample, annotations, filledForm));
-			} else {
-				//Get POST data
-				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.getClient_id());
-				session().put("private_key", credentials.getPrivate_key());
-				session().put("server_type", credentials.getServer_type());
+    //
+    protected static Form<Credentials> form = form(Credentials.class);
+
+    public static Result index() {
+
+        if (Utils.isPOST(request())) {
+            form = form.bindFromRequest();
+            // Check errors
+            if (form.hasErrors()) {
+                return badRequest(views.html.sample12.render(false, null, form));
+            }
+            // Save credentials to session
+            Credentials credentials = form.get();
+            session().put("client_id", credentials.getClient_id());
+            session().put("private_key", credentials.getPrivate_key());
+            session().put("server_type", credentials.getServer_type());
+            // Get request parameters
+            Http.MultipartFormData body = request().body().asMultipartFormData();
+            String width = Utils.getFormValue(body, "width");
+            String height = Utils.getFormValue(body, "height");
+            String sourse = Utils.getFormValue(body, "sourse");
+            // Initialize SDK with private key
+            ApiInvoker.getInstance().setRequestSigner(
+                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+
+            try {
+                //
                 String guid = null;
-
-                try {
-                    /////////////////////////////////////// -- //////////////////////////////////////
-                    Http.MultipartFormData formData = request().body().asMultipartFormData();
-                    Map<String, String[]> fieldsData = formData.asFormUrlEncoded();
-
-                    String sourse = Utils.getFormValue(fieldsData, "sourse");
-                    if ("guid".equals(sourse)) { // File GUID
-                        guid = Utils.getFormValue(fieldsData, "fileId");
-                    }
-                    else if ("url".equals(sourse)) { // Upload file fron URL
-                        String url = Utils.getFormValue(fieldsData, "url");
-                        ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
-                        StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.getServer_type());
-                        UploadResponse response = storageApi.UploadWeb(credentials.getClient_id(), url);
-                        if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-                            guid = response.getResult().getGuid();
-                        }
-                    }
-                    else if ("local".equals(sourse)) { // Upload local file
-                        Http.MultipartFormData.FilePart local = formData.getFile("local");
-                        ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
-                        StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.getServer_type());
-                        FileInputStream is = new FileInputStream(local.getFile());
-                        UploadResponse response = storageApi.Upload(credentials.getClient_id(), local.getFilename(), "comment", "", new FileStream(is));
-                        if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-                            guid = response.getResult().getGuid();
-                        }
-                    }
-                    /////////////////////////////////////// -- //////////////////////////////////////
-                    // Sample:
-
-                    //###Create ApiInvoker, Annotation API objects
-					if(credentials.getClient_id() == null || credentials.getPrivate_key() == null || guid == null){
-						throw new Exception();
-					}
-					 //Create ApiInvoker object
-					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.getPrivate_key()));
-					//Create Annotation api object
-					AntApi ant = new AntApi(); 
-					ant.setBasePath(credentials.getServer_type());
-					//Make request to Annotation api to receive list of annotations
-					ListAnnotationsResponse response = ant.ListAnnotations(credentials.getClient_id(), guid);
-					//Check request status
-					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-						//If status Ok get annotations
-						annotations = response.getResult().getAnnotations();
-						
-					} else {
-						//If status error throw exception massage
-						throw new Exception("It wasn't succeeded to get the annotations list");
-						
-					}
-					
-					//If request was successful - set files variable for template
-					status = ok(views.html.sample12.render(title, sample, annotations, filledForm));
-				//###Definition of Api errors and conclusion of the corresponding message
-				} catch (Exception e) {
-					if(e.equals(401)){
-						List<Object> args = Arrays.asList(new Object[]{"https://apps.groupdocs.com/My/Manage", "Production Server"});
-						filledForm.reject("Wrong Credentials. Please make sure to use credentials from", args);
-				} else {
-						filledForm.reject("Failed to access API: " + e.getMessage());
-					}
-					status = badRequest(views.html.sample12.render(title, sample, annotations, filledForm));
-				}
-			}
-		} else {
-			filledForm = form.bind(session());
-			session().put("server_type", "https://api.groupdocs.com/v2.0");
-			status = ok(views.html.sample12.render(title, sample, annotations, filledForm));
-		}
-		//Process template
-		return status;
-	}
-
+                //
+                if ("guid".equals(sourse)) { // File GUID
+                    guid = Utils.getFormValue(body, "fileId");
+                }
+                else if ("url".equals(sourse)) { // Upload file fron URL
+                    String url = Utils.getFormValue(body, "url");
+                    StorageApi storageApi = new StorageApi();
+                    // Initialize API with base path
+                    storageApi.setBasePath(credentials.getServer_type());
+                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
+                    // Check response status
+                    uploadResponse = Utils.assertResponse(uploadResponse);
+                    guid = uploadResponse.getResult().getGuid();
+                }
+                else if ("local".equals(sourse)) { // Upload local file
+                    Http.MultipartFormData.FilePart file = body.getFile("local");
+                    StorageApi storageApi = new StorageApi();
+                    // Initialize API with base path
+                    storageApi.setBasePath(credentials.getServer_type());
+                    FileInputStream is = new FileInputStream(file.getFile());
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
+                    // Check response status
+                    uploadResponse = Utils.assertResponse(uploadResponse);
+                    guid = uploadResponse.getResult().getGuid();
+                }
+                guid = Utils.assertNotNull(guid);
+                // Create Annotation api object
+                AntApi ant = new AntApi();
+                ant.setBasePath(credentials.getServer_type());
+                // Make request to Annotation api to receive list of annotations
+                ListAnnotationsResponse annotationsResponse = ant.ListAnnotations(credentials.getClient_id(), guid);
+                annotationsResponse = Utils.assertResponse(annotationsResponse);
+                // Render view
+                return ok(views.html.sample12.render(true, annotationsResponse.getResult().getAnnotations(), form));
+            } catch (Exception e) {
+                return badRequest(views.html.sample12.render(false, null, form));
+            }
+        } else if (Utils.isGET(request())) {
+            form = form.bind(session());
+            session().put("server_type", "https://api.groupdocs.com/v2.0");
+        }
+        return ok(views.html.sample12.render(false, null, form));
+    }
 }

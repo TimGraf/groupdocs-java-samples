@@ -1,13 +1,13 @@
-@(title: String, subTitle: String, Result: List[UserInfo], aForm: Form[Credentials])
+@(success: Boolean, userInfo: List[com.groupdocs.sdk.model.UserInfo], aForm: Form[Credentials])
 
 @import helper._
 
 @* Register customInput as field constructor for this page (customize input field) *@
 @implicitField = @{ FieldConstructor(customInput.f) }
 
-@main(title) {
+@main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 14</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to check the list of shares for a folder using Java SDK</i> <br/>
@@ -41,8 +41,8 @@
    <div  style="padding:20px; border:1px solid black;">
         <p> Results: </p>
        <p>Shared users:
-       @if(Result != null){
-			@for(name <- Result){
+       @if(success){
+			@for(name <- userInfo){
 				<span style="color: green;">@name.getNickname</span><br />
 			}
 		}

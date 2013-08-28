@@ -37,133 +37,92 @@ import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.sun.jersey.core.header.ContentDisposition;
 
 public class Sample04 extends Controller {
-	//###Set variables
-	static String title = "GroupDocs Java SDK Samples";
-	static Form<Credentials> form = form(Credentials.class);
-	
-	public static Result index() {
-		FileStream file = null;
-		Form<Credentials> filledForm;
-		String sample = "Sample4";
-		Status status;
-		//Check POST parameters
-		if(request().method().equalsIgnoreCase("POST")){
-			filledForm = form.bindFromRequest();
-			if(filledForm.hasErrors()){
-				status = badRequest(views.html.sample04.render(title, sample, file, filledForm));
-			} else {
-				//Get POST data
-				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.getClient_id());
-				session().put("private_key", credentials.getPrivate_key());
-				session().put("server_type", credentials.getServer_type());
+    //
+    protected static Form<Credentials> form = form(Credentials.class);
+
+    public static Result index() {
+
+        if (Utils.isPOST(request())) {
+            form = form.bindFromRequest();
+            // Check errors
+            if (form.hasErrors()) {
+                return badRequest(views.html.sample04.render(false, null, form));
+            }
+            // Save credentials to session
+            Credentials credentials = form.get();
+            session().put("client_id", credentials.getClient_id());
+            session().put("private_key", credentials.getPrivate_key());
+            session().put("server_type", credentials.getServer_type());
+            // Get request parameters
+            Http.MultipartFormData body = request().body().asMultipartFormData();
+            String fileData = Utils.getFormValue(body.asFormUrlEncoded(), "fileData");
+            // Initialize SDK with private key
+            ApiInvoker.getInstance().setRequestSigner(
+                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+
+            try {
+                //
+                StorageApi storageApi = new StorageApi();
+                // Initialize API with base path
+                storageApi.setBasePath(credentials.getServer_type());
+                //
                 String file_id = null;
-
-                try {
-                    /////////////////////////////////////// -- //////////////////////////////////////
-                    Http.MultipartFormData formData = request().body().asMultipartFormData();
-                    Map<String, String[]> fieldsData = formData.asFormUrlEncoded();
-
-                    String fileData = Utils.getFormValue(fieldsData, "fileData");
-                    if ("IDfileId".equals(fileData)) { // File GUID
-                        file_id = Utils.getFormValue(fieldsData, "fileId");
-                    }
-                    else if ("IDfileUrl".equals(fileData)) { // Upload file fron URL
-                        String fileUrl = Utils.getFormValue(fieldsData, "fileUrl");
-                        ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
-                        StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.getServer_type());
-                        UploadResponse response = storageApi.UploadWeb(credentials.getClient_id(), fileUrl);
-                        if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-                            file_id = response.getResult().getGuid();
-                        }
-                    }
-                    else if ("IDfilePart".equals(fileData)) { // Upload local file
-                        Http.MultipartFormData.FilePart filePart = formData.getFile("filePart");
-                        ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
-                        StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.getServer_type());
-                        FileInputStream is = new FileInputStream(filePart.getFile());
-                        UploadResponse response = storageApi.Upload(credentials.getClient_id(), filePart.getFilename(), "uploaded", "", new FileStream(is));
-                        if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-                            file_id = response.getResult().getGuid();
-                        }
-                    }
-                    /////////////////////////////////////// -- //////////////////////////////////////
-                    // Sample:
-
-					//Check entered file id
-					if(file_id == null){
-						throw new Exception();
-					}
-
-                    //Create ApiInvoker object
-                    ApiInvoker.getInstance().setRequestSigner(
-                            new GroupDocsRequestSigner(credentials.getPrivate_key()));
-
-                    DocApi docApi = new DocApi();
-                    docApi.setBasePath(credentials.getServer_type());
-                    GetDocumentInfoResponse docInfoResponse = docApi.GetDocumentMetadata(credentials.getClient_id(), file_id);
-                    GetDocumentInfoResult docInfoResult = docInfoResponse.getResult();
-                    String fileName = docInfoResult.getLast_view().getDocument().getName();
-					//###Create ApiInvoker, Storage Api objects
-					
-					//Create StorageApi object
-                    SharedApi api = new SharedApi();
-					api.setBasePath(credentials.getServer_type());
-					//###Make a request to Storage API using clientId
-					
-					//Get file from storage
-					FileStream resp = api.Download(file_id, fileName, false);
-					//Check request result
-					if(resp != null && resp.getInputStream() != null){
-						file = resp;
-					} else {
-						throw new Exception("Not Found");
-					}
-					//Check file name
-					if(file.getFileName() == null){
-						file.setFileName(fileName);
-					}
-					//###Obtaining file stream of downloading file and definition of folder where to download file
-					String separator = System.getProperty("file.separator");
-	                String path = new File(".").getAbsolutePath();
-	                String downloadPath = path + separator + "public" + separator + "images" + separator;
-	                FileOutputStream newFile = new FileOutputStream(downloadPath + file.getFileName());
-	                //Write file to local folder
-	                IOUtils.copy(file.getInputStream(), newFile);
-	                IOUtils.closeQuietly(file.getInputStream());
-	                //If request was successfull - set file variable for template
-	                status = ok(views.html.sample04.render(title, sample, file, filledForm));
-	            //###Definition of Api errors and conclusion of the corresponding message
-				} catch (ApiException e) {
-					if(e.getCode() == 401){
-						List<Object> args = Arrays.asList(new Object[]{"https://apps.groupdocs.com/My/Manage", "Production Server"});
-						filledForm.reject("Wrong Credentials. Please make sure to use credentials from", args);
-					} else {
-						filledForm.reject("Failed to access API: " + e.getMessage());
-					}
-					status = badRequest(views.html.sample04.render(title, sample, file, filledForm));
-				//###Definition of filledForm errors and conclusion of the corresponding message
-				} catch (Exception e) {
-					e.printStackTrace();
-					if(file_id == null){
-						filledForm.reject("file_id", "This field is required");
-					} else {
-						filledForm.reject("file_id", "Something wrong with your file: " + e.getMessage());
-					}
-					status = badRequest(views.html.sample04.render(title, sample, file, filledForm));
-				} 
-
-			}
-		} else {
-			filledForm = form.bind(session());
-			session().put("server_type", "https://api.groupdocs.com/v2.0");
-			status = ok(views.html.sample04.render(title, sample, file, filledForm));
-		}
-		//Process template
-		return status;
-	}
+                FileStream file = null;
+                //
+                if ("IDfileId".equals(fileData)) { // File GUID
+                    file_id = Utils.getFormValue(body.asFormUrlEncoded(), "fileId");
+                }
+                else if ("IDfileUrl".equals(fileData)) { // Upload file fron URL
+                    String fileUrl = Utils.getFormValue(body.asFormUrlEncoded(), "fileUrl");
+                    UploadResponse response = storageApi.UploadWeb(credentials.getClient_id(), fileUrl);
+                    response = Utils.assertResponse(response);
+                    file_id = response.getResult().getGuid();
+                }
+                else if ("IDfilePart".equals(fileData)) { // Upload local file
+                    Http.MultipartFormData.FilePart filePart = body.getFile("filePart");
+                    FileInputStream is = new FileInputStream(filePart.getFile());
+                    UploadResponse response = storageApi.Upload(credentials.getClient_id(), filePart.getFilename(), "uploaded", "", new FileStream(is));
+                    response = Utils.assertResponse(response);
+                    file_id = response.getResult().getGuid();
+                }
+                //
+                DocApi docApi = new DocApi();
+                docApi.setBasePath(credentials.getServer_type());
+                GetDocumentInfoResponse docInfoResponse = docApi.GetDocumentMetadata(credentials.getClient_id(), file_id);
+                GetDocumentInfoResult docInfoResult = docInfoResponse.getResult();
+                String fileName = docInfoResult.getLast_view().getDocument().getName();
+                //
+                SharedApi sharedApi = new SharedApi();
+                sharedApi.setBasePath(credentials.getServer_type());
+                // Download file from storage
+                FileStream resp = sharedApi.Download(file_id, fileName, false);
+                // Check request result
+                if(resp != null && resp.getInputStream() != null){
+                    file = resp;
+                } else {
+                    throw new Exception("Not Found");
+                }
+                // Check file name
+                if(file.getFileName() == null){
+                    file.setFileName(fileName);
+                }
+                // Obtaining file stream of downloading file and definition of folder where to download file
+                String separator = System.getProperty("file.separator");
+                String path = new File(".").getAbsolutePath();
+                String downloadPath = path + separator + "public" + separator + "images" + separator;
+                FileOutputStream newFile = new FileOutputStream(downloadPath + file.getFileName());
+                // Write file to local folder
+                IOUtils.copy(file.getInputStream(), newFile);
+                IOUtils.closeQuietly(file.getInputStream());
+                // Render view
+                return ok(views.html.sample04.render(true, file, form));
+            } catch (Exception e) {
+                return badRequest(views.html.sample04.render(false, null, form));
+            }
+        } else if (Utils.isGET(request())) {
+            form = form.bind(session());
+            session().put("server_type", "https://api.groupdocs.com/v2.0");
+        }
+        return ok(views.html.sample04.render(false, null, form));
+    }
 }

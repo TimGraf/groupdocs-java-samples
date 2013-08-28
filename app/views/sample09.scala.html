@@ -1,13 +1,13 @@
-@(title: String, subTitle: String, data: HashMap[String, String], aForm: Form[Credentials])
+@(success: Boolean, guid: String, width: String, height: String, aForm: Form[Credentials])
 
 @import helper._
 
 @* Register customInput as field constructor for this page (customize input field) *@
 @implicitField = @{ FieldConstructor(customInput.f) }
 
-@main(title) {
+@main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 9</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to generate a embedded Viewer URL for a Document using Java SDK</i> <br/>
@@ -56,23 +56,12 @@
 	        <input type="submit" value="Make Request">
         }
    </div>
-   <br/> 
-@if(data != null){
-   <div  style="padding:20px; border:1px solid black;">
-       <iframe src="https://apps.groupdocs.com/document-viewer/embed/@data.get("guid")" frameborder="0" width="@data.get("width")" height="@data.get("height")"></iframe>
-        <p> Results: </p>
-        <table style="border:1px double black;">
-          <tr>
-              <th>Key</th><th>Value</th>
-          </tr>
-@for((key, value) <- data){
-          <tr>
-               <td>@key</td><td>@value</td>
-          </tr>
-}
-        </table>
-   </div>
-}
+   <br/>
+    @if(success){
+       <div  style="padding:20px; border:1px solid black;">
+           <iframe src="https://apps.groupdocs.com/document-viewer/embed/@guid" frameborder="0" width="@width" height="@height"></iframe>
+       </div>
+    }
 
 
     

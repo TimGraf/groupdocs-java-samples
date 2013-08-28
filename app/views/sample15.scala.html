@@ -1,13 +1,13 @@
-@(title: String, subTitle: String, Result: List[DocumentViewInfo], aForm: Form[Credentials])
+@(success: Boolean, documentViewInfo: List[com.groupdocs.sdk.model.DocumentViewInfo], aForm: Form[Credentials])
 
 @import helper._
 
 @* Register customInput as field constructor for this page (customize input field) *@
 @implicitField = @{ FieldConstructor(customInput.f) }
 
-@main(title) {
+@main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 15</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to to check the number of document's views using Java SDK</i> <br/>
@@ -37,15 +37,11 @@
 	        <input type="submit" value="Make Request">
         }
    </div>
-@if(Result != null){
-   <div  style="padding:20px; border:1px solid black;">
-        <p> Results: </p>
-        <p>Total document's views: <span style="color: green;">@Result.size()</span> </p>
-
-    </div>
-}
-
-
-</div>
-
+        @if(success){
+           <div  style="padding:20px; border:1px solid black;">
+                <p> Results: </p>
+                <p>Total document's views: <span style="color: green;">@documentViewInfo.size()</span> </p>
+            </div>
+        }
+        </div>
 }

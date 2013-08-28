@@ -40,7 +40,7 @@ public class Sample26 extends Controller {
 			String password = formData.get("password") != null ? formData.get("password")[0] : null;
 			String basePath = formData.get("server_type") != null ? formData.get("server_type")[0] : null;
 			if(login.equalsIgnoreCase("") || password.equalsIgnoreCase("")){
-				status = badRequest(views.html.sample26.render(title, sample, userInfo, filledForm));
+				status = badRequest(views.html.sample26.render(sample, userInfo, filledForm));
 			} else {
 				
 				//###Create ApiInvoker and Management Api objects
@@ -65,7 +65,7 @@ public class Sample26 extends Controller {
 						userInfo = response.getResult().getUser();
 					}
 					//If request was successfull - set userInfo variable for template
-					status = ok(views.html.sample26.render(title, sample, userInfo, filledForm));
+					status = ok(views.html.sample26.render(sample, userInfo, filledForm));
 				//###Definition of Api errors and conclusion of the corresponding message
 				} catch (ApiException e) {
 					if(e.getCode() == 401){
@@ -74,14 +74,14 @@ public class Sample26 extends Controller {
 					} else {
 						filledForm.reject("Failed to access API: " + e.getMessage());
 					}
-					status = badRequest(views.html.sample26.render(title, sample, userInfo, filledForm));
+					status = badRequest(views.html.sample26.render(sample, userInfo, filledForm));
 				}
 			}
 		} else {
 			//Process template
 			filledForm = form.bind(session());
 			session().put("server_type", "https://api.groupdocs.com/v2.0");
-			status = ok(views.html.sample26.render(title, sample, userInfo, filledForm));
+			status = ok(views.html.sample26.render(sample, userInfo, filledForm));
 		}
 		return status;
 	}

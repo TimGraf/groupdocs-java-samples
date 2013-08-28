@@ -58,7 +58,7 @@ public class Sample25 extends Controller {
 		if(request().method().equalsIgnoreCase("POST")){
 			filledForm = form.bindFromRequest();
 			if(filledForm.hasErrors()){
-				status = badRequest(views.html.sample25.render(title, sample, iframe, filledForm));
+				status = badRequest(views.html.sample25.render(sample, iframe, filledForm));
 			} else {
 				//Get POST data
 				Credentials credentials = filledForm.get();
@@ -108,7 +108,7 @@ public class Sample25 extends Controller {
                         catch (Exception e) {
                             filledForm.reject(e.getMessage());
                             e.printStackTrace();
-                            return ok(views.html.sample25.render(title, sample, iframe, filledForm));
+                            return ok(views.html.sample25.render(sample, iframe, filledForm));
                         }
                     }
                     else if ("local".equalsIgnoreCase(sourse)) {
@@ -119,12 +119,12 @@ public class Sample25 extends Controller {
                         catch (Exception e) {
                             filledForm.reject(e.getMessage());
                             e.printStackTrace();
-                            return ok(views.html.sample25.render(title, sample, iframe, filledForm));
+                            return ok(views.html.sample25.render(sample, iframe, filledForm));
                         }
                     }
                     if (StringUtils.isEmpty(guid)) {
                         filledForm.reject("GUID is empty or null!");
-                        return ok(views.html.sample25.render(title, sample, iframe, filledForm));
+                        return ok(views.html.sample25.render(sample, iframe, filledForm));
                     }
 
 
@@ -231,7 +231,7 @@ public class Sample25 extends Controller {
 						}
 
 					//If request was successfull - set file variable for template
-					status = ok(views.html.sample25.render(title, sample, iframe, filledForm));
+					status = ok(views.html.sample25.render(sample, iframe, filledForm));
 			    //###Definition of Api errors and conclusion of the corresponding message
 				} catch (ApiException e) {
 					if(e.getCode() == 401){
@@ -240,7 +240,7 @@ public class Sample25 extends Controller {
 					} else {
 						filledForm.reject("Failed to access API: " + e.getMessage());
 					}
-					status = badRequest(views.html.sample25.render(title, sample, iframe, filledForm));
+					status = badRequest(views.html.sample25.render(sample, iframe, filledForm));
 				//###Definition of filledForm errors and conclusion of the corresponding message
 				} catch (Exception e) {
 					if(filePart == null){
@@ -248,13 +248,13 @@ public class Sample25 extends Controller {
 					} else {
 						filledForm.reject("file", "Something wrong with your file: " + e.getMessage());
 					}
-					status = badRequest(views.html.sample25.render(title, sample, iframe, filledForm));
+					status = badRequest(views.html.sample25.render(sample, iframe, filledForm));
 				}
 			}
 		} else {
 			filledForm = form.bind(session());
 			session().put("server_type", "https://api.groupdocs.com/v2.0");
-			status = ok(views.html.sample25.render(title, sample, iframe, filledForm));
+			status = ok(views.html.sample25.render(sample, iframe, filledForm));
 		}
 		//Process template
 		return status;

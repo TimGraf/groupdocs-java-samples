@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, data: SetCollaboratorsResult, aForm: Form[Credentials])
+@(success: Boolean, data: com.groupdocs.sdk.model.SetCollaboratorsResult, aForm: Form[Credentials])
 
 @import helper._
 
@@ -6,9 +6,9 @@
 @implicitField = @{ FieldConstructor(customInput.f) }
 
 
-@main(title) {
+@main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 13</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to add collaborator to doc with annotations using Java SDK</i> <br/>
@@ -58,18 +58,17 @@
         }
    </div>
 
-@if(data != null){
-   <br/> 
-   <div  style="padding:20px; border:1px solid black;">
-    <p> Results: </p>
-       @for(email <- data.getCollaborators){
-       	
-       		<p>New collaborations:
-               <span style="color: green">@email.getPrimary_email</span></p>
-	   
-	   }
-   </div>
-}
+    @if(success){
+       <br/>
+       <div  style="padding:20px; border:1px solid black;">
+        <p> Results: </p>
+           @for(email <- data.getCollaborators){
+                <p>New collaborations:
+                   <span style="color: green">@email.getPrimary_email</span>
+                </p>
+           }
+       </div>
+    }
 
 
 

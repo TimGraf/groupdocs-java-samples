@@ -43,7 +43,7 @@ public class Sample22 extends Controller {
 			filledForm = form.bindFromRequest();
 			if(filledForm.hasErrors()){
 				//If filledForm have errors return to template
-				status = badRequest(views.html.sample22.render(title, sample, result, filledForm));
+				status = badRequest(views.html.sample22.render(sample, result, filledForm));
 			} else {
 				//If filledForm have no errors get all parameters
 				Credentials credentials = filledForm.get();
@@ -165,7 +165,7 @@ public class Sample22 extends Controller {
                         result = "https://stage-apps.groupdocs.com//document-annotation2/embed/" + guid + "?&uid=" + newUser.getResult().getGuid() + "&download=true frameborder=0 width=720 height=600";;
                     }
 					//If request was successful - set result variable for template
-					status = ok(views.html.sample22.render(title, sample, result, filledForm));
+					status = ok(views.html.sample22.render(sample, result, filledForm));
 				//###Definition of Api errors and conclusion of the corresponding message
 				} catch (ApiException e) {
 					if(e.getCode() == 401){
@@ -174,7 +174,7 @@ public class Sample22 extends Controller {
 					} else {
 						filledForm.reject("Failed to access API: " + e.getMessage());
 					}
-					status = badRequest(views.html.sample22.render(title, sample, result, filledForm));
+					status = badRequest(views.html.sample22.render(sample, result, filledForm));
 				//###Definition of filledForm errors and conclusion of the corresponding message
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -185,13 +185,13 @@ public class Sample22 extends Controller {
 					} else {
 						filledForm.reject("guid", "Something wrong with your file: " + e.getMessage());
 					}
-					status = badRequest(views.html.sample22.render(title, sample, result, filledForm));
+					status = badRequest(views.html.sample22.render(sample, result, filledForm));
 				} 
 			}
 		} else {
 			filledForm = form.bind(session());
 			session().put("server_type", "https://api.groupdocs.com/v2.0");
-			status = ok(views.html.sample22.render(title, sample, result, filledForm));
+			status = ok(views.html.sample22.render(sample, result, filledForm));
 		}
 		//Process template
 		return status;

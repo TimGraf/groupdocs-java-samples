@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.groupdocs.sdk.api.StorageApi;
 import com.groupdocs.sdk.common.FileStream;
+import com.groupdocs.sdk.model.GetImageUrlsResponse;
 import com.groupdocs.sdk.model.UploadResponse;
 import common.Utils;
 import models.Credentials;
@@ -26,116 +27,71 @@ import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.GetDocumentInfoResponse;
 
 public class Sample08 extends Controller {
-	//###Set variables
-	static String title = "GroupDocs Java SDK Samples";
-	static Form<Credentials> form = form(Credentials.class);
-	
-	public static Result index() {
-		List<String> thumbnailUrls = null;
-		Form<Credentials> filledForm;
-		String sample = "Sample8";
-		Status status;
-		//Check POST parameters
-		if(request().method().equalsIgnoreCase("POST")){
-			filledForm = form.bindFromRequest();
-			if(filledForm.hasErrors()){
-				status = badRequest(views.html.sample08.render(title, sample, thumbnailUrls, filledForm));
-			} else {
-				//Get POST data
-				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.getClient_id());
-				session().put("private_key", credentials.getPrivate_key());
-				session().put("server_type", credentials.getServer_type());
-                String fileGuid = null;
-                String pageNumber = null;
+    //
+    protected static Form<Credentials> form = form(Credentials.class);
 
-                try {
-                    /////////////////////////////////////// -- //////////////////////////////////////
-                    Http.MultipartFormData formData = request().body().asMultipartFormData();
-                    Map<String, String[]> fieldsData = formData.asFormUrlEncoded();
+    public static Result index() {
 
-                    String sourse = Utils.getFormValue(fieldsData, "sourse");
-                    if ("guid".equals(sourse)) { // File GUID
-                        fileGuid = Utils.getFormValue(fieldsData, "fileId");
-                    }
-                    else if ("url".equals(sourse)) { // Upload file fron URL
-                        String url = Utils.getFormValue(fieldsData, "url");
-                        ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
-                        StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.getServer_type());
-                        UploadResponse response = storageApi.UploadWeb(credentials.getClient_id(), url);
-                        if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-                            fileGuid = response.getResult().getGuid();
-                        }
-                    }
-                    else if ("local".equals(sourse)) { // Upload local file
-                        Http.MultipartFormData.FilePart file = formData.getFile("file");
-                        ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
-                        StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.getServer_type());
-                        FileInputStream is = new FileInputStream(file.getFile());
-                        UploadResponse response = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
-                        if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-                            fileGuid = response.getResult().getGuid();
-                        }
-                    }
-                    /////////////////////////////////////// -- //////////////////////////////////////
-                    // Sample:
+        if (Utils.isPOST(request())) {
+            form = form.bindFromRequest();
+            // Check errors
+            if (form.hasErrors()) {
+                return badRequest(views.html.sample08.render(false, null, form));
+            }
+            // Save credentials to session
+            Credentials credentials = form.get();
+            session().put("client_id", credentials.getClient_id());
+            session().put("private_key", credentials.getPrivate_key());
+            session().put("server_type", credentials.getServer_type());
+            // Get request parameters
+            Http.MultipartFormData body = request().body().asMultipartFormData();
+            String sourse = Utils.getFormValue(body, "sourse");
+            int pageNumber = Integer.parseInt(Utils.getFormValue(body, "pageNumber"));
+            // Initialize SDK with private key
+            ApiInvoker.getInstance().setRequestSigner(
+                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
 
-                    pageNumber = Utils.getFormValue(fieldsData, "pageNumber");
-					//Check fileGuid
-					if(fileGuid == null){
-						throw new Exception();
-					}
-					 //###Create ApiInvoker, DocApi objects
-
-		            //Create ApiInvoker object
-					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.getPrivate_key()));
-					//Create DocApi object
-					DocApi api = new DocApi();
-					api.setBasePath(credentials.getServer_type());
-					//Get document metadata
-					GetDocumentInfoResponse response = api.GetDocumentMetadata(credentials.getClient_id(), fileGuid);
-					//Convert pageNumber from String to Integer
-					int page = Integer.parseInt( pageNumber );
-					//###Make request to DocApi using client_id
-		            
-		            //Obtaining URl of entered page 
-					thumbnailUrls = api.GetDocumentPagesImageUrls(credentials.getClient_id(), fileGuid, page, 1, "150x150", null, null, null).getResult().getUrl();
-					//If request was successfull - set  thumbnailUrls variable for template
-					status = ok(views.html.sample08.render(title, sample, thumbnailUrls, filledForm));
-				//###Definition of Api errors and conclusion of the corresponding message
-				} catch (ApiException e) {
-					if(e.getCode() == 401){
-						List<Object> args = Arrays.asList(new Object[]{"https://apps.groupdocs.com/My/Manage", "Production Server"});
-						filledForm.reject("Wrong Credentials. Please make sure to use credentials from", args);
-					} else {
-						filledForm.reject("Failed to access API: " + e.getMessage());
-					}
-					status = badRequest(views.html.sample08.render(title, sample, thumbnailUrls, filledForm));
-				//###Definition of filledForm errors and conclusion of the corresponding message
-				} catch (Exception e) {
-					e.printStackTrace();
-					if(fileGuid == null){
-						filledForm.reject("fileGuid", "This field is required");
-					} else if(pageNumber == null){
-						filledForm.reject("pageNumber", "This field is required");
-					} else {
-						filledForm.reject("fileGuid", "Something wrong with your file: " + e.getMessage());
-					}
-					status = badRequest(views.html.sample08.render(title, sample, thumbnailUrls, filledForm));
-				}
-			}
-		} else {
-			filledForm = form.bind(session());
-			session().put("server_type", "https://api.groupdocs.com/v2.0");
-			status = ok(views.html.sample08.render(title, sample, thumbnailUrls, filledForm));
-		}
-		//Process template
-		return status;
-	}
-	
+            try {
+                //
+                String guid = null;
+                //
+                if ("guid".equals(sourse)) { // File GUID
+                    guid = Utils.getFormValue(body, "fileId");
+                }
+                else if ("url".equals(sourse)) { // Upload file fron URL
+                    String url = Utils.getFormValue(body, "url");
+                    StorageApi storageApi = new StorageApi();
+                    storageApi.setBasePath(credentials.getServer_type());
+                    UploadResponse response = storageApi.UploadWeb(credentials.getClient_id(), url);
+                    response = Utils.assertResponse(response);
+                    guid = response.getResult().getGuid();
+                }
+                else if ("local".equals(sourse)) { // Upload local file
+                    Http.MultipartFormData.FilePart file = body.getFile("file");
+                    StorageApi storageApi = new StorageApi();
+                    storageApi.setBasePath(credentials.getServer_type());
+                    FileInputStream is = new FileInputStream(file.getFile());
+                    UploadResponse response = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
+                    response = Utils.assertResponse(response);
+                    guid = response.getResult().getGuid();
+                }
+                guid = Utils.assertNotNull(guid);
+                //
+                DocApi api = new DocApi();
+                // Initialize API with base path
+                api.setBasePath(credentials.getServer_type());
+                // Call sample method
+                GetImageUrlsResponse imageUrlsResponse = api.GetDocumentPagesImageUrls(credentials.getClient_id(), guid, pageNumber, 1, "250x350", null, null, null);
+                imageUrlsResponse = Utils.assertResponse(imageUrlsResponse);
+                // Render view
+                return ok(views.html.sample08.render(true, imageUrlsResponse.getResult().getUrl(), form));
+            } catch (Exception e) {
+                return badRequest(views.html.sample08.render(false, null, form));
+            }
+        } else if (Utils.isGET(request())) {
+            form = form.bind(session());
+            session().put("server_type", "https://api.groupdocs.com/v2.0");
+        }
+        return ok(views.html.sample08.render(false, null, form));
+    }
 }

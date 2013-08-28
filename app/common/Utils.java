@@ -9,6 +9,7 @@ import com.groupdocs.sdk.model.GetDocumentInfoResponse;
 import com.groupdocs.sdk.model.UploadResponse;
 import com.groupdocs.sdk.model.ViewDocumentResponse;
 import org.apache.commons.lang3.StringUtils;
+import play.mvc.Http;
 
 import java.util.Map;
 
@@ -20,6 +21,23 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class Utils {
+
+    /**
+     *
+     * @param multipartFormData
+     * @param fieldName
+     * @return
+     */
+    public static String getFormValue(Http.MultipartFormData multipartFormData, String fieldName) {
+        return getFormValue(multipartFormData.asFormUrlEncoded(), fieldName);
+    }
+
+    /**
+     *
+     * @param fieldsData
+     * @param fieldName
+     * @return
+     */
     public static String getFormValue(Map<String, String[]> fieldsData, String fieldName) {
         String[] fieldsValue = fieldsData.get(fieldName);
         return ((fieldsValue == null || fieldsValue.length == 0 || fieldsValue[0] == null) ? null : (StringUtils.isBlank(fieldsValue[0]) ? null : fieldsValue[0].trim()));
@@ -159,5 +177,41 @@ public abstract class Utils {
             throw new Exception("Utils.assertNotNull calls with null value");
         }
         return r;
+    }
+
+    /**
+     *
+     * @param request
+     * @return
+     */
+    public static boolean isPOST(Http.Request request) {
+        try {
+            assertNotNull(request);
+            assertNotNull(request.method());
+            if ("POST".equalsIgnoreCase(request.method()) == false) {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     *
+     * @param request
+     * @return
+     */
+    public static boolean isGET(Http.Request request) {
+        try {
+            assertNotNull(request);
+            assertNotNull(request.method());
+            if ("GET".equalsIgnoreCase(request.method()) == false) {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }

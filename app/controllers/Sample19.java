@@ -42,7 +42,7 @@ public class Sample19 extends Controller {
 
         if ("GET".equalsIgnoreCase(request.method())){
             session().put("server_type", "https://api.groupdocs.com/v2.0");
-            return ok(views.html.sample19.render(title, sample, data, filledForm));
+            return ok(views.html.sample19.render(sample, data, filledForm));
         }
         if ("POST".equalsIgnoreCase(request.method())){
             filledForm = form.bindFromRequest();
@@ -74,7 +74,7 @@ public class Sample19 extends Controller {
                 catch (Exception e) {
                     filledForm.reject(e.getMessage());
                     e.printStackTrace();
-                    return ok(views.html.sample19.render(title, sample, data, filledForm));
+                    return ok(views.html.sample19.render(sample, data, filledForm));
                 }
             }
             else if ("local".equalsIgnoreCase(sourse)) {
@@ -85,7 +85,7 @@ public class Sample19 extends Controller {
                 catch (Exception e) {
                     filledForm.reject(e.getMessage());
                     e.printStackTrace();
-                    return ok(views.html.sample19.render(title, sample, data, filledForm));
+                    return ok(views.html.sample19.render(sample, data, filledForm));
                 }
             }
             // For target
@@ -100,7 +100,7 @@ public class Sample19 extends Controller {
                 catch (Exception e) {
                     filledForm.reject(e.getMessage());
                     e.printStackTrace();
-                    return ok(views.html.sample19.render(title, sample, data, filledForm));
+                    return ok(views.html.sample19.render(sample, data, filledForm));
                 }
             }
             else if ("local".equalsIgnoreCase(target)) {
@@ -111,13 +111,13 @@ public class Sample19 extends Controller {
                 catch (Exception e) {
                     filledForm.reject(e.getMessage());
                     e.printStackTrace();
-                    return ok(views.html.sample19.render(title, sample, data, filledForm));
+                    return ok(views.html.sample19.render(sample, data, filledForm));
                 }
             }
 
             if (StringUtils.isEmpty(sourseGuid) || StringUtils.isEmpty(targetGuid)) {
                 filledForm.reject("GUID is empty or null!");
-                return ok(views.html.sample19.render(title, sample, data, filledForm));
+                return ok(views.html.sample19.render(sample, data, filledForm));
             }
             // Compare functional
             try {
@@ -163,12 +163,12 @@ public class Sample19 extends Controller {
             catch (Exception e){
                 filledForm.reject(e.getMessage());
                 e.printStackTrace();
-                return ok(views.html.sample19.render(title, sample, data, filledForm));
+                return ok(views.html.sample19.render(sample, data, filledForm));
             }
             data.put("guid", resultGuid);
             data.put("compareKey", compareKey);
             data.put("server", credentials.getServer_type().substring(0, credentials.getServer_type().indexOf(".com") + 4).replace("api", "apps"));
         }
-        return ok(views.html.sample19.render(title, sample, data, filledForm));
+        return ok(views.html.sample19.render(sample, data, filledForm));
     }
 }
