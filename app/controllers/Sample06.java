@@ -1,29 +1,22 @@
 //###<i>This sample will show how to use <b>SignDocument</b> method from Signature Api to Sign Document and upload it to user storage</i>
 package controllers;
 //Import of necessary libraries
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
+import com.groupdocs.sdk.api.SignatureApi;
+import com.groupdocs.sdk.common.ApiInvoker;
+import com.groupdocs.sdk.common.GroupDocsRequestSigner;
+import com.groupdocs.sdk.common.MimeUtils;
 import com.groupdocs.sdk.model.*;
 import common.Utils;
 import models.Credentials;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
-import scala.actors.threadpool.Arrays;
 
-import com.groupdocs.sdk.api.SignatureApi;
-import com.groupdocs.sdk.common.ApiException;
-import com.groupdocs.sdk.common.ApiInvoker;
-import com.groupdocs.sdk.common.GroupDocsRequestSigner;
-import com.groupdocs.sdk.common.MimeUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Sample06 extends Controller {
     //

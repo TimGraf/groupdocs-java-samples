@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, data: String, aForm: Form[Credentials])
+@(success: Boolean, iframeUrl: String, aForm: Form[Credentials])
 
 @import helper._
 
@@ -7,7 +7,7 @@
 
 @main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 22</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to create or update user and add him to collaborators using Java SDK</i> <br/>
@@ -60,13 +60,13 @@
         }
    </div>
 
-@if(data != null){
-   <br/> 
-   <div  style="padding:20px; border:1px solid black;">
-       Result:
-       <iframe src=@data></iframe>
-   </div>
-}
+    @if(success){
+       <br/>
+       <div  style="padding:20px; border:1px solid black;">
+           Result:
+           <iframe src="@iframeUrl" frameborder="0" width="720" height="600"></iframe>
+       </div>
+    }
 </div>
     <script type="text/javascript" language="JavaScript">
         $(function(){

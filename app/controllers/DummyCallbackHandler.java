@@ -1,17 +1,15 @@
 package controllers;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.codehaus.jackson.JsonNode;
-
-import play.api.libs.json.JsObject;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DummyCallbackHandler extends Controller {
 	

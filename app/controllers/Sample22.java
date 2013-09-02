@@ -1,200 +1,152 @@
 //###<i>This sample will show how to use <b>SetAnnotationCollaborators</b> method from Annotation Api to set collaborator for document</i>
 package controllers;
 //Import of necessary libraries
-import java.io.FileInputStream;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
 
+import com.groupdocs.sdk.api.AntApi;
+import com.groupdocs.sdk.api.MgmtApi;
 import com.groupdocs.sdk.api.StorageApi;
+import com.groupdocs.sdk.common.ApiException;
+import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.FileStream;
+import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.*;
 import common.Utils;
 import models.Credentials;
-
-import org.apache.commons.lang3.StringUtils;
-
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import scala.actors.threadpool.Arrays;
 
-import com.groupdocs.sdk.common.ApiException;
-import com.groupdocs.sdk.common.ApiInvoker;
-import com.groupdocs.sdk.common.GroupDocsRequestSigner;
-import com.groupdocs.sdk.api.AntApi;
-import com.groupdocs.sdk.api.MgmtApi;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Sample22 extends Controller {
-	//###Set variables
-	static String title = "GroupDocs Java SDK Samples";
-	static Form<Credentials> form = form(Credentials.class);
-	
-	public static Result index() {
-		
-		String result = null;
-		Form<Credentials> filledForm;
-		String sample = "Sample22";
-		Status status;
-		//Check POST parameters
-		if(request().method().equalsIgnoreCase("POST")){
-			filledForm = form.bindFromRequest();
-			if(filledForm.hasErrors()){
-				//If filledForm have errors return to template
-				status = badRequest(views.html.sample22.render(sample, result, filledForm));
-			} else {
-				//If filledForm have no errors get all parameters
-				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.getClient_id());
-				session().put("private_key", credentials.getPrivate_key());
-				session().put("server_type", credentials.getServer_type());
+    //
+    protected static Form<Credentials> form = form(Credentials.class);
+
+    public static Result index() {
+
+        if (Utils.isPOST(request())) {
+            form = form.bindFromRequest();
+            // Check errors
+            if (form.hasErrors()) {
+                return badRequest(views.html.sample22.render(false, null, form));
+            }
+            // Save credentials to session
+            Credentials credentials = form.get();
+            session().put("client_id", credentials.getClient_id());
+            session().put("private_key", credentials.getPrivate_key());
+            session().put("server_type", credentials.getServer_type());
+            // Get request parameters
+            Http.MultipartFormData body = request().body().asMultipartFormData();
+            String sourse = Utils.getFormValue(body, "sourse");
+            String email = Utils.getFormValue(body, "email");
+            String first_name = Utils.getFormValue(body, "first_name");
+            String last_name = Utils.getFormValue(body, "last_name");
+            String callback = Utils.getFormValue(body, "callbackUrl");
+            String basePath = credentials.getServer_type();
+            // Initialize SDK with private key
+            ApiInvoker.getInstance().setRequestSigner(
+                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+
+            try {
+                //
+                email = Utils.assertNotNull(email);
+                first_name = Utils.assertNotNull(first_name);
+                last_name = Utils.assertNotNull(last_name);
+                callback = Utils.assertNotNull(callback);
+                basePath = Utils.assertNotNull(basePath);
+                //
                 String guid = null;
-                String email = null;
-
-                try {
-                    /////////////////////////////////////// -- //////////////////////////////////////
-                    Http.MultipartFormData formData = request().body().asMultipartFormData();
-                    Map<String, String[]> fieldsData = formData.asFormUrlEncoded();
-
-                    String sourse = Utils.getFormValue(fieldsData, "sourse");
-                    if ("guid".equals(sourse)) { // File GUID
-                        guid = Utils.getFormValue(fieldsData, "fileId");
-                    }
-                    else if ("url".equals(sourse)) { // Upload file fron URL
-                        String fileUrl = Utils.getFormValue(fieldsData, "fileUrl");
-                        ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
-                        StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.getServer_type());
-                        UploadResponse response = storageApi.UploadWeb(credentials.getClient_id(), fileUrl);
-                        if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-                            guid = response.getResult().getGuid();
-                        }
-                    }
-                    else if ("local".equals(sourse)) { // Upload local file
-                        Http.MultipartFormData.FilePart file = formData.getFile("file");
-                        ApiInvoker.getInstance().setRequestSigner(
-                                new GroupDocsRequestSigner(credentials.getPrivate_key()));
-                        StorageApi storageApi = new StorageApi();
-                        storageApi.setBasePath(credentials.getServer_type());
-                        FileInputStream is = new FileInputStream(file.getFile());
-                        UploadResponse response = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", null, new FileStream(is));
-                        if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-                            guid = response.getResult().getGuid();
-                        }
-                    }
-                    /////////////////////////////////////// -- //////////////////////////////////////
-                    // Sample:
-
-                    email = Utils.getFormValue(fieldsData, "email");
-                    String first_name = Utils.getFormValue(fieldsData, "first_name");
-                    String last_name = Utils.getFormValue(fieldsData, "last_name");
-                    String callback = Utils.getFormValue(fieldsData, "callbackUrl");
-                    String basePath = credentials.getServer_type();
-
-					//### Check is all parameters entered
-					if(credentials.getClient_id() == null || credentials.getPrivate_key() == null || guid == null || email == null || first_name == null || last_name == null){
-						throw new Exception();
-					}
-					//###Create ApiInvoker, AntApi objects
-
-		            //Create ApiInvoker object
-					ApiInvoker.getInstance().setRequestSigner(
-								new GroupDocsRequestSigner(credentials.getPrivate_key()));
-					//Create AntApi object
-					MgmtApi api = new MgmtApi();
-					//Set selected server
-					api.setBasePath(basePath);
-					//Create User info object
-					UserInfo user = new UserInfo();
-					 //Create Role info object
-					RoleInfo role = new RoleInfo();
-					//Create array of roles.
-					List<RoleInfo> roleList = new ArrayList<RoleInfo>();
-					//Set user role Id. Can be: 1 -  SysAdmin, 2 - Admin, 3 - User, 4 - Guest
-					role.setId(3.0);
-					//Set user role name. Can be: SysAdmin, Admin, User, Guest
-					role.setName("User");
-					//Add RoleInfo object to roles array
-					roleList.add(role);
-					user.setNickname(first_name);
-		            //Set first name as entered first name
-		            user.setFirstname(first_name);
-		            //Set last name as entered last name
-		            user.setLastname(last_name);
-		            user.setRoles(roleList);
-		            //Set email as entered email
-		            user.setPrimary_email(email);
-		            //Creating of new user. $clientId - user id, $firstName - entered first name, $user - object with new user info
-		            UpdateAccountUserResponse newUser = api.UpdateAccountUser(credentials.getClient_id(), email, user);
-		            
-		            newUser = Utils.assertResponse(newUser);
-                    //Create AntApi object
-                    AntApi ant = new AntApi();
-                    //Set selected server
-                    ant.setBasePath(basePath);
-                    //Create List object
-                    List<String> emailList = new ArrayList<String>();
-                    //Add email to the list
-                    emailList.add(email);
-                    //###Make request to Annotation api for setting collaborator for document
-                    SetCollaboratorsResponse response = ant.SetAnnotationCollaborators(credentials.getClient_id(), guid, "v2.0", emailList);
-                    //Make request to Annotation api to receive all collaborators for entered file id
-                    GetCollaboratorsResponse getCollaborators = ant.GetAnnotationCollaborators(credentials.getClient_id(), guid);
-                    //Set reviewers rights for new user. $newUser->result->guid - GuId of created user, $guid - entered file id,
-                    //$getCollaborators->result->collaborators - array of collabotors in which new user will be added
-                    SetReviewerRightsResponse setReviewer = ant.SetReviewerRights(newUser.getResult().getGuid(), guid, getCollaborators.getResult().getCollaborators());
-                    //Check is callback entered
-                    if (callback == null) {
-                        callback = "";
-                    }
-                    //Set callback url. CallBack work results you can see here: http://groupdocs-php-samples.herokuapp.com/callbacks/annotation_check_file
-                    SetSessionCallbackUrlResponse setCallBack = ant.SetSessionCallbackUrl(newUser.getResult().getGuid(), guid, callback);
-                    //###Generation of iframe URL using $pageImage->result->guid
-
-                    //iframe to prodaction server
-                    if (basePath.equals("https://api.groupdocs.com/v2.0")) {
-                        result = "https://apps.groupdocs.com//document-annotation2/embed/" + guid + "?&uid=" + newUser.getResult().getGuid() + "&download=true frameborder=0 width=720 height=600";
-                    //iframe to dev server
-                    } else if(basePath.equals("https://dev-api.groupdocs.com/v2.0")) {
-                        result = "https://dev-apps.groupdocs.com//document-annotation2/embed/" + guid + "?&uid=" + newUser.getResult().getGuid() + "&download=true frameborder=0 width=720 height=600";
-                    //iframe to test server
-                    } else if(basePath.equals("https://stage-api.groupdocs.com/v2.0")) {
-                        result = "https://stage-apps.groupdocs.com//document-annotation2/embed/" + guid + "?&uid=" + newUser.getResult().getGuid() + "&download=true frameborder=0 width=720 height=600";;
-                    }
-					//If request was successful - set result variable for template
-					status = ok(views.html.sample22.render(sample, result, filledForm));
-				//###Definition of Api errors and conclusion of the corresponding message
-				} catch (ApiException e) {
-					if(e.getCode() == 401){
-						List<Object> args = Arrays.asList(new Object[]{"https://apps.groupdocs.com/My/Manage", "Production Server"});
-						filledForm.reject("Wrong Credentials. Please make sure to use credentials from", args);
-					} else {
-						filledForm.reject("Failed to access API: " + e.getMessage());
-					}
-					status = badRequest(views.html.sample22.render(sample, result, filledForm));
-				//###Definition of filledForm errors and conclusion of the corresponding message
-				} catch (Exception e) {
-					e.printStackTrace();
-					if(guid == null){
-						filledForm.reject("guid", "This field is required");
-					} else if(email == null){
-						filledForm.reject("email", "This field is required");
-					} else {
-						filledForm.reject("guid", "Something wrong with your file: " + e.getMessage());
-					}
-					status = badRequest(views.html.sample22.render(sample, result, filledForm));
-				} 
-			}
-		} else {
-			filledForm = form.bind(session());
-			session().put("server_type", "https://api.groupdocs.com/v2.0");
-			status = ok(views.html.sample22.render(sample, result, filledForm));
-		}
-		//Process template
-		return status;
-	}
-	
+                //
+                if ("guid".equals(sourse)) { // File GUID
+                    guid = Utils.getFormValue(body, "fileId");
+                }
+                else if ("url".equals(sourse)) { // Upload file fron URL
+                    String url = Utils.getFormValue(body, "url");
+                    StorageApi storageApi = new StorageApi();
+                    // Initialize API with base path
+                    storageApi.setBasePath(credentials.getServer_type());
+                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
+                    // Check response status
+                    uploadResponse = Utils.assertResponse(uploadResponse);
+                    guid = uploadResponse.getResult().getGuid();
+                }
+                else if ("local".equals(sourse)) { // Upload local file
+                    Http.MultipartFormData.FilePart file = body.getFile("file");
+                    StorageApi storageApi = new StorageApi();
+                    // Initialize API with base path
+                    storageApi.setBasePath(credentials.getServer_type());
+                    FileInputStream is = new FileInputStream(file.getFile());
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
+                    // Check response status
+                    uploadResponse = Utils.assertResponse(uploadResponse);
+                    guid = uploadResponse.getResult().getGuid();
+                }
+                guid = Utils.assertNotNull(guid);
+                // Create AntApi object
+                MgmtApi mgmtApi = new MgmtApi();
+                // Initialize API with base path
+                mgmtApi.setBasePath(basePath);
+                // Create User info object
+                UserInfo user = new UserInfo();
+                // Create Role info object
+                RoleInfo role = new RoleInfo();
+                // Create array of roles.
+                List<RoleInfo> roleList = new ArrayList<RoleInfo>();
+                // Set user role Id. Can be: 1 -  SysAdmin, 2 - Admin, 3 - User, 4 - Guest
+                role.setId(3.0);
+                // Set user role name. Can be: SysAdmin, Admin, User, Guest
+                role.setName("User");
+                // Add RoleInfo object to roles array
+                roleList.add(role);
+                user.setNickname(first_name);
+                // Set first name as entered first name
+                user.setFirstname(first_name);
+                // Set last name as entered last name
+                user.setLastname(last_name);
+                user.setRoles(roleList);
+                // Set email as entered email
+                user.setPrimary_email(email);
+                // Creating of new user. $clientId - user id, $firstName - entered first name, $user - object with new user info
+                UpdateAccountUserResponse updateAccountUserResponse = mgmtApi.UpdateAccountUser(credentials.getClient_id(), email, user);
+                // Check response status
+                updateAccountUserResponse = Utils.assertResponse(updateAccountUserResponse);
+                // Create AntApi object
+                AntApi ant = new AntApi();
+                // Initialize API with base path
+                ant.setBasePath(basePath);
+                // Create List object
+                List<String> emailList = new ArrayList<String>();
+                // Add email to the list
+                emailList.add(email);
+                // Make request to Annotation api for setting collaborator for document
+                SetCollaboratorsResponse response = ant.SetAnnotationCollaborators(credentials.getClient_id(), guid, "v2.0", emailList);
+                Utils.assertResponse(response);
+                // Make request to Annotation api to receive all collaborators for entered file id
+                GetCollaboratorsResponse getCollaborators = ant.GetAnnotationCollaborators(credentials.getClient_id(), guid);
+                // Set reviewers rights for new user.
+                SetReviewerRightsResponse reviewerRightsResponse = ant.SetReviewerRights(updateAccountUserResponse.getResult().getGuid(), guid, getCollaborators.getResult().getCollaborators());
+                reviewerRightsResponse = Utils.assertResponse(reviewerRightsResponse);
+                // Check is callback entered
+                callback = (callback == null) ? "" : callback;
+                // Set callback url. CallBack work results you can see here: http://groupdocs-php-samples.herokuapp.com/callbacks/annotation_check_file
+                SetSessionCallbackUrlResponse setCallBack = ant.SetSessionCallbackUrl(updateAccountUserResponse.getResult().getGuid(), guid, callback);
+                // Generation of iframe URL using $pageImage->result->guid
+                String server = credentials.getServer_type().substring(0, credentials.getServer_type().indexOf(".com") + 4).replace("api", "apps");
+                String iframeUrl = server + "/document-annotation2/embed/" + guid + "?&uid=" + updateAccountUserResponse.getResult().getGuid() + "&download=true";
+                // Render view
+                return ok(views.html.sample22.render(true, iframeUrl, form));
+            } catch (Exception e) {
+                return badRequest(views.html.sample22.render(false, null, form));
+            }
+        } else if (Utils.isGET(request())) {
+            form = form.bind(session());
+            session().put("server_type", "https://api.groupdocs.com/v2.0");
+        }
+        return ok(views.html.sample22.render(false, null, form));
+    }
 }

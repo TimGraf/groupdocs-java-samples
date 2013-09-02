@@ -1,32 +1,22 @@
 //###<i>This sample will show how to use <b>GetFolderSharers</b> method from Storage Api to get folders sharers in GroupDocs Storage </i>
 package controllers;
 //Import of necessary libraries
-import java.lang.reflect.Array;
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
-
-import common.Utils;
-import models.Credentials;
-
-import org.apache.commons.lang3.StringUtils;
-
-import play.data.Form;
-import play.mvc.Controller;
-import play.mvc.Http;
-import play.mvc.Result;
-import scala.actors.threadpool.Arrays;
 
 import com.groupdocs.sdk.api.DocApi;
 import com.groupdocs.sdk.api.StorageApi;
-import com.groupdocs.sdk.common.ApiException;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.FileSystemFolder;
 import com.groupdocs.sdk.model.ListEntitiesResponse;
 import com.groupdocs.sdk.model.SharedUsersResponse;
-import com.groupdocs.sdk.model.UserInfo;
+import common.Utils;
+import models.Credentials;
+import play.data.Form;
+import play.mvc.Controller;
+import play.mvc.Http;
+import play.mvc.Result;
+
+import java.util.List;
 
 public class Sample14 extends Controller {
     //

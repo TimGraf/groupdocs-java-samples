@@ -1,29 +1,20 @@
 //###<i>This sample will show how to use <b>GuId</b> of file to generate an embedded Viewer URL for a Document</i>
 package controllers;
 //Import of necessary libraries
-import java.io.FileInputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import com.groupdocs.sdk.api.StorageApi;
+import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.UploadResponse;
 import common.Utils;
 import models.Credentials;
-
-import org.apache.commons.lang3.StringUtils;
-
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.actors.threadpool.Arrays;
 
-import com.groupdocs.sdk.api.DocApi;
-import com.groupdocs.sdk.common.ApiException;
-import com.groupdocs.sdk.common.ApiInvoker;
+import java.io.FileInputStream;
 
 public class Sample09 extends Controller {
     //

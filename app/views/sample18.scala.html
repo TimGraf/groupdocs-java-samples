@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, data: HashMap[String, String], aForm: Form[Credentials])
+@(success: Boolean, guid: String, aForm: Form[Credentials])
 
 @import helper._
 
@@ -7,7 +7,7 @@
 
 @main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 18</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>How to convert Doc to Docx, Docx to Doc, Docx to PDF and PPT to PDF</i> <br/>
@@ -23,7 +23,6 @@
    <div id="requestForm" style="padding:20px; border:1px solid black;">
 		<p>Enter data for request and press "Make request" button </p>
 		@myForm(routes.Sample18.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
-
             @if(aForm.hasGlobalErrors){
                 <p>
                     Error:
@@ -69,13 +68,13 @@
 	        <input type="submit" value="Make Request">
         }
    </div>
-@if(data.get("data") != null){
-    <div  id="result" style="padding:20px; border:1px solid black;">
-        <p> Results: </p>
-        <p><span style="color: red"></span>
-        <iframe src="https://apps.groupdocs.com/document-viewer/Embed/@data.get("data")" frameborder="0" width="720" height="600"></iframe>
-    </div>
-}
+    @if(success){
+        <div  id="result" style="padding:20px; border:1px solid black;">
+            <p> Results: </p>
+            <p><span style="color: red"></span>
+            <iframe src="https://apps.groupdocs.com/document-viewer/Embed/@guid" frameborder="0" width="720" height="600"></iframe>
+        </div>
+    }
 </div>
     <script type="text/javascript" language="JavaScript">
     $(function(){

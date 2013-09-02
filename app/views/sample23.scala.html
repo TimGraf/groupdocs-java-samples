@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, url: String, aForm: Form[Credentials])
+@(success: Boolean, frameUrl: String, aForm: Form[Credentials])
 
 @import helper._
 
@@ -7,7 +7,7 @@
 
 @main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 23</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to to View Document pages as images using Java SDK</i> <br/>
@@ -15,7 +15,7 @@
     <a href="@routes.Assets.at("docs/Sample23.html")">Docs for this sample</a>
     <br />
    <br/>
-   <p><font color="green">You entered: </font></p>
+   <p><span style="color: green">You entered: </span></p>
 		<p>Client Id = @aForm.data.get("client_id")</p>
 		<p>Private Key = @aForm.data.get("private_key")</p>
 		
@@ -55,13 +55,12 @@
 	        <input type="submit" value="Make Request">
         }
    </div>
-
-@if(url != null){
-   <br/> 
-   <div  style="padding:20px; border:1px solid black;">
-        <iframe src="@url" width="875" height="800"></iframe>
-   </div>
-}
+    @if(success){
+       <br/>
+       <div  style="padding:20px; border:1px solid black;">
+            <iframe src="@frameUrl" frameborder="0" width="875" height="800"></iframe>
+       </div>
+    }
 </div>
     <script type="text/javascript" language="JavaScript">
         $(function(){

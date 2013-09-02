@@ -1,22 +1,16 @@
 //###This sample will show how to use <b>ListEntities</b> method from Storage  API  to list files within GroupDocs Storage
 package controllers;
 //Import of necessary libraries
-import java.util.HashMap;
-import java.util.List;
 
+import com.groupdocs.sdk.api.StorageApi;
+import com.groupdocs.sdk.common.ApiInvoker;
+import com.groupdocs.sdk.common.GroupDocsRequestSigner;
+import com.groupdocs.sdk.model.ListEntitiesResponse;
 import common.Utils;
 import models.Credentials;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import scala.actors.threadpool.Arrays;
-
-import com.groupdocs.sdk.api.StorageApi;
-import com.groupdocs.sdk.common.ApiException;
-import com.groupdocs.sdk.common.ApiInvoker;
-import com.groupdocs.sdk.common.GroupDocsRequestSigner;
-import com.groupdocs.sdk.model.FileSystemDocument;
-import com.groupdocs.sdk.model.ListEntitiesResponse;
 
 public class Sample02 extends Controller {
     //

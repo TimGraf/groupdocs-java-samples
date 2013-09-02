@@ -2,22 +2,17 @@
 
 package controllers;
 //Import of necessary libraries
-import java.util.HashMap;
-import java.util.List;
 
+import com.groupdocs.sdk.api.MgmtApi;
+import com.groupdocs.sdk.common.ApiInvoker;
+import com.groupdocs.sdk.common.GroupDocsRequestSigner;
+import com.groupdocs.sdk.model.UserInfo;
+import com.groupdocs.sdk.model.UserInfoResponse;
 import common.Utils;
 import models.Credentials;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import scala.actors.threadpool.Arrays;
-
-import com.groupdocs.sdk.api.MgmtApi;
-import com.groupdocs.sdk.common.ApiException;
-import com.groupdocs.sdk.common.ApiInvoker;
-import com.groupdocs.sdk.common.GroupDocsRequestSigner;
-import com.groupdocs.sdk.model.UserInfo;
-import com.groupdocs.sdk.model.UserInfoResponse;
 
 public class Sample01 extends Controller {
 	//

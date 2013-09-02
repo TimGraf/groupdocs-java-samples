@@ -2,8 +2,9 @@
 package controllers;
 //Import of necessary libraries
 
-import com.groupdocs.sdk.api.*;
-import com.groupdocs.sdk.common.ApiException;
+import com.groupdocs.sdk.api.AsyncApi;
+import com.groupdocs.sdk.api.MergeApi;
+import com.groupdocs.sdk.api.SharedApi;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
@@ -15,18 +16,13 @@ import org.apache.commons.lang3.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http;
-import play.mvc.Http.MultipartFormData;
-import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
-import scala.actors.threadpool.Arrays;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Sample27 extends Controller {

@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, data: HashMap[String, String], aForm: Form[Credentials])
+@(success: Boolean, guid: String, aForm: Form[Credentials])
 
 @import helper._
 
@@ -7,7 +7,7 @@
 
 @main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 17</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to upload a file into the storage and compress it into zip archive using Java SDK</i> <br/>
@@ -55,11 +55,11 @@
         }
    </div>
 
-@if(data.get("gdFile") != null){
+@if(success){
    
    <div  style="padding:20px; border:1px solid black;">
         <p>Results:</p>
-        <p>Archive created and saved successfully as <span style="color: green;">@data.get("gdFile")</span></p>
+        <p>Archive created and saved successfully as <span style="color: green;">@guid</span></p>
     </div>
 }
 </div>

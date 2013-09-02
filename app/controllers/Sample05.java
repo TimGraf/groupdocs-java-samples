@@ -1,30 +1,25 @@
 //###<i>This sample will show how to use <b>MoveFile</b> method from Storage Api to copy/move a file in GroupDocs Storage </i>
 package controllers;
 //Import of necessary libraries
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.List;
-import java.util.Map;
 
-import com.groupdocs.sdk.api.DocApi;
+import com.groupdocs.sdk.api.StorageApi;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
-import com.groupdocs.sdk.model.*;
+import com.groupdocs.sdk.model.FileMoveResponse;
+import com.groupdocs.sdk.model.FileSystemDocument;
+import com.groupdocs.sdk.model.ListEntitiesResponse;
+import com.groupdocs.sdk.model.UploadResponse;
 import common.Utils;
 import models.Credentials;
-
 import org.apache.commons.lang3.StringUtils;
-
 import play.data.Form;
-import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.actors.threadpool.Arrays;
 
-import com.groupdocs.sdk.api.StorageApi;
-import com.groupdocs.sdk.common.ApiException;
+import java.io.File;
+import java.io.FileInputStream;
 
 public class Sample05 extends Controller {
     //

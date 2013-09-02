@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, embedUrl: String, aForm: Form[Credentials])
+@(success: Boolean, embedUrl: String, aForm: Form[Credentials])
 
 @import helper._
 
@@ -7,7 +7,7 @@
 
 @main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 21</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to use Signature Api to Create and Send Envelope for signing using Java SDK</i> <br/>
@@ -59,13 +59,13 @@
         }
    </div>
 
-@if(embedUrl != null){
-    <div id="result" style="padding:20px; border:1px solid black;">
-        <p>Results:</p>
-        <p></p>
-        <iframe id="viewer" src="@embedUrl" frameborder="0" width="720" height="600"></iframe>
-    </div>
-}
+    @if(success){
+        <div id="result" style="padding:20px; border:1px solid black;">
+            <p>Results:</p>
+            <p></p>
+            <iframe id="viewer" src="@embedUrl" frameborder="0" width="720" height="600"></iframe>
+        </div>
+    }
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>

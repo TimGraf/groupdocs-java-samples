@@ -1,20 +1,19 @@
 //###<i>This sample will show how to use <b>Upload</b> method from Storage Api to upload file to GroupDocs Storage </i>
 package controllers;
 //Import of necessary libraries
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
+import com.groupdocs.sdk.api.AsyncApi;
+import com.groupdocs.sdk.api.DocApi;
+import com.groupdocs.sdk.api.MergeApi;
+import com.groupdocs.sdk.api.StorageApi;
+import com.groupdocs.sdk.common.ApiException;
+import com.groupdocs.sdk.common.ApiInvoker;
+import com.groupdocs.sdk.common.FileStream;
+import com.groupdocs.sdk.common.GroupDocsRequestSigner;
+import com.groupdocs.sdk.model.*;
 import common.Utils;
-import org.apache.commons.io.IOUtils;
-
-import net.sf.ehcache.search.aggregator.Count;
-
 import models.Credentials;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
@@ -24,23 +23,13 @@ import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import scala.actors.threadpool.Arrays;
 
-import com.groupdocs.sdk.api.StorageApi;
-import com.groupdocs.sdk.api.DocApi;
-import com.groupdocs.sdk.api.AsyncApi;
-import com.groupdocs.sdk.api.MergeApi;
-import com.groupdocs.sdk.common.ApiException;
-import com.groupdocs.sdk.common.ApiInvoker;
-import com.groupdocs.sdk.common.FileStream;
-import com.groupdocs.sdk.common.GroupDocsRequestSigner;
-import com.groupdocs.sdk.model.AddDatasourceResponse;
-import com.groupdocs.sdk.model.Datasource;
-import com.groupdocs.sdk.model.DatasourceField;
-import com.groupdocs.sdk.model.GetJobDocumentsResponse;
-import com.groupdocs.sdk.model.JobInfo;
-import com.groupdocs.sdk.model.MergeTemplateResponse;
-import com.groupdocs.sdk.model.TemplateFieldsResponse;
-import com.groupdocs.sdk.model.UploadRequestResult;
-import com.groupdocs.sdk.model.UploadResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Sample25 extends Controller {
 	//###Set variables

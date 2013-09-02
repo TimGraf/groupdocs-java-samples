@@ -1,174 +1,160 @@
  //###<i>This sample will show how to use <b>GetFile</b> method from Storage Api to download a file from GroupDocs Storage</i>
 package controllers;
 //Import of necessary libraries
-import java.io.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
+ import com.groupdocs.sdk.api.AsyncApi;
+ import com.groupdocs.sdk.api.ComparisonApi;
+ import com.groupdocs.sdk.api.MgmtApi;
+ import com.groupdocs.sdk.api.StorageApi;
+ import com.groupdocs.sdk.common.ApiInvoker;
+ import com.groupdocs.sdk.common.FileStream;
+ import com.groupdocs.sdk.common.GroupDocsRequestSigner;
+ import com.groupdocs.sdk.model.CompareResponse;
+ import com.groupdocs.sdk.model.GetJobDocumentsResponse;
+ import com.groupdocs.sdk.model.GetUserEmbedKeyResponse;
+ import com.groupdocs.sdk.model.UploadResponse;
+ import common.Utils;
+ import models.Credentials;
+ import play.data.Form;
+ import play.mvc.Controller;
+ import play.mvc.Http;
+ import play.mvc.Result;
 
-import com.groupdocs.sdk.api.MgmtApi;
-import com.groupdocs.sdk.common.FileStream;
-import com.groupdocs.sdk.model.GetUserEmbedKeyResponse;
-import common.Utils;
-import models.Credentials;
-
-import org.apache.commons.lang3.StringUtils;
-
-import play.data.Form;
-import play.mvc.Controller;
-import play.mvc.Http;
-import play.mvc.Result;
-import scala.actors.threadpool.Arrays;
-
-import com.groupdocs.sdk.common.ApiException;
-import com.groupdocs.sdk.common.ApiInvoker;
-import com.groupdocs.sdk.model.CompareResponse;
-import com.groupdocs.sdk.common.GroupDocsRequestSigner;
-import com.groupdocs.sdk.api.ComparisonApi;
-import com.groupdocs.sdk.api.AsyncApi;
-import com.groupdocs.sdk.model.GetJobDocumentsResponse;
+ import java.io.DataOutputStream;
+ import java.io.FileInputStream;
+ import java.io.FileOutputStream;
 
 public class Sample19 extends Controller {
     public static String USER_INFO_FILE = "UserInfo_sample19.tmp";
-    static String title = "GroupDocs Java SDK Samples";
-    static String sample = "Sample19";
-    static Form<Credentials> form = form(Credentials.class);
+    //
+    protected static Form<Credentials> form = form(Credentials.class);
 
     public static Result index() {
-        Form<Credentials> filledForm = form.bind(session());
-        HashMap<String, String> data = new HashMap<String, String>();
-        Http.Request request = request();
 
-        if ("GET".equalsIgnoreCase(request.method())){
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
-            return ok(views.html.sample19.render(sample, data, filledForm));
-        }
-        if ("POST".equalsIgnoreCase(request.method())){
-            filledForm = form.bindFromRequest();
-            Credentials credentials = filledForm.get();
-            if (StringUtils.isNotEmpty(credentials.getClient_id()) || StringUtils.isNotEmpty(credentials.getPrivate_key())){
-                session().put("client_id", credentials.getClient_id());
-                session().put("private_key", credentials.getPrivate_key());
-                session().put("server_type", credentials.getServer_type());
+        if (Utils.isPOST(request())) {
+            form = form.bindFromRequest();
+            // Check errors
+            if (form.hasErrors()) {
+                return badRequest(views.html.sample19.render(false, null, null, null, form));
             }
-            Http.MultipartFormData multipartFormData = request.body().asMultipartFormData();
-            Map<String, String[]> formUrlEncodedData = multipartFormData.asFormUrlEncoded();
+            // Save credentials to session
+            Credentials credentials = form.get();
+            session().put("client_id", credentials.getClient_id());
+            session().put("private_key", credentials.getPrivate_key());
+            session().put("server_type", credentials.getServer_type());
+            // Get request parameters
+            Http.MultipartFormData body = request().body().asMultipartFormData();
+            String sourse = Utils.getFormValue(body, "sourse");
+            String callbackUrl = Utils.getFormValue(body, "callbackUrl");
+            // Initialize SDK with private key
+            ApiInvoker.getInstance().setRequestSigner(
+                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
 
-            String callbackUrl = Utils.getFormValue(formUrlEncodedData, "callbackUrl");
-            String sourse = Utils.getFormValue(formUrlEncodedData, "sourse");
-            String target = Utils.getFormValue(formUrlEncodedData, "target");
-            String sourseGuid = null;
-            String targetGuid = null;
-            String resultGuid = null;
-            String compareKey = null;
-            // For sourse
-            if ("guid".equalsIgnoreCase(sourse)){
-                sourseGuid = Utils.getFormValue(formUrlEncodedData, "fileId");
-            }
-            else if ("url".equalsIgnoreCase(sourse)) {
-                try {
-                    String url = Utils.getFormValue(formUrlEncodedData, "url");
-                    sourseGuid = Utils.getGuidByUrl(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), url);
-                }
-                catch (Exception e) {
-                    filledForm.reject(e.getMessage());
-                    e.printStackTrace();
-                    return ok(views.html.sample19.render(sample, data, filledForm));
-                }
-            }
-            else if ("local".equalsIgnoreCase(sourse)) {
-                try {
-                    Http.MultipartFormData.FilePart local = multipartFormData.getFile("local");
-                    sourseGuid = Utils.getGuidByFile(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), local.getFilename(), new FileStream(new FileInputStream(local.getFile())));
-                }
-                catch (Exception e) {
-                    filledForm.reject(e.getMessage());
-                    e.printStackTrace();
-                    return ok(views.html.sample19.render(sample, data, filledForm));
-                }
-            }
-            // For target
-            if ("guid".equalsIgnoreCase(target)){
-                targetGuid = Utils.getFormValue(formUrlEncodedData, "target_fileId");
-            }
-            else if ("target_url".equalsIgnoreCase(target)) {
-                try {
-                    String url = Utils.getFormValue(formUrlEncodedData, "target_url");
-                    targetGuid = Utils.getGuidByUrl(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), url);
-                }
-                catch (Exception e) {
-                    filledForm.reject(e.getMessage());
-                    e.printStackTrace();
-                    return ok(views.html.sample19.render(sample, data, filledForm));
-                }
-            }
-            else if ("local".equalsIgnoreCase(target)) {
-                try {
-                    Http.MultipartFormData.FilePart local = multipartFormData.getFile("target_local");
-                    targetGuid = Utils.getGuidByFile(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), local.getFilename(), new FileStream(new FileInputStream(local.getFile())));
-                }
-                catch (Exception e) {
-                    filledForm.reject(e.getMessage());
-                    e.printStackTrace();
-                    return ok(views.html.sample19.render(sample, data, filledForm));
-                }
-            }
-
-            if (StringUtils.isEmpty(sourseGuid) || StringUtils.isEmpty(targetGuid)) {
-                filledForm.reject("GUID is empty or null!");
-                return ok(views.html.sample19.render(sample, data, filledForm));
-            }
-            // Compare functional
             try {
-                ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(credentials.getPrivate_key()));
-                ComparisonApi api = new ComparisonApi();
-                api.setBasePath(credentials.getServer_type());
-                if(callbackUrl == null){
-                    callbackUrl = "";
+                //
+                String sourseGuid = null;
+                //
+                if ("guid".equals(sourse)) { // File GUID
+                    sourseGuid = Utils.getFormValue(body, "fileId");
+                } else if ("url".equals(sourse)) { // Upload file fron URL
+                    String url = Utils.getFormValue(body, "url");
+                    StorageApi storageApi = new StorageApi();
+                    // Initialize API with base path
+                    storageApi.setBasePath(credentials.getServer_type());
+                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
+                    // Check response status
+                    uploadResponse = Utils.assertResponse(uploadResponse);
+                    sourseGuid = uploadResponse.getResult().getGuid();
+                } else if ("local".equals(sourse)) { // Upload local file
+                    Http.MultipartFormData.FilePart file = body.getFile("local");
+                    StorageApi storageApi = new StorageApi();
+                    // Initialize API with base path
+                    storageApi.setBasePath(credentials.getServer_type());
+                    FileInputStream is = new FileInputStream(file.getFile());
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
+                    // Check response status
+                    uploadResponse = Utils.assertResponse(uploadResponse);
+                    sourseGuid = uploadResponse.getResult().getGuid();
                 }
+                // Target
+                String targetGuid = null;
+                //
+                if ("guid".equals(sourse)) { // File GUID
+                    targetGuid = Utils.getFormValue(body, "target_fileId");
+                } else if ("url".equals(sourse)) { // Upload file fron URL
+                    String url = Utils.getFormValue(body, "target_url");
+                    StorageApi storageApi = new StorageApi();
+                    // Initialize API with base path
+                    storageApi.setBasePath(credentials.getServer_type());
+                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
+                    // Check response status
+                    uploadResponse = Utils.assertResponse(uploadResponse);
+                    targetGuid = uploadResponse.getResult().getGuid();
+                } else if ("local".equals(sourse)) { // Upload local file
+                    Http.MultipartFormData.FilePart file = body.getFile("target_local");
+                    StorageApi storageApi = new StorageApi();
+                    // Initialize API with base path
+                    storageApi.setBasePath(credentials.getServer_type());
+                    FileInputStream is = new FileInputStream(file.getFile());
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
+                    // Check response status
+                    uploadResponse = Utils.assertResponse(uploadResponse);
+                    targetGuid = uploadResponse.getResult().getGuid();
+                }
+                sourseGuid = Utils.assertNotNull(sourseGuid);
+                targetGuid = Utils.assertNotNull(targetGuid);
+
+                ComparisonApi api = new ComparisonApi();
+                // Initialize API with base path
+                api.setBasePath(credentials.getServer_type());
+                callbackUrl = callbackUrl == null ? "" : callbackUrl;
+
                 CompareResponse compareResponse = api.Compare(credentials.getClient_id(), sourseGuid, targetGuid, callbackUrl);
                 compareResponse = Utils.assertResponse(compareResponse);
                 Thread.sleep(8000);
 
                 AsyncApi asyncApi = new AsyncApi();
+                // Initialize API with base path
                 asyncApi.setBasePath(credentials.getServer_type());
-                GetJobDocumentsResponse job_info = asyncApi.GetJobDocuments(credentials.getClient_id(), compareResponse.getResult().getJob_id().toString(), "");
-                Utils.assertResponse(job_info);
-                resultGuid = job_info.getResult().getOutputs().get(0).getGuid();
+                GetJobDocumentsResponse jobDocumentsResponse = asyncApi.GetJobDocuments(credentials.getClient_id(), compareResponse.getResult().getJob_id().toString(), "");
+                jobDocumentsResponse = Utils.assertResponse(jobDocumentsResponse);
+                String resultGuid = jobDocumentsResponse.getResult().getOutputs().get(0).getGuid();
 
                 MgmtApi mgmtApi = new MgmtApi();
+                // Initialize API with base path
                 mgmtApi.setBasePath(credentials.getServer_type());
                 GetUserEmbedKeyResponse userEmbedKeyResponse = mgmtApi.GetUserEmbedKey(credentials.getClient_id(), "comparison");
                 Utils.assertResponse(userEmbedKeyResponse);
-                compareKey = userEmbedKeyResponse.getResult().getKey().getGuid();
+                String compareKey = userEmbedKeyResponse.getResult().getKey().getGuid();
 
-                if (!StringUtils.isEmpty(callbackUrl)) {
-                    FileOutputStream fileOutputStream = new FileOutputStream(USER_INFO_FILE);
-                    DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
+                Utils.assertNotNull(callbackUrl);
 
-                    StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append(credentials.getClient_id());
-                    stringBuilder.append("|");
-                    stringBuilder.append(credentials.getPrivate_key());
-                    stringBuilder.append("|");
-                    stringBuilder.append(credentials.getServer_type());
+                FileOutputStream fileOutputStream = new FileOutputStream(USER_INFO_FILE);
+                DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
 
-                    dataOutputStream.writeUTF(stringBuilder.toString());
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(credentials.getClient_id());
+                stringBuilder.append("|");
+                stringBuilder.append(credentials.getPrivate_key());
+                stringBuilder.append("|");
+                stringBuilder.append(credentials.getServer_type());
 
-                    dataOutputStream.flush();
-                    fileOutputStream.close();
-                }
+                dataOutputStream.writeUTF(stringBuilder.toString());
+
+                dataOutputStream.flush();
+                fileOutputStream.close();
+
+                String server = credentials.getServer_type().substring(0, credentials.getServer_type().indexOf(".com") + 4).replace("api", "apps");
+
+                // Render view
+                return ok(views.html.sample19.render(true, resultGuid, compareKey, server, form));
+            } catch (Exception e) {
+                return badRequest(views.html.sample19.render(false, null, null, null, form));
             }
-            catch (Exception e){
-                filledForm.reject(e.getMessage());
-                e.printStackTrace();
-                return ok(views.html.sample19.render(sample, data, filledForm));
-            }
-            data.put("guid", resultGuid);
-            data.put("compareKey", compareKey);
-            data.put("server", credentials.getServer_type().substring(0, credentials.getServer_type().indexOf(".com") + 4).replace("api", "apps"));
+        } else if (Utils.isGET(request())) {
+            form = form.bind(session());
+            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
-        return ok(views.html.sample19.render(sample, data, filledForm));
+        return ok(views.html.sample19.render(false, null, null, null, form));
     }
 }

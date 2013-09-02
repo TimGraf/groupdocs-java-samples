@@ -1,29 +1,23 @@
 //###<i>This sample will show how to use <b>CreateAnnotation</b> method from Annotation Api to annotate a document</i>
 package controllers;
 //Import of necessary libraries
-import java.io.FileInputStream;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
 
+import com.groupdocs.sdk.api.AntApi;
 import com.groupdocs.sdk.api.StorageApi;
+import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.FileStream;
+import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.*;
 import common.Utils;
 import models.Credentials;
-
-import org.apache.commons.lang3.StringUtils;
-
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.actors.threadpool.Arrays;
 
-import com.groupdocs.sdk.common.ApiException;
-import com.groupdocs.sdk.common.ApiInvoker;
-import com.groupdocs.sdk.common.GroupDocsRequestSigner;
-import com.groupdocs.sdk.api.AntApi;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Sample11 extends Controller {
     //

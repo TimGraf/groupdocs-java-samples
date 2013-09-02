@@ -3,7 +3,6 @@ package controllers;
 //Import of necessary libraries
 
 import com.groupdocs.sdk.api.StorageApi;
-import com.groupdocs.sdk.common.ApiException;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.FileSystemDocument;
@@ -14,12 +13,8 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.actors.threadpool.Arrays;
 
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Sample07 extends Controller {
     //

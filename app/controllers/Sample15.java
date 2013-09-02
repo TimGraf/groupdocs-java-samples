@@ -2,25 +2,15 @@
 package controllers;
 //Import of necessary libraries
 
-import java.util.List;
-
-import common.Utils;
-import models.Credentials;
-
-import org.apache.commons.lang3.StringUtils;
-
-import play.data.Form;
-import play.mvc.Controller;
-import play.mvc.Http;
-import play.mvc.Result;
-import scala.actors.threadpool.Arrays;
-
 import com.groupdocs.sdk.api.DocApi;
-import com.groupdocs.sdk.common.ApiException;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.DocumentViewsResponse;
-import com.groupdocs.sdk.model.DocumentViewInfo;
+import common.Utils;
+import models.Credentials;
+import play.data.Form;
+import play.mvc.Controller;
+import play.mvc.Result;
 
 public class Sample15 extends Controller {
     //

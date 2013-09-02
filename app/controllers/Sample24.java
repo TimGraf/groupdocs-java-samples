@@ -1,27 +1,22 @@
 //###<i>This sample will show how to use <b>Upload</b> method from Storage Api to upload file to GroupDocs Storage </i>
 package controllers;
 //Import of necessary libraries
-import java.io.FileInputStream;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-
-import models.Credentials;
-import play.data.Form;
-import play.mvc.Controller;
-import play.mvc.Http.MultipartFormData;
-import play.mvc.Http.MultipartFormData.FilePart;
-import play.mvc.Result;
-import scala.actors.threadpool.Arrays;
 
 import com.groupdocs.sdk.api.StorageApi;
 import com.groupdocs.sdk.common.ApiException;
 import com.groupdocs.sdk.common.ApiInvoker;
-import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.UploadRequestResult;
 import com.groupdocs.sdk.model.UploadResponse;
+import models.Credentials;
+import org.apache.commons.lang3.StringUtils;
+import play.data.Form;
+import play.mvc.Controller;
+import play.mvc.Result;
+import scala.actors.threadpool.Arrays;
+
+import java.util.List;
+import java.util.Map;
 
 public class Sample24 extends Controller {
 	//###Set variables

@@ -1,110 +1,92 @@
 //###<i>This sample will show how to use <b>Upload and Compress</b> method's from Storage Api to upload and compress to zip file to GroupDocs Storage </i>
 package controllers;
 //Import of necessary libraries
-import java.io.FileInputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import common.Utils;
-import models.Credentials;
-import org.apache.commons.lang3.StringUtils;
-import play.data.Form;
-import play.mvc.Controller;
-import play.mvc.Http;
-import play.mvc.Http.MultipartFormData;
-import play.mvc.Http.MultipartFormData.FilePart;
-import play.mvc.Result;
-import scala.actors.threadpool.Arrays;
 
 import com.groupdocs.sdk.api.StorageApi;
-import com.groupdocs.sdk.common.ApiException;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
-import com.groupdocs.sdk.model.CompressRequestResult;
-import com.groupdocs.sdk.model.UploadResponse;
 import com.groupdocs.sdk.model.CompressResponse;
+import com.groupdocs.sdk.model.UploadResponse;
+import common.Utils;
+import models.Credentials;
+import play.data.Form;
+import play.mvc.Controller;
+import play.mvc.Http;
+import play.mvc.Result;
+
+import java.io.FileInputStream;
 
 public class Sample17 extends Controller {
-    //###Set variables
-    static String title = "GroupDocs Java SDK Samples";
-    static String sample = "Sample17";
-    static Form<Credentials> form = form(Credentials.class);
+    //
+    protected static Form<Credentials> form = form(Credentials.class);
 
     public static Result index() {
-        Form<Credentials> filledForm = form.bind(session());
-        HashMap<String, String> data = new HashMap<String, String>();
-        Http.Request request = request();
 
-        if ("GET".equalsIgnoreCase(request.method())){
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
-            return ok(views.html.sample17.render(sample, data, filledForm));
-        }
-        if ("POST".equalsIgnoreCase(request.method())){
-            filledForm = form.bindFromRequest();
-            Credentials credentials = filledForm.get();
-            if (StringUtils.isNotEmpty(credentials.getClient_id()) || StringUtils.isNotEmpty(credentials.getPrivate_key())){
-                session().put("client_id", credentials.getClient_id());
-                session().put("private_key", credentials.getPrivate_key());
-                session().put("server_type", credentials.getServer_type());
+        if (Utils.isPOST(request())) {
+            form = form.bindFromRequest();
+            // Check errors
+            if (form.hasErrors()) {
+                return badRequest(views.html.sample17.render(false, null, form));
             }
-            Http.MultipartFormData multipartFormData = request.body().asMultipartFormData();
-            Map<String, String[]> formUrlEncodedData = multipartFormData.asFormUrlEncoded();
-
-            String sourse = Utils.getFormValue(formUrlEncodedData, "sourse");
-            String guid = null;
-            if ("guid".equalsIgnoreCase(sourse)){
-                guid = Utils.getFormValue(formUrlEncodedData, "fileId");
-            }
-            else if ("url".equalsIgnoreCase(sourse)) {
-                try {
-                    String url = Utils.getFormValue(formUrlEncodedData, "url");
-                    guid = Utils.getGuidByUrl(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), url);
-                }
-                catch (Exception e) {
-                    filledForm.reject(e.getMessage());
-                    e.printStackTrace();
-                    return ok(views.html.sample17.render(sample, data, filledForm));
-                }
-            }
-            else if ("local".equalsIgnoreCase(sourse)) {
-                try {
-                    Http.MultipartFormData.FilePart local = multipartFormData.getFile("local");
-                    guid = Utils.getGuidByFile(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), local.getFilename(), new FileStream(new FileInputStream(local.getFile())));
-                }
-                catch (Exception e) {
-                    filledForm.reject(e.getMessage());
-                    e.printStackTrace();
-                    return ok(views.html.sample17.render(sample, data, filledForm));
-                }
-            }
-            if (StringUtils.isEmpty(guid)) {
-                filledForm.reject("GUID is empty or null!");
-                return ok(views.html.sample17.render(sample, data, filledForm));
-            }
+            // Save credentials to session
+            Credentials credentials = form.get();
+            session().put("client_id", credentials.getClient_id());
+            session().put("private_key", credentials.getPrivate_key());
+            session().put("server_type", credentials.getServer_type());
+            // Get request parameters
+            Http.MultipartFormData body = request().body().asMultipartFormData();
+            String sourse = Utils.getFormValue(body, "sourse");
+            // Initialize SDK with private key
+            ApiInvoker.getInstance().setRequestSigner(
+                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
 
             try {
+                //
+                String guid = null;
+                //
+                if ("guid".equals(sourse)) { // File GUID
+                    guid = Utils.getFormValue(body, "fileId");
+                }
+                else if ("url".equals(sourse)) { // Upload file fron URL
+                    String url = Utils.getFormValue(body, "url");
+                    StorageApi storageApi = new StorageApi();
+                    // Initialize API with base path
+                    storageApi.setBasePath(credentials.getServer_type());
+                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
+                    // Check response status
+                    uploadResponse = Utils.assertResponse(uploadResponse);
+                    guid = uploadResponse.getResult().getGuid();
+                }
+                else if ("local".equals(sourse)) { // Upload local file
+                    Http.MultipartFormData.FilePart file = body.getFile("file");
+                    StorageApi storageApi = new StorageApi();
+                    // Initialize API with base path
+                    storageApi.setBasePath(credentials.getServer_type());
+                    FileInputStream is = new FileInputStream(file.getFile());
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
+                    // Check response status
+                    uploadResponse = Utils.assertResponse(uploadResponse);
+                    guid = uploadResponse.getResult().getGuid();
+                }
+                guid = Utils.assertNotNull(guid);
+                //
                 Double fileID = Utils.getFileIdByGuid(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), guid);
-
-                ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(credentials.getPrivate_key()));
                 StorageApi api = new StorageApi();
                 api.setBasePath(credentials.getServer_type());
                 CompressResponse compressResponse = api.Compress(credentials.getClient_id(), Double.toString(fileID), "zip");
-
-                if (compressResponse != null && "Ok".equalsIgnoreCase(compressResponse.getStatus())){
-                    String fileName = Utils.getFileNameByGuid(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), guid);
-                    data.put("gdFile", fileName.replaceAll("\\.[a-z]{3}", ".zip"));
-                }
-                else {
-                    throw new Exception(compressResponse.getError_message());
-                }
+                compressResponse = Utils.assertResponse(compressResponse);
+                String fileName = Utils.getFileNameByGuid(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), guid);
+                String zipGuid = fileName.replaceAll("\\.[a-z]{3}", ".zip");
+                // Render view
+                return ok(views.html.sample17.render(true, zipGuid, form));
+            } catch (Exception e) {
+                return badRequest(views.html.sample17.render(false, null, form));
             }
-            catch (Exception e) {
-                filledForm.reject(e.getMessage());
-                return ok(views.html.sample17.render(sample, data, filledForm));
-            }
+        } else if (Utils.isGET(request())) {
+            form = form.bind(session());
+            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
-        return ok(views.html.sample17.render(sample, data, filledForm));
+        return ok(views.html.sample17.render(false, null, form));
     }
 }
