@@ -5,7 +5,6 @@ package controllers;
 import com.groupdocs.sdk.api.AntApi;
 import com.groupdocs.sdk.api.MgmtApi;
 import com.groupdocs.sdk.api.StorageApi;
-import com.groupdocs.sdk.common.ApiException;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
@@ -16,12 +15,10 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.actors.threadpool.Arrays;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Sample22 extends Controller {
     //

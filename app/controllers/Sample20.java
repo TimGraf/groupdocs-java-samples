@@ -3,25 +3,15 @@ package controllers;
 //Import of necessary libraries
 
  import com.groupdocs.sdk.api.ComparisonApi;
- import com.groupdocs.sdk.api.StorageApi;
- import com.groupdocs.sdk.common.ApiException;
  import com.groupdocs.sdk.common.ApiInvoker;
  import com.groupdocs.sdk.common.GroupDocsRequestSigner;
  import com.groupdocs.sdk.model.ChangesResponse;
- import com.groupdocs.sdk.model.UploadResponse;
  import common.Utils;
  import models.Credentials;
- import org.apache.commons.lang3.StringUtils;
  import play.data.Form;
  import play.mvc.Controller;
  import play.mvc.Http;
  import play.mvc.Result;
- import scala.actors.threadpool.Arrays;
-
- import java.util.ArrayList;
- import java.util.HashMap;
- import java.util.List;
- import java.util.Map;
 
 public class Sample20 extends Controller {
     //

@@ -11,14 +11,12 @@ import com.groupdocs.sdk.model.UploadResponse;
 import com.groupdocs.sdk.model.ViewDocumentResponse;
 import common.Utils;
 import models.Credentials;
-import org.apache.commons.lang3.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 
 import java.io.FileInputStream;
-import java.util.Map;
 
 public class Sample23 extends Controller {
     //

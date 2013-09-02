@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, result: HashMap[String, String], aForm: Form[Credentials])
+@(success: Boolean, messages: String, frameUrl: String, aForm: Form[Credentials])
 
 @import helper._
 
@@ -7,7 +7,7 @@
 
 @main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 25</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to merge data fields in docx file with data source and get result file as PDF file using Java SDK</i> <br/>
@@ -51,10 +51,10 @@
         }
    </div>
 
-    @if(result != null){
+    @if(success){
        <div  style="padding:20px; border:1px solid black;">
-            <span style="color: green">@result.get("message")</span>
-            <iframe frameborder="0" width="800" height="650" src='@result.get("url")'></iframe>
+            <span style="color: green">@messages</span>
+            <iframe frameborder="0" width="800" height="650" src='@frameUrl'></iframe>
        </div>
     }
 </div>

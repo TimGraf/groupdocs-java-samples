@@ -3,92 +3,59 @@ package controllers;
 //Import of necessary libraries
 
 import com.groupdocs.sdk.api.StorageApi;
-import com.groupdocs.sdk.common.ApiException;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
-import com.groupdocs.sdk.model.UploadRequestResult;
 import com.groupdocs.sdk.model.UploadResponse;
+import common.Utils;
 import models.Credentials;
-import org.apache.commons.lang3.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
-import scala.actors.threadpool.Arrays;
-
-import java.util.List;
-import java.util.Map;
 
 public class Sample24 extends Controller {
-	//###Set variables
-	static String title = "GroupDocs Java SDK Samples";
-	static Form<Credentials> form = form(Credentials.class);
-	
-	public static Result index() {
-		UploadRequestResult file = null;
-		Form<Credentials> filledForm;
-		String sample = "Sample24";
-		Status status;
-		//Check POST parameters
-		if(request().method().equalsIgnoreCase("POST")){
-			filledForm = form.bindFromRequest();
-			if(filledForm.hasErrors()){
-				status = badRequest(views.html.sample24.render(sample, file, filledForm));
-			} else {
-				//Get POST data
-				Credentials credentials = filledForm.get();
-				session().put("client_id", credentials.getClient_id());
-				session().put("private_key", credentials.getPrivate_key());
-				session().put("server_type", credentials.getServer_type());
-				
-				Map<String, String[]> formData = request().body().asFormUrlEncoded();
-				String fileurl = formData.get("url") != null ? formData.get("url")[0] : null;
-				fileurl = StringUtils.isBlank(fileurl) ? null : fileurl.trim();
-		       
-		        //###Create ApiInvoker, Storage Api and FileInputStream objects
-				try {
-					//Create ApiInvoker object
-					ApiInvoker.getInstance().setRequestSigner(
-							new GroupDocsRequestSigner(credentials.getPrivate_key()));
-					//Create Storage object
-					StorageApi api = new StorageApi();
-					api.setBasePath(credentials.getServer_type());
-					//###Make a request to Storage API using clientId
-					
-					//Upload file to current user storage
-					UploadResponse response = api.UploadWeb(credentials.getClient_id(), fileurl);
-					
-					//Check request result
-					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-						file = response.getResult();
-					}
-					//If request was successfull - set file variable for template
-					status = ok(views.html.sample24.render(sample, file, filledForm));
-			    //###Definition of Api errors and conclusion of the corresponding message
-				} catch (ApiException e) {
-					if(e.getCode() == 401){
-						List<Object> args = Arrays.asList(new Object[]{"https://apps.groupdocs.com/My/Manage", "Production Server"});
-						filledForm.reject("Wrong Credentials. Please make sure to use credentials from", args);
-					} else {
-						filledForm.reject("Failed to access API: " + e.getMessage());
-					}
-					status = badRequest(views.html.sample24.render(sample, file, filledForm));
-				//###Definition of filledForm errors and conclusion of the corresponding message
-				} catch (Exception e) {
-					if(fileurl == null){
-						filledForm.reject("file url", "This field is required");
-					} else {
-						filledForm.reject("file", "Something wrong with your file: " + e.getMessage());
-					}
-					status = badRequest(views.html.sample24.render(sample, file, filledForm));
-				}
-			}
-		} else {
-			filledForm = form.bind(session());
-			session().put("server_type", "https://api.groupdocs.com/v2.0");
-			status = ok(views.html.sample24.render(sample, file, filledForm));
-		}
-		//Process template
-		return status;
-	}
-	
+    //
+    protected static Form<Credentials> form = form(Credentials.class);
+
+    public static Result index() {
+
+        if (Utils.isPOST(request())) {
+            form = form.bindFromRequest();
+            // Check errors
+            if (form.hasErrors()) {
+                return badRequest(views.html.sample24.render(false, null, form));
+            }
+            // Save credentials to session
+            Credentials credentials = form.get();
+            session().put("client_id", credentials.getClient_id());
+            session().put("private_key", credentials.getPrivate_key());
+            session().put("server_type", credentials.getServer_type());
+            // Get request parameters
+            Http.MultipartFormData body = request().body().asMultipartFormData();
+            String url = Utils.getFormValue(body, "url");
+            // Initialize SDK with private key
+            ApiInvoker.getInstance().setRequestSigner(
+                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+
+            try {
+                //
+                //Create Storage object
+                StorageApi api = new StorageApi();
+                // Initialize API with base path
+                api.setBasePath(credentials.getServer_type());
+                // Upload file to current user storage
+                UploadResponse response = api.UploadWeb(credentials.getClient_id(), url);
+                // Check response status
+                response = Utils.assertResponse(response);
+                // Render view
+                return ok(views.html.sample24.render(true, response.getResult(), form));
+            } catch (Exception e) {
+                return badRequest(views.html.sample24.render(false, null, form));
+            }
+        } else if (Utils.isGET(request())) {
+            form = form.bind(session());
+            session().put("server_type", "https://api.groupdocs.com/v2.0");
+        }
+        return ok(views.html.sample24.render(false, null, form));
+    }
 }

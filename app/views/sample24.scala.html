@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, gdFile: UploadRequestResult, aForm: Form[Credentials])
+@(success: Boolean, gdFile: com.groupdocs.sdk.model.UploadRequestResult, aForm: Form[Credentials])
 
 @import helper._
 
@@ -7,7 +7,7 @@
 
 @main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 24</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to use StorageApi to upload file from URL to GroupDocs account using Java SDK</i> <br/>
@@ -32,7 +32,7 @@
 	        <input type="submit" value="Make Request">
         }
    </div>
-    @if(gdFile != null){
+    @if(success){
         <div  style="padding:20px; border:1px solid black;">
             <p>Results:</p>
             <p>File was uploaded to GroupDocs. Here you can see your file in the GroupDocs Embedded Viewer.</p>
