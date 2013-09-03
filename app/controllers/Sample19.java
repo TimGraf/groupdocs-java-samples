@@ -32,7 +32,7 @@ public class Sample19 extends Controller {
     public static Result index() {
 
         if (Utils.isPOST(request())) {
-            form = form.bindFromRequest();
+            form = form(Credentials.class).bindFromRequest();
             // Check errors
             if (form.hasErrors()) {
                 return badRequest(views.html.sample19.render(false, null, null, null, form));
@@ -111,14 +111,19 @@ public class Sample19 extends Controller {
 
                 CompareResponse compareResponse = api.Compare(credentials.getClient_id(), sourseGuid, targetGuid, callbackUrl);
                 compareResponse = Utils.assertResponse(compareResponse);
-                Thread.sleep(8000);
 
                 AsyncApi asyncApi = new AsyncApi();
                 // Initialize API with base path
                 asyncApi.setBasePath(credentials.getServer_type());
-                GetJobDocumentsResponse jobDocumentsResponse = asyncApi.GetJobDocuments(credentials.getClient_id(), compareResponse.getResult().getJob_id().toString(), "");
-                jobDocumentsResponse = Utils.assertResponse(jobDocumentsResponse);
+                //
+                GetJobDocumentsResponse jobDocumentsResponse = null;
+                do {
+                    Thread.sleep(1000);
+                    jobDocumentsResponse = asyncApi.GetJobDocuments(credentials.getClient_id(), compareResponse.getResult().getJob_id().toString(), "");
+                    jobDocumentsResponse = Utils.assertResponse(jobDocumentsResponse);
+                } while ("Inprogress".equalsIgnoreCase(jobDocumentsResponse.getResult().getJob_status()));
                 String resultGuid = jobDocumentsResponse.getResult().getOutputs().get(0).getGuid();
+                Utils.assertNotNull(resultGuid);
 
                 MgmtApi mgmtApi = new MgmtApi();
                 // Initialize API with base path
@@ -126,8 +131,6 @@ public class Sample19 extends Controller {
                 GetUserEmbedKeyResponse userEmbedKeyResponse = mgmtApi.GetUserEmbedKey(credentials.getClient_id(), "comparison");
                 Utils.assertResponse(userEmbedKeyResponse);
                 String compareKey = userEmbedKeyResponse.getResult().getKey().getGuid();
-
-                Utils.assertNotNull(callbackUrl);
 
                 FileOutputStream fileOutputStream = new FileOutputStream(USER_INFO_FILE);
                 DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);

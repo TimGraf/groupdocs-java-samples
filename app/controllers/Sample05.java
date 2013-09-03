@@ -28,7 +28,7 @@ public class Sample05 extends Controller {
     public static Result index() {
 
         if (Utils.isPOST(request())) {
-            form = form.bindFromRequest();
+            form = form(Credentials.class).bindFromRequest();
             // Check errors
             if (form.hasErrors()) {
                 return badRequest(views.html.sample05.render(false, null, form, null));
@@ -65,13 +65,14 @@ public class Sample05 extends Controller {
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
-                }
-                else if ("url".equals(sourse)){
+                    Thread.sleep(3000);
+                } else if ("url".equals(sourse)){
                     String url = Utils.getFormValue(body.asFormUrlEncoded(), "url");
                     UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
+                    uploadDir = "My Web Documents";
                 }
                 String destPath = Utils.getFormValue(body.asFormUrlEncoded(), "destPath");
                 destPath = Utils.assertNotNull(destPath);
@@ -93,7 +94,10 @@ public class Sample05 extends Controller {
                 }
                 guid = Utils.assertNotNull(guid);
                 fileName = Utils.assertNotNull(fileName);
-                String copyToPath = (destPath + File.separator + fileName).replaceAll("//", "/");
+                if (fileName.contains("http:")) {
+                    fileName = fileName.split("/")[fileName.split("/").length - 1];
+                }
+                String copyToPath = (destPath + File.separator + fileName).replaceAll("\\\\", "/").replaceAll("//", "/");
 
                 String action = null;
                 FileMoveResponse copyMoveResponse = null;
@@ -101,8 +105,7 @@ public class Sample05 extends Controller {
                 if (Utils.getFormValue(body.asFormUrlEncoded(), "copy") != null){
                     copyMoveResponse = storageApi.MoveFile(credentials.getClient_id(), copyToPath, null, Double.toString(fileId), null);
                     action = "copy";
-                }
-                else if (Utils.getFormValue(body.asFormUrlEncoded(), "move") != null){
+                } else if (Utils.getFormValue(body.asFormUrlEncoded(), "move") != null){
                     copyMoveResponse = storageApi.MoveFile(credentials.getClient_id(), copyToPath, null, null, Double.toString(fileId));
                     action = "move";
                 }

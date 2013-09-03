@@ -31,7 +31,7 @@ public class Sample25 extends Controller {
     public static Result index() {
 
         if (Utils.isPOST(request())) {
-            form = form.bindFromRequest();
+            form = form(Credentials.class).bindFromRequest();
             // Check errors
             if (form.hasErrors()) {
                 return badRequest(views.html.sample25.render(false, null, null, form));

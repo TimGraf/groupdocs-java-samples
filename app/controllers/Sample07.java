@@ -23,7 +23,7 @@ public class Sample07 extends Controller {
     public static Result index() {
 
         if (Utils.isPOST(request())) {
-            form = form.bindFromRequest();
+            form = form(Credentials.class).bindFromRequest();
             // Check errors
             if (form.hasErrors()) {
                 return badRequest(views.html.sample07.render(false, null, form));
@@ -33,9 +33,6 @@ public class Sample07 extends Controller {
             session().put("client_id", credentials.getClient_id());
             session().put("private_key", credentials.getPrivate_key());
             session().put("server_type", credentials.getServer_type());
-            // Get request parameters
-            Http.MultipartFormData body = request().body().asMultipartFormData();
-            String sourse = Utils.getFormValue(body.asFormUrlEncoded(), "sourse");
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
                     new GroupDocsRequestSigner(credentials.getPrivate_key()));

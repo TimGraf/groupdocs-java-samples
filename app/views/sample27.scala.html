@@ -1,4 +1,4 @@
-@(title: String, subTitle: String, result: HashMap[String, String], aForm: Form[Credentials])
+@(success: Boolean, guid: String, path: String, aForm: Form[Credentials])
 
 @import helper._
 
@@ -7,7 +7,7 @@
 
 @main() {
 
-<h3 style="text-align:center;"><a href="/">@title</a> - @subTitle</h3>
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 27</h3>
 
 <div class='samplecontent' style="padding:10px;">
    <i>This sample will show how to create your own questionary using forms and show the result document using Java SDK </i> <br/>
@@ -83,10 +83,10 @@
         }
    </div>
 
-    @if(result.get("filePath") != null){
+    @if(success){
         <div style="padding:20px; border:1px solid black;">
-            <span style="color: green">@result.get("filePath")</span>
-            <iframe frameborder="0" width="800" height="650" src="https://apps.groupdocs.com/document-viewer/embed/@result.get("fileGuid")"></iframe>
+            <span style="color: green">@path</span>
+            <iframe frameborder="0" width="800" height="650" src="https://apps.groupdocs.com/document-viewer/embed/@guid"></iframe>
         </div>
     }
 </div>

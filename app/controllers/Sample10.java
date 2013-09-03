@@ -27,7 +27,7 @@ public class Sample10 extends Controller {
     public static Result index() {
 
         if (Utils.isPOST(request())) {
-            form = form.bindFromRequest();
+            form = form(Credentials.class).bindFromRequest();
             // Check errors
             if (form.hasErrors()) {
                 return badRequest(views.html.sample10.render(false, null, form));
@@ -52,10 +52,8 @@ public class Sample10 extends Controller {
                 if ("guid".equals(sourse)) { // File GUID
                     guid = Utils.getFormValue(body, "fileId");
                 }
-                else if ("url".equals(sourse)) { // Upload file fron URL
-                    String url = Utils.getFormValue(body, "url");
-                    ApiInvoker.getInstance().setRequestSigner(
-                            new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                else if ("url".equals(sourse)) { // Upload file from URL
+                    String url = Utils.getFormValue(body, "fileUrl");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
                     storageApi.setBasePath(credentials.getServer_type());
@@ -66,8 +64,6 @@ public class Sample10 extends Controller {
                 }
                 else if ("local".equals(sourse)) { // Upload local file
                     Http.MultipartFormData.FilePart file = body.getFile("filePart");
-                    ApiInvoker.getInstance().setRequestSigner(
-                            new GroupDocsRequestSigner(credentials.getPrivate_key()));
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
                     storageApi.setBasePath(credentials.getServer_type());

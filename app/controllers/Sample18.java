@@ -29,7 +29,7 @@ public class Sample18 extends Controller {
     public static Result index() {
 
         if (Utils.isPOST(request())) {
-            form = form.bindFromRequest();
+            form = form(Credentials.class).bindFromRequest();
             // Check errors
             if (form.hasErrors()) {
                 return badRequest(views.html.sample18.render(false, null, form));
@@ -89,8 +89,6 @@ public class Sample18 extends Controller {
                 jobDocumentsResponse = Utils.assertResponse(jobDocumentsResponse);
 
                 String resultGuid = jobDocumentsResponse.getResult().getInputs().get(0).getOutputs().get(0).getGuid();
-
-                Utils.assertNotNull(callbackUrl);
 
                 FileOutputStream fileOutputStream = new FileOutputStream(USER_INFO_FILE);
                 DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);

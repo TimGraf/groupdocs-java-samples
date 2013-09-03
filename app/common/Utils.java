@@ -5,9 +5,7 @@ import com.groupdocs.sdk.api.StorageApi;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
-import com.groupdocs.sdk.model.GetDocumentInfoResponse;
-import com.groupdocs.sdk.model.UploadResponse;
-import com.groupdocs.sdk.model.ViewDocumentResponse;
+import com.groupdocs.sdk.model.*;
 import org.apache.commons.lang3.StringUtils;
 import play.mvc.Http;
 
@@ -121,11 +119,9 @@ public abstract class Utils {
         ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(pkey));
         DocApi docApi = new DocApi();
         docApi.setBasePath(bpath);
-        GetDocumentInfoResponse documentInfoResponse = docApi.GetDocumentMetadata(cid, guid);
-        if (documentInfoResponse == null || !"Ok".equalsIgnoreCase(documentInfoResponse.getStatus())){
-            throw new Exception(documentInfoResponse.getError_message());
-        }
-        return  documentInfoResponse.getResult().getLast_view().getDocument().getName();
+        ViewDocumentResponse viewDocumentResponse = docApi.ViewDocument(cid, guid, null, null, null, null, null, null);
+        viewDocumentResponse = assertResponse(viewDocumentResponse);
+        return  viewDocumentResponse.getResult().getName();
     }
 
     /**
@@ -142,9 +138,7 @@ public abstract class Utils {
         DocApi docApi = new DocApi();
         docApi.setBasePath(bpath);
         ViewDocumentResponse viewDocumentResponse = docApi.ViewDocument(cid, guid, null, null, null, null, null, null);
-        if (viewDocumentResponse == null || !"Ok".equalsIgnoreCase(viewDocumentResponse.getStatus())){
-            throw new Exception(viewDocumentResponse.getError_message());
-        }
+        viewDocumentResponse = assertResponse(viewDocumentResponse);
         return  viewDocumentResponse.getResult().getId();
     }
 

@@ -9,9 +9,11 @@ import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.UserInfo;
 import com.groupdocs.sdk.model.UserInfoResponse;
+import common.Utils;
 import models.Credentials;
 import play.data.Form;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import scala.actors.threadpool.Arrays;
 
@@ -19,71 +21,49 @@ import java.util.List;
 import java.util.Map;
 
 public class Sample26 extends Controller {
-	//###Set variables
-	static String title = "GroupDocs Java SDK Samples";
-	static Form<Credentials> form = form(Credentials.class);
-	
-	public static Result index() {
-		
-		UserInfo userInfo = null;
-		Form<Credentials> filledForm;
-		String sample = "Sample26";
-		Status status;
-		//Check POST parameters
-		if(request().method().equalsIgnoreCase("POST")){
-			filledForm = form.bindFromRequest();
-			//If filledForm have errors return to template
-			//Get POST data
-			
-			Map<String, String[]> formData = request().body().asFormUrlEncoded();
-			String login = formData.get("login") != null ? formData.get("login")[0] : null;
-			String password = formData.get("password") != null ? formData.get("password")[0] : null;
-			String basePath = formData.get("server_type") != null ? formData.get("server_type")[0] : null;
-			if(login.equalsIgnoreCase("") || password.equalsIgnoreCase("")){
-				status = badRequest(views.html.sample26.render(sample, userInfo, filledForm));
-			} else {
-				
-				//###Create ApiInvoker and Management Api objects
-	            
-	            //Create ApiInvoker object
-				ApiInvoker.getInstance().setRequestSigner(
-						new GroupDocsRequestSigner("123"));
-				//Create SharedApi object
-				SharedApi api = new SharedApi();
-				//Set base path
-				if (basePath.equals("")) {
-					basePath = "https://api.groupdocs.com/v2.0";
-				}
-				api.setBasePath(basePath);
-				
-				//###Make a request to SharedAPI using login and password
-				try {
-					//Login to the GroupDocs
-					UserInfoResponse response = api.LoginUser(login, password);
-					//Check the result of the request
-					if(response != null && response.getStatus().trim().equalsIgnoreCase("Ok")){
-						userInfo = response.getResult().getUser();
-					}
-					//If request was successfull - set userInfo variable for template
-					status = ok(views.html.sample26.render(sample, userInfo, filledForm));
-				//###Definition of Api errors and conclusion of the corresponding message
-				} catch (ApiException e) {
-					if(e.getCode() == 401){
-						List<Object> args = Arrays.asList(new Object[]{"https://apps.groupdocs.com/My/Manage", "Production Server"});
-						filledForm.reject("Wrong Credentials. Please make sure to use credentials from", args);
-					} else {
-						filledForm.reject("Failed to access API: " + e.getMessage());
-					}
-					status = badRequest(views.html.sample26.render(sample, userInfo, filledForm));
-				}
-			}
-		} else {
-			//Process template
-			filledForm = form.bind(session());
-			session().put("server_type", "https://api.groupdocs.com/v2.0");
-			status = ok(views.html.sample26.render(sample, userInfo, filledForm));
-		}
-		return status;
-	}
-	
+    //
+    protected static Form form = form();
+
+    public static Result index() {
+
+        if (Utils.isPOST(request())) {
+            form = form().bindFromRequest();
+            // Check errors
+            if (form.hasErrors()) {
+                return badRequest(views.html.sample26.render(false, null, form));
+            }
+
+            // Get request parameters
+            Http.MultipartFormData body = request().body().asMultipartFormData();
+            String login = Utils.getFormValue(body, "login");
+            String password = Utils.getFormValue(body, "password");
+            String server_type = Utils.getFormValue(body, "server_type");
+
+            session().put("server_type", server_type);
+
+            // Initialize SDK with private key
+            ApiInvoker.getInstance().setRequestSigner(
+                    new GroupDocsRequestSigner("any_value"));
+            try {
+                // Create SharedApi object
+                SharedApi sharedApi = new SharedApi();
+                // Initialize API with base path
+                sharedApi.setBasePath(server_type);
+                // Login to the GroupDocs
+                UserInfoResponse userInfoResponse = sharedApi.LoginUser(login, password);
+                // Check result status
+                userInfoResponse = Utils.assertResponse(userInfoResponse);
+                //
+                UserInfo userInfo = userInfoResponse.getResult().getUser();
+                // Render view
+                return ok(views.html.sample26.render(true, userInfo, form));
+            } catch (Exception e) {
+                return badRequest(views.html.sample26.render(false, null, form));
+            }
+        } else if (Utils.isGET(request())) {
+            form = form.bind(session());
+            session().put("server_type", "https://api.groupdocs.com/v2.0");
+        }
+        return ok(views.html.sample26.render(false, null, form));
+    }
 }

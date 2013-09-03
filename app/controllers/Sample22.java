@@ -27,7 +27,7 @@ public class Sample22 extends Controller {
     public static Result index() {
 
         if (Utils.isPOST(request())) {
-            form = form.bindFromRequest();
+            form = form(Credentials.class).bindFromRequest();
             // Check errors
             if (form.hasErrors()) {
                 return badRequest(views.html.sample22.render(false, null, form));
@@ -54,7 +54,6 @@ public class Sample22 extends Controller {
                 email = Utils.assertNotNull(email);
                 first_name = Utils.assertNotNull(first_name);
                 last_name = Utils.assertNotNull(last_name);
-                callback = Utils.assertNotNull(callback);
                 basePath = Utils.assertNotNull(basePath);
                 //
                 String guid = null;

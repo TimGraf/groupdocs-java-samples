@@ -17,7 +17,7 @@
    <br/>
    <div id="requestForm" style="padding:20px; border:1px solid black;">
 		<p>Enter data for request and press "Make request" button </p>
-		@myForm(routes.Sample20.index(), 'method -> "POST") {
+		@myForm(routes.Sample20.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
 			@aForm.globalErrors.map { error =>
 			  @if(error.arguments.size > 0){
 				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
@@ -38,7 +38,7 @@
         @if(success){
         	<div  style="padding:20px; border:1px solid black;">
 		        <p> Results: </p>
-                <table border=1>";
+                <table border="1">
                     <tr><td><span syule='color: green'>Change Name</span></td><td><span style='color: green'>Change</span></td></tr>
 
                     @for(change <- data.getChanges()){

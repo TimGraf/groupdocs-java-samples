@@ -26,7 +26,7 @@ public class Sample11 extends Controller {
     public static Result index() {
 
         if (Utils.isPOST(request())) {
-            form = form.bindFromRequest();
+            form = form(Credentials.class).bindFromRequest();
             // Check errors
             if (form.hasErrors()) {
                 return badRequest(views.html.sample11.render(false, null, form));
@@ -41,14 +41,8 @@ public class Sample11 extends Controller {
             String annotation_type = Utils.getFormValue(body, "annotation_type");
             String text = Utils.getFormValue(body, "text");
             String source = Utils.getFormValue(body, "sourse");
-            double box_width = Double.parseDouble(Utils.getFormValue(body, "box_width"));
-            double box_height = Double.parseDouble(Utils.getFormValue(body, "box_height"));
-            int range_length = Integer.parseInt(Utils.getFormValue(body, "range_length"));
-            int range_position = Integer.parseInt(Utils.getFormValue(body, "range_position"));
             double box_x = Double.parseDouble(Utils.getFormValue(body, "box_x"));
             double box_y = Double.parseDouble(Utils.getFormValue(body, "box_y"));
-            double annotationPosition_x = Double.parseDouble(Utils.getFormValue(body, "annotationPosition_x"));
-            double annotationPosition_y = Double.parseDouble(Utils.getFormValue(body, "annotationPosition_Y"));
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
                     new GroupDocsRequestSigner(credentials.getPrivate_key()));
@@ -103,6 +97,12 @@ public class Sample11 extends Controller {
                 // Check what type it was chosen
                 // If annotation type is text set all parameters
                 if (annotation_type.equals("text")) {
+                    double box_width = Double.parseDouble(Utils.getFormValue(body, "box_width"));
+                    double box_height = Double.parseDouble(Utils.getFormValue(body, "box_height"));
+                    int range_length = Integer.parseInt(Utils.getFormValue(body, "range_length"));
+                    int range_position = Integer.parseInt(Utils.getFormValue(body, "range_position"));
+                    double annotationPosition_x = Double.parseDouble(Utils.getFormValue(body, "annotationPosition_x"));
+                    double annotationPosition_y = Double.parseDouble(Utils.getFormValue(body, "annotationPosition_Y"));
                     // Create rectangle object
                     Rectangle box = new Rectangle();
                     // Set rectangle parameters
@@ -126,6 +126,8 @@ public class Sample11 extends Controller {
                     requestBody.setAnnotationPosition(annotationPosition);
                     // If annotation type is area set only box and position parameters
                 } else if (annotation_type.equals("area")) {
+                    double box_width = Double.parseDouble(Utils.getFormValue(body, "box_width"));
+                    double box_height = Double.parseDouble(Utils.getFormValue(body, "box_height"));
                     // Create rectangle object
                     Rectangle box = new Rectangle();
                     // Set rectangle parameters
@@ -146,8 +148,8 @@ public class Sample11 extends Controller {
                     // Create rectangle object
                     Rectangle box = new Rectangle();
                     // Set rectangle parameters
-                    box.setX(box_width);
-                    box.setY(box_height);
+                    box.setX(box_x);
+                    box.setY(box_y);
                     box.setWidth(0.0);
                     box.setHeight(0.0);
                     // Create point object

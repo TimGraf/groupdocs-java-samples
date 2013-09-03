@@ -25,7 +25,7 @@ public class Sample16 extends Controller {
     public static Result index() {
 
         if (Utils.isPOST(request())) {
-            form = form.bindFromRequest();
+            form = form(Credentials.class).bindFromRequest();
             // Check errors
             if (form.hasErrors()) {
                 return badRequest(views.html.sample16.render(false, null, form));
@@ -60,7 +60,7 @@ public class Sample16 extends Controller {
                     guid = uploadResponse.getResult().getGuid();
                 }
                 else if ("local".equals(sourse)) { // Upload local file
-                    Http.MultipartFormData.FilePart file = body.getFile("file");
+                    Http.MultipartFormData.FilePart file = body.getFile("local");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
                     storageApi.setBasePath(credentials.getServer_type());

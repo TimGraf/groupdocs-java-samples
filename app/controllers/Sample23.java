@@ -25,7 +25,7 @@ public class Sample23 extends Controller {
     public static Result index() {
 
         if (Utils.isPOST(request())) {
-            form = form.bindFromRequest();
+            form = form(Credentials.class).bindFromRequest();
             // Check errors
             if (form.hasErrors()) {
                 return badRequest(views.html.sample23.render(false, null, form));
@@ -83,7 +83,7 @@ public class Sample23 extends Controller {
                 viewDocumentResponse = Utils.assertResponse(viewDocumentResponse);
 
                 String server = credentials.getServer_type().substring(0, credentials.getServer_type().indexOf(".com") + 4).replace("api", "apps");
-                String frameUrl = credentials + "/document-viewer/embed/" + viewDocumentResponse.getResult().getGuid();
+                String frameUrl = server + "/document-viewer/embed/" + viewDocumentResponse.getResult().getGuid();
                 // Render view
                 return ok(views.html.sample23.render(true, frameUrl, form));
             } catch (Exception e) {

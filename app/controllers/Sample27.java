@@ -5,6 +5,7 @@ package controllers;
 import com.groupdocs.sdk.api.AsyncApi;
 import com.groupdocs.sdk.api.MergeApi;
 import com.groupdocs.sdk.api.SharedApi;
+import com.groupdocs.sdk.api.StorageApi;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
@@ -26,73 +27,70 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Sample27 extends Controller {
-    static String title = "GroupDocs Java SDK Samples";
-    static String sample = "Sample27";
-    static Form<Credentials> form = form(Credentials.class);
+    //
+    protected static Form<Credentials> form = form(Credentials.class);
 
     public static Result index() {
-        HashMap<String, String> data = new HashMap<String, String>();
-        Http.Request request = request();
-        Form<Credentials> filledForm = form.bind(session());
 
-        if ("GET".equalsIgnoreCase(request.method())) {
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
-            return ok(views.html.sample27.render(sample, data, filledForm));
-        }
-        if ("POST".equalsIgnoreCase(request.method())) {
-            filledForm = form.bindFromRequest();
-            Credentials credentials = filledForm.get();
-
-            if (StringUtils.isNotEmpty(credentials.getClient_id()) || StringUtils.isNotEmpty(credentials.getPrivate_key())) {
-                session().put("client_id", credentials.getClient_id());
-                session().put("private_key", credentials.getPrivate_key());
-                session().put("server_type", credentials.getServer_type());
+        if (Utils.isPOST(request())) {
+            form = form(Credentials.class).bindFromRequest();
+            // Check errors
+            if (form.hasErrors()) {
+                return badRequest(views.html.sample27.render(false, null, null, form));
             }
+            // Save credentials to session
+            Credentials credentials = form.get();
+            session().put("client_id", credentials.getClient_id());
+            session().put("private_key", credentials.getPrivate_key());
+            session().put("server_type", credentials.getServer_type());
+            // Get request parameters
+            Http.MultipartFormData body = request().body().asMultipartFormData();
+            String sourse = Utils.getFormValue(body, "sourse");
+            String convert_type = Utils.getFormValue(body, "convert_type");
+            String callbackUrl = Utils.getFormValue(body, "callbackUrl");
+            String name = Utils.getFormValue(body, "name");
+            String sex = Utils.getFormValue(body, "sex");
+            String age = Utils.getFormValue(body, "age");
+            String sunrise = Utils.getFormValue(body, "sunrise");
+            String type = Utils.getFormValue(body, "type");
 
-            Http.MultipartFormData multipartFormData = request.body().asMultipartFormData();
-            Map<String, String[]> formUrlEncodedData = multipartFormData.asFormUrlEncoded();
-
-            String sourse = Utils.getFormValue(formUrlEncodedData, "sourse");
-            String convert_type = Utils.getFormValue(formUrlEncodedData, "convert_type");
-            String callbackUrl = Utils.getFormValue(formUrlEncodedData, "callbackUrl");
             callbackUrl = (callbackUrl == null) ? "" : callbackUrl;
-            String name = Utils.getFormValue(formUrlEncodedData, "name");
-            String sex = Utils.getFormValue(formUrlEncodedData, "sex");
-            String age = Utils.getFormValue(formUrlEncodedData, "age");
-            String sunrise = Utils.getFormValue(formUrlEncodedData, "sunrise");
-            String type = Utils.getFormValue(formUrlEncodedData, "type");
 
-            String guid = null;
-            if ("guid".equalsIgnoreCase(sourse)) {
-                guid = Utils.getFormValue(formUrlEncodedData, "fileId");
-            } else if ("url".equalsIgnoreCase(sourse)) {
-                try {
-                    String url = Utils.getFormValue(formUrlEncodedData, "url");
-                    guid = Utils.getGuidByUrl(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), url);
-                } catch (Exception e) {
-                    filledForm.reject(e.getMessage());
-                    e.printStackTrace();
-                    return ok(views.html.sample27.render(sample, data, filledForm));
-                }
-            } else if ("local".equalsIgnoreCase(sourse)) {
-                try {
-                    Http.MultipartFormData.FilePart file = multipartFormData.getFile("file");
-                    guid = Utils.getGuidByFile(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), file.getFilename(), new FileStream(new FileInputStream(file.getFile())));
-                } catch (Exception e) {
-                    filledForm.reject(e.getMessage());
-                    e.printStackTrace();
-                    return ok(views.html.sample27.render(sample, data, filledForm));
-                }
-            }
-            if (StringUtils.isEmpty(guid)) {
-                filledForm.reject("GUID is empty or null!");
-                return ok(views.html.sample27.render(sample, data, filledForm));
-            }
+            ApiInvoker.getInstance().setRequestSigner(
+                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
 
             try {
-
-                ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                //
+                String guid = null;
+                //
+                if ("guid".equals(sourse)) { // File GUID
+                    guid = Utils.getFormValue(body, "fileId");
+                }
+                else if ("url".equals(sourse)) { // Upload file fron URL
+                    String url = Utils.getFormValue(body, "url");
+                    StorageApi storageApi = new StorageApi();
+                    // Initialize API with base path
+                    storageApi.setBasePath(credentials.getServer_type());
+                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
+                    // Check response status
+                    uploadResponse = Utils.assertResponse(uploadResponse);
+                    guid = uploadResponse.getResult().getGuid();
+                }
+                else if ("local".equals(sourse)) { // Upload local file
+                    Http.MultipartFormData.FilePart file = body.getFile("file");
+                    StorageApi storageApi = new StorageApi();
+                    // Initialize API with base path
+                    storageApi.setBasePath(credentials.getServer_type());
+                    FileInputStream is = new FileInputStream(file.getFile());
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
+                    // Check response status
+                    uploadResponse = Utils.assertResponse(uploadResponse);
+                    guid = uploadResponse.getResult().getGuid();
+                }
+                guid = Utils.assertNotNull(guid);
+                //
                 MergeApi mergeApi = new MergeApi();
+                // Initialize API with base path
                 mergeApi.setBasePath(credentials.getServer_type());
 
                 Datasource datasource = new Datasource();
@@ -129,17 +127,21 @@ public class Sample27 extends Controller {
                 datasource.getFields().add(datasourceField);
 
                 AddDatasourceResponse datasourceResponse = mergeApi.AddDataSource(credentials.getClient_id(), datasource);
+                // Check response status
                 datasourceResponse = Utils.assertResponse(datasourceResponse);
 
                 MergeTemplateResponse mergeTemplateResponse = mergeApi.MergeDatasource(credentials.getClient_id(), guid, Double.toString(datasourceResponse.getResult().getDatasource_id()), type, null);
+                // Check response status
                 mergeTemplateResponse = Utils.assertResponse(mergeTemplateResponse);
 
                 Thread.sleep(8000);
 
                 AsyncApi asyncApi = new AsyncApi();
+                // Initialize API with base path
                 asyncApi.setBasePath(credentials.getServer_type());
 
                 GetJobDocumentsResponse jobDocumentsResponse = asyncApi.GetJobDocuments(credentials.getClient_id(), Double.toString(mergeTemplateResponse.getResult().getJob_id()), null);
+                // Check response status
                 jobDocumentsResponse = Utils.assertResponse(jobDocumentsResponse);
 
                 if ("Postponed".equalsIgnoreCase(jobDocumentsResponse.getResult().getJob_status())){
@@ -153,37 +155,36 @@ public class Sample27 extends Controller {
                 String resultGuid = jobDocumentsResponse.getResult().getInputs().get(0).getOutputs().get(0).getGuid();
                 String resultName = jobDocumentsResponse.getResult().getInputs().get(0).getOutputs().get(0).getName();
 
-                // Download filr
+                // Download file
                 SharedApi api = new SharedApi();
+                // Initialize API with base path
                 api.setBasePath(credentials.getServer_type());
-                //###Make a request to Storage API using clientId
-
-                //Get file from storage
-                FileStream resp = api.Download(resultGuid, resultName, false);
-                //Check request result
-                if(resp == null || resp.getInputStream() == null){
-                    throw new Exception("Not Found");
-                }
+                // Get file from storage
+                FileStream fileStream = api.Download(resultGuid, resultName, false);
+                // Check request result
+                fileStream = Utils.assertNotNull(fileStream);
+                Utils.assertNotNull(fileStream.getInputStream());
 
                 String separator = System.getProperty("file.separator");
                 String path = new File(".").getAbsolutePath();
                 String downloadPath = path + separator + "public" + separator + "images" + separator;
                 FileOutputStream newFile = new FileOutputStream(downloadPath + resultName);
                 // Write file to local folder
-                IOUtils.copy(resp.getInputStream(), newFile);
-                IOUtils.closeQuietly(resp.getInputStream());
+                IOUtils.copy(fileStream.getInputStream(), newFile);
+                IOUtils.closeQuietly(fileStream.getInputStream());
 
                 newFile.flush();
                 newFile.close();
 
-                data.put("filePath", downloadPath + resultName);
-                data.put("fileGuid", resultGuid);
-
+                // Render view
+                return ok(views.html.sample27.render(true, resultGuid, downloadPath + resultName, form));
             } catch (Exception e) {
-                filledForm.reject(e.getMessage());
-                return ok(views.html.sample27.render(sample, data, filledForm));
+                return badRequest(views.html.sample27.render(false, null, null, form));
             }
+        } else if (Utils.isGET(request())) {
+            form = form.bind(session());
+            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
-        return ok(views.html.sample27.render(sample, data, filledForm));
+        return ok(views.html.sample27.render(false, null, null, form));
     }
 }
