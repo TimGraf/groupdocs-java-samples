@@ -1,25 +1,24 @@
- //###<i>This sample will show how to use <b>GetFile</b> method from Storage Api to download a file from GroupDocs Storage</i>
+//###<i>This sample will show how to use <b>GetFile</b> method from Storage Api to download a file from GroupDocs Storage</i>
 package controllers;
 //Import of necessary libraries
 
- import com.groupdocs.sdk.api.DocApi;
- import com.groupdocs.sdk.api.SharedApi;
- import com.groupdocs.sdk.api.StorageApi;
- import com.groupdocs.sdk.common.ApiInvoker;
- import com.groupdocs.sdk.common.FileStream;
- import com.groupdocs.sdk.common.GroupDocsRequestSigner;
- import com.groupdocs.sdk.model.*;
- import common.Utils;
- import models.Credentials;
- import org.apache.commons.io.IOUtils;
- import play.data.Form;
- import play.mvc.Controller;
- import play.mvc.Http;
- import play.mvc.Result;
+import com.groupdocs.sdk.api.SharedApi;
+import com.groupdocs.sdk.api.StorageApi;
+import com.groupdocs.sdk.common.ApiInvoker;
+import com.groupdocs.sdk.common.FileStream;
+import com.groupdocs.sdk.common.GroupDocsRequestSigner;
+import com.groupdocs.sdk.model.UploadResponse;
+import common.Utils;
+import models.Credentials;
+import org.apache.commons.io.IOUtils;
+import play.data.Form;
+import play.mvc.Controller;
+import play.mvc.Http;
+import play.mvc.Result;
 
- import java.io.File;
- import java.io.FileInputStream;
- import java.io.FileOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 public class Sample04 extends Controller {
     //
@@ -55,14 +54,12 @@ public class Sample04 extends Controller {
                 //
                 if ("IDfileId".equals(fileData)) { // File GUID
                     guid = Utils.getFormValue(body.asFormUrlEncoded(), "fileId");
-                }
-                else if ("IDfileUrl".equals(fileData)) { // Upload file fron URL
+                } else if ("IDfileUrl".equals(fileData)) { // Upload file fron URL
                     String fileUrl = Utils.getFormValue(body.asFormUrlEncoded(), "fileUrl");
                     UploadResponse response = storageApi.UploadWeb(credentials.getClient_id(), fileUrl);
                     response = Utils.assertResponse(response);
                     guid = response.getResult().getGuid();
-                }
-                else if ("IDfilePart".equals(fileData)) { // Upload local file
+                } else if ("IDfilePart".equals(fileData)) { // Upload local file
                     Http.MultipartFormData.FilePart filePart = body.getFile("filePart");
                     FileInputStream is = new FileInputStream(filePart.getFile());
                     UploadResponse response = storageApi.Upload(credentials.getClient_id(), filePart.getFilename(), "uploaded", "", new FileStream(is));
@@ -80,7 +77,7 @@ public class Sample04 extends Controller {
                 fileStream = Utils.assertNotNull(fileStream);
                 Utils.assertNotNull(fileStream.getInputStream());
                 // Check file name
-                if(fileStream.getFileName() == null){
+                if (fileStream.getFileName() == null) {
                     fileStream.setFileName(fileName.split("/")[fileName.split("/").length - 1]);
                 }
                 // Obtaining file stream of downloading file and definition of folder where to download file

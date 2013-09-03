@@ -1,90 +1,84 @@
 @(success: Boolean, uploadedFile: com.groupdocs.sdk.model.UploadRequestResult, aForm: Form[Credentials])
 
-@import helper._
-
-@* Register customInput as field constructor for this page (customize input field) *@
-@implicitField = @{ FieldConstructor(customInput.f) }
+@@* Register customInput as field constructor for this page (customize input field) * @
+@implicitField = @{
+    FieldConstructor(customInput.f)
+}
 
 @main() {
 
-<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 3</h3>
+    <h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 3</h3>
 
-<div class='samplecontent' style="padding:10px;">
-   <i>This sample will show how to use StorageApi to upload file to GroupDocs using Java SDK</i> <br/>
-   <br />
-    <a href="@routes.Assets.at("docs/Sample01.html")">Docs for this sample</a>
+    <div class='samplecontent' style="padding:10px;">
+        <i>This sample will show how to use StorageApi to upload file to GroupDocs using Java SDK</i> <br/>
     <br />
-    @if(aForm != null){
-        <br/>
-        <p>You entered:</p>
-        <p>ClientID = @aForm.data.get("client_id")</p>
-        <p>PrivateKey = @aForm.data.get("private_key")</p>
-        <p>Base path = @aForm.data.get("server_type")</p>
-    }
-   <br/>
-   <div id="requestForm" style="padding:20px; border:1px solid black;">
-		<p>Enter data for request and press "Make request" button </p>
-		@myForm(routes.Sample03.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
-			@aForm.globalErrors.map { error =>
-			  @if(error.arguments.size > 0){
-				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
-			  } else {
-				  <div>@error.message</div>
-			  }
-			}
-            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-	        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
-            <div id="localFieldDiv">
-                <input type="radio" name="sourse" value="local" id="localField" checked />
-                <label for="localField">File</label>
-            </div>
-            <div id="urlFieldDiv">
-                <input type="radio" name="sourse" value="url" id="urlFieldRadio" />
-                <label for="urlFieldRadio">From URL</label>
-            </div>
-            <div id="fileBlock">
-                @inputFile(aForm("file"), '_label -> "Local File", 'id -> "filefield", 'required -> true)
-            </div>
-            <div id="urlBlock" style="display: none;">
-                @inputText(aForm("url"), '_label -> "File URL", 'id -> "urlfield", 'size -> 50)
-            </div>
-            @inputText(aForm("callbackUrl"), '_label -> "callbackUrl (Optional)", 'size -> 50)
-	        <input type="submit" value="Make Request">
+        <a href="@routes.Assets.at("docs/Sample01.html")">Docs for this sample</a>
+    <br />
+        @if(aForm != null) {
+            <br/>
+            <p>You entered:</p>
+            <p>ClientID = @aForm.data.get("client_id")</p>
+            <p>PrivateKey = @aForm.data.get("private_key")</p>
+            <p>Base path = @aForm.data.get("server_type")</p>
         }
-   </div>
+    <br/>
+        <div id="requestForm" style="padding:20px; border:1px solid black;">
+            <p>Enter data for request and press "Make request" button</p>
+            @myForm(routes.Sample03.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+                @aForm.globalErrors.map { error =>
+                    @if(error.arguments.size > 0) {
+                        <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
+                    } else {
+                        <div>@error.message</div>
+                    }
+                }
+                @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
+                @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
+                @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                <div id="localFieldDiv">
+                <input type="radio" name="sourse" value="local" id="localField" checked/>
+                    <label for="localField">File</label>
+                </div>
+                <div id="urlFieldDiv">
+                <input type="radio" name="sourse" value="url" id="urlFieldRadio"/>
+                    <label for="urlFieldRadio">From URL</label>
+                </div>
+                <div id="fileBlock">
+                @inputFile(aForm("file"), '_label -> "Local File", 'id -> "filefield", 'required -> true)
+                </div>
+                <div id="urlBlock" style="display: none;">
+                @inputText(aForm("url"), '_label -> "File URL", 'id -> "urlfield", 'size -> 50)
+                </div>
+                @inputText(aForm("callbackUrl"), '_label -> "callbackUrl (Optional)", 'size -> 50)
+                <input type="submit" value="Make Request">
+            }
+        </div>
 
-@if(success){
-   
-   <div  style="padding:20px; border:1px solid black;">
-        
-        <p> Results: </p>
-        <span style="color:green">File uploaded successful: </span>
-        <br />
-        <iframe src="https://apps.groupdocs.com/document-viewer/Embed/@uploadedFile.getGuid" frameborder="0" width="720" height="600"></iframe>
+        @if(success) {
 
-   </div>
-}
-
-
-
-</div>
+            <div style="padding:20px; border:1px solid black;">
+                <p>Results:</p>
+                <span style="color:green">File uploaded successful:</span>
+            <br />
+                <iframe src="https://apps.groupdocs.com/document-viewer/Embed/ @uploadedFile.getGuid" frameborder="0" width="720" height="600"></iframe>
+            </div>
+        }
+    </div>
     <script type="text/javascript" language="JavaScript">
-        (function (){
-            document.getElementById('localFieldDiv').onclick = function (){
-                document.getElementById('fileBlock').style.display = 'inline';
-                document.getElementById('filefield').setAttribute('required', 'required');
-                document.getElementById('urlBlock').style.display = 'none';
-                document.getElementById('urlfield').removeAttribute('required');
-            };
-            document.getElementById('urlFieldDiv').onclick = function (){
-                document.getElementById('urlBlock').style.display = 'inline';
-                document.getElementById('urlfield').setAttribute('required', 'required');
-                document.getElementById('fileBlock').style.display = 'none';
-                document.getElementById('filefield').removeAttribute('required');
-            };
+    (function (){
+    document.getElementById('localFieldDiv').onclick = function (){
+    document.getElementById('fileBlock').style.display = 'inline';
+    document.getElementById('filefield').setAttribute('required', 'required');
+    document.getElementById('urlBlock').style.display = 'none';
+    document.getElementById('urlfield').removeAttribute('required');
+} ;
+    document.getElementById('urlFieldDiv').onclick = function (){
+    document.getElementById('urlBlock').style.display = 'inline';
+    document.getElementById('urlfield').setAttribute('required', 'required');
+    document.getElementById('fileBlock').style.display = 'none';
+    document.getElementById('filefield').removeAttribute('required');
+    };
+    })();
+</script>
 
-        })();
-    </script>
-
-}
+    }

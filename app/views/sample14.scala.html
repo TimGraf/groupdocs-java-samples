@@ -1,52 +1,53 @@
 @(success: Boolean, userInfo: List[com.groupdocs.sdk.model.UserInfo], aForm: Form[Credentials])
 
-@import helper._
-
-@* Register customInput as field constructor for this page (customize input field) *@
-@implicitField = @{ FieldConstructor(customInput.f) }
+@@* Register customInput as field constructor for this page (customize input field) * @
+@implicitField = @{
+    FieldConstructor(customInput.f)
+}
 
 @main() {
 
-<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 14</h3>
+    <h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 14</h3>
 
-<div class='samplecontent' style="padding:10px;">
-   <i>This sample will show how to check the list of shares for a folder using Java SDK</i> <br/>
-   <br />
-    <a href="@routes.Assets.at("docs/Sample14.html")">Docs for this sample</a>
+    <div class='samplecontent' style="padding:10px;">
+        <i>This sample will show how to check the list of shares for a folder using Java SDK</i> <br/>
     <br />
-   <br/>
-  		<p style="color: green;">You entered: </p>
-		<p>Client Id = @aForm.data.get("client_id")</p>
-		<p>Private Key = @aForm.data.get("private_key")</p>
-		<p>Path = @aForm.data.get("path") </p>
-	
-   <div id="requestForm" style="padding:20px; border:1px solid black;">
-       <p>Enter data for request and press "Make request" button </p>
-       	
-		@myForm(routes.Sample14.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
-			@aForm.globalErrors.map { error =>
-			  @if(error.arguments.size > 0){
-				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
-			  } else {
-				  <div>@error.message</div>
-			  }
-			}
-            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-	        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
-	        @inputText(aForm("path"), '_label -> "Source Path", 'size -> 50, 'placeholder -> "myFolder", 'required -> true)
-	        <input type="submit" value="Make Request" />
-        }
-   </div>
-   <div  style="padding:20px; border:1px solid black;">
-        <p> Results: </p>
-       <p>Shared users:
-       @if(success){
-			@for(name <- userInfo){
-				<span style="color: green;">@name.getNickname</span><br />
-			}
-		}
-       </p>
-   </div>
-</div>
+        <a href="@routes.Assets.at("docs/Sample14.html")">Docs for this sample</a>
+    <br />
+    <br/>
+        <p style="color: green;">You entered:</p>
+        <p>Client Id = @aForm.data.get("client_id")</p>
+        <p>Private Key = @aForm.data.get("private_key")</p>
+        <p>Path = @aForm.data.get("path")</p>
+
+        <div id="requestForm" style="padding:20px; border:1px solid black;">
+            <p>Enter data for request and press "Make request" button</p>
+
+            @myForm(routes.Sample14.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+                @aForm.globalErrors.map { error =>
+                    @if(error.arguments.size > 0) {
+                        <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
+                    } else {
+                        <div>@error.message</div>
+                    }
+                }
+                @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
+                @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
+                @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                @inputText(aForm("path"), '_label -> "Source Path", 'size -> 50, 'placeholder -> "myFolder", 'required -> true)
+                <input type="submit" value="Make Request"/>
+            }
+        </div>
+        <div style="padding:20px; border:1px solid black;">
+            <p>Results:</p>
+            <p>
+                Shared users:
+                @if(success) {
+                    @for(name <- userInfo) {
+                        <span style="color: green;">@name.getNickname</span> <br />
+                    }
+                }
+            </p>
+        </div>
+    </div>
 }

@@ -11,7 +11,6 @@ import common.Utils;
 import models.Credentials;
 import play.data.Form;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Result;
 
 import java.util.List;

@@ -1,111 +1,105 @@
 @(success: Boolean, moveResult: com.groupdocs.sdk.model.FileMoveResult, aForm: Form[Credentials], action: String)
 
-@import helper._
-
-@* Register customInput as field constructor for this page (customize input field) *@
-@implicitField = @{ FieldConstructor(customInput.f) }
+@@* Register customInput as field constructor for this page (customize input field) * @
+@implicitField = @{
+    FieldConstructor(customInput.f)
+}
 
 @main() {
 
-<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 5</h3>
+    <h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 5</h3>
 
-<div class='samplecontent' style="padding:10px;">
-   <i>This sample will show how to use StorageApi to Copy/Move file in GroupDocs using Java SDK</i> <br/>
-   <br />
+    <div class='samplecontent' style="padding:10px;">
+    <i>This sample will show how to use StorageApi to Copy/Move file in GroupDocs using Java SDK</i> <br/>
+    <br />
     <a href="@routes.Assets.at("docs/Sample05.html")">Docs for this sample</a>
     <br />
-    @if(aForm != null){
+    @if(aForm != null) {
         <br/>
         <p>You entered:</p>
         <p>ClientID = @aForm.data.get("client_id")</p>
         <p>PrivateKey = @aForm.data.get("private_key")</p>
         <p>Base path = @aForm.data.get("server_type")</p>
     }
-   <br/>
-   <div id="requestForm" style="padding:20px; border:1px solid black;">
-       <p>Enter data for request and press "Make request" button </p>
-       	
-		@myForm(routes.Sample05.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
-			@aForm.globalErrors.map { error =>
-			  @if(error.arguments.size > 0){
-				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
-			  } else {
-				  <div>@error.message</div>
-			  }
-			}
+    <br/>
+    <div id="requestForm" style="padding:20px; border:1px solid black;">
+        <p>Enter data for request and press "Make request" button</p>
+
+        @myForm(routes.Sample05.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+            @aForm.globalErrors.map { error =>
+                @if(error.arguments.size > 0) {
+                    <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
+                } else {
+                    <div>@error.message</div>
+                }
+            }
             @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
+            @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
             <div id="GuidDiv" style="margin-top: 10px">
-                <input type="radio" name="sourse" value="guid" id="GuidInput" checked />
+            <input type="radio" name="sourse" value="guid" id="GuidInput" checked/>
                 <label for="GuidInput">File ID (GUID)</label>
             </div>
             <div id="LocalDiv">
-                <input type="radio" name="sourse" value="local" id="LocalInput" />
+            <input type="radio" name="sourse" value="local" id="LocalInput"/>
                 <label for="LocalInput">Upload local file</label>
             </div>
             <div id="UrlDiv" style="margin-bottom: 10px">
-                <input type="radio" name="sourse" value="url" id="UrlInput" />
+            <input type="radio" name="sourse" value="url" id="UrlInput"/>
                 <label for="UrlInput">Upload file from URL</label>
             </div>
 
             <div id="guidBlock" style="display: block;">
-                @inputText(aForm("srcPath"), '_label -> "GUID", 'id -> "guidfield", 'size -> 50, 'required -> true)
+            @inputText(aForm("srcPath"), '_label -> "GUID", 'id -> "guidfield", 'size -> 50, 'required -> true)
             </div>
             <div id="fileBlock" style="display: none;">
-                @inputFile(aForm("file"), '_label -> "Local File", 'id -> "filefield", 'required -> true)
+            @inputFile(aForm("file"), '_label -> "Local File", 'id -> "filefield", 'required -> true)
             </div>
             <div id="urlBlock" style="display: none;">
-                @inputText(aForm("url"), '_label -> "File URL", 'id -> "urlfield", 'size -> 50, 'required -> true)
+            @inputText(aForm("url"), '_label -> "File URL", 'id -> "urlfield", 'size -> 50, 'required -> true)
             </div>
             @inputText(aForm("destPath"), '_label -> "Destination folder", 'size -> 50, 'required -> true)
             @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
-	        <input type="submit" name="copy" value="Copy" />
-            <input type="submit" name="move" value="Move" />
+            <input type="submit" name="copy" value="Copy"/>
+            <input type="submit" name="move" value="Move"/>
         }
-   </div>
+    </div>
 
-    @if(success && action == "move"){
+    @if(success && action == "move") {
         <h4><span style="color: green">File was Move'ed to the @moveResult.getDst_file.getDocument_path folder</span></h4>
     }
-    @if(success && action == "copy"){
-            <h4><span style="color: green">File was Copy'ed to the @moveResult.getDst_file.getDocument_path folder</span></h4>
+    @if(success && action == "copy") {
+        <h4><span style="color: green">File was Copy'ed to the @moveResult.getDst_file.getDocument_path folder</span></h4>
     }
     <br/>
     <script type="text/javascript" language="JavaScript">
-        (function (){
-            document.getElementById('GuidDiv').onclick = function (){
-                document.getElementById('guidBlock').style.display = 'block';
-                document.getElementById('guidfield').setAttribute('required', 'required');
-
-                document.getElementById('fileBlock').style.display = 'none';
-                document.getElementById('filefield').removeAttribute('required');
-
-                document.getElementById('urlBlock').style.display = 'none';
-                document.getElementById('urlfield').removeAttribute('required');
-            };
-            document.getElementById('LocalDiv').onclick = function (){
-                document.getElementById('fileBlock').style.display = 'block';
-                document.getElementById('filefield').setAttribute('required', 'required');
-
-                document.getElementById('guidBlock').style.display = 'none';
-                document.getElementById('guidfield').removeAttribute('required');
-
-                document.getElementById('urlBlock').style.display = 'none';
-                document.getElementById('urlfield').removeAttribute('required');
-            };
-            document.getElementById('UrlDiv').onclick = function (){
-                document.getElementById('urlBlock').style.display = 'block';
-                document.getElementById('urlfield').setAttribute('required', 'required');
-
-                document.getElementById('guidBlock').style.display = 'none';
-                document.getElementById('guidfield').removeAttribute('required');
-
-                document.getElementById('fileBlock').style.display = 'none';
-                document.getElementById('filefield').removeAttribute('required');
-            };
-            document.getElementById('GuidDiv').onclick();
-        })();
-    </script>
+    (function (){
+    document.getElementById('GuidDiv').onclick = function (){
+    document.getElementById('guidBlock').style.display = 'block';
+    document.getElementById('guidfield').setAttribute('required', 'required');
+    document.getElementById('fileBlock').style.display = 'none';
+    document.getElementById('filefield').removeAttribute('required');
+    document.getElementById('urlBlock').style.display = 'none';
+    document.getElementById('urlfield').removeAttribute('required');
+} ;
+    document.getElementById('LocalDiv').onclick = function (){
+    document.getElementById('fileBlock').style.display = 'block';
+    document.getElementById('filefield').setAttribute('required', 'required');
+    document.getElementById('guidBlock').style.display = 'none';
+    document.getElementById('guidfield').removeAttribute('required');
+    document.getElementById('urlBlock').style.display = 'none';
+    document.getElementById('urlfield').removeAttribute('required');
+    };
+    document.getElementById('UrlDiv').onclick = function (){
+    document.getElementById('urlBlock').style.display = 'block';
+    document.getElementById('urlfield').setAttribute('required', 'required');
+    document.getElementById('guidBlock').style.display = 'none';
+    document.getElementById('guidfield').removeAttribute('required');
+    document.getElementById('fileBlock').style.display = 'none';
+    document.getElementById('filefield').removeAttribute('required');
+    };
+    document.getElementById('GuidDiv').onclick();
+    })();
+</script>
 </div>
 
-}
+    }

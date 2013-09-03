@@ -66,8 +66,7 @@ public class Sample21 extends Controller {
                 //
                 if ("guid".equals(sourse)) { // File GUID
                     guid = Utils.getFormValue(body, "fileId");
-                }
-                else if ("url".equals(sourse)) { // Upload file fron URL
+                } else if ("url".equals(sourse)) { // Upload file fron URL
                     String url = Utils.getFormValue(body, "url");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
@@ -76,8 +75,7 @@ public class Sample21 extends Controller {
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
-                }
-                else if ("local".equals(sourse)) { // Upload local file
+                } else if ("local".equals(sourse)) { // Upload local file
                     Http.MultipartFormData.FilePart file = body.getFile("file");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
@@ -114,9 +112,9 @@ public class Sample21 extends Controller {
                 signatureRolesResponse = Utils.assertResponse(signatureRolesResponse);
                 List<SignatureRoleInfo> roles = signatureRolesResponse.getResult().getRoles();
                 String roleGuid = null;
-                for(SignatureRoleInfo role : roles){
+                for (SignatureRoleInfo role : roles) {
                     // Get an ID of Signer role
-                    if("Signer".equalsIgnoreCase(role.getName())){
+                    if ("Signer".equalsIgnoreCase(role.getName())) {
                         roleGuid = role.getId();
                         break;
                     }
@@ -133,9 +131,9 @@ public class Sample21 extends Controller {
                 signatureFieldsResponse = Utils.assertResponse(signatureFieldsResponse);
                 List<SignatureFieldInfo> fields = signatureFieldsResponse.getResult().getFields();
                 String fieldId = null;
-                for(SignatureFieldInfo field : fields){
+                for (SignatureFieldInfo field : fields) {
                     // Get an ID of single line field
-                    if(field.getFieldType() == 2){ // single line, see http://scotland.groupdocs.com/wiki/display/SDS/field.type
+                    if (field.getFieldType() == 2) { // single line, see http://scotland.groupdocs.com/wiki/display/SDS/field.type
                         fieldId = field.getId();
                         break;
                     }
@@ -153,9 +151,9 @@ public class Sample21 extends Controller {
 
                 fieldId = null;
                 envField = new SignatureEnvelopeFieldSettings();
-                for(SignatureFieldInfo field : fields){
+                for (SignatureFieldInfo field : fields) {
                     // Get an ID of signature field
-                    if(field.getFieldType() == 1){ // signature, see http://scotland.groupdocs.com/wiki/display/SDS/field.type
+                    if (field.getFieldType() == 1) { // signature, see http://scotland.groupdocs.com/wiki/display/SDS/field.type
                         fieldId = field.getId();
                         break;
                     }
@@ -213,7 +211,7 @@ public class Sample21 extends Controller {
         boolean status = false;
         String message = "Not everybody signed the envelope";
 
-        if(envelopeId != null && new File(".", envelopeId).exists()){
+        if (envelopeId != null && new File(".", envelopeId).exists()) {
             status = true;
             message = "Everybody signed the envelope. Click <a href='/downloadEnvelope' target='_blank'>here</a> to download it";
         }
@@ -227,7 +225,7 @@ public class Sample21 extends Controller {
         String envelopeId = session().get("envelopeId");
         Result status;
 
-        if(envelopeId != null && new File(".", envelopeId).exists()){
+        if (envelopeId != null && new File(".", envelopeId).exists()) {
             String clientId = session().get("client_id");
             String privateKey = session().get("private_key");
             System.out.println(clientId + " " + privateKey);

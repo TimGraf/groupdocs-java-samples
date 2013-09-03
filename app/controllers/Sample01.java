@@ -15,10 +15,10 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 public class Sample01 extends Controller {
-	//
+    //
     protected static Form<Credentials> form = form(Credentials.class);
 
-	public static Result index() {
+    public static Result index() {
 
         if (Utils.isPOST(request())) {
             form = form(Credentials.class).bindFromRequest();
@@ -56,5 +56,5 @@ public class Sample01 extends Controller {
             session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample01.render(false, null, form));
-	}
+    }
 }

@@ -1,28 +1,28 @@
- //###<i>This sample will show how to use <b>GetFile</b> method from Storage Api to download a file from GroupDocs Storage</i>
+//###<i>This sample will show how to use <b>GetFile</b> method from Storage Api to download a file from GroupDocs Storage</i>
 package controllers;
 //Import of necessary libraries
 
- import com.groupdocs.sdk.api.AsyncApi;
- import com.groupdocs.sdk.api.ComparisonApi;
- import com.groupdocs.sdk.api.MgmtApi;
- import com.groupdocs.sdk.api.StorageApi;
- import com.groupdocs.sdk.common.ApiInvoker;
- import com.groupdocs.sdk.common.FileStream;
- import com.groupdocs.sdk.common.GroupDocsRequestSigner;
- import com.groupdocs.sdk.model.CompareResponse;
- import com.groupdocs.sdk.model.GetJobDocumentsResponse;
- import com.groupdocs.sdk.model.GetUserEmbedKeyResponse;
- import com.groupdocs.sdk.model.UploadResponse;
- import common.Utils;
- import models.Credentials;
- import play.data.Form;
- import play.mvc.Controller;
- import play.mvc.Http;
- import play.mvc.Result;
+import com.groupdocs.sdk.api.AsyncApi;
+import com.groupdocs.sdk.api.ComparisonApi;
+import com.groupdocs.sdk.api.MgmtApi;
+import com.groupdocs.sdk.api.StorageApi;
+import com.groupdocs.sdk.common.ApiInvoker;
+import com.groupdocs.sdk.common.FileStream;
+import com.groupdocs.sdk.common.GroupDocsRequestSigner;
+import com.groupdocs.sdk.model.CompareResponse;
+import com.groupdocs.sdk.model.GetJobDocumentsResponse;
+import com.groupdocs.sdk.model.GetUserEmbedKeyResponse;
+import com.groupdocs.sdk.model.UploadResponse;
+import common.Utils;
+import models.Credentials;
+import play.data.Form;
+import play.mvc.Controller;
+import play.mvc.Http;
+import play.mvc.Result;
 
- import java.io.DataOutputStream;
- import java.io.FileInputStream;
- import java.io.FileOutputStream;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 public class Sample19 extends Controller {
     public static String USER_INFO_FILE = "UserInfo_sample19.tmp";

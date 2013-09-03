@@ -51,8 +51,7 @@ public class Sample10 extends Controller {
                 //
                 if ("guid".equals(sourse)) { // File GUID
                     guid = Utils.getFormValue(body, "fileId");
-                }
-                else if ("url".equals(sourse)) { // Upload file from URL
+                } else if ("url".equals(sourse)) { // Upload file from URL
                     String url = Utils.getFormValue(body, "fileUrl");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
@@ -61,8 +60,7 @@ public class Sample10 extends Controller {
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
-                }
-                else if ("local".equals(sourse)) { // Upload local file
+                } else if ("local".equals(sourse)) { // Upload local file
                     Http.MultipartFormData.FilePart file = body.getFile("filePart");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path

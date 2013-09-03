@@ -1,47 +1,47 @@
 @(success: Boolean, documentViewInfo: List[com.groupdocs.sdk.model.DocumentViewInfo], aForm: Form[Credentials])
 
-@import helper._
-
-@* Register customInput as field constructor for this page (customize input field) *@
-@implicitField = @{ FieldConstructor(customInput.f) }
+@@* Register customInput as field constructor for this page (customize input field) * @
+@implicitField = @{
+    FieldConstructor(customInput.f)
+}
 
 @main() {
 
-<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 15</h3>
+    <h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 15</h3>
 
-<div class='samplecontent' style="padding:10px;">
-   <i>This sample will show how to to check the number of document's views using Java SDK</i> <br/>
-   <br />
-    <a href="@routes.Assets.at("docs/Sample15.html")">Docs for this sample</a>
+    <div class='samplecontent' style="padding:10px;">
+        <i>This sample will show how to to check the number of document's views using Java SDK</i> <br/>
     <br />
-   <br/>
-  		<p style="color: green;">You entered: </p>
-		<p>Client Id = @aForm.data.get("client_id")</p>
-		<p>Private Key = @aForm.data.get("private_key")</p>
-		
-   <div id="requestForm" style="padding:20px; border:1px solid black;">
-       <p>Enter data for request and press "Make request" button </p>
-       	
-		@myForm(routes.Sample15.index(), 'method -> "POST") {
-			@aForm.globalErrors.map { error =>
-			  @if(error.arguments.size > 0){
-				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
-			  } else {
-				  <div>@error.message</div>
-			  }
-			}
-            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-	        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
-	        
-	        <input type="submit" value="Make Request">
-        }
-   </div>
-        @if(success){
-           <div  style="padding:20px; border:1px solid black;">
-                <p> Results: </p>
-                <p>Total document's views: <span style="color: green;">@documentViewInfo.size()</span> </p>
+        <a href="@routes.Assets.at("docs/Sample15.html")">Docs for this sample</a>
+    <br />
+    <br/>
+        <p style="color: green;">You entered:</p>
+        <p>Client Id = @aForm.data.get("client_id")</p>
+        <p>Private Key = @aForm.data.get("private_key")</p>
+
+        <div id="requestForm" style="padding:20px; border:1px solid black;">
+            <p>Enter data for request and press "Make request" button</p>
+
+            @myForm(routes.Sample15.index(), 'method -> "POST") {
+                @aForm.globalErrors.map { error =>
+                    @if(error.arguments.size > 0) {
+                        <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
+                    } else {
+                        <div>@error.message</div>
+                    }
+                }
+                @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
+                @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
+                @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+
+                <input type="submit" value="Make Request">
+            }
+        </div>
+        @if(success) {
+            <div style="padding:20px; border:1px solid black;">
+                <p>Results:</p>
+                <p>Total document's views: <span style="color: green;">@documentViewInfo.size()</span></p>
             </div>
         }
-        </div>
+    </div>
 }

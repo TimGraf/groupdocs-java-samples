@@ -56,7 +56,7 @@ public class Sample05 extends Controller {
                 String fileName = null;
                 Double fileId = 0d;
 
-                if ("local".equals(sourse)){
+                if ("local".equals(sourse)) {
                     Http.MultipartFormData.FilePart filePart = body.getFile("file");
                     FileInputStream is = new FileInputStream(filePart.getFile());
                     String callbackUrl = Utils.getFormValue(body.asFormUrlEncoded(), "callbackUrl");
@@ -66,7 +66,7 @@ public class Sample05 extends Controller {
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
                     Thread.sleep(3000);
-                } else if ("url".equals(sourse)){
+                } else if ("url".equals(sourse)) {
                     String url = Utils.getFormValue(body.asFormUrlEncoded(), "url");
                     UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
                     // Check response status
@@ -77,7 +77,7 @@ public class Sample05 extends Controller {
                 String destPath = Utils.getFormValue(body.asFormUrlEncoded(), "destPath");
                 destPath = Utils.assertNotNull(destPath);
 
-                if (StringUtils.isEmpty(guid)){
+                if (StringUtils.isEmpty(guid)) {
                     return badRequest(views.html.sample05.render(false, null, form, null));
                 }
 
@@ -85,8 +85,8 @@ public class Sample05 extends Controller {
                 // Check response status
                 response = Utils.assertResponse(response);
                 // Get document name and document ID
-                for (FileSystemDocument document : response.getResult().getFiles()){
-                    if (guid.equals(document.getGuid())){
+                for (FileSystemDocument document : response.getResult().getFiles()) {
+                    if (guid.equals(document.getGuid())) {
                         fileName = document.getName();
                         fileId = document.getId();
                         break;
@@ -102,10 +102,10 @@ public class Sample05 extends Controller {
                 String action = null;
                 FileMoveResponse copyMoveResponse = null;
 
-                if (Utils.getFormValue(body.asFormUrlEncoded(), "copy") != null){
+                if (Utils.getFormValue(body.asFormUrlEncoded(), "copy") != null) {
                     copyMoveResponse = storageApi.MoveFile(credentials.getClient_id(), copyToPath, null, Double.toString(fileId), null);
                     action = "copy";
-                } else if (Utils.getFormValue(body.asFormUrlEncoded(), "move") != null){
+                } else if (Utils.getFormValue(body.asFormUrlEncoded(), "move") != null) {
                     copyMoveResponse = storageApi.MoveFile(credentials.getClient_id(), copyToPath, null, null, Double.toString(fileId));
                     action = "move";
                 }

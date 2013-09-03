@@ -3,11 +3,11 @@ package models;
 import play.data.validation.Constraints.Required;
 
 public class Credentials {
-	@Required
-	private String client_id;
-	@Required
+    @Required
+    private String client_id;
+    @Required
     private String private_key;
-	@Required
+    @Required
     private String server_type;
 
     public String getClient_id() {

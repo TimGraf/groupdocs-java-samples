@@ -47,7 +47,7 @@ public class Sample14 extends Controller {
                 StorageApi storageApi = new StorageApi();
                 // Initialize API with base path
                 storageApi.setBasePath(credentials.getServer_type());
-                String folderId  ="";
+                String folderId = "";
                 // Make request to Storage Api to get list of elements in the storage
                 ListEntitiesResponse listResponse = storageApi.ListEntities(credentials.getClient_id(), "", null, null, null, null, null, null, null);
                 // Check request status
@@ -57,7 +57,7 @@ public class Sample14 extends Controller {
                 // Get folder ID by folder name
                 for (FileSystemFolder folder : folders) {
                     // Check if folder name equal to entered folder name
-                    if(path.equals(folder.getName())){
+                    if (path.equals(folder.getName())) {
                         // Get folder id
                         folderId = folder.getId().toString();
                         break;

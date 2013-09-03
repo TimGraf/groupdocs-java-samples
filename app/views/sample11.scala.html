@@ -1,163 +1,157 @@
 @(success: Boolean, data: com.groupdocs.sdk.model.CreateAnnotationResult, aForm: Form[Credentials])
 
-@import helper._
-
-@* Register customInput as field constructor for this page (customize input field) *@
-@implicitField = @{ FieldConstructor(customInput.f) }
+@@* Register customInput as field constructor for this page (customize input field) * @
+@implicitField = @{
+    FieldConstructor(customInput.f)
+}
 
 @main() {
 
-<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 11</h3>
+    <h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 11</h3>
 
-<div class='samplecontent' style="padding:10px;">
-   <i>This sample will show how to create and post an annotation into document using Java SDK</i> <br/>
-   <br />
-    <a href="@routes.Assets.at("docs/Sample11.html")">Docs for this sample</a>
+    <div class='samplecontent' style="padding:10px;">
+        <i>This sample will show how to create and post an annotation into document using Java SDK</i> <br/>
     <br />
-   <br/>
-		<p style="color: green;">You entered: </p>
-		<p>Client Id = @aForm.data.get("client_id")</p>
-		<p>Private Key = @aForm.data.get("private_key")</p>
-		@if(data != null){
-		<p>File Id = @data.getDocumentGuid </p>
-		<p>Annotation info: </p>
-		<p>Annotation Id = @data.getAnnotationGuid</p>
-		<p>Annotation type = @aForm.data.get("annotation_type")</p>
-		<p>Annotation text = @aForm.data.get("text")</p>
-		}
-   <div id="requestForm" style="padding:20px; border:1px solid black;">
-		<p>Enter data for request and press "Make request" button </p>
-		@myForm(routes.Sample11.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
-	        @aForm.globalErrors.map { error =>
-			  @if(error.arguments.size > 0){
-				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
-			  } else {
-				  <div style="color: red;">@error.message</div>
-			  }
-			}
-			<input type="hidden" name="annotationId" value="annotationId">
-            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-	        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
-            <div>
-                <div id="IDtypeChoice" class="file-choice-block">
-                <input type="radio" value="guid" onclick="" id="IDfileIdRadio" name="sourse" />
-                    <label for="IDfileIdRadio" class="file-choice-label">File GUID</label>
-                <input type="radio" value="url" onclick="" id="IDfileUrlRadio" name="sourse" />
-                    <label for="IDfileUrlRadio" class="file-choice-label">File URL</label>
-                <input type="radio" value="local" onclick="" id="IDfilePartRadio" name="sourse" />
-                    <label for="IDfilePartRadio" class="file-choice-label">Local file</label>
-                </div>
-                <div id="guid">
-                @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
-                </div>
-                <div id="url">
-                @inputText(aForm("fileUrl"), '_label -> "File Url", 'size -> 50, 'required -> true)
-                </div>
-                <div id="local">
-                @inputFile(aForm("filePart"), '_label -> "Select file", 'required -> true)
-                </div>
-            </div>
-	        <br />
-	        <label for='annotation_type'>Annotation Type</label>
-                        <select name="annotation_type" id="annotation_type" onchange="show_hide(this.value)">
-                            <option value="text">Text</option>
-                            <option value="area">Area</option>
-                            <option value="point" selected>Point</option>
-                        </select>
-                        <br />
-           <fieldset style="border: thin solid #333; padding: 1em; margin-bottom: 5px;">
-                        <legend>Parameters (all are required)</legend>
-                        <div>
-                        	@inputText(aForm("box_x"), '_label -> "Box X", 'minlength -> 0)
-                        </div>
-                        <div>
-                            @inputText(aForm("box_y"), '_label -> "Box Y", 'minlength -> 0)
-                        </div>
-
-                        <div id="box-params" style="display:none;">
-                            <div>
-                            	@inputText(aForm("box_width"), '_label -> "Box Width", 'placeholder -> "double")
-                            </div>
-                            <div>
-                            	@inputText(aForm("box_height"), '_label -> "Box Height", 'placeholder -> "double")
-                            </div>
-                        </div>
-
-                        <div id="annotation-position" style="display:none;">
-                            <div>
-                            	@inputText(aForm("annotationPosition_x"), '_label -> "Annotation Position X", 'placeholder -> "double")
-                            </div>
-                            <div>
-                                @inputText(aForm("annotationPosition_Y"), '_label -> "Annotation Position Y", 'placeholder -> "double")
-                            </div>
-                        </div>
-
-
-                        <div id="text-params" style="display:none;">
-                            <div>
-                            	@inputText(aForm("range_position"), '_label -> "Range Position", 'placeholder -> "double")
-                            </div>
-                            <div>
-                            	@inputText(aForm("range_length"), '_label -> "Range Length", 'placeholder -> "double")
-                            </div>
-                        </div>
-
-                        <div>
-                        	@inputText(aForm("text"), '_label -> "Text", 'placeholder -> "string")
-                        </div>
-                        </fieldset>
-	        <input type="submit" value="Make Request">
+        <a href="@routes.Assets.at("docs/Sample11.html")">Docs for this sample</a>
+    <br />
+    <br/>
+        <p style="color: green;">You entered:</p>
+        <p>Client Id = @aForm.data.get("client_id")</p>
+        <p>Private Key = @aForm.data.get("private_key")</p>
+        @if(data != null) {
+            <p>File Id = @data.getDocumentGuid</p>
+            <p>Annotation info:</p>
+            <p>Annotation Id = @data.getAnnotationGuid</p>
+            <p>Annotation type = @aForm.data.get("annotation_type")</p>
+            <p>Annotation text = @aForm.data.get("text")</p>
         }
-   </div>
+        <div id="requestForm" style="padding:20px; border:1px solid black;">
+            <p>Enter data for request and press "Make request" button</p>
+            @myForm(routes.Sample11.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+                @aForm.globalErrors.map { error =>
+                    @if(error.arguments.size > 0) {
+                        <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
+                    } else {
+                        <div style="color: red;">@error.message</div>
+                    }
+                }
+                <input type="hidden" name="annotationId" value="annotationId">
+                @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
+                @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
+                @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                <div>
+                    <div id="IDtypeChoice" class="file-choice-block">
+                    <input type="radio" value="guid" onclick="" id="IDfileIdRadio" name="sourse"/>
+                        <label for="IDfileIdRadio" class="file-choice-label">File GUID</label>
+                    <input type="radio" value="url" onclick="" id="IDfileUrlRadio" name="sourse"/>
+                        <label for="IDfileUrlRadio" class="file-choice-label">File URL</label>
+                    <input type="radio" value="local" onclick="" id="IDfilePartRadio" name="sourse"/>
+                        <label for="IDfilePartRadio" class="file-choice-label">Local file</label>
+                    </div>
+                    <div id="guid">
+                    @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
+                    </div>
+                    <div id="url">
+                    @inputText(aForm("fileUrl"), '_label -> "File Url", 'size -> 50, 'required -> true)
+                    </div>
+                    <div id="local">
+                    @inputFile(aForm("filePart"), '_label -> "Select file", 'required -> true)
+                    </div>
+                </div>
+                <br />
+                <label for='annotation_type'>Annotation Type</label>
+                <select name="annotation_type" id="annotation_type" onchange="show_hide(this.value)">
+                    <option value="text">Text</option>
+                    <option value="area">Area</option>
+                    <option value="point" selected>Point</option>
+                </select>
+                <br />
+                <fieldset style="border: thin solid #333; padding: 1em; margin-bottom: 5px;">
+                    <legend>Parameters (all are required)</legend>
+                    <div>
+                    @inputText(aForm("box_x"), '_label -> "Box X", 'minlength -> 0)
+                    </div>
+                    <div>
+                    @inputText(aForm("box_y"), '_label -> "Box Y", 'minlength -> 0)
+                    </div>
 
-@if(success){
-   <br/> 
-   <div  style="padding:20px; border:1px solid black;">
-      <iframe src="https://apps.groupdocs.com//document-annotation2/embed/@data.getDocumentGuid" frameborder="0" width="720" height="600"></iframe>
-   </div>
-}
+                    <div id="box-params" style="display:none;">
+                        <div>
+                        @inputText(aForm("box_width"), '_label -> "Box Width", 'placeholder -> "double")
+                        </div>
+                        <div>
+                        @inputText(aForm("box_height"), '_label -> "Box Height", 'placeholder -> "double")
+                        </div>
+                    </div>
+
+                    <div id="annotation-position" style="display:none;">
+                        <div>
+                        @inputText(aForm("annotationPosition_x"), '_label -> "Annotation Position X", 'placeholder -> "double")
+                        </div>
+                        <div>
+                        @inputText(aForm("annotationPosition_Y"), '_label -> "Annotation Position Y", 'placeholder -> "double")
+                        </div>
+                    </div>
 
 
-</div>
+                    <div id="text-params" style="display:none;">
+                        <div>
+                        @inputText(aForm("range_position"), '_label -> "Range Position", 'placeholder -> "double")
+                        </div>
+                        <div>
+                        @inputText(aForm("range_length"), '_label -> "Range Length", 'placeholder -> "double")
+                        </div>
+                    </div>
+
+                    <div>
+                    @inputText(aForm("text"), '_label -> "Text", 'placeholder -> "string")
+                    </div>
+                </fieldset>
+                <input type="submit" value="Make Request">
+            }
+        </div>
+
+        @if(success) {
+            <br/>
+            <div style="padding:20px; border:1px solid black;">
+                <iframe src="https://apps.groupdocs.com//document-annotation2/embed/ @data.getDocumentGuid" frameborder="0" width="720" height="600"></iframe>
+            </div>
+        }
+    </div>
     <script type="text/javascript" language="JavaScript">
-        $(function(){
-        changeType.allChk = ['guid', 'url', 'local'];
-        $('#IDfileIdRadio, #IDfileUrlRadio, #IDfilePartRadio').click(changeType);
-        $('#IDfileIdRadio').click();
-    });
-    </script>
+    $(function(){
+    changeType.allChk = ['guid', 'url', 'local'];
+    $('#IDfileIdRadio, #IDfileUrlRadio, #IDfilePartRadio').click(changeType);
+    $('#IDfileIdRadio').click();
+} );
+</script>
 <script type="text/javascript">
-	function show_hide(_element_id) {
-		 
-		  if (_element_id == "point") {
-		 	var element1 = document.getElementById("box-params");
-		 	var element2 = document.getElementById("annotation-position");
-		 	var element3 = document.getElementById("text-params");
-		 	element1.style.display = "none";
-		 	element2.style.display = "none";
-		 	element3.style.display = "none";
-		 }
-		 
-		 if (_element_id == "text") {
-		 	var element1 = document.getElementById("box-params");
-		 	var element2 = document.getElementById("annotation-position");
-		 	var element3 = document.getElementById("text-params");
-		 	element1.style.display = "inline";
-		 	element2.style.display = "inline";
-		 	element3.style.display = "inline";
-		 }
-		 
-		 if (_element_id == "area") {
-		 	var element1 = document.getElementById("box-params");
-		 	var element2 = document.getElementById("annotation-position");
-		 	var element3 = document.getElementById("text-params");
-		 	element1.style.display = "inline";
-		 	element2.style.display = "none";
-		 	element3.style.display = "none";
-		 }
-		 
-	}
+    function show_hide(_element_id) {
+    if (_element_id == "point") {
+    var element1 = document.getElementById("box-params");
+    var element2 = document.getElementById("annotation-position");
+    var element3 = document.getElementById("text-params");
+    element1.style.display = "none";
+    element2.style.display = "none";
+    element3.style.display = "none";
+    }
+    if (_element_id == "text") {
+    var element1 = document.getElementById("box-params");
+    var element2 = document.getElementById("annotation-position");
+    var element3 = document.getElementById("text-params");
+    element1.style.display = "inline";
+    element2.style.display = "inline";
+    element3.style.display = "inline";
+    }
+    if (_element_id == "area") {
+    var element1 = document.getElementById("box-params");
+    var element2 = document.getElementById("annotation-position");
+    var element3 = document.getElementById("text-params");
+    element1.style.display = "inline";
+    element2.style.display = "none";
+    element3.style.display = "none";
+    }
+    }
 </script>
 
-}
+    }

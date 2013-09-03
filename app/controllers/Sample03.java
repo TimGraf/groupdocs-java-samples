@@ -54,8 +54,7 @@ public class Sample03 extends Controller {
                     String callbackUrl = Utils.getFormValue(body.asFormUrlEncoded(), "callbackUrl");
                     // Upload file to current user storage from local computer
                     uploadResponse = storageApi.Upload(credentials.getClient_id(), filePart.getFilename(), "uploaded", callbackUrl, new FileStream(is));
-                }
-                else if ("url".equals(sourse)){
+                } else if ("url".equals(sourse)) {
                     String url = Utils.getFormValue(body.asFormUrlEncoded(), "url");
                     // Upload file to current user storage from url
                     uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);

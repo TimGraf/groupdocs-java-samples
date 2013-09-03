@@ -56,8 +56,7 @@ public class Sample25 extends Controller {
                 //
                 if ("guid".equals(sourse)) { // File GUID
                     guid = Utils.getFormValue(body, "fileId");
-                }
-                else if ("url".equals(sourse)) { // Upload file fron URL
+                } else if ("url".equals(sourse)) { // Upload file fron URL
                     String url = Utils.getFormValue(body, "url");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
@@ -66,8 +65,7 @@ public class Sample25 extends Controller {
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
-                }
-                else if ("local".equals(sourse)) { // Upload local file
+                } else if ("local".equals(sourse)) { // Upload local file
                     Http.MultipartFormData.FilePart file = body.getFile("file");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
@@ -146,10 +144,10 @@ public class Sample25 extends Controller {
                 storageApi.setBasePath(credentials.getServer_type());
                 FileStream fileStream = storageApi.GetFile(credentials.getClient_id(), guid);
                 // Check request result
-                FileStream  downloadedFile = Utils.assertNotNull(fileStream);
+                FileStream downloadedFile = Utils.assertNotNull(fileStream);
                 Utils.assertNotNull(downloadedFile.getInputStream());
                 // Check file name
-                if(downloadedFile.getFileName() == null){
+                if (downloadedFile.getFileName() == null) {
                     downloadedFile.setFileName(name);
                 }
                 // Obtaining file stream of downloading file and definition of folder where to download file

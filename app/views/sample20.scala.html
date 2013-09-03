@@ -1,58 +1,94 @@
 @(success: Boolean, data: com.groupdocs.sdk.model.ChangesResult, aForm: Form[Credentials])
 
-@import helper._
-
-@* Register customInput as field constructor for this page (customize input field) *@
-@implicitField = @{ FieldConstructor(customInput.f) }
+@@* Register customInput as field constructor for this page (customize input field) * @
+@implicitField = @{
+    FieldConstructor(customInput.f)
+}
 
 @main() {
 
-<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 20</h3>
+    <h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 20</h3>
 
-<div class='samplecontent' style="padding:10px;">
-   <i>This sample will show how to Get Compare Change list for document using JAVA SDK</i> <br/>
-   <br />
-    <a href="@routes.Assets.at("docs/Sample20.html")">Docs for this sample</a>
+    <div class='samplecontent' style="padding:10px;">
+        <i>This sample will show how to Get Compare Change list for document using JAVA SDK</i> <br/>
     <br />
-   <br/>
-   <div id="requestForm" style="padding:20px; border:1px solid black;">
-		<p>Enter data for request and press "Make request" button </p>
-		@myForm(routes.Sample20.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
-			@aForm.globalErrors.map { error =>
-			  @if(error.arguments.size > 0){
-				  <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
-			  } else {
-				  <div>@error.message</div>
-			  }
-			}
-            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-	        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
-	        @inputText(aForm("resultFileId"), '_label -> "Compared file GUID", 'size -> 50, 'required -> true)
-	        <input type="submit" value="Make Request" />
-            <br />
+        <a href="@routes.Assets.at("docs/Sample20.html")">Docs for this sample</a>
+    <br />
+    <br/>
+        <div id="requestForm" style="padding:20px; border:1px solid black;">
+            <p>Enter data for request and press "Make request" button</p>
+            @myForm(routes.Sample20.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+                @aForm.globalErrors.map { error =>
+                    @if(error.arguments.size > 0) {
+                        <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
+                    } else {
+                        <div>@error.message</div>
+                    }
+                }
+                @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
+                @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
+                @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                @inputText(aForm("resultFileId"), '_label -> "Compared file GUID", 'size -> 50, 'required -> true)
+                <input type="submit" value="Make Request"/>
+                <br />
 
-           }
-
-	</div>
-        @if(success){
-        	<div  style="padding:20px; border:1px solid black;">
-		        <p> Results: </p>
+            }
+        </div>
+        @if(success) {
+            <div style="padding:20px; border:1px solid black;">
+                <p>Results:</p>
                 <table border="1">
-                    <tr><td><span syule='color: green'>Change Name</span></td><td><span style='color: green'>Change</span></td></tr>
+                    <tr>
+                        <td><span syule='color: green'>Change Name</span></td> <td>
+                        <span style='color: green'>
+                            Change
+                        </span>
+                    </td>
+                    </tr>
 
-                    @for(change <- data.getChanges()){
-                        <tr><td>Id</td><td>@change.getId.toString</td></tr>
-                        <tr><td>Action</td><td>@if(change.getAction == null){ "" }else{ change.getAction.toString }</td></tr>
-                        <tr><td>Text</td><td>@if(change.getPage == null){ "" }else{ change.getPage.toString }</td></tr>
-                        <tr><td>Type</td><td>@if(change.getText == null){ "" }else{ change.getText.toString }</td></tr>
-                        <tr><td>Page</td><td>@if(change.getType == null){ "" }else{ change.getType.toString }</td></tr>
-                        <tr bgcolor='#808080'><td></td><td></td></tr>
+                    @for(change <- data.getChanges()) {
+                        <tr><td>Id</td> <td>@change.getId.toString</td></tr>
+                        <tr>
+                            <td>Action</td> <td>
+                        @if(change.getAction == null) {
+                            ""
+                        } else {
+                            change.getAction.toString
+                        }
+                        </td>
+                        </tr>
+                        <tr>
+                            <td>Text</td> <td>
+                        @if(change.getPage == null) {
+                            ""
+                        } else {
+                            change.getPage.toString
+                        }
+                        </td>
+                        </tr>
+                        <tr>
+                            <td>Type</td> <td>
+                        @if(change.getText == null) {
+                            ""
+                        } else {
+                            change.getText.toString
+                        }
+                        </td>
+                        </tr>
+                        <tr>
+                            <td>Page</td> <td>
+                        @if(change.getType == null) {
+                            ""
+                        } else {
+                            change.getType.toString
+                        }
+                        </td>
+                        </tr>
+                        <tr bgcolor='#808080'><td></td> <td></td></tr>
                     }
                 </table>
-		    </div>
+            </div>
         }
-
-</div>
+    </div>
 
 }

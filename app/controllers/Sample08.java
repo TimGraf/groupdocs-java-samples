@@ -49,16 +49,14 @@ public class Sample08 extends Controller {
                 //
                 if ("guid".equals(sourse)) { // File GUID
                     guid = Utils.getFormValue(body, "fileId");
-                }
-                else if ("url".equals(sourse)) { // Upload file fron URL
+                } else if ("url".equals(sourse)) { // Upload file fron URL
                     String url = Utils.getFormValue(body, "url");
                     StorageApi storageApi = new StorageApi();
                     storageApi.setBasePath(credentials.getServer_type());
                     UploadResponse response = storageApi.UploadWeb(credentials.getClient_id(), url);
                     response = Utils.assertResponse(response);
                     guid = response.getResult().getGuid();
-                }
-                else if ("local".equals(sourse)) { // Upload local file
+                } else if ("local".equals(sourse)) { // Upload local file
                     Http.MultipartFormData.FilePart file = body.getFile("file");
                     StorageApi storageApi = new StorageApi();
                     storageApi.setBasePath(credentials.getServer_type());

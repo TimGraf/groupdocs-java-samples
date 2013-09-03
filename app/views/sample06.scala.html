@@ -1,50 +1,51 @@
 @(success: Boolean, guid: String, aForm: Form[Credentials])
 
-@import helper._
-
-@* Register customInput as field constructor for this page (customize input field) *@
-@implicitField = @{ FieldConstructor(customInput.f) }
+@@* Register customInput as field constructor for this page (customize input field) * @
+@implicitField = @{
+    FieldConstructor(customInput.f)
+}
 
 
 @main() {
 
-<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 6</h3>
+    <h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 6</h3>
 
-<div class='samplecontent' style="padding:10px;">
-   <i>This sample will show how to use StorageApi to upload file to GroupDocs using Java SDK</i> <br/>
-   <br />
-    <a href="@routes.Assets.at("docs/Sample06.html")">Docs for this sample</a>
+    <div class='samplecontent' style="padding:10px;">
+        <i>This sample will show how to use StorageApi to upload file to GroupDocs using Java SDK</i> <br/>
     <br />
-   <br/>
-   <div id="requestForm" style="padding:20px; border:1px solid black;">
-		<p>Enter data for request and press "Make request" button </p>
-		@myForm(routes.Sample06.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
-			@aForm.globalErrors.map { error =>
-			  @if(error.arguments.size > 0){
-				  <div style="color: red">@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
-			  } else {
-				  <div style="color: red">@error.message</div>
-			  }
-			}
-            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-	        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-	        @inputFile(aForm("fi_document"), '_label -> "Document to sign", 'required -> true)
-	        @inputFile(aForm("fi_signature"), '_label -> "Signature image", 'required -> true)
-            @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
-	        <input type="submit" id='btnLoad' value="Make Request">
+        <a href="@routes.Assets.at("docs/Sample06.html")">Docs for this sample</a>
+    <br />
+    <br/>
+        <div id="requestForm" style="padding:20px; border:1px solid black;">
+            <p>Enter data for request and press "Make request" button</p>
+            @myForm(routes.Sample06.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+                @aForm.globalErrors.map { error =>
+                    @if(error.arguments.size > 0) {
+                        <div style="color: red">@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
+                    } else {
+                        <div style="color: red">@error.message</div>
+                    }
+                }
+                @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
+                @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
+                @inputFile(aForm("fi_document"), '_label -> "Document to sign", 'required -> true)
+                @inputFile(aForm("fi_signature"), '_label -> "Signature image", 'required -> true)
+                @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                <input type="submit" id='btnLoad' value="Make Request">
+            }
+        </div>
+
+        @if(success) {
+            <br/>
+            <div style="padding:20px; border:1px solid black;">
+                <p>
+                    Results: <span id="results_status" style="color:red;display:none;">
+                    (Please wait for ajax response)
+                </span>
+                </p>
+                <iframe id="viewer" src="https://apps.groupdocs.com/document-viewer/embed/ @guid" frameborder="0" width="600" height="500"></iframe>
+            </div>
+
         }
-   </div>
-
-@if(success){
-   <br/> 
-   <div  style="padding:20px; border:1px solid black;">
-        <p> Results: <span id="results_status" style="color:red;display:none;"> (Please wait for ajax response) </span></p>
-        <iframe id="viewer" src="https://apps.groupdocs.com/document-viewer/embed/@guid" frameborder="0" width="600" height="500"></iframe>
-  </div>
-  
-}
-
-
-
-</div>
+    </div>
 }

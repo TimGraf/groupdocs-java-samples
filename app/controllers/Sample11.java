@@ -53,8 +53,7 @@ public class Sample11 extends Controller {
                 //
                 if ("guid".equals(source)) { // File GUID
                     guid = Utils.getFormValue(body, "fileId");
-                }
-                else if ("url".equals(source)) { // Upload file fron URL
+                } else if ("url".equals(source)) { // Upload file fron URL
                     String url = Utils.getFormValue(body, "fileUrl");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
@@ -63,8 +62,7 @@ public class Sample11 extends Controller {
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
-                }
-                else if ("local".equals(source)) { // Upload local file
+                } else if ("local".equals(source)) { // Upload local file
                     Http.MultipartFormData.FilePart file = body.getFile("filePart");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
@@ -144,7 +142,7 @@ public class Sample11 extends Controller {
                     requestBody.setBox(box);
                     requestBody.setAnnotationPosition(annotationPosition);
                     // If annotation type is point set only box x,y coordinates
-                } else if(annotation_type.equals("point")) {
+                } else if (annotation_type.equals("point")) {
                     // Create rectangle object
                     Rectangle box = new Rectangle();
                     // Set rectangle parameters

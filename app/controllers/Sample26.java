@@ -4,21 +4,15 @@ package controllers;
 //Import of necessary libraries
 
 import com.groupdocs.sdk.api.SharedApi;
-import com.groupdocs.sdk.common.ApiException;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.UserInfo;
 import com.groupdocs.sdk.model.UserInfoResponse;
 import common.Utils;
-import models.Credentials;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.actors.threadpool.Arrays;
-
-import java.util.List;
-import java.util.Map;
 
 public class Sample26 extends Controller {
     //

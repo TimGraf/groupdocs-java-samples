@@ -5,7 +5,8 @@ import com.groupdocs.sdk.api.StorageApi;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
-import com.groupdocs.sdk.model.*;
+import com.groupdocs.sdk.model.UploadResponse;
+import com.groupdocs.sdk.model.ViewDocumentResponse;
 import org.apache.commons.lang3.StringUtils;
 import play.mvc.Http;
 
@@ -21,7 +22,6 @@ import java.util.Map;
 public abstract class Utils {
 
     /**
-     *
      * @param multipartFormData
      * @param fieldName
      * @return
@@ -31,7 +31,6 @@ public abstract class Utils {
     }
 
     /**
-     *
      * @param fieldsData
      * @param fieldName
      * @return
@@ -43,6 +42,7 @@ public abstract class Utils {
 
     /**
      * Upload file to server by Url and return file guid
+     *
      * @param cid
      * @param pkey
      * @param bpath
@@ -59,8 +59,7 @@ public abstract class Utils {
 
         if (response != null && "Ok".equalsIgnoreCase(response.getStatus())) {
             guid = response.getResult().getGuid();
-        }
-        else {
+        } else {
             throw new Exception(response.getError_message());
         }
         return guid;
@@ -68,6 +67,7 @@ public abstract class Utils {
 
     /**
      * Upload local file and return file guid
+     *
      * @param cid
      * @param pkey
      * @param bpath
@@ -75,12 +75,13 @@ public abstract class Utils {
      * @return
      * @throws Exception
      */
-    public static String getGuidByFile(String cid, String pkey, String bpath, String pathWithName, FileStream fileStream) throws Exception{
+    public static String getGuidByFile(String cid, String pkey, String bpath, String pathWithName, FileStream fileStream) throws Exception {
         return getGuidByFile(cid, pkey, bpath, fileStream, pathWithName, "");
     }
 
     /**
      * Upload local file and return file guid
+     *
      * @param cid
      * @param pkey
      * @param bpath
@@ -90,7 +91,7 @@ public abstract class Utils {
      * @return
      * @throws Exception
      */
-    public static String getGuidByFile(String cid, String pkey, String bpath, FileStream fileStream, String path, String callback) throws Exception{
+    public static String getGuidByFile(String cid, String pkey, String bpath, FileStream fileStream, String path, String callback) throws Exception {
         String guid = null;
         ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(pkey));
         StorageApi storageApi = new StorageApi();
@@ -99,8 +100,7 @@ public abstract class Utils {
 
         if (response != null && "Ok".equalsIgnoreCase(response.getStatus())) {
             guid = response.getResult().getGuid();
-        }
-        else {
+        } else {
             throw new Exception(response.getError_message());
         }
         return guid;
@@ -108,6 +108,7 @@ public abstract class Utils {
 
     /**
      * Load document info by guid and return file name
+     *
      * @param cid
      * @param pkey
      * @param bpath
@@ -115,17 +116,18 @@ public abstract class Utils {
      * @return
      * @throws Exception
      */
-    public static String getFileNameByGuid(String cid, String pkey, String bpath, String guid) throws Exception{
+    public static String getFileNameByGuid(String cid, String pkey, String bpath, String guid) throws Exception {
         ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(pkey));
         DocApi docApi = new DocApi();
         docApi.setBasePath(bpath);
         ViewDocumentResponse viewDocumentResponse = docApi.ViewDocument(cid, guid, null, null, null, null, null, null);
         viewDocumentResponse = assertResponse(viewDocumentResponse);
-        return  viewDocumentResponse.getResult().getName();
+        return viewDocumentResponse.getResult().getName();
     }
 
     /**
      * Load document metadata by guid and return file ID
+     *
      * @param cid
      * @param pkey
      * @param bpath
@@ -133,40 +135,38 @@ public abstract class Utils {
      * @return
      * @throws Exception
      */
-    public static Double getFileIdByGuid(String cid, String pkey, String bpath, String guid) throws Exception{
+    public static Double getFileIdByGuid(String cid, String pkey, String bpath, String guid) throws Exception {
         ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(pkey));
         DocApi docApi = new DocApi();
         docApi.setBasePath(bpath);
         ViewDocumentResponse viewDocumentResponse = docApi.ViewDocument(cid, guid, null, null, null, null, null, null);
         viewDocumentResponse = assertResponse(viewDocumentResponse);
-        return  viewDocumentResponse.getResult().getId();
+        return viewDocumentResponse.getResult().getId();
     }
 
     /**
-     *
      * @param r
      * @param <R>
      * @return
      * @throws Exception
      */
-    public static <R> R assertResponse(R r) throws Exception{
+    public static <R> R assertResponse(R r) throws Exception {
         if (r == null) {
             throw new Exception("response is null!");
         }
-        if (!"Ok".equalsIgnoreCase((String)r.getClass().getDeclaredMethod("getStatus").invoke(r))) {
-            throw new Exception((String)r.getClass().getDeclaredMethod("getError_message").invoke(r));
+        if (!"Ok".equalsIgnoreCase((String) r.getClass().getDeclaredMethod("getStatus").invoke(r))) {
+            throw new Exception((String) r.getClass().getDeclaredMethod("getError_message").invoke(r));
         }
         return r;
     }
 
     /**
-     *
      * @param r
      * @param <R>
      * @return
      * @throws Exception
      */
-    public static <R> R assertNotNull(R r) throws Exception{
+    public static <R> R assertNotNull(R r) throws Exception {
         if (r == null) {
             throw new Exception("Utils.assertNotNull calls with null value");
         }
@@ -174,7 +174,6 @@ public abstract class Utils {
     }
 
     /**
-     *
      * @param request
      * @return
      */
@@ -192,7 +191,6 @@ public abstract class Utils {
     }
 
     /**
-     *
      * @param request
      * @return
      */

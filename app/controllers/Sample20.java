@@ -1,17 +1,17 @@
- //###<i>This sample will show how to Get Compare Change list for document</i>
+//###<i>This sample will show how to Get Compare Change list for document</i>
 package controllers;
 //Import of necessary libraries
 
- import com.groupdocs.sdk.api.ComparisonApi;
- import com.groupdocs.sdk.common.ApiInvoker;
- import com.groupdocs.sdk.common.GroupDocsRequestSigner;
- import com.groupdocs.sdk.model.ChangesResponse;
- import common.Utils;
- import models.Credentials;
- import play.data.Form;
- import play.mvc.Controller;
- import play.mvc.Http;
- import play.mvc.Result;
+import com.groupdocs.sdk.api.ComparisonApi;
+import com.groupdocs.sdk.common.ApiInvoker;
+import com.groupdocs.sdk.common.GroupDocsRequestSigner;
+import com.groupdocs.sdk.model.ChangesResponse;
+import common.Utils;
+import models.Credentials;
+import play.data.Form;
+import play.mvc.Controller;
+import play.mvc.Http;
+import play.mvc.Result;
 
 public class Sample20 extends Controller {
     //

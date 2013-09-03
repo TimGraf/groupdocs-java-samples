@@ -13,7 +13,6 @@ import com.groupdocs.sdk.model.*;
 import common.Utils;
 import models.Credentials;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -23,8 +22,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Sample27 extends Controller {
     //
@@ -65,8 +62,7 @@ public class Sample27 extends Controller {
                 //
                 if ("guid".equals(sourse)) { // File GUID
                     guid = Utils.getFormValue(body, "fileId");
-                }
-                else if ("url".equals(sourse)) { // Upload file fron URL
+                } else if ("url".equals(sourse)) { // Upload file fron URL
                     String url = Utils.getFormValue(body, "url");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
@@ -75,8 +71,7 @@ public class Sample27 extends Controller {
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
-                }
-                else if ("local".equals(sourse)) { // Upload local file
+                } else if ("local".equals(sourse)) { // Upload local file
                     Http.MultipartFormData.FilePart file = body.getFile("file");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
@@ -144,11 +139,11 @@ public class Sample27 extends Controller {
                 // Check response status
                 jobDocumentsResponse = Utils.assertResponse(jobDocumentsResponse);
 
-                if ("Postponed".equalsIgnoreCase(jobDocumentsResponse.getResult().getJob_status())){
+                if ("Postponed".equalsIgnoreCase(jobDocumentsResponse.getResult().getJob_status())) {
                     throw new Exception("Job is failed");
                 }
 
-                if ("Pending".equalsIgnoreCase(jobDocumentsResponse.getResult().getJob_status())){
+                if ("Pending".equalsIgnoreCase(jobDocumentsResponse.getResult().getJob_status())) {
                     throw new Exception("Job is pending");
                 }
 
