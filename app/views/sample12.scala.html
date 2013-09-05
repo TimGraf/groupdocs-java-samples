@@ -1,6 +1,8 @@
 @(success: Boolean, annotationList: List[com.groupdocs.sdk.model.AnnotationInfo], aForm: Form[Credentials])
 
-@@* Register customInput as field constructor for this page (customize input field) * @
+@import helper._
+
+@* Register customInput as field constructor for this page (customize input field) *@
 @implicitField = @{
     FieldConstructor(customInput.f)
 }

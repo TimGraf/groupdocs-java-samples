@@ -1,4 +1,4 @@
-@(success: Boolean, gdFile: com.groupdocs.sdk.model.UploadRequestResult, aForm: Form[Credentials])
+@(success: Boolean, url: String, aForm: Form[Credentials])
 
 @import helper._
 
@@ -9,17 +9,17 @@
 
 @main() {
 
-    <h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 24</h3>
+    <h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 28</h3>
 
     <div class='samplecontent' style="padding:10px;">
-        <i>This sample will show how to use StorageApi to upload file from URL to GroupDocs account using Java SDK</i> <br/>
+        <i>This sample will show how to delete all annotations from document using Java SDK</i> <br/>
     <br />
-        <a href="@routes.Assets.at("docs/Sample24.html")">Docs for this sample</a>
+        <a href="@routes.Assets.at("docs/Sample28.html")">Docs for this sample</a>
     <br />
-    <br/>
+    <br />
         <div id="requestForm" style="padding:20px; border:1px solid black;">
-            <p>Enter data for request and press "Make request" button</p>
-            @myForm(routes.Sample24.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+            <p>Enter data for request and press "Delete All Annotations" button</p>
+            @myForm(routes.Sample28.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
                 @aForm.globalErrors.map { error =>
                     @if(error.arguments.size > 0) {
                         <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
@@ -30,15 +30,15 @@
                 @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
                 @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
                 @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
-                @inputText(aForm("url"), '_label -> "File URL", 'required -> true)
-                <input type="submit" value="Make Request">
+                @inputText(aForm("fileId"), '_label -> "File Guid", 'size -> 50)
+                <input type="submit" value="Delete All Annotations">
             }
         </div>
+    <br/>
         @if(success) {
             <div style="padding:20px; border:1px solid black;">
-                <p>Results:</p>
-                <p>File was uploaded to GroupDocs. Here you can see your file in the GroupDocs Embedded Viewer.</p>
-                <iframe src="https://apps.groupdocs.com/document-viewer/Embed/ @gdFile.getGuid" frameborder="0" width="875" height="800"></iframe>
+                <span style="color: green">All annotation were deleted successfully</span>
+                <iframe src="@url" frameborder="0" width="800" height="600"></iframe>
             </div>
         }
     </div>

@@ -1,5 +1,8 @@
-@(success: Boolean, userInfo: UserInfo, aForm: Form[Credentials])
-@@@* Register customInput as field constructor for this page (customize input field) * @
+@(success: Boolean, userInfo: com.groupdocs.sdk.model.UserInfo, aForm: Form[Credentials])
+
+@import helper._
+
+@* Register customInput as field constructor for this page (customize input field) *@
 @implicitField = @{
     FieldConstructor(customInput.f)
 }
