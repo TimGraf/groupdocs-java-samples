@@ -1,0 +1,54 @@
+@(success: Boolean, frameUrl: String, aForm: Form[Credentials])
+
+@import helper._
+
+@* Register customInput as field constructor for this page (customize input field) *@
+@implicitField = @{
+    FieldConstructor(customInput.f)
+}
+
+@main() {
+
+    <h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 9</h3>
+
+    <div class='samplecontent' style="padding:10px;">
+        <i>This sample will show how to dynamically create your own questionnaire using forms and build signature form from the result document using Java SDK</i> <br/>
+    <br />
+        <a href="@routes.Assets.at("docs/Sample31.html")">Docs for this sample</a>
+    <br />
+    <br />
+        <div id="requestForm" style="padding:20px; border:1px solid black;">
+            <p>Enter data for request and press "Make request" button</p>
+            @myForm(routes.Sample31.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+                @aForm.globalErrors.map { error =>
+                    @if(error.arguments.size > 0) {
+                        <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
+                    } else {
+                        <div>@error.message</div>
+                    }
+                }
+                @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
+                @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
+                @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                @inputText(aForm("template_guid"), '_label -> "Template Guid", 'size -> 50)
+                @inputText(aForm("callbackUrl"), '_label -> "Callback URL", 'size -> 50)
+                <div style="background-color:#e5e5e5;border:3px double gray;width:700px;padding:3px;font-size:10pt;">
+                    @inputText(aForm("email"), '_label -> "What is your email?", 'size -> 50)
+                    @inputText(aForm("name"), '_label -> "What is your name?", 'size -> 50)
+                    @inputText(aForm("country"), '_label -> "What is your country?", 'size -> 50)
+                    @inputText(aForm("city"), '_label -> "What is your city?", 'size -> 50)
+                    @inputText(aForm("street"), '_label -> "What is your street?", 'size -> 50)
+                </div>
+                <input type="submit" value="Make Request">
+            }
+        </div>
+    <br/>
+        @if(success) {
+            <div id = 'result' style="padding:20px; border:1px solid black;" >
+                <p> Results: </p>
+                <span style="color: green"></span>
+                <iframe id='downloadframe' src="@frameUrl" width = '800' height = '1000'></iframe>
+            </div>
+        }
+    </div>
+}

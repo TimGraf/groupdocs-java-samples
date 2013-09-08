@@ -57,8 +57,9 @@
                         <td>Files list</td>
                         <td>
                         @for(file <- filesList) {
-                            @file.getName <br />
                             <input type="hidden" name="guid[]" value="@file.getGuid"/>
+                            @file.getName <br />
+
                         }
                         </td>
                     </tr>

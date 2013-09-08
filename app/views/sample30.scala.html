@@ -1,4 +1,4 @@
-@(success: Boolean, guid: String, width: String, height: String, aForm: Form[Credentials])
+@(success: Boolean, aForm: Form[Credentials])
 
 @import helper._
 
@@ -9,17 +9,17 @@
 
 @main() {
 
-    <h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 9</h3>
+    <h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 30</h3>
 
     <div class='samplecontent' style="padding:10px;">
-        <i>This sample will show how to generate a embedded Viewer URL for a Document using Java SDK</i> <br/>
+        <i>This sample will show how delete file from GroupDocs Storage using Java SDK</i> <br/>
     <br />
-        <a href="@routes.Assets.at("docs/Sample09.html")">Docs for this sample</a>
+        <a href="@routes.Assets.at("docs/Sample30.html")">Docs for this sample</a>
     <br />
     <br />
         <div id="requestForm" style="padding:20px; border:1px solid black;">
             <p>Enter data for request and press "Make request" button</p>
-            @myForm(routes.Sample09.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+            @myForm(routes.Sample30.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
                 @aForm.globalErrors.map { error =>
                     @if(error.arguments.size > 0) {
                         <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
@@ -29,6 +29,11 @@
                 }
 
                 <div>
+                    <div>
+                        @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
+                        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
+                        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                    </div>
                     <div id="IDtypeChoice" class="file-choice-block">
                     <input type="radio" value="guid" onclick="" id="IDfileIdRadio" name="sourse"/>
                         <label for="IDfileIdRadio" class="file-choice-label">File GUID</label>
@@ -41,27 +46,22 @@
                     @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true, 'id -> "guidfield")
                     </div>
                     <div id="url">
-                        @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-                        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-                        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
                         @inputText(aForm("url"), '_label -> "File Url", 'size -> 50, 'required -> true, 'id -> "urlfield")
                     </div>
                     <div id="local">
-                        @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-                        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-                        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
                         @inputFile(aForm("file"), '_label -> "Select file", 'required -> true, 'id -> "filefield")
                     </div>
                 </div>
-                @inputText(aForm("height"), '_label -> "Height", 'size -> 50, 'placeholder -> "1000 or 1000px")
-                @inputText(aForm("width"), '_label -> "Width", 'size -> 50, 'placeholder -> "100%")
                 <input type="submit" value="Make Request">
             }
         </div>
     <br/>
         @if(success) {
-            <div style="padding:20px; border:1px solid black;">
-                <iframe src="https://apps.groupdocs.com/document-viewer/embed/ @guid" frameborder="0" width="@width" height="@height"></iframe>
+            <div  style="padding:20px; border:1px solid black;">
+                    <p>Results:</p>
+                    <p>
+                        <span style="color: green">Done, file deleted from your GroupDocs Storage </span>
+                    </p>
             </div>
         }
     </div>
