@@ -38,7 +38,7 @@
                         <label for="IDfileIdRadio" class="file-choice-label">File GUID</label>
                     <input type="radio" value="url" onclick="" id="IDfileUrlRadio" name="sourse"/>
                         <label for="IDfileUrlRadio" class="file-choice-label">File URL</label>
-                    <input type="radio" value="local" onclick="" id="IDfilePartRadio" name="sourse"/>
+                    <input type="radio" value="local" onclick="" id="IDfilePartRadio" name="sourse" />
                         <label for="IDfilePartRadio" class="file-choice-label">Local file</label>
                     </div>
                     <div id="guid">
@@ -96,7 +96,7 @@
     $(function(){
     changeType.allChk = ['guid', 'url', 'local'];
     $('#IDfileIdRadio, #IDfileUrlRadio, #IDfilePartRadio').click(changeType);
-    $('#IDfileIdRadio').click();
+    $('#IDfilePartRadio').click();
 } );
 </script>
     }
