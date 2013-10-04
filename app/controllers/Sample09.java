@@ -26,7 +26,7 @@ public class Sample09 extends Controller {
             form = form(Credentials.class).bindFromRequest();
             // Check errors
             if (form.hasErrors()) {
-                return badRequest(views.html.sample09.render(false, null, null, null, form));
+                return badRequest(views.html.sample09.render(false, null, null, null, null, form));
             }
             // Save credentials to session
             Credentials credentials = form.get();
@@ -38,6 +38,7 @@ public class Sample09 extends Controller {
             String width = Utils.getFormValue(body, "width");
             String height = Utils.getFormValue(body, "height");
             String sourse = Utils.getFormValue(body, "sourse");
+			String iframeType = Utils.getFormValue(body, "iframeType");
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
                     new GroupDocsRequestSigner(credentials.getPrivate_key()));
@@ -70,14 +71,14 @@ public class Sample09 extends Controller {
                 }
                 guid = Utils.assertNotNull(guid);
                 // Render view
-                return ok(views.html.sample09.render(true, guid, width, height, form));
+                return ok(views.html.sample09.render(true, guid, width, height, iframeType, form));
             } catch (Exception e) {
-                return badRequest(views.html.sample09.render(false, null, null, null, form));
+                return badRequest(views.html.sample09.render(false, null, null, null, null, form));
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
             session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
-        return ok(views.html.sample09.render(false, null, null, null, form));
+        return ok(views.html.sample09.render(false, null, null, null, null, form));
     }
 }

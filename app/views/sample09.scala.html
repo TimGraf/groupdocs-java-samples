@@ -1,4 +1,4 @@
-@(success: Boolean, guid: String, width: String, height: String, aForm: Form[Credentials])
+@(success: Boolean, guid: String, width: String, height: String, iframeType: String, aForm: Form[Credentials])
 
 @import helper._
 
@@ -27,7 +27,8 @@
                         <div>@error.message</div>
                     }
                 }
-
+				 @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
+				@inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
                 <div>
                     <div id="IDtypeChoice" class="file-choice-block">
                     <input type="radio" value="guid" onclick="" id="IDfileIdRadio" name="sourse"/>
@@ -38,31 +39,41 @@
                         <label for="IDfilePartRadio" class="file-choice-label">Local file</label>
                     </div>
                     <div id="guid">
+					
                     @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true, 'id -> "guidfield")
                     </div>
                     <div id="url">
-                        @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-                        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-                        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                       
                         @inputText(aForm("url"), '_label -> "File Url", 'size -> 50, 'required -> true, 'id -> "urlfield")
                     </div>
                     <div id="local">
-                        @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-                        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-                        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                     
                         @inputFile(aForm("file"), '_label -> "Select file", 'required -> true, 'id -> "filefield")
                     </div>
                 </div>
                 @inputText(aForm("height"), '_label -> "Height", 'size -> 50, 'placeholder -> "1000 or 1000px")
                 @inputText(aForm("width"), '_label -> "Width", 'size -> 50, 'placeholder -> "100%")
+				@inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+				<br/>
+				<label for="iframeType">What app you want to generate?  Viewer / Annotation</label>
+				 <br />
+				 <input type="radio" name="iframeType" value="viewer" checked>Viewer</input>
+				 <input type="radio" name="iframeType" value="annotation">Annotation</input>
+				 <br />
                 <input type="submit" value="Make Request">
             }
         </div>
     <br/>
         @if(success) {
+			
             <div style="padding:20px; border:1px solid black;">
+			@if(iframeType == "viewer") {
                 <iframe src="https://apps.groupdocs.com/document-viewer/embed/ @guid" frameborder="0" width="@width" height="@height"></iframe>
-            </div>
+            } else {
+				<iframe src="http://apps.groupdocs.com/document-annotation2/embed/ @guid" frameborder="0" width="@width" height="@height"></iframe>
+			}
+			</div>
+			
         }
     </div>
     <script type="text/javascript" language="JavaScript">
