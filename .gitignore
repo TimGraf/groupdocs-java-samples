@@ -25,3 +25,4 @@ dist
 /.classpath
 /.project
 /RUNNING_PID
+/groupdocs-java-samples/nbproject/private/
