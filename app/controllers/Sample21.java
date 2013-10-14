@@ -92,7 +92,7 @@ public class Sample21 extends Controller {
                 // Initialize API with base path
                 signatureApi.setBasePath(basePath);
                 // Make a requests to Signature Api to create an envelope
-                SignatureEnvelopeSettings env = new SignatureEnvelopeSettings();
+                SignatureEnvelopeSettingsInfo env = new SignatureEnvelopeSettingsInfo();
                 env.setEmailSubject("Sign this!");
                 SignatureEnvelopeResponse envelopeResponse = signatureApi.CreateSignatureEnvelope(credentials.getClient_id(), "SampleEnvelope_" + UUID.randomUUID(), null, null, null, true, env);
                 envelopeResponse = Utils.assertResponse(envelopeResponse);
@@ -139,7 +139,7 @@ public class Sample21 extends Controller {
                     }
                 }
                 // Create new field called City
-                SignatureEnvelopeFieldSettings envField = new SignatureEnvelopeFieldSettings();
+                SignatureEnvelopeFieldSettingsInfo envField = new SignatureEnvelopeFieldSettingsInfo();
                 envField.setName("City");
                 envField.setLocationX(0.3);
                 envField.setLocationY(0.2);
@@ -150,7 +150,7 @@ public class Sample21 extends Controller {
                 Utils.assertNotNull(signatureEnvelopeFieldsResponse);
 
                 fieldId = null;
-                envField = new SignatureEnvelopeFieldSettings();
+                envField = new SignatureEnvelopeFieldSettingsInfo();
                 for (SignatureFieldInfo field : fields) {
                     // Get an ID of signature field
                     if (field.getFieldType() == 1) { // signature, see http://scotland.groupdocs.com/wiki/display/SDS/field.type
@@ -161,14 +161,16 @@ public class Sample21 extends Controller {
                 envField.setLocationX(0.3);
                 envField.setLocationY(0.3);
                 envField.setPage(1);
+                envField.setName("fieldName");
                 // Make a request to Signature Api to add signature field to envelope
                 signatureEnvelopeFieldsResponse = signatureApi.AddSignatureEnvelopeField(credentials.getClient_id(), envelopeId, documentId, recipientId, fieldId, envField);
                 Utils.assertResponse(signatureEnvelopeFieldsResponse);
                 // Check is callback entered
                 callback = (callback == null) ? "" : callback;
 
-                FileStream stream = new FileStream(IOUtils.toInputStream(callback));
-                SignatureEnvelopeSendResponse signatureEnvelopeSendResponse = signatureApi.SignatureEnvelopeSend(credentials.getClient_id(), envelopeId, stream);
+                WebhookInfo webhookInfo = new WebhookInfo();
+                webhookInfo.setCallbackUrl(callback);
+                SignatureEnvelopeSendResponse signatureEnvelopeSendResponse = signatureApi.SignatureEnvelopeSend(credentials.getClient_id(), envelopeId, webhookInfo);
                 Utils.assertResponse(signatureEnvelopeSendResponse);
 
                 // Store envelopeId in session for later ues in checkCallbackStatus action

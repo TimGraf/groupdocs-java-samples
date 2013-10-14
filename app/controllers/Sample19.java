@@ -118,7 +118,7 @@ public class Sample19 extends Controller {
                 //
                 GetJobDocumentsResponse jobDocumentsResponse = null;
                 do {
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);
                     jobDocumentsResponse = asyncApi.GetJobDocuments(credentials.getClient_id(), compareResponse.getResult().getJob_id().toString(), "");
                     jobDocumentsResponse = Utils.assertResponse(jobDocumentsResponse);
                 } while ("Inprogress".equalsIgnoreCase(jobDocumentsResponse.getResult().getJob_status()));

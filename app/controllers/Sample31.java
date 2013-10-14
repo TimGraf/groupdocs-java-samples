@@ -169,7 +169,7 @@ public class Sample31 extends Controller {
                 roleId = Utils.assertNotNull(roleId);
 
                 String fieldName = "SignatureSample" + new Random(new Date().getTime()).nextInt();
-                SignatureFieldSettings signatureFieldSettings = new SignatureFieldSettings();
+                SignatureFieldSettingsInfo signatureFieldSettings = new SignatureFieldSettingsInfo();
                 signatureFieldSettings.setName(fieldName);
 
                 SignatureFieldResponse signatureFieldResponse = signatureApi.CreateSignatureField(credentials.getClient_id(), signatureFieldSettings);
@@ -191,7 +191,7 @@ public class Sample31 extends Controller {
                 // Check response status
                 envelopeDocumentsResponse = Utils.assertResponse(envelopeDocumentsResponse);
 
-                SignatureEnvelopeFieldSettings signatureEnvelopeFieldSettings = new SignatureEnvelopeFieldSettings();
+                SignatureEnvelopeFieldSettingsInfo signatureEnvelopeFieldSettings = new SignatureEnvelopeFieldSettingsInfo();
                 signatureEnvelopeFieldSettings.setLocationX(0.15);
                 signatureEnvelopeFieldSettings.setLocationY(0.73);
                 signatureEnvelopeFieldSettings.setLocationWidth(150.0);
@@ -204,8 +204,9 @@ public class Sample31 extends Controller {
                 // Check response status
                 signatureEnvelopeFieldsResponse = Utils.assertResponse(signatureEnvelopeFieldsResponse);
 
-                FileStream fileStream = new FileStream(null);
-                SignatureEnvelopeSendResponse signatureEnvelopeSendResponse = signatureApi.SignatureEnvelopeSend(credentials.getClient_id(), envilopeId, /* callbackUrl */ fileStream);
+                WebhookInfo webhookInfo = new WebhookInfo();
+                webhookInfo.setCallbackUrl(callbackUrl);
+                SignatureEnvelopeSendResponse signatureEnvelopeSendResponse = signatureApi.SignatureEnvelopeSend(credentials.getClient_id(), envilopeId, webhookInfo);
                 // Check response status
                 signatureEnvelopeSendResponse = Utils.assertResponse(signatureEnvelopeSendResponse);
 
