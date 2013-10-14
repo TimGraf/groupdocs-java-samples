@@ -76,13 +76,10 @@ public class Sample10 extends Controller {
                 DocApi docApi = new DocApi();
                 // Initialize API with base path
                 docApi.setBasePath(credentials.getServer_type());
-                // Get document metadeta for entered fileId
-                GetDocumentInfoResponse documentInfoResponse = docApi.GetDocumentMetadata(credentials.getClient_id(), guid);
-                documentInfoResponse = Utils.assertResponse(documentInfoResponse);
-                String file_Id = documentInfoResponse.getResult().getId().toString();
+                Double file_Id = Utils.getFileIdByGuid(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), guid);
 
                 // Make a request to DocApi to share document
-                SharedUsersResponse sharedUsersResponse = docApi.ShareDocument(credentials.getClient_id(), file_Id, Arrays.asList(new String[]{email}));
+                SharedUsersResponse sharedUsersResponse = docApi.ShareDocument(credentials.getClient_id(), Double.toString(file_Id), Arrays.asList(new String[]{email}));
                 // Check request status
                 sharedUsersResponse = Utils.assertResponse(sharedUsersResponse);
                 // Render view

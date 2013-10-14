@@ -54,12 +54,12 @@
                 @inputText(aForm("height"), '_label -> "Height", 'size -> 50, 'placeholder -> "1000 or 1000px")
                 @inputText(aForm("width"), '_label -> "Width", 'size -> 50, 'placeholder -> "100%")
 				@inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
-				<br/>
-				<label for="iframeType">What app you want to generate?  Viewer / Annotation</label>
-				 <br />
-				 <input type="radio" name="iframeType" value="viewer" checked>Viewer</input>
-				 <input type="radio" name="iframeType" value="annotation">Annotation</input>
-				 <br />
+				<div style="margin-top: 10px;">
+                    <label>What app you want to generate?  Viewer / Annotation</label>
+                    <br />
+                    <input type="radio" name="iframeType" value="viewer" style="margin-top: 10px;" checked>Viewer</input>
+                    <input type="radio" name="iframeType" value="annotation" style="margin: 10px 0px;">Annotation</input>
+				</div>
                 <input type="submit" value="Make Request">
             }
         </div>

@@ -12,7 +12,7 @@ import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.*;
 import common.Utils;
 import models.Credentials;
-import org.apache.commons.io.IOUtils;
+import org.apache.log4j.lf5.util.StreamUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -156,8 +156,7 @@ public class Sample25 extends Controller {
                 String downloadPath = path + separator + "public" + separator + "images" + separator;
                 FileOutputStream newFile = new FileOutputStream(downloadPath + downloadedFile.getFileName());
                 // Write file to local folder
-                IOUtils.copy(downloadedFile.getInputStream(), newFile);
-                IOUtils.closeQuietly(downloadedFile.getInputStream());
+                StreamUtils.copy(downloadedFile.getInputStream(), newFile);
                 newFile.close();
 
                 String server = credentials.getServer_type().substring(0, credentials.getServer_type().indexOf(".com") + 4).replace("api", "apps");

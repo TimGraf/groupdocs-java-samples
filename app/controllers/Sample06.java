@@ -53,11 +53,11 @@ public class Sample06 extends Controller {
                 //Read signature file from URL
                 String base64signature = MimeUtils.readAsDataURL(fi_signature.getFile(), fi_signature.getContentType());
                 // Set sign settings
-                SignatureSignDocumentDocumentSettings document = new SignatureSignDocumentDocumentSettings();
+                SignatureSignDocumentDocumentSettingsInfo document = new SignatureSignDocumentDocumentSettingsInfo();
                 document.setName(fi_document.getFilename());
                 document.setData(base64file);
                 // Create SignatureSignDocumentSignerSettings object
-                SignatureSignDocumentSignerSettings signer = new SignatureSignDocumentSignerSettings();
+                SignatureSignDocumentSignerSettingsInfo signer = new SignatureSignDocumentSignerSettingsInfo();
                 signer.setPlaceSignatureOn("");
                 signer.setName(signerName);
                 signer.setData(base64signature);
@@ -66,14 +66,14 @@ public class Sample06 extends Controller {
                 signer.setTop(0.83319);
                 signer.setLeft(0.72171);
                 // Make request to sign settings
-                SignatureSignDocumentSettings requestBody = new SignatureSignDocumentSettings();
+                SignatureSignDocumentSettingsInfo requestBody = new SignatureSignDocumentSettingsInfo();
                 // Add signer to sign settings List
-                List<SignatureSignDocumentSignerSettings> signers = new ArrayList<SignatureSignDocumentSignerSettings>();
+                List<SignatureSignDocumentSignerSettingsInfo> signers = new ArrayList<SignatureSignDocumentSignerSettingsInfo>();
                 signers.add(signer);
                 // Set signer
                 requestBody.setSigners(signers);
                 // Add document for sign to sign settings List
-                List<SignatureSignDocumentDocumentSettings> documents = new ArrayList<SignatureSignDocumentDocumentSettings>();
+                List<SignatureSignDocumentDocumentSettingsInfo> documents = new ArrayList<SignatureSignDocumentDocumentSettingsInfo>();
                 documents.add(document);
                 // Set document
                 requestBody.setDocuments(documents);
