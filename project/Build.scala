@@ -13,7 +13,8 @@ object ApplicationBuild extends Build {
         "log4j" % "log4j" % "1.2.11",
         "org.apache.commons" % "commons-io" % "1.3.2",
         "com.sun.jersey" % "jersey-client" % "1.9.1",
-        "com.groupdocs" % "groupdocs-java-client" % "1.7.0"
+        "com.groupdocs" % "groupdocs-java-client" % "1.7.0",
+        "com.typesafe" %% "play-plugins-mailer" % "2.0.4"
     )
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(
@@ -21,5 +22,4 @@ object ApplicationBuild extends Build {
         templatesImport += "com.groupdocs.sdk.model._",
         templatesImport += "com.groupdocs.sdk.common._"
     )
-
 }
