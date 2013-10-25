@@ -66,6 +66,10 @@ GET    	/sample30                   controllers.Sample30.index()
 POST    /sample30                   controllers.Sample30.index()
 GET    	/sample31                   controllers.Sample31.index()
 POST    /sample31                   controllers.Sample31.index()
+GET    	/sample32                   controllers.Sample32.index()
+POST    /sample32                   controllers.Sample32.index()
+GET    	/sample33                   controllers.Sample33.index()
+POST    /sample33                   controllers.Sample33.index()
 GET     /dummyCallbackHandler 		controllers.DummyCallbackHandler.index()
 POST 	/dummyCallbackHandler 		controllers.DummyCallbackHandler.index()
 PUT 	/dummyCallbackHandler 		controllers.DummyCallbackHandler.index()
@@ -74,6 +78,9 @@ GET 	/downloadEnvelope 			controllers.Sample21.downloadEnvelope()
 
 GET     /callbacks/convert_callback controllers.Callbacks.convert_callback()
 POST    /callbacks/convert_callback controllers.Callbacks.convert_callback()
+
+GET     /callbacks/publish_callback controllers.Callbacks.publish_callback()
+POST    /callbacks/publish_callback controllers.Callbacks.publish_callback()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /*file               controllers.Assets.at(path="/public", file)

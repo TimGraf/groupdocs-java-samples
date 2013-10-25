@@ -1,0 +1,74 @@
+@(success: Boolean, formUrl: String, aForm: Form[Credentials])
+
+@import helper._
+
+@* Register customInput as field constructor for this page (customize input field) *@
+@implicitField = @{
+    FieldConstructor(customInput.f)
+}
+
+@main() {
+
+    <h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 32</h3>
+
+    <div class='samplecontent' style="padding:10px;">
+        <i>This sample will show how to create signature form, publish it and configure notification when it was signed using Java SDK</i> <br/>
+    <br />
+        <a href="@routes.Assets.at("docs/Sample32.html")">Docs for this sample</a>
+    <br />
+        <a href="@routes.Assets.at("docs/publish_callback.html")">Docs for callback handler</a>
+    <br />
+        <div id="requestForm" style="padding:20px; border:1px solid black;">
+            <p>Enter data for request and press "Make Request" button</p>
+            @myForm(routes.Sample32.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+                @aForm.globalErrors.map { error =>
+                    @if(error.arguments.size > 0) {
+                        <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
+                    } else {
+                        <div>@error.message</div>
+                    }
+                }
+                @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
+                @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
+                @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                <div style="margin: 10px 0px">
+                    <div>
+                        <input type="radio" value="form" id="IDform" name="sourse" onclick="display('form')" checked="checked" />
+                        <label for="IDform">Form GUID</label>
+                    </div>
+                    <div>
+                        <input type="radio" value="template" id="IDtemplate" name="sourse" onclick="display('template')" />
+                        <label for="IDtemplate">Template GUID</label>
+                    </div>
+                </div>
+                <div id="IDformInput">
+                    @inputText(aForm("form_guid"), '_label -> "Form Guid", 'size -> 50)
+                </div>
+                <div id="IDtemplateInput">
+                    @inputText(aForm("template_guid"), '_label -> "Template Guid", 'size -> 50)
+                </div>
+                @inputText(aForm("email"), '_label -> "Email for notification", 'size -> 50)
+                @inputText(aForm("callbackUrl"), '_label -> "Callback URL", 'size -> 50)
+                <div style="color: #808080; font-size: 10px">
+                    For test Callback you can use this URL: http://groupdocs-java-samples.herokuapp.com/callbacks/publish_callback
+                </div>
+                <input type="submit" value="Make Request">
+            }
+        </div>
+    <br/>
+        @if(success) {
+            <div id = 'result' style="padding:20px; border:1px solid black;" >
+                <p> Results: </p>
+                <span style="color: green">Form is published successfully</span>
+                <iframe id='downloadframe' src="@formUrl" width = '800' height = '1000'></iframe>
+            </div>
+        }
+    </div>
+    <script type="text/javascript" language="Javascript">
+        function display(type) {
+            $('#IDformInput,#IDtemplateInput').hide().find('input').val('');
+            $('#ID' + type + 'Input').show();
+        }
+        display('form');
+    </script>
+}

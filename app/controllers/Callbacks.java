@@ -8,6 +8,10 @@ import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.GetJobDocumentsResponse;
 import com.groupdocs.sdk.model.SignatureEnvelopeDocumentsResponse;
+import com.groupdocs.sdk.model.SignatureFormDocumentResponse;
+import com.groupdocs.sdk.model.SignatureFormDocumentsResponse;
+import com.typesafe.plugin.MailerAPI;
+import com.typesafe.plugin.MailerPlugin;
 import common.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.lf5.util.StreamUtils;
@@ -176,6 +180,58 @@ public class Callbacks extends Controller {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return ok("");
+    }
+
+    public static Result publish_callback() throws Exception{
+        FileInputStream fileInputStream = new FileInputStream(Sample32.USER_INFO_FILE);
+        DataInputStream dataInputStream = new DataInputStream(fileInputStream);
+        String data = dataInputStream.readUTF();
+        fileInputStream.close();
+
+        String cid = data.split("\\|")[0];
+        String pkey = data.split("\\|")[1];
+        String burl = data.split("\\|")[2];
+        String email = data.split("\\|")[3];
+        if (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl) || StringUtils.isEmpty(email)) {
+            return ok("ClientID or PrivateKEY or base path or email is not found!");
+        }
+
+        ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(pkey));
+        // Get raw data
+        Http.RawBuffer rawBuffer = request().body().asRaw();
+        String jsonStr = new String(rawBuffer.asBytes());
+        // Parse JSON
+        JsonNode json = Json.parse(jsonStr);
+        // Get form id from array
+        String formId = json.get("SourceId").asText();
+
+        SignatureApi signatureApi = new SignatureApi();
+        // Get document from signature form
+        SignatureFormDocumentsResponse signatureFormDocumentsResponse = signatureApi.GetSignatureFormDocuments(cid, formId);
+        signatureFormDocumentsResponse = Utils.assertResponse(signatureFormDocumentsResponse);
+        // Get document name
+        String documentName = signatureFormDocumentsResponse.getResult().getDocuments().get(0).getName();
+        // Create email with document name
+        String subject = "Reminder: An envelope has to be signed on GroupDocs";
+        String message =
+                "<html>" +
+                "<head>" +
+                "<title>Sign form notification</title>" +
+                "</head>" +
+                "<body>" +
+                "<p>Document" + documentName + " is signed</p>" +
+                "</body>" +
+                "</html>";
+        String from = "From: Remainder <noreply@groupdocs.com>";
+
+        // Configure section "# Email configuration" in application.conf
+        MailerAPI mail = play.Play.application().plugin(MailerPlugin.class).email();
+        mail.setSubject(subject);
+        mail.setCharset("utf-8");
+        mail.setReplyTo(email);
+        // sends html
+        mail.sendHtml(message);
         return ok("");
     }
 }
