@@ -50,7 +50,7 @@
                     @inputText(aForm("url"), '_label -> "File Url", 'size -> 50, 'required -> true)
                     </div>
                     <div id="local">
-                    @inputFile(aForm("local"), '_label -> "Select file", 'required -> true)
+                    @inputFile(aForm("file"), '_label -> "Select file", 'required -> true)
                     </div>
                 </div>
                 <input type="submit" value="Make Request"/>
@@ -61,7 +61,7 @@
 
             <div style="padding:20px; border:1px solid black;">
                 <p>Results:</p>
-                <p>Archive created and saved successfully as <span style="color: green;">@guid</span></p>
+                <span style="color: green;"><p>Archive created and saved successfully as @guid</p></span>
             </div>
         }
     </div>
@@ -69,7 +69,7 @@
     $(function(){
     changeType.allChk = ['guid', 'url', 'local'];
     $('#IDfileIdRadio, #IDfileUrlRadio, #IDfilePartRadio').click(changeType);
-    $('#IDfileIdRadio').click();
+    $('#IDfilePartRadio').click();
 } );
 </script>
     }

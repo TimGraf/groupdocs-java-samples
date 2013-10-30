@@ -33,23 +33,7 @@
                         @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
                         @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
                         @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
-                    </div>
-                    <div id="IDtypeChoice" class="file-choice-block">
-                    <input type="radio" value="guid" onclick="" id="IDfileIdRadio" name="sourse"/>
-                        <label for="IDfileIdRadio" class="file-choice-label">File GUID</label>
-                    <input type="radio" value="url" onclick="" id="IDfileUrlRadio" name="sourse"/>
-                        <label for="IDfileUrlRadio" class="file-choice-label">File URL</label>
-                    <input type="radio" value="local" onclick="" id="IDfilePartRadio" name="sourse"/>
-                        <label for="IDfilePartRadio" class="file-choice-label">Local file</label>
-                    </div>
-                    <div id="guid">
-                    @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true, 'id -> "guidfield")
-                    </div>
-                    <div id="url">
-                        @inputText(aForm("url"), '_label -> "File Url", 'size -> 50, 'required -> true, 'id -> "urlfield")
-                    </div>
-                    <div id="local">
-                        @inputFile(aForm("file"), '_label -> "Select file", 'required -> true, 'id -> "filefield")
+                        @inputText(aForm("fileName"), '_label -> "File name", 'size -> 50, 'required -> true, 'id -> "fileName")
                     </div>
                 </div>
                 <input type="submit" value="Make Request">

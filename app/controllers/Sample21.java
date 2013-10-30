@@ -126,48 +126,23 @@ public class Sample21 extends Controller {
                 String recipientId = signatureEnvelopeRecipientResponse.getResult().getRecipient().getId();
 
                 // Make a request to Signature Api to get all available fields
-                SignatureFieldsResponse signatureFieldsResponse = signatureApi.GetFieldsList(credentials.getClient_id(), null);
+                SignatureEnvelopeDocumentsResponse getEnvelopDocument = signatureApi.GetSignatureEnvelopeDocuments(credentials.getClient_id(), envelopeId);
                 // Check response status
-                signatureFieldsResponse = Utils.assertResponse(signatureFieldsResponse);
-                List<SignatureFieldInfo> fields = signatureFieldsResponse.getResult().getFields();
-                String fieldId = null;
-                for (SignatureFieldInfo field : fields) {
-                    // Get an ID of single line field
-                    if (field.getFieldType() == 2) { // single line, see http://scotland.groupdocs.com/wiki/display/SDS/field.type
-                        fieldId = field.getId();
-                        break;
-                    }
-                }
+                getEnvelopDocument = Utils.assertResponse(getEnvelopDocument);
                 // Create new field called City
                 SignatureEnvelopeFieldSettingsInfo envField = new SignatureEnvelopeFieldSettingsInfo();
                 envField.setName("City");
                 envField.setLocationX(0.3);
                 envField.setLocationY(0.2);
+                envField.setLocationWidth(150.0);
+                envField.setLocationHeight(50.0);
+                envField.setForceNewField(true);
                 envField.setPage(1);
                 // Make a request to Signature Api to add city field to envelope
-                SignatureEnvelopeFieldsResponse signatureEnvelopeFieldsResponse = signatureApi.AddSignatureEnvelopeField(credentials.getClient_id(), envelopeId, documentId, recipientId, fieldId, envField);
+                SignatureEnvelopeFieldsResponse signatureEnvelopeFieldsResponse = signatureApi.AddSignatureEnvelopeField(credentials.getClient_id(), envelopeId, getEnvelopDocument.getResult().getDocuments().get(0).getDocumentId(), recipientId, "0545e589fb3e27c9bb7a1f59d0e3fcb9", envField);
                 // Check response status
                 Utils.assertNotNull(signatureEnvelopeFieldsResponse);
-
-                fieldId = null;
-                envField = new SignatureEnvelopeFieldSettingsInfo();
-                for (SignatureFieldInfo field : fields) {
-                    // Get an ID of signature field
-                    if (field.getFieldType() == 1) { // signature, see http://scotland.groupdocs.com/wiki/display/SDS/field.type
-                        fieldId = field.getId();
-                        break;
-                    }
-                }
-                envField.setLocationX(0.3);
-                envField.setLocationY(0.3);
-                envField.setPage(1);
-                envField.setName("fieldName");
-                // Make a request to Signature Api to add signature field to envelope
-                signatureEnvelopeFieldsResponse = signatureApi.AddSignatureEnvelopeField(credentials.getClient_id(), envelopeId, documentId, recipientId, fieldId, envField);
-                Utils.assertResponse(signatureEnvelopeFieldsResponse);
-                // Check is callback entered
                 callback = (callback == null) ? "" : callback;
-
                 WebhookInfo webhookInfo = new WebhookInfo();
                 webhookInfo.setCallbackUrl(callback);
                 SignatureEnvelopeSendResponse signatureEnvelopeSendResponse = signatureApi.SignatureEnvelopeSend(credentials.getClient_id(), envelopeId, webhookInfo);
