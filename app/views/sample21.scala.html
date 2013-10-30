@@ -59,6 +59,7 @@
                 <br />
                 <input type="submit" id='btnLoad' value="Make Request">
             }
+            <iframe id="downloadframe" style="display:none"></iframe>
         </div>
 
         @if(success) {
@@ -90,7 +91,7 @@
     $(function(){
     changeType.allChk = ['guid', 'url', 'local'];
     $('#IDfileIdRadio, #IDfileUrlRadio, #IDfilePartRadio').click(changeType);
-    $('#IDfileIdRadio').click();
+    $('#IDfilePartRadio').click();
     });
 </script>
     }

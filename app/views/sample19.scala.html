@@ -41,7 +41,7 @@
             <label for="IDfilePartRadio" class="file-choice-label">Local file</label>
         </div>
         <div id="guid">
-        @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
+        @inputText(aForm("sourceFileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
         </div>
         <div id="url">
         @inputText(aForm("url"), '_label -> "File Url", 'size -> 50, 'required -> true)
@@ -68,7 +68,7 @@
         <label for="IDfilePartRadioTarget" class="file-choice-label">Local file</label>
     </div>
     <div id="guidTarget">
-    @inputText(aForm("target_fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
+    @inputText(aForm("targetFileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
     </div>
     <div id="target_urlTarget">
     @inputText(aForm("target_url"), '_label -> "File Url", 'size -> 50, 'required -> true)
@@ -95,6 +95,7 @@
 <br />
 <input type="submit" value="Make Request"/>
     }
+    <iframe id="downloadframe" style="display:none"></iframe>
 @if(success) {
     <div style="padding:20px; border:1px solid black;">
         <p>Results:</p>

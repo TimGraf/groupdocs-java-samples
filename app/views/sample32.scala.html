@@ -33,11 +33,11 @@
                 @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
                 <div style="margin: 10px 0px">
                     <div>
-                        <input type="radio" value="form" id="IDform" name="sourse" onclick="display('form')" checked="checked" />
+                        <input type="radio" value="form" id="IDform" name="sourse" onclick="display('form')" />
                         <label for="IDform">Form GUID</label>
                     </div>
                     <div>
-                        <input type="radio" value="template" id="IDtemplate" name="sourse" onclick="display('template')" />
+                        <input type="radio" value="template" id="IDtemplate" name="sourse" onclick="display('template')" checked="checked"/>
                         <label for="IDtemplate">Template GUID</label>
                     </div>
                 </div>
@@ -69,6 +69,6 @@
             $('#IDformInput,#IDtemplateInput').hide().find('input').val('');
             $('#ID' + type + 'Input').show();
         }
-        display('form');
+        display('template');
     </script>
 }

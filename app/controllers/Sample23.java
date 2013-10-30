@@ -7,6 +7,7 @@ import com.groupdocs.sdk.api.StorageApi;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
+import com.groupdocs.sdk.model.GetImageUrlsResponse;
 import com.groupdocs.sdk.model.UploadResponse;
 import com.groupdocs.sdk.model.ViewDocumentResponse;
 import common.Utils;
@@ -76,14 +77,15 @@ public class Sample23 extends Controller {
                 // Initialize API with base path
                 docApi.setBasePath(credentials.getServer_type());
                 // Get document metadata
-                ViewDocumentResponse viewDocumentResponse = docApi.ViewDocument(credentials.getClient_id(), guid, "0", "-1", "", "100", "", null);
+                GetImageUrlsResponse viewDocumentResponse = docApi.GetDocumentPagesImageUrls(credentials.getClient_id(), guid, 0, 1, "650x500", null, null, null);
                 // Check response status
                 viewDocumentResponse = Utils.assertResponse(viewDocumentResponse);
-
-                String server = credentials.getServer_type().substring(0, credentials.getServer_type().indexOf(".com") + 4).replace("api", "apps");
-                String frameUrl = server + "/document-viewer/embed/" + viewDocumentResponse.getResult().getGuid();
+                String image = "";
+                for (String url : viewDocumentResponse.getResult().getUrl()) {
+                    image += "<img src='" + url + "'></img><br/>";
+                }
                 // Render view
-                return ok(views.html.sample23.render(true, frameUrl, form));
+                return ok(views.html.sample23.render(true, image, form));
             } catch (Exception e) {
                 return badRequest(views.html.sample23.render(false, null, form));
             }

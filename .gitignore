@@ -26,3 +26,5 @@ dist
 /.project
 /RUNNING_PID
 /groupdocs-java-samples/nbproject/private/
+/nbproject/private/
+/build/

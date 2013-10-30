@@ -1,4 +1,4 @@
-@(success: Boolean, frameUrl: String, aForm: Form[Credentials])
+@(success: Boolean, image: String, aForm: Form[Credentials])
 
 @import helper._
 
@@ -60,7 +60,7 @@
         @if(success) {
             <br/>
             <div style="padding:20px; border:1px solid black;">
-                <iframe src="@frameUrl" frameborder="0" width="875" height="800"></iframe>
+                @Html(image)
             </div>
         }
     </div>

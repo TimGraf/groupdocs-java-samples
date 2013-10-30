@@ -55,7 +55,7 @@ public class Sample19 extends Controller {
                 String sourseGuid = null;
                 //
                 if ("guid".equals(sourse)) { // File GUID
-                    sourseGuid = Utils.getFormValue(body, "fileId");
+                    sourseGuid = Utils.getFormValue(body, "sourceFileId");
                 } else if ("url".equals(sourse)) { // Upload file fron URL
                     String url = Utils.getFormValue(body, "url");
                     StorageApi storageApi = new StorageApi();
@@ -80,7 +80,7 @@ public class Sample19 extends Controller {
                 String targetGuid = null;
                 //
                 if ("guid".equals(sourse)) { // File GUID
-                    targetGuid = Utils.getFormValue(body, "target_fileId");
+                    targetGuid = Utils.getFormValue(body, "targetFileId");
                 } else if ("url".equals(sourse)) { // Upload file fron URL
                     String url = Utils.getFormValue(body, "target_url");
                     StorageApi storageApi = new StorageApi();

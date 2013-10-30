@@ -45,6 +45,8 @@ public class Sample17 extends Controller {
                 //
                 String guid = null;
                 //
+                Double fileID = null;
+                String fileName = null;
                 if ("guid".equals(sourse)) { // File GUID
                     guid = Utils.getFormValue(body, "fileId");
                 } else if ("url".equals(sourse)) { // Upload file fron URL
@@ -56,8 +58,10 @@ public class Sample17 extends Controller {
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
+                    fileID = uploadResponse.getResult().getId();
+                    fileName = uploadResponse.getResult().getAdj_name();
                 } else if ("local".equals(sourse)) { // Upload local file
-                    Http.MultipartFormData.FilePart file = body.getFile("local");
+                    Http.MultipartFormData.FilePart file = body.getFile("file");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
                     storageApi.setBasePath(credentials.getServer_type());
@@ -66,15 +70,17 @@ public class Sample17 extends Controller {
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
+                    fileID = uploadResponse.getResult().getId();
+                    fileName = uploadResponse.getResult().getAdj_name();
                 }
                 guid = Utils.assertNotNull(guid);
+                fileID = Utils.assertNotNull(fileID);
+                fileName = Utils.assertNotNull(fileName);
                 //
-                Double fileID = Utils.getFileIdByGuid(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), guid);
                 StorageApi api = new StorageApi();
                 api.setBasePath(credentials.getServer_type());
                 CompressResponse compressResponse = api.Compress(credentials.getClient_id(), Double.toString(fileID), "zip");
                 compressResponse = Utils.assertResponse(compressResponse);
-                String fileName = Utils.getFileNameByGuid(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), guid);
                 String zipGuid = fileName.replaceAll("\\.[a-z]{3}", ".zip");
                 // Render view
                 return ok(views.html.sample17.render(true, zipGuid, form));

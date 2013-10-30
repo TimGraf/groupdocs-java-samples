@@ -1,10 +1,13 @@
 package controllers;
 
+import com.groupdocs.sdk.api.DocApi;
 import com.groupdocs.sdk.api.StorageApi;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.DeleteResponse;
+import com.groupdocs.sdk.model.FileSystemDocument;
+import com.groupdocs.sdk.model.ListEntitiesResponse;
 import com.groupdocs.sdk.model.UploadResponse;
 import common.Utils;
 import models.Credentials;
@@ -41,41 +44,27 @@ public class Sample30 extends Controller {
             session().put("server_type", credentials.getServer_type());
             // Get request parameters
             Http.MultipartFormData body = request().body().asMultipartFormData();
-            String sourse = Utils.getFormValue(body, "sourse");
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
                     new GroupDocsRequestSigner(credentials.getPrivate_key()));
 
             try {
+                String fileName = Utils.getFormValue(body, "fileName");
                 //
                 String guid = null;
                 //
-                if ("guid".equals(sourse)) { // File GUID
-                    guid = Utils.getFormValue(body, "fileId");
-                } else if ("url".equals(sourse)) { // Upload file fron URL
-                    String url = Utils.getFormValue(body, "url");
-                    StorageApi storageApi = new StorageApi();
-                    // Initialize API with base path
-                    storageApi.setBasePath(credentials.getServer_type());
-                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
-                    // Check response status
-                    uploadResponse = Utils.assertResponse(uploadResponse);
-                    guid = uploadResponse.getResult().getGuid();
-                } else if ("local".equals(sourse)) { // Upload local file
-                    Http.MultipartFormData.FilePart file = body.getFile("file");
-                    StorageApi storageApi = new StorageApi();
-                    // Initialize API with base path
-                    storageApi.setBasePath(credentials.getServer_type());
-                    FileInputStream is = new FileInputStream(file.getFile());
-                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
-                    // Check response status
-                    uploadResponse = Utils.assertResponse(uploadResponse);
-                    guid = uploadResponse.getResult().getGuid();
-                }
-                guid = Utils.assertNotNull(guid);
-
+               
                 StorageApi storageApi = new StorageApi();
                 storageApi.setBasePath(credentials.getServer_type());
+                ListEntitiesResponse allFiles = storageApi.ListEntities(credentials.getClient_id(), "", null, null, null, null, null, null, false);
+                allFiles = Utils.assertResponse(allFiles);
+                for (FileSystemDocument document : allFiles.getResult().getFiles()) {
+                    if (fileName.equals(document.getName())) {
+                        guid = document.getGuid();
+                        break;
+                    }
+                }
+                guid = Utils.assertNotNull(guid);
                 DeleteResponse deleteResponse = storageApi.Delete(credentials.getClient_id(), guid);
                 deleteResponse = Utils.assertResponse(deleteResponse);
                 // Render view
