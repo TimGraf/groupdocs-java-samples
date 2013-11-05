@@ -7,7 +7,6 @@ import com.groupdocs.sdk.api.StorageApi;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
-import com.groupdocs.sdk.model.GetDocumentInfoResponse;
 import com.groupdocs.sdk.model.SharedUsersResponse;
 import com.groupdocs.sdk.model.UploadResponse;
 import common.Utils;
@@ -16,18 +15,18 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import scala.actors.threadpool.Arrays;
 
 import java.io.FileInputStream;
+import java.util.Arrays;
 
 public class Sample10 extends Controller {
     //
-    protected static Form<Credentials> form = form(Credentials.class);
+    protected static Form<Credentials> form = Form.form(Credentials.class);
 
     public static Result index() {
 
         if (Utils.isPOST(request())) {
-            form = form(Credentials.class).bindFromRequest();
+            form = Form.form(Credentials.class).bindFromRequest();
             // Check errors
             if (form.hasErrors()) {
                 return badRequest(views.html.sample10.render(false, null, form));

@@ -4,8 +4,8 @@ import common.Utils;
 import models.Credentials;
 import play.data.Form;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Result;
+
 import java.util.Map;
 
 /**
@@ -17,12 +17,12 @@ import java.util.Map;
  */
 public class Sample29 extends Controller {
     //
-    protected static Form<Credentials> form = form(Credentials.class);
+    protected static Form<Credentials> form = Form.form(Credentials.class);
 
     public static Result index() {
 
         if (Utils.isPOST(request())) {
-            form = form(Credentials.class).bindFromRequest();
+            form = Form.form(Credentials.class).bindFromRequest();
 
             Map<String, String[]> body = request().body().asFormUrlEncoded();
             String url = body.get("url")[0];

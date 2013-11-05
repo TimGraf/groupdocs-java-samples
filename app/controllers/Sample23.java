@@ -9,7 +9,6 @@ import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.GetImageUrlsResponse;
 import com.groupdocs.sdk.model.UploadResponse;
-import com.groupdocs.sdk.model.ViewDocumentResponse;
 import common.Utils;
 import models.Credentials;
 import play.data.Form;
@@ -21,12 +20,12 @@ import java.io.FileInputStream;
 
 public class Sample23 extends Controller {
     //
-    protected static Form<Credentials> form = form(Credentials.class);
+    protected static Form<Credentials> form = Form.form(Credentials.class);
 
     public static Result index() {
 
         if (Utils.isPOST(request())) {
-            form = form(Credentials.class).bindFromRequest();
+            form = Form.form(Credentials.class).bindFromRequest();
             // Check errors
             if (form.hasErrors()) {
                 return badRequest(views.html.sample23.render(false, null, form));

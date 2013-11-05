@@ -22,12 +22,12 @@ import java.io.FileOutputStream;
 
 public class Sample04 extends Controller {
     //
-    protected static Form<Credentials> form = form(Credentials.class);
+    protected static Form<Credentials> form = Form.form(Credentials.class);
 
     public static Result index() {
 
         if (Utils.isPOST(request())) {
-            form = form(Credentials.class).bindFromRequest();
+            form = Form.form(Credentials.class).bindFromRequest();
             // Check errors
             if (form.hasErrors()) {
                 return badRequest(views.html.sample04.render(false, null, form));

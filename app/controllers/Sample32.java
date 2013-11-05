@@ -28,12 +28,12 @@ import java.io.FileOutputStream;
 public class Sample32 extends Controller {
     public static String USER_INFO_FILE = "UserInfo_sample32.tmp";
     //
-    protected static Form<Credentials> form = form(Credentials.class);
+    protected static Form<Credentials> form = Form.form(Credentials.class);
 
     public static Result index() {
 
         if (Utils.isPOST(request())) {
-            form = form(Credentials.class).bindFromRequest();
+            form = Form.form(Credentials.class).bindFromRequest();
             // Check errors
             if (form.hasErrors()) {
                 return badRequest(views.html.sample32.render(false, null, form));

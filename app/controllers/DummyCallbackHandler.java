@@ -1,6 +1,6 @@
 package controllers;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
@@ -24,7 +24,7 @@ public class DummyCallbackHandler extends Controller {
 
         JsonNode json = (JsonNode) Json.parse(rawBody);
         if (json != null && json.findPath("SourceId") != null) {
-            String sourceId = json.findPath("SourceId").getTextValue();
+            String sourceId = json.findPath("SourceId").asText();
             try {
                 File tempFile = new File(".", sourceId);
                 tempFile.createNewFile();

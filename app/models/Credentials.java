@@ -1,13 +1,13 @@
 package models;
 
-import play.data.validation.Constraints.Required;
+import play.data.validation.Constraints;
 
 public class Credentials {
-    @Required
+    @Constraints.Required
     private String client_id;
-    @Required
+    @Constraints.Required
     private String private_key;
-    @Required
+    @Constraints.Required
     private String server_type;
 
     public String getClient_id() {

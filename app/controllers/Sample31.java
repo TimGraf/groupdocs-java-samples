@@ -4,7 +4,6 @@ import com.groupdocs.sdk.api.AsyncApi;
 import com.groupdocs.sdk.api.MergeApi;
 import com.groupdocs.sdk.api.SignatureApi;
 import com.groupdocs.sdk.common.ApiInvoker;
-import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.*;
 import common.Utils;
@@ -27,12 +26,12 @@ import java.util.Random;
  */
 public class Sample31 extends Controller {
     //
-    protected static Form<Credentials> form = form(Credentials.class);
+    protected static Form<Credentials> form = Form.form(Credentials.class);
 
     public static Result index() {
 
         if (Utils.isPOST(request())) {
-            form = form(Credentials.class).bindFromRequest();
+            form = Form.form(Credentials.class).bindFromRequest();
             // Check errors
             if (form.hasErrors()) {
                 return badRequest(views.html.sample31.render(false, null, form));

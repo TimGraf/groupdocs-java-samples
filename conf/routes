@@ -83,4 +83,4 @@ GET     /callbacks/publish_callback controllers.Callbacks.publish_callback()
 POST    /callbacks/publish_callback controllers.Callbacks.publish_callback()
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /*file               controllers.Assets.at(path="/public", file)
+GET     /assets/*file               controllers.Assets.at(path="/public", file)

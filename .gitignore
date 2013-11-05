@@ -25,6 +25,7 @@ dist
 /.classpath
 /.project
 /RUNNING_PID
+/.settings
 /groupdocs-java-samples/nbproject/private/
 /nbproject/private/
 /build/

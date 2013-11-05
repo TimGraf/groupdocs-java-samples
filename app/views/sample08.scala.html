@@ -20,12 +20,13 @@
     <div id="requestForm" style="padding:20px; border:1px solid black;">
         <p>Enter data for request and press "Make request" button</p>
         @myForm(routes.Sample08.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
-            @aForm.globalErrors.map { error =>
-                @if(error.arguments.size > 0) {
-                    <div>@error.message <a href="@error.arguments.get(0)" target="_blank">@error.arguments.get(1)</a></div>
-                } else {
-                    <div>@error.message</div>
-                }
+            @if(aForm.hasGlobalErrors) {
+                <p>
+                    Error:
+                    @for(validationError <- aForm.globalErrors) {
+                        <span style="display: block; color: red; font-size: 12px;">@validationError.message</span>
+                    }
+                </p>
             }
             @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
             @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
