@@ -2,6 +2,7 @@
 package controllers;
 //Import of necessary libraries
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.groupdocs.sdk.api.SignatureApi;
 import com.groupdocs.sdk.api.StorageApi;
 import com.groupdocs.sdk.common.ApiException;
@@ -12,9 +13,7 @@ import com.groupdocs.sdk.model.*;
 import com.sun.jersey.core.header.ContentDisposition;
 import common.Utils;
 import models.Credentials;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.node.ObjectNode;
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -32,12 +31,12 @@ import java.util.UUID;
 public class Sample21 extends Controller {
     public static String USER_INFO_FILE = "UserInfo_sample21.tmp";
     //
-    protected static Form<Credentials> form = form(Credentials.class);
+    protected static Form<Credentials> form = Form.form(Credentials.class);
 
     public static Result index() {
 
         if (Utils.isPOST(request())) {
-            form = form(Credentials.class).bindFromRequest();
+            form = Form.form(Credentials.class).bindFromRequest();
             // Check errors
             if (form.hasErrors()) {
                 return badRequest(views.html.sample21.render(false, null, form));

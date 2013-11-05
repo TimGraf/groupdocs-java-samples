@@ -1,22 +1,17 @@
 package controllers;
 
-import com.groupdocs.sdk.api.DocApi;
 import com.groupdocs.sdk.api.StorageApi;
 import com.groupdocs.sdk.common.ApiInvoker;
-import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.DeleteResponse;
 import com.groupdocs.sdk.model.FileSystemDocument;
 import com.groupdocs.sdk.model.ListEntitiesResponse;
-import com.groupdocs.sdk.model.UploadResponse;
 import common.Utils;
 import models.Credentials;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-
-import java.io.FileInputStream;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,12 +22,12 @@ import java.io.FileInputStream;
  */
 public class Sample30 extends Controller {
     //
-    protected static Form<Credentials> form = form(Credentials.class);
+    protected static Form<Credentials> form = Form.form(Credentials.class);
 
     public static Result index() {
 
         if (Utils.isPOST(request())) {
-            form = form(Credentials.class).bindFromRequest();
+            form = Form.form(Credentials.class).bindFromRequest();
             // Check errors
             if (form.hasErrors()) {
                 return badRequest(views.html.sample30.render(false, form));

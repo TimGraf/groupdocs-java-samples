@@ -16,12 +16,12 @@ import play.mvc.Result;
 
 public class Sample26 extends Controller {
     //
-    protected static Form form = form();
+    protected static Form form = Form.form();
 
     public static Result index() {
 
         if (Utils.isPOST(request())) {
-            form = form().bindFromRequest();
+            form = Form.form().bindFromRequest();
             // Check errors
             if (form.hasErrors()) {
                 return badRequest(views.html.sample26.render(false, null, form));
