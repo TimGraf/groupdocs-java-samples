@@ -1,0 +1,53 @@
+@(success: Boolean, folderPath: String, aForm: Form[Credentials])
+
+@import helper._
+
+@* Register customInput as field constructor for this page (customize input field) *@
+@implicitField = @{
+    FieldConstructor(customInput.f)
+}
+
+@main() {
+
+    <h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 34</h3>
+
+    <div class='samplecontent' style="padding:10px;">
+        <i>This sample will show how to create folder in the GroupDocs account using Java SDK</i> <br/>
+    <br />
+        <a href="@routes.Assets.at("docs/Sample34.html")">Docs for this sample</a>
+    <br />
+    <br/>
+        @if(success) {
+            <br/>
+            <p>You entered:</p>
+            <p>ClientID = @aForm.data.get("client_id")</p>
+            <p>PrivateKey = @aForm.data.get("private_key")</p>
+            <p>Base path = @aForm.data.get("server_type")</p>
+        }
+
+    <br/>
+        <div id="requestForm" style="padding:20px; border:1px solid black;">
+            <p>Enter data for request and press "Make request" button</p>
+            @myForm(routes.Sample34.index(), 'method -> "post", 'enctype -> "multipart/form-data") {
+                @if(aForm.hasGlobalErrors) {
+                    <p>
+                        Error:
+                        @for(validationError <- aForm.globalErrors) {
+                            <span style="display: block; color: red; font-size: 12px;">@validationError.message</span>
+                        }
+                    </p>
+                }
+                @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
+                @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
+                @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                @inputText(aForm("folder"), '_label -> "Folder name", 'size -> 50)
+                <input type="submit" value="Create folder">
+            }
+            @if(success) {
+                <span style="color:green; margin-top: 15px;">Folder was created: '@folderPath'</span>
+            }
+        </div>
+    </div>
+
+
+}
