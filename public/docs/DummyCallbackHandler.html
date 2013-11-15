@@ -1,54 +1,102 @@
-<!DOCTYPE html>  <html> <head>   <title>DummyCallbackHandler.java</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="Application.html">                 Application.java               </a>                                           <a class="source" href="Callbacks.html">                 Callbacks.java               </a>                                           <a class="source" href="DummyCallbackHandler.html">                 DummyCallbackHandler.java               </a>                                           <a class="source" href="Sample01.html">                 Sample01.java               </a>                                           <a class="source" href="Sample02.html">                 Sample02.java               </a>                                           <a class="source" href="Sample03.html">                 Sample03.java               </a>                                           <a class="source" href="Sample04.html">                 Sample04.java               </a>                                           <a class="source" href="Sample05.html">                 Sample05.java               </a>                                           <a class="source" href="Sample06.html">                 Sample06.java               </a>                                           <a class="source" href="Sample07.html">                 Sample07.java               </a>                                           <a class="source" href="Sample08.html">                 Sample08.java               </a>                                           <a class="source" href="Sample09.html">                 Sample09.java               </a>                                           <a class="source" href="Sample10.html">                 Sample10.java               </a>                                           <a class="source" href="Sample11.html">                 Sample11.java               </a>                                           <a class="source" href="Sample12.html">                 Sample12.java               </a>                                           <a class="source" href="Sample13.html">                 Sample13.java               </a>                                           <a class="source" href="Sample14.html">                 Sample14.java               </a>                                           <a class="source" href="Sample15.html">                 Sample15.java               </a>                                           <a class="source" href="Sample16.html">                 Sample16.java               </a>                                           <a class="source" href="Sample17.html">                 Sample17.java               </a>                                           <a class="source" href="Sample18.html">                 Sample18.java               </a>                                           <a class="source" href="Sample19.html">                 Sample19.java               </a>                                           <a class="source" href="Sample20.html">                 Sample20.java               </a>                                           <a class="source" href="Sample21.html">                 Sample21.java               </a>                                           <a class="source" href="Sample22.html">                 Sample22.java               </a>                                           <a class="source" href="Sample23.html">                 Sample23.java               </a>                                           <a class="source" href="Sample24.html">                 Sample24.java               </a>                                           <a class="source" href="Sample25.html">                 Sample25.java               </a>                                           <a class="source" href="Sample26.html">                 Sample26.java               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               DummyCallbackHandler.java             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="kn">package</span> <span class="n">controllers</span><span class="o">;</span>
+<!DOCTYPE html>
 
-<span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">org.codehaus.jackson.JsonNode</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">play.api.libs.json.JsObject</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">play.libs.Json</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">play.mvc.BodyParser</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">play.mvc.Controller</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">play.mvc.Result</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DummyCallbackHandler</span> <span class="kd">extends</span> <span class="n">Controller</span> <span class="o">{</span>
-  
-  <span class="nd">@BodyParser.Of</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="n">BodyParser</span><span class="o">.</span><span class="na">TolerantText</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
-  <span class="kd">public</span> <span class="kd">static</span> <span class="n">Result</span> <span class="nf">index</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Method: &quot;</span> <span class="o">+</span> <span class="n">request</span><span class="o">().</span><span class="na">method</span><span class="o">());</span>
-    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;URL: &quot;</span> <span class="o">+</span> <span class="n">request</span><span class="o">().</span><span class="na">uri</span><span class="o">());</span>
-    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Headers: &quot;</span> <span class="o">+</span> <span class="n">flattenMap</span><span class="o">(</span><span class="n">request</span><span class="o">().</span><span class="na">headers</span><span class="o">()));</span>
-    <span class="n">String</span> <span class="n">rawBody</span> <span class="o">=</span> <span class="n">request</span><span class="o">().</span><span class="na">body</span><span class="o">().</span><span class="na">asText</span><span class="o">();</span>
-    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Body: &quot;</span> <span class="o">+</span> <span class="n">rawBody</span><span class="o">);</span>
-    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;&quot;</span><span class="o">);</span>
+<html>
+<head>
+  <title>DummyCallbackHandler.java</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
     
-    <span class="n">JsonNode</span> <span class="n">json</span> <span class="o">=</span> <span class="o">(</span><span class="n">JsonNode</span><span class="o">)</span> <span class="n">Json</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">rawBody</span><span class="o">);</span>
-    <span class="k">if</span><span class="o">(</span><span class="n">json</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">json</span><span class="o">.</span><span class="na">findPath</span><span class="o">(</span><span class="s">&quot;SourceId&quot;</span><span class="o">)</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">){</span>
-      <span class="n">String</span> <span class="n">sourceId</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="na">findPath</span><span class="o">(</span><span class="s">&quot;SourceId&quot;</span><span class="o">).</span><span class="na">getTextValue</span><span class="o">();</span>
-      <span class="k">try</span> <span class="o">{</span>
-        <span class="n">File</span> <span class="n">tempFile</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;.&quot;</span><span class="o">,</span> <span class="n">sourceId</span><span class="o">);</span>
-        <span class="n">tempFile</span><span class="o">.</span><span class="na">createNewFile</span><span class="o">();</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;File created: &quot;</span> <span class="o">+</span> <span class="n">tempFile</span><span class="o">.</span><span class="na">getAbsolutePath</span><span class="o">());</span>
-      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>TODO Auto-generated catch block</p>             </td>             <td class="code">               <div class="highlight"><pre>
-        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-      <span class="o">}</span>
-    <span class="o">}</span>
-    
-    <span class="k">return</span> <span class="nf">ok</span><span class="o">();</span>
-  <span class="o">}</span>
-  
-  <span class="kd">private</span> <span class="kd">static</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">flattenMap</span><span class="o">(</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">[]&gt;</span> <span class="n">headers</span><span class="o">){</span>
-    <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">temp</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;();</span>
+    <ul class="sections">
         
-    <span class="k">for</span><span class="o">(</span><span class="n">String</span> <span class="n">header</span> <span class="o">:</span> <span class="n">headers</span><span class="o">.</span><span class="na">keySet</span><span class="o">()){</span>
-      <span class="n">temp</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">header</span><span class="o">,</span> <span class="n">request</span><span class="o">().</span><span class="na">getHeader</span><span class="o">(</span><span class="n">header</span><span class="o">));</span>
-    <span class="o">}</span>
-    
-    <span class="k">return</span> <span class="n">temp</span><span class="o">;</span>
-  <span class="o">}</span>
-<span class="o">}</span>
+          <li id="title">
+              <div class="annotation">
+                  <h1>DummyCallbackHandler.java</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">package</span> controllers;
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+<span class="keyword">import</span> com.fasterxml.jackson.databind.JsonNode;
+<span class="keyword">import</span> play.libs.Json;
+<span class="keyword">import</span> play.mvc.BodyParser;
+<span class="keyword">import</span> play.mvc.Controller;
+<span class="keyword">import</span> play.mvc.Result;
+
+<span class="keyword">import</span> java.io.File;
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.util.HashMap;
+<span class="keyword">import</span> java.util.Map;
+
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DummyCallbackHandler</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>{
+
+    <span class="annotation">@BodyParser</span>.Of(value = BodyParser.TolerantText.<span class="class"><span class="keyword">class</span>)
+    <span class="title">public</span> <span class="title">static</span> <span class="title">Result</span> <span class="title">index</span>() </span>{
+        System.out.println(<span class="string">"Method: "</span> + request().method());
+        System.out.println(<span class="string">"URL: "</span> + request().uri());
+        System.out.println(<span class="string">"Headers: "</span> + flattenMap(request().headers()));
+        String rawBody = request().body().asText();
+        System.out.println(<span class="string">"Body: "</span> + rawBody);
+        System.out.println(<span class="string">""</span>);
+
+        JsonNode json = (JsonNode) Json.parse(rawBody);
+        <span class="keyword">if</span> (json != <span class="keyword">null</span> &amp;&amp; json.findPath(<span class="string">"SourceId"</span>) != <span class="keyword">null</span>) {
+            String sourceId = json.findPath(<span class="string">"SourceId"</span>).asText();
+            <span class="keyword">try</span> {
+                File tempFile = <span class="keyword">new</span> File(<span class="string">"."</span>, sourceId);
+                tempFile.createNewFile();
+                System.out.println(<span class="string">"File created: "</span> + tempFile.getAbsolutePath());
+            } <span class="keyword">catch</span> (IOException e) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>TODO Auto-generated catch block</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                e.printStackTrace();
+            }
+        }
+
+        <span class="keyword">return</span> ok();
+    }
+
+    <span class="keyword">private</span> <span class="keyword">static</span> Map&lt;String, String&gt; flattenMap(Map&lt;String, String[]&gt; headers) {
+        Map&lt;String, String&gt; temp = <span class="keyword">new</span> HashMap&lt;String, String&gt;();
+
+        <span class="keyword">for</span> (String header : headers.keySet()) {
+            temp.put(header, request().getHeader(header));
+        }
+
+        <span class="keyword">return</span> temp;
+    }
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

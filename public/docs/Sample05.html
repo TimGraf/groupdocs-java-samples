@@ -1,146 +1,369 @@
-<!DOCTYPE html>  <html> <head>   <title>Sample05.java</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="Application.html">                 Application.java               </a>                                           <a class="source" href="Callbacks.html">                 Callbacks.java               </a>                                           <a class="source" href="DummyCallbackHandler.html">                 DummyCallbackHandler.java               </a>                                           <a class="source" href="Sample01.html">                 Sample01.java               </a>                                           <a class="source" href="Sample02.html">                 Sample02.java               </a>                                           <a class="source" href="Sample03.html">                 Sample03.java               </a>                                           <a class="source" href="Sample04.html">                 Sample04.java               </a>                                           <a class="source" href="Sample05.html">                 Sample05.java               </a>                                           <a class="source" href="Sample06.html">                 Sample06.java               </a>                                           <a class="source" href="Sample07.html">                 Sample07.java               </a>                                           <a class="source" href="Sample08.html">                 Sample08.java               </a>                                           <a class="source" href="Sample09.html">                 Sample09.java               </a>                                           <a class="source" href="Sample10.html">                 Sample10.java               </a>                                           <a class="source" href="Sample11.html">                 Sample11.java               </a>                                           <a class="source" href="Sample12.html">                 Sample12.java               </a>                                           <a class="source" href="Sample13.html">                 Sample13.java               </a>                                           <a class="source" href="Sample14.html">                 Sample14.java               </a>                                           <a class="source" href="Sample15.html">                 Sample15.java               </a>                                           <a class="source" href="Sample16.html">                 Sample16.java               </a>                                           <a class="source" href="Sample17.html">                 Sample17.java               </a>                                           <a class="source" href="Sample18.html">                 Sample18.java               </a>                                           <a class="source" href="Sample19.html">                 Sample19.java               </a>                                           <a class="source" href="Sample20.html">                 Sample20.java               </a>                                           <a class="source" href="Sample21.html">                 Sample21.java               </a>                                           <a class="source" href="Sample22.html">                 Sample22.java               </a>                                           <a class="source" href="Sample23.html">                 Sample23.java               </a>                                           <a class="source" href="Sample24.html">                 Sample24.java               </a>                                           <a class="source" href="Sample25.html">                 Sample25.java               </a>                                           <a class="source" href="Sample26.html">                 Sample26.java               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               Sample05.java             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <h3><i>This sample will show how to use <b>MoveFile</b> method from Storage Api to copy/move a file in GroupDocs Storage </i></h3>             </td>             <td class="code">               <div class="highlight"><pre><span class="kn">package</span> <span class="n">controllers</span><span class="o">;</span>
+<!DOCTYPE html>
 
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Import of necessary libraries</p>             </td>             <td class="code">               <div class="highlight"><pre>
-<span class="kn">import</span> <span class="nn">java.io.FileInputStream</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
+<html>
+<head>
+  <title>Sample05.java</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>Sample05.java</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h3 id="-i-this-sample-will-show-how-to-use-b-movefile-b-method-from-storage-api-to-copy-move-a-file-in-groupdocs-storage-i-"><i>This sample will show how to use <b>MoveFile</b> method from Storage Api to copy/move a file in GroupDocs Storage </i></h3>
 
-<span class="kn">import</span> <span class="nn">com.groupdocs.sdk.common.ApiInvoker</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.groupdocs.sdk.common.FileStream</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.groupdocs.sdk.common.GroupDocsRequestSigner</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.groupdocs.sdk.model.*</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">common.Utils</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">models.Credentials</span><span class="o">;</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">package</span> controllers;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Import of necessary libraries</p>
 
-<span class="kn">import</span> <span class="nn">org.apache.commons.lang3.StringUtils</span><span class="o">;</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="keyword">import</span> com.groupdocs.sdk.api.StorageApi;
+<span class="keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
+<span class="keyword">import</span> com.groupdocs.sdk.common.FileStream;
+<span class="keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
+<span class="keyword">import</span> com.groupdocs.sdk.model.FileMoveResponse;
+<span class="keyword">import</span> com.groupdocs.sdk.model.FileSystemDocument;
+<span class="keyword">import</span> com.groupdocs.sdk.model.ListEntitiesResponse;
+<span class="keyword">import</span> com.groupdocs.sdk.model.UploadResponse;
+<span class="keyword">import</span> common.Utils;
+<span class="keyword">import</span> models.Credentials;
+<span class="keyword">import</span> org.apache.commons.lang3.StringUtils;
+<span class="keyword">import</span> play.data.Form;
+<span class="keyword">import</span> play.mvc.Controller;
+<span class="keyword">import</span> play.mvc.Http;
+<span class="keyword">import</span> play.mvc.Result;
 
-<span class="kn">import</span> <span class="nn">play.data.Form</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">play.mvc.BodyParser</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">play.mvc.Controller</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">play.mvc.Http</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">play.mvc.Result</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">scala.actors.threadpool.Arrays</span><span class="o">;</span>
+<span class="keyword">import</span> java.io.File;
+<span class="keyword">import</span> java.io.FileInputStream;
 
-<span class="kn">import</span> <span class="nn">com.groupdocs.sdk.api.StorageApi</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.groupdocs.sdk.common.ApiException</span><span class="o">;</span>
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sample05</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">protected</span> <span class="keyword">static</span> Form&lt;Credentials&gt; form = Form.form(Credentials.<span class="class"><span class="keyword">class</span>);
 
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Sample05</span> <span class="kd">extends</span> <span class="n">Controller</span> <span class="o">{</span>
+    <span class="title">public</span> <span class="title">static</span> <span class="title">Result</span> <span class="title">index</span>() </span>{
 
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h3>Set variables</h3>             </td>             <td class="code">               <div class="highlight"><pre>
-  <span class="kd">static</span> <span class="n">String</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;GroupDocs Java SDK Samples&quot;</span><span class="o">;</span>
-  <span class="kd">static</span> <span class="n">Form</span><span class="o">&lt;</span><span class="n">Credentials</span><span class="o">&gt;</span> <span class="n">form</span> <span class="o">=</span> <span class="n">form</span><span class="o">(</span><span class="n">Credentials</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-  
-  <span class="kd">public</span> <span class="kd">static</span> <span class="n">Result</span> <span class="nf">index</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">FileMoveResult</span> <span class="n">moveResult</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-    <span class="n">Form</span><span class="o">&lt;</span><span class="n">Credentials</span><span class="o">&gt;</span> <span class="n">filledForm</span><span class="o">;</span>
-    <span class="n">String</span> <span class="n">sample</span> <span class="o">=</span> <span class="s">&quot;Sample5&quot;</span><span class="o">;</span>
-        <span class="n">String</span> <span class="n">uploadDir</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">;</span>
-        <span class="n">String</span> <span class="n">action</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">;</span>
-    <span class="n">Status</span> <span class="n">status</span><span class="o">;</span>
+        <span class="keyword">if</span> (Utils.isPOST(request())) {
+            form = Form.form(Credentials.<span class="class"><span class="keyword">class</span>).<span class="title">bindFromRequest</span>();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Check errors</p>
 
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Check POST parameters</p>             </td>             <td class="code">               <div class="highlight"><pre>
-    <span class="k">if</span><span class="o">(</span><span class="n">request</span><span class="o">().</span><span class="na">method</span><span class="o">().</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="s">&quot;POST&quot;</span><span class="o">)){</span>
-      <span class="n">filledForm</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="na">bindFromRequest</span><span class="o">();</span>
-      <span class="k">if</span><span class="o">(</span><span class="n">filledForm</span><span class="o">.</span><span class="na">hasErrors</span><span class="o">()){</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="n">badRequest</span><span class="o">(</span><span class="n">views</span><span class="o">.</span><span class="na">html</span><span class="o">.</span><span class="na">sample05</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">title</span><span class="o">,</span> <span class="n">sample</span><span class="o">,</span> <span class="n">moveResult</span><span class="o">,</span> <span class="n">filledForm</span><span class="o">,</span> <span class="n">action</span><span class="o">));</span>
-      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="keyword">if</span> (<span class="keyword">for</span>m.hasErrors()) {
+                <span class="keyword">return</span> badRequest(views.html.sample05.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form, <span class="keyword">null</span>));
+            }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Save credentials to session</p>
 
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Get POST data</p>             </td>             <td class="code">               <div class="highlight"><pre>
-        <span class="n">Credentials</span> <span class="n">credentials</span> <span class="o">=</span> <span class="n">filledForm</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
-        <span class="n">session</span><span class="o">().</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;clientId&quot;</span><span class="o">,</span> <span class="n">credentials</span><span class="o">.</span><span class="na">clientId</span><span class="o">);</span>
-        <span class="n">session</span><span class="o">().</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;privateKey&quot;</span><span class="o">,</span> <span class="n">credentials</span><span class="o">.</span><span class="na">privateKey</span><span class="o">);</span>
-        <span class="n">session</span><span class="o">().</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;basePath&quot;</span><span class="o">,</span> <span class="n">credentials</span><span class="o">.</span><span class="na">basePath</span><span class="o">);</span>
-                <span class="k">try</span> <span class="o">{</span>
-                    <span class="n">String</span> <span class="n">guid</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-                    <span class="n">String</span> <span class="n">fileName</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-                    <span class="n">Double</span> <span class="n">fileId</span> <span class="o">=</span> <span class="mi">0</span><span class="n">d</span><span class="o">;</span>
-                    <span class="n">ApiInvoker</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">setRequestSigner</span><span class="o">(</span>
-                            <span class="k">new</span> <span class="nf">GroupDocsRequestSigner</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">privateKey</span><span class="o">));</span>
-                    <span class="n">StorageApi</span> <span class="n">api</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StorageApi</span><span class="o">();</span>
-                    <span class="n">api</span><span class="o">.</span><span class="na">setBasePath</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">basePath</span><span class="o">);</span>
-                    <span class="n">Http</span><span class="o">.</span><span class="na">MultipartFormData</span> <span class="n">multipartFormData</span> <span class="o">=</span> <span class="n">request</span><span class="o">().</span><span class="na">body</span><span class="o">().</span><span class="na">asMultipartFormData</span><span class="o">();</span>
-                    <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">[]&gt;</span> <span class="n">formData</span> <span class="o">=</span> <span class="n">multipartFormData</span><span class="o">.</span><span class="na">asFormUrlEncoded</span><span class="o">();</span>
-                    <span class="n">String</span> <span class="n">sourse</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="na">getFormValue</span><span class="o">(</span><span class="n">formData</span><span class="o">,</span> <span class="s">&quot;sourse&quot;</span><span class="o">);</span>
-                    <span class="n">guid</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="na">getFormValue</span><span class="o">(</span><span class="n">formData</span><span class="o">,</span> <span class="s">&quot;srcPath&quot;</span><span class="o">);</span>
-                    <span class="k">if</span> <span class="o">(</span><span class="s">&quot;local&quot;</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">sourse</span><span class="o">)){</span>
-                        <span class="n">Http</span><span class="o">.</span><span class="na">MultipartFormData</span><span class="o">.</span><span class="na">FilePart</span> <span class="n">filePart</span> <span class="o">=</span> <span class="n">multipartFormData</span><span class="o">.</span><span class="na">getFile</span><span class="o">(</span><span class="s">&quot;file&quot;</span><span class="o">);</span>
-                        <span class="n">FileInputStream</span> <span class="n">is</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileInputStream</span><span class="o">(</span><span class="n">filePart</span><span class="o">.</span><span class="na">getFile</span><span class="o">());</span>
-                        <span class="n">UploadResponse</span> <span class="n">response</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="na">Upload</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">clientId</span><span class="o">,</span> <span class="n">uploadDir</span> <span class="o">+</span> <span class="n">filePart</span><span class="o">.</span><span class="na">getFilename</span><span class="o">(),</span> <span class="s">&quot;comment&quot;</span><span class="o">,</span> <span class="s">&quot;&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="n">FileStream</span><span class="o">(</span><span class="n">is</span><span class="o">));</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            Credentials credentials = <span class="keyword">for</span>m.get();
+            session().put(<span class="string">"clientId"</span>, credentials.getClientId());
+            session().put(<span class="string">"privateKey"</span>, credentials.getPrivateKey());
+            session().put(<span class="string">"basePath"</span>, credentials.getBasePath());
+            credentials.normalizeBasePath(<span class="string">"https://api.groupdocs.com/v2.0"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Get request parameters</p>
 
-                        <span class="k">if</span> <span class="o">(</span><span class="n">response</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="s">&quot;Ok&quot;</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="n">response</span><span class="o">.</span><span class="na">getStatus</span><span class="o">()))</span> <span class="o">{</span>
-                            <span class="n">guid</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">getResult</span><span class="o">().</span><span class="na">getGuid</span><span class="o">();</span>
-                        <span class="o">}</span>
-                        <span class="k">else</span> <span class="o">{</span>
-                            <span class="k">throw</span> <span class="k">new</span> <span class="nf">Exception</span><span class="o">(</span><span class="n">response</span><span class="o">.</span><span class="na">getError_message</span><span class="o">());</span>
-                        <span class="o">}</span>
-                    <span class="o">}</span>
-                    <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="s">&quot;url&quot;</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">sourse</span><span class="o">)){</span>
-                        <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="na">getFormValue</span><span class="o">(</span><span class="n">formData</span><span class="o">,</span> <span class="s">&quot;url&quot;</span><span class="o">);</span>
-                        <span class="n">UploadResponse</span> <span class="n">response</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="na">UploadWeb</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">clientId</span><span class="o">,</span> <span class="n">url</span><span class="o">);</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            Http.MultipartFormData body = request().body().asMultipartFormData();
+            String sourse = Utils.getFormValue(body.asFormUrlEncoded(), <span class="string">"sourse"</span>);
+            String guid = Utils.getFormValue(body.asFormUrlEncoded(), <span class="string">"srcPath"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Initialize SDK with private key</p>
 
-                        <span class="k">if</span> <span class="o">(</span><span class="n">response</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="s">&quot;Ok&quot;</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="n">response</span><span class="o">.</span><span class="na">getStatus</span><span class="o">()))</span> <span class="o">{</span>
-                            <span class="n">guid</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">getResult</span><span class="o">().</span><span class="na">getGuid</span><span class="o">();</span>
-                            <span class="n">fileName</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">&quot;/&quot;</span><span class="o">)[</span><span class="n">url</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">&quot;/&quot;</span><span class="o">).</span><span class="na">length</span> <span class="o">-</span> <span class="mi">1</span><span class="o">];</span>
-                            <span class="n">fileId</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">getResult</span><span class="o">().</span><span class="na">getId</span><span class="o">();</span>
-                        <span class="o">}</span>
-                        <span class="k">else</span> <span class="o">{</span>
-                            <span class="k">throw</span> <span class="k">new</span> <span class="nf">Exception</span><span class="o">(</span><span class="n">response</span><span class="o">.</span><span class="na">getError_message</span><span class="o">());</span>
-                        <span class="o">}</span>
-                    <span class="o">}</span>
-                    <span class="n">String</span> <span class="n">destPath</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="na">getFormValue</span><span class="o">(</span><span class="n">formData</span><span class="o">,</span> <span class="s">&quot;destPath&quot;</span><span class="o">);</span>
-                    <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">(</span><span class="n">guid</span><span class="o">)</span> <span class="o">||</span> <span class="n">destPath</span> <span class="o">==</span> <span class="kc">null</span><span class="o">){</span>
-                        <span class="k">throw</span> <span class="k">new</span> <span class="nf">Exception</span><span class="o">();</span>
-                    <span class="o">}</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            ApiInvoker.getInstance().setRequestSigner(
+                    <span class="keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey()));
 
-                    <span class="n">ListEntitiesResponse</span> <span class="n">response</span> <span class="o">=</span>  <span class="n">api</span><span class="o">.</span><span class="na">ListEntities</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">clientId</span><span class="o">,</span> <span class="n">uploadDir</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
-                    <span class="k">for</span> <span class="o">(</span><span class="n">FileSystemDocument</span> <span class="n">document</span> <span class="o">:</span> <span class="n">response</span><span class="o">.</span><span class="na">getResult</span><span class="o">().</span><span class="na">getFiles</span><span class="o">()){</span>
-                        <span class="k">if</span> <span class="o">(</span><span class="n">guid</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">document</span><span class="o">.</span><span class="na">getGuid</span><span class="o">())){</span>
-                            <span class="n">fileName</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
-                            <span class="n">fileId</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="na">getId</span><span class="o">();</span>
-                            <span class="k">break</span><span class="o">;</span>
-                        <span class="o">}</span>
-                    <span class="o">}</span>
-                    <span class="k">if</span> <span class="o">(</span><span class="n">fileName</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">fileId</span> <span class="o">==</span> <span class="kc">null</span><span class="o">){</span>
-                        <span class="k">throw</span> <span class="k">new</span> <span class="nf">Exception</span><span class="o">();</span>
-                    <span class="o">}</span>
-                    <span class="n">String</span> <span class="n">copyToPath</span> <span class="o">=</span> <span class="o">(</span><span class="n">destPath</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span> <span class="o">+</span> <span class="n">fileName</span><span class="o">).</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">&quot;//&quot;</span><span class="o">,</span> <span class="s">&quot;/&quot;</span><span class="o">);</span>
-                    <span class="n">FileMoveResponse</span> <span class="n">moveResponse</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-                    <span class="k">if</span> <span class="o">(</span><span class="n">Utils</span><span class="o">.</span><span class="na">getFormValue</span><span class="o">(</span><span class="n">formData</span><span class="o">,</span> <span class="s">&quot;copy&quot;</span><span class="o">)</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">){</span>
-                        <span class="n">moveResponse</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="na">MoveFile</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">clientId</span><span class="o">,</span> <span class="n">copyToPath</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="n">Double</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">fileId</span><span class="o">),</span> <span class="kc">null</span><span class="o">);</span>
-                        <span class="n">action</span> <span class="o">=</span> <span class="s">&quot;copy&quot;</span><span class="o">;</span>
-                    <span class="o">}</span>
-                    <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">Utils</span><span class="o">.</span><span class="na">getFormValue</span><span class="o">(</span><span class="n">formData</span><span class="o">,</span> <span class="s">&quot;move&quot;</span><span class="o">)</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">){</span>
-                        <span class="n">moveResponse</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="na">MoveFile</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">clientId</span><span class="o">,</span> <span class="n">copyToPath</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="n">Double</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">fileId</span><span class="o">));</span>
-                        <span class="n">action</span> <span class="o">=</span> <span class="s">&quot;move&quot;</span><span class="o">;</span>
-                    <span class="o">}</span>
-                    <span class="n">status</span> <span class="o">=</span> <span class="n">ok</span><span class="o">(</span><span class="n">views</span><span class="o">.</span><span class="na">html</span><span class="o">.</span><span class="na">sample05</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">title</span><span class="o">,</span> <span class="n">sample</span><span class="o">,</span> <span class="n">moveResponse</span><span class="o">.</span><span class="na">getResult</span><span class="o">(),</span> <span class="n">filledForm</span><span class="o">,</span> <span class="n">action</span><span class="o">));</span>
+            <span class="keyword">try</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                StorageApi storageApi = <span class="keyword">new</span> StorageApi();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Initialize API with base path</p>
 
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <h3>Definition of Api errors and conclusion of the corresponding message</h3>             </td>             <td class="code">               <div class="highlight"><pre>
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">ApiException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-          <span class="k">if</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getCode</span><span class="o">()</span> <span class="o">==</span> <span class="mi">401</span><span class="o">){</span>
-            <span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">args</span> <span class="o">=</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="k">new</span> <span class="n">Object</span><span class="o">[]{</span><span class="s">&quot;https://apps.groupdocs.com/My/Manage&quot;</span><span class="o">,</span> <span class="s">&quot;Production Server&quot;</span><span class="o">});</span>
-            <span class="n">filledForm</span><span class="o">.</span><span class="na">reject</span><span class="o">(</span><span class="s">&quot;Wrong Credentials. Please make sure to use credentials from&quot;</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
-          <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-            <span class="n">filledForm</span><span class="o">.</span><span class="na">reject</span><span class="o">(</span><span class="s">&quot;Failed to access API: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
-          <span class="o">}</span>
-          <span class="n">status</span> <span class="o">=</span> <span class="n">badRequest</span><span class="o">(</span><span class="n">views</span><span class="o">.</span><span class="na">html</span><span class="o">.</span><span class="na">sample05</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">title</span><span class="o">,</span> <span class="n">sample</span><span class="o">,</span> <span class="n">moveResult</span><span class="o">,</span> <span class="n">filledForm</span><span class="o">,</span> <span class="n">action</span><span class="o">));</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                storageApi.setBasePath(credentials.getBasePath());</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                String uploadDir = <span class="string">""</span>;
+                String fileName = <span class="keyword">null</span>;
+                Double fileId = <span class="number">0</span>d;
 
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <h3>Definition of filledForm errors and conclusion of the corresponding message</h3>             </td>             <td class="code">               <div class="highlight"><pre>
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-                    <span class="n">filledForm</span><span class="o">.</span><span class="na">reject</span><span class="o">(</span><span class="s">&quot;srcPath&quot;</span><span class="o">,</span> <span class="s">&quot;Something wrong: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
-          <span class="n">status</span> <span class="o">=</span> <span class="n">badRequest</span><span class="o">(</span><span class="n">views</span><span class="o">.</span><span class="na">html</span><span class="o">.</span><span class="na">sample05</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">title</span><span class="o">,</span> <span class="n">sample</span><span class="o">,</span> <span class="n">moveResult</span><span class="o">,</span> <span class="n">filledForm</span><span class="o">,</span> <span class="n">action</span><span class="o">));</span>
-        <span class="o">}</span>
-      <span class="o">}</span>
-    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-      <span class="n">filledForm</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="na">bind</span><span class="o">(</span><span class="n">session</span><span class="o">());</span>
-      <span class="n">session</span><span class="o">().</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;basePath&quot;</span><span class="o">,</span> <span class="s">&quot;https://api.groupdocs.com/v2.0&quot;</span><span class="o">);</span>
-      <span class="n">status</span> <span class="o">=</span> <span class="n">ok</span><span class="o">(</span><span class="n">views</span><span class="o">.</span><span class="na">html</span><span class="o">.</span><span class="na">sample05</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">title</span><span class="o">,</span> <span class="n">sample</span><span class="o">,</span> <span class="n">moveResult</span><span class="o">,</span> <span class="n">filledForm</span><span class="o">,</span> <span class="n">action</span><span class="o">));</span>
-    <span class="o">}</span>
+                <span class="keyword">if</span> (<span class="string">"local"</span>.equals(sourse)) {
+                    Http.MultipartFormData.FilePart filePart = body.getFile(<span class="string">"file"</span>);
+                    FileInputStream is = <span class="keyword">new</span> FileInputStream(filePart.getFile());
+                    String callbackUrl = Utils.getFormValue(body.asFormUrlEncoded(), <span class="string">"callbackUrl"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Upload file to current user storage from local computer</p>
 
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Process template</p>             </td>             <td class="code">               <div class="highlight"><pre>
-    <span class="k">return</span> <span class="n">status</span><span class="o">;</span>
-  <span class="o">}</span>
-  
-<span class="o">}</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), filePart.getFilename(), <span class="string">"uploaded"</span>, callbackUrl, <span class="keyword">new</span> FileStream(is));</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Check response status</p>
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    uploadResponse = Utils.assertResponse(uploadResponse);
+                    guid = uploadResponse.getResult().getGuid();
+                    Thread.sleep(<span class="number">3000</span>);
+                } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"url"</span>.equals(sourse)) {
+                    String url = Utils.getFormValue(body.asFormUrlEncoded(), <span class="string">"url"</span>);
+                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClientId(), url);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Check response status</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    uploadResponse = Utils.assertResponse(uploadResponse);
+                    guid = uploadResponse.getResult().getGuid();
+                    uploadDir = <span class="string">"My Web Documents"</span>;
+                }
+                String destPath = Utils.getFormValue(body.asFormUrlEncoded(), <span class="string">"destPath"</span>);
+                destPath = Utils.assertNotNull(destPath);
+
+                <span class="keyword">if</span> (StringUtils.isEmpty(guid)) {
+                    <span class="keyword">return</span> badRequest(views.html.sample05.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form, <span class="keyword">null</span>));
+                }
+
+                ListEntitiesResponse response = storageApi.ListEntities(credentials.getClientId(), uploadDir, <span class="number">0</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Check response status</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                response = Utils.assertResponse(response);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Get document name and document ID</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                <span class="keyword">for</span> (FileSystemDocument document : response.getResult().getFiles()) {
+                    <span class="keyword">if</span> (guid.equals(document.getGuid())) {
+                        fileName = document.getName();
+                        fileId = document.getId();
+                        <span class="keyword">break</span>;
+                    }
+                }
+                guid = Utils.assertNotNull(guid);
+                fileName = Utils.assertNotNull(fileName);
+                <span class="keyword">if</span> (fileName.contains(<span class="string">"http:"</span>)) {
+                    fileName = fileName.split(<span class="string">"/"</span>)[fileName.split(<span class="string">"/"</span>).length - <span class="number">1</span>];
+                }
+                String copyToPath = (destPath + File.separator + fileName).replaceAll(<span class="string">"\\\\"</span>, <span class="string">"/"</span>).replaceAll(<span class="string">"//"</span>, <span class="string">"/"</span>);
+
+                String action = <span class="keyword">null</span>;
+                FileMoveResponse copyMoveResponse = <span class="keyword">null</span>;
+
+                <span class="keyword">if</span> (Utils.getFormValue(body.asFormUrlEncoded(), <span class="string">"copy"</span>) != <span class="keyword">null</span>) {
+                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, <span class="keyword">null</span>, Double.toString(fileId), <span class="keyword">null</span>);
+                    action = <span class="string">"copy"</span>;
+                } <span class="keyword">else</span> <span class="keyword">if</span> (Utils.getFormValue(body.asFormUrlEncoded(), <span class="string">"move"</span>) != <span class="keyword">null</span>) {
+                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, <span class="keyword">null</span>, <span class="keyword">null</span>, Double.toString(fileId));
+                    action = <span class="string">"move"</span>;
+                }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Check response status</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                copyMoveResponse = Utils.assertResponse(copyMoveResponse);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Render view</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                <span class="keyword">return</span> ok(views.html.sample05.render(<span class="keyword">true</span>, copyMoveResponse.getResult(), form, action));
+            } <span class="keyword">catch</span> (Exception e) {
+                <span class="keyword">return</span> badRequest(views.html.sample05.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form, <span class="keyword">null</span>));
+            }
+        } <span class="keyword">else</span> <span class="keyword">if</span> (Utils.isGET(request())) {
+            form = <span class="keyword">for</span>m.bind(session());
+        }
+        <span class="keyword">return</span> ok(views.html.sample05.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form, <span class="keyword">null</span>));
+    }
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Sample32.java</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>Sample32.java</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">package</span> controllers;
+
+<span class="keyword">import</span> com.groupdocs.sdk.api.SignatureApi;
+<span class="keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
+<span class="keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
+<span class="keyword">import</span> com.groupdocs.sdk.model.SignatureFormResponse;
+<span class="keyword">import</span> com.groupdocs.sdk.model.SignatureFormSettingsInfo;
+<span class="keyword">import</span> com.groupdocs.sdk.model.SignatureStatusResponse;
+<span class="keyword">import</span> com.groupdocs.sdk.model.WebhookInfo;
+<span class="keyword">import</span> common.Utils;
+<span class="keyword">import</span> models.Credentials;
+<span class="keyword">import</span> org.apache.commons.lang3.StringUtils;
+<span class="keyword">import</span> play.data.Form;
+<span class="keyword">import</span> play.mvc.Controller;
+<span class="keyword">import</span> play.mvc.Http;
+<span class="keyword">import</span> play.mvc.Result;
+
+<span class="keyword">import</span> java.io.DataOutputStream;
+<span class="keyword">import</span> java.io.FileOutputStream;
+
+<span class="javadoc">/**
+ * Created with IntelliJ IDEA.
+ * User: liosha
+ * Date: 25.10.13
+ * Time: 1:14
+ * To change this template use File | Settings | File Templates.
+ */</span>
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sample32</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>{
+    <span class="keyword">public</span> <span class="keyword">static</span> String USER_INFO_FILE = <span class="string">"UserInfo_sample32.tmp"</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">protected</span> <span class="keyword">static</span> Form&lt;Credentials&gt; form = Form.form(Credentials.<span class="class"><span class="keyword">class</span>);
+
+    <span class="title">public</span> <span class="title">static</span> <span class="title">Result</span> <span class="title">index</span>() </span>{
+
+        <span class="keyword">if</span> (Utils.isPOST(request())) {
+            form = Form.form(Credentials.<span class="class"><span class="keyword">class</span>).<span class="title">bindFromRequest</span>();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Check errors</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="keyword">if</span> (<span class="keyword">for</span>m.hasErrors()) {
+                <span class="keyword">return</span> badRequest(views.html.sample32.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+            }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Save credentials to session</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            Credentials credentials = <span class="keyword">for</span>m.get();
+            session().put(<span class="string">"clientId"</span>, credentials.getClientId());
+            session().put(<span class="string">"privateKey"</span>, credentials.getPrivateKey());
+            session().put(<span class="string">"basePath"</span>, credentials.getBasePath());
+            credentials.normalizeBasePath(<span class="string">"https://api.groupdocs.com/v2.0"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Get request parameters</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            Http.MultipartFormData body = request().body().asMultipartFormData();
+            String callbackUrl = Utils.getFormValue(body, <span class="string">"callbackUrl"</span>);
+            String formGuid = Utils.getFormValue(body, <span class="string">"formGuid"</span>);
+            String templateGuid = Utils.getFormValue(body, <span class="string">"templateGuid"</span>);
+            String email = Utils.getFormValue(body, <span class="string">"email"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Initialize SDK with private key</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            ApiInvoker.getInstance().setRequestSigner(
+                    <span class="keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey()));
+
+            <span class="keyword">try</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+
+                SignatureApi signatureApi = <span class="keyword">new</span> SignatureApi();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Set url to choose whot server to use</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                signatureApi.setBasePath(credentials.getBasePath());</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Create WebHook object</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                WebhookInfo webhookInfo = <span class="keyword">new</span> WebhookInfo();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Set callback url of webhook which will be triggered when form is signed.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                webhookInfo.setCallbackUrl(callbackUrl);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                String server = credentials.getBasePath().substring(<span class="number">0</span>, credentials.getBasePath().indexOf(<span class="string">".com"</span>) + <span class="number">4</span>).replace(<span class="string">"api"</span>, <span class="string">"apps"</span>);
+                String formUrl = <span class="keyword">null</span>;
+
+                <span class="keyword">if</span> (!StringUtils.isEmpty(formGuid)) {
+                    SignatureStatusResponse signatureStatusResponse = signatureApi.PublishSignatureForm(credentials.getClientId(), formGuid, webhookInfo);
+                    Utils.assertResponse(signatureStatusResponse);
+                    formUrl = server + <span class="string">"/signature2/forms/signembed/"</span> + formGuid;
+                } <span class="keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Create Signature form settings object</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    SignatureFormSettingsInfo signatureFormSettingsInfo = <span class="keyword">new</span> SignatureFormSettingsInfo();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>To send notification email to owner when form is signed set notifyOwnerOnSign property to true</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    signatureFormSettingsInfo.setNotifyOwnerOnSign(<span class="keyword">true</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Generate rendon form name</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    String formName = <span class="string">"Test Form "</span> + Long.toString(org.joda.time.DateTime.now().getMillis());</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Create signature form</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    SignatureFormResponse signatureFormResponse = signatureApi.CreateSignatureForm(credentials.getClientId(), formName, templateGuid, <span class="keyword">null</span>, <span class="keyword">null</span>, signatureFormSettingsInfo);
+                    signatureFormResponse = Utils.assertResponse(signatureFormResponse);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    SignatureStatusResponse signatureStatusResponse = signatureApi.PublishSignatureForm(credentials.getClientId(), signatureFormResponse.getResult().getForm().getId(), webhookInfo);
+                    Utils.assertResponse(signatureStatusResponse);
+                    formUrl = server + <span class="string">"/signature2/forms/signembed/"</span> + signatureFormResponse.getResult().getForm().getId();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>path to settings file - temporary save userId and apiKey like to property file</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    <span class="keyword">if</span> (!StringUtils.isEmpty(callbackUrl)) {
+                        FileOutputStream fileOutputStream = <span class="keyword">new</span> FileOutputStream(USER_INFO_FILE);
+                        DataOutputStream dataOutputStream = <span class="keyword">new</span> DataOutputStream(fileOutputStream);
+
+                        StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder();
+                        stringBuilder.append(credentials.getClientId());
+                        stringBuilder.append(<span class="string">"|"</span>);
+                        stringBuilder.append(credentials.getPrivateKey());
+                        stringBuilder.append(<span class="string">"|"</span>);
+                        stringBuilder.append(credentials.getBasePath());
+                        stringBuilder.append(<span class="string">"|"</span>);
+                        stringBuilder.append(email);
+
+                        dataOutputStream.writeUTF(stringBuilder.toString());
+
+                        dataOutputStream.flush();
+                        fileOutputStream.close();
+                    }
+                }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Render view</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                <span class="keyword">return</span> ok(views.html.sample32.render(<span class="keyword">true</span>, formUrl, form));
+            } <span class="keyword">catch</span> (Exception e) {
+                System.err.println(e.getMessage());
+                <span class="keyword">return</span> badRequest(views.html.sample32.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+            }
+        } <span class="keyword">else</span> <span class="keyword">if</span> (Utils.isGET(request())) {
+            form = <span class="keyword">for</span>m.bind(session());
+        }
+        <span class="keyword">return</span> ok(views.html.sample32.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+    }
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Callbacks.java</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>Callbacks.java</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">package</span> controllers;
+
+<span class="keyword">import</span> com.fasterxml.jackson.databind.JsonNode;
+<span class="keyword">import</span> com.groupdocs.sdk.api.AsyncApi;
+<span class="keyword">import</span> com.groupdocs.sdk.api.SignatureApi;
+<span class="keyword">import</span> com.groupdocs.sdk.api.StorageApi;
+<span class="keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
+<span class="keyword">import</span> com.groupdocs.sdk.common.FileStream;
+<span class="keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
+<span class="keyword">import</span> com.groupdocs.sdk.model.GetJobDocumentsResponse;
+<span class="keyword">import</span> com.groupdocs.sdk.model.SignatureEnvelopeDocumentsResponse;
+<span class="keyword">import</span> com.groupdocs.sdk.model.SignatureFormDocumentsResponse;
+<span class="keyword">import</span> com.typesafe.plugin.MailerAPI;
+<span class="keyword">import</span> com.typesafe.plugin.MailerPlugin;
+<span class="keyword">import</span> common.Utils;
+<span class="keyword">import</span> org.apache.commons.lang3.StringUtils;
+<span class="keyword">import</span> org.apache.log4j.lf5.util.StreamUtils;
+<span class="keyword">import</span> play.libs.Json;
+<span class="keyword">import</span> play.mvc.Controller;
+<span class="keyword">import</span> play.mvc.Http;
+<span class="keyword">import</span> play.mvc.Result;
+
+<span class="keyword">import</span> java.io.DataInputStream;
+<span class="keyword">import</span> java.io.File;
+<span class="keyword">import</span> java.io.FileInputStream;
+<span class="keyword">import</span> java.io.FileOutputStream;
+
+<span class="javadoc">/**
+ * Created with IntelliJ IDEA.
+ * User: work
+ * Date: 10.07.13
+ * Time: 11:33
+ * To change this template use File | Settings | File Templates.
+ */</span>
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Callbacks</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>{
+
+    <span class="keyword">public</span> <span class="keyword">static</span> Result convertCallback() {
+        <span class="keyword">try</span> {
+            FileInputStream fileInputStream = <span class="keyword">new</span> FileInputStream(Sample18.USER_INFO_FILE);
+            DataInputStream dataInputStream = <span class="keyword">new</span> DataInputStream(fileInputStream);
+            String data = dataInputStream.readUTF();
+            fileInputStream.close();
+
+            String cid = data.split(<span class="string">"\\|"</span>)[<span class="number">0</span>];
+            String pkey = data.split(<span class="string">"\\|"</span>)[<span class="number">1</span>];
+            String burl = data.split(<span class="string">"\\|"</span>)[<span class="number">2</span>];
+            <span class="keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
+                <span class="keyword">return</span> ok(<span class="string">"ClientID or PrivateKEY or base path is not found!"</span>);
+            }
+
+            ApiInvoker.getInstance().setRequestSigner(<span class="keyword">new</span> GroupDocsRequestSigner(pkey));
+            Http.RawBuffer rawBuffer = request().body().asRaw();
+            String jsonStr = <span class="keyword">new</span> String(rawBuffer.asBytes());
+            JsonNode json = Json.parse(jsonStr);
+
+            String jobId = json.get(<span class="string">"SourceId"</span>).asText();
+
+            Thread.sleep(<span class="number">5</span>);
+            AsyncApi asyncApi = <span class="keyword">new</span> AsyncApi();
+            asyncApi.setBasePath(burl);
+            GetJobDocumentsResponse jobDocumentsResponse = asyncApi.GetJobDocuments(cid, jobId, <span class="string">""</span>);
+            jobDocumentsResponse = Utils.assertResponse(jobDocumentsResponse);
+            String resultGuid = jobDocumentsResponse.getResult().getInputs().get(<span class="number">0</span>).getOutputs().get(<span class="number">0</span>).getGuid();
+            String resultName = jobDocumentsResponse.getResult().getInputs().get(<span class="number">0</span>).getOutputs().get(<span class="number">0</span>).getName();
+
+            StorageApi storageApi = <span class="keyword">new</span> StorageApi();
+            storageApi.setBasePath(burl);
+            FileStream fileStream = storageApi.GetFile(cid, burl);
+            String outDir = <span class="string">"out"</span>;
+            <span class="keyword">if</span> (!<span class="keyword">new</span> File(outDir).exists()) {
+                <span class="keyword">new</span> File(outDir).mkdir();
+            }
+            <span class="keyword">if</span> (<span class="keyword">new</span> File(outDir + <span class="string">"/"</span> + resultName).exists()) {
+                <span class="keyword">new</span> File(outDir + <span class="string">"/"</span> + resultName).delete();
+            }
+            <span class="keyword">new</span> File(outDir + <span class="string">"/"</span> + resultName).createNewFile();
+            FileOutputStream fileOutputStream = <span class="keyword">new</span> FileOutputStream(outDir + <span class="string">"/"</span> + resultName);
+            StreamUtils.copy(fileStream.getInputStream(), fileOutputStream);
+            fileOutputStream.close();
+        } <span class="keyword">catch</span> (Exception e) {
+            e.printStackTrace();
+        }
+        <span class="keyword">return</span> ok(<span class="string">""</span>);
+    }
+
+    <span class="keyword">public</span> <span class="keyword">static</span> Result compareCallback() {
+        <span class="keyword">try</span> {
+            FileInputStream fileInputStream = <span class="keyword">new</span> FileInputStream(Sample19.USER_INFO_FILE);
+            DataInputStream dataInputStream = <span class="keyword">new</span> DataInputStream(fileInputStream);
+            String data = dataInputStream.readUTF();
+            fileInputStream.close();
+
+            String cid = data.split(<span class="string">"\\|"</span>)[<span class="number">0</span>];
+            String pkey = data.split(<span class="string">"\\|"</span>)[<span class="number">1</span>];
+            String burl = data.split(<span class="string">"\\|"</span>)[<span class="number">2</span>];
+            <span class="keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
+                <span class="keyword">return</span> ok(<span class="string">"ClientID or PrivateKEY or base path is not found!"</span>);
+            }
+
+            ApiInvoker.getInstance().setRequestSigner(<span class="keyword">new</span> GroupDocsRequestSigner(pkey));
+            Http.RawBuffer rawBuffer = request().body().asRaw();
+            String jsonStr = <span class="keyword">new</span> String(rawBuffer.asBytes());
+            JsonNode json = Json.parse(jsonStr);
+
+            String jobId = json.get(<span class="string">"SourceId"</span>).asText();
+            Thread.sleep(<span class="number">5</span>);
+            AsyncApi asyncApi = <span class="keyword">new</span> AsyncApi();
+            asyncApi.setBasePath(burl);
+            GetJobDocumentsResponse jobDocumentsResponse = asyncApi.GetJobDocuments(cid, jobId, <span class="string">""</span>);
+            jobDocumentsResponse = Utils.assertResponse(jobDocumentsResponse);
+            String resultGuid = jobDocumentsResponse.getResult().getOutputs().get(<span class="number">0</span>).getGuid();
+            String resultName = jobDocumentsResponse.getResult().getOutputs().get(<span class="number">0</span>).getName();
+
+            StorageApi storageApi = <span class="keyword">new</span> StorageApi();
+            storageApi.setBasePath(burl);
+            FileStream fileStream = storageApi.GetFile(cid, burl);
+            String outDir = <span class="string">"out"</span>;
+            <span class="keyword">if</span> (!<span class="keyword">new</span> File(outDir).exists()) {
+                <span class="keyword">new</span> File(outDir).mkdir();
+            }
+            <span class="keyword">if</span> (<span class="keyword">new</span> File(outDir + <span class="string">"/"</span> + resultName).exists()) {
+                <span class="keyword">new</span> File(outDir + <span class="string">"/"</span> + resultName).delete();
+            }
+            <span class="keyword">new</span> File(outDir + <span class="string">"/"</span> + resultName).createNewFile();
+            FileOutputStream fileOutputStream = <span class="keyword">new</span> FileOutputStream(outDir + <span class="string">"/"</span> + resultName);
+            StreamUtils.copy(fileStream.getInputStream(), fileOutputStream);
+            fileOutputStream.close();
+        } <span class="keyword">catch</span> (Exception e) {
+            e.printStackTrace();
+        }
+        <span class="keyword">return</span> ok(<span class="string">""</span>);
+    }
+
+
+    <span class="keyword">public</span> <span class="keyword">static</span> Result signatureCallback() {
+        <span class="keyword">try</span> {
+            FileInputStream fileInputStream = <span class="keyword">new</span> FileInputStream(Sample21.USER_INFO_FILE);
+            DataInputStream dataInputStream = <span class="keyword">new</span> DataInputStream(fileInputStream);
+            String data = dataInputStream.readUTF();
+            fileInputStream.close();
+
+            String cid = data.split(<span class="string">"\\|"</span>)[<span class="number">0</span>];
+            String pkey = data.split(<span class="string">"\\|"</span>)[<span class="number">1</span>];
+            String burl = data.split(<span class="string">"\\|"</span>)[<span class="number">2</span>];
+            <span class="keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
+                <span class="keyword">return</span> ok(<span class="string">"ClientID or PrivateKEY or base path is not found!"</span>);
+            }
+
+            ApiInvoker.getInstance().setRequestSigner(<span class="keyword">new</span> GroupDocsRequestSigner(pkey));
+            Http.RawBuffer rawBuffer = request().body().asRaw();
+            String jsonStr = <span class="keyword">new</span> String(rawBuffer.asBytes());
+            JsonNode json = Json.parse(jsonStr);
+
+            String envilopeId = json.get(<span class="string">"SourceId"</span>).asText();
+            Thread.sleep(<span class="number">5</span>);
+
+            SignatureApi signatureApi = <span class="keyword">new</span> SignatureApi();
+            signatureApi.setBasePath(burl);
+            SignatureEnvelopeDocumentsResponse envelopeDocumentsResponse = signatureApi.GetSignatureEnvelopeDocuments(cid, envilopeId);
+            envelopeDocumentsResponse = Utils.assertResponse(envelopeDocumentsResponse);
+
+            String resultGuid = envelopeDocumentsResponse.getResult().getDocuments().get(<span class="number">0</span>).getDocumentId();
+            String resultName = envelopeDocumentsResponse.getResult().getDocuments().get(<span class="number">0</span>).getDocumentId();
+
+            StorageApi storageApi = <span class="keyword">new</span> StorageApi();
+            storageApi.setBasePath(burl);
+            FileStream fileStream = storageApi.GetFile(cid, burl);
+            String outDir = <span class="string">"out"</span>;
+            <span class="keyword">if</span> (!<span class="keyword">new</span> File(outDir).exists()) {
+                <span class="keyword">new</span> File(outDir).mkdir();
+            }
+            <span class="keyword">if</span> (<span class="keyword">new</span> File(outDir + <span class="string">"/"</span> + resultName).exists()) {
+                <span class="keyword">new</span> File(outDir + <span class="string">"/"</span> + resultName).delete();
+            }
+            <span class="keyword">new</span> File(outDir + <span class="string">"/"</span> + resultName).createNewFile();
+            FileOutputStream fileOutputStream = <span class="keyword">new</span> FileOutputStream(outDir + <span class="string">"/"</span> + resultName);
+            StreamUtils.copy(fileStream.getInputStream(), fileOutputStream);
+            fileOutputStream.close();
+        } <span class="keyword">catch</span> (Exception e) {
+            e.printStackTrace();
+        }
+        <span class="keyword">return</span> ok(<span class="string">""</span>);
+    }
+
+    <span class="keyword">public</span> <span class="keyword">static</span> Result publishCallback() <span class="keyword">throws</span> Exception{
+        FileInputStream fileInputStream = <span class="keyword">new</span> FileInputStream(Sample32.USER_INFO_FILE);
+        DataInputStream dataInputStream = <span class="keyword">new</span> DataInputStream(fileInputStream);
+        String data = dataInputStream.readUTF();
+        fileInputStream.close();
+
+        String cid = data.split(<span class="string">"\\|"</span>)[<span class="number">0</span>];
+        String pkey = data.split(<span class="string">"\\|"</span>)[<span class="number">1</span>];
+        String burl = data.split(<span class="string">"\\|"</span>)[<span class="number">2</span>];
+        String email = data.split(<span class="string">"\\|"</span>)[<span class="number">3</span>];
+        <span class="keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl) || StringUtils.isEmpty(email)) {
+            <span class="keyword">return</span> ok(<span class="string">"ClientID or PrivateKEY or base path or email is not found!"</span>);
+        }
+
+        ApiInvoker.getInstance().setRequestSigner(<span class="keyword">new</span> GroupDocsRequestSigner(pkey));</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Get raw data</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        Http.RawBuffer rawBuffer = request().body().asRaw();
+        String jsonStr = <span class="keyword">new</span> String(rawBuffer.asBytes());</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Parse JSON</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        JsonNode json = Json.parse(jsonStr);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Get form id from array</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        String formId = json.get(<span class="string">"SourceId"</span>).asText();
+
+        SignatureApi signatureApi = <span class="keyword">new</span> SignatureApi();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Get document from signature form</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        SignatureFormDocumentsResponse signatureFormDocumentsResponse = signatureApi.GetSignatureFormDocuments(cid, formId);
+        signatureFormDocumentsResponse = Utils.assertResponse(signatureFormDocumentsResponse);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Get document name</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        String documentName = signatureFormDocumentsResponse.getResult().getDocuments().get(<span class="number">0</span>).getName();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Create email with document name</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        String subject = <span class="string">"Reminder: An envelope has to be signed on GroupDocs"</span>;
+        String message =
+                <span class="string">"&lt;html&gt;"</span> +
+                <span class="string">"&lt;head&gt;"</span> +
+                <span class="string">"&lt;title&gt;Sign form notification&lt;/title&gt;"</span> +
+                <span class="string">"&lt;/head&gt;"</span> +
+                <span class="string">"&lt;body&gt;"</span> +
+                <span class="string">"&lt;p&gt;Document"</span> + documentName + <span class="string">" is signed&lt;/p&gt;"</span> +
+                <span class="string">"&lt;/body&gt;"</span> +
+                <span class="string">"&lt;/html&gt;"</span>;
+        String from = <span class="string">"From: Remainder &lt;noreply@groupdocs.com&gt;"</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Configure section &quot;# Email configuration&quot; in application.conf</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        MailerAPI mail = play.Play.application().plugin(MailerPlugin.<span class="class"><span class="keyword">class</span>).<span class="title">email</span>();
+        <span class="title">mail</span>.<span class="title">setSubject</span>(<span class="title">subject</span>);
+        <span class="title">mail</span>.<span class="title">setCharset</span>("<span class="title">utf</span>-8");
+        <span class="title">mail</span>.<span class="title">setReplyTo</span>(<span class="title">email</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>sends html</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        mail.sendHtml(message);
+        <span class="keyword">return</span> ok(<span class="string">""</span>);
+    }
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

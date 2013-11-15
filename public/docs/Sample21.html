@@ -1,336 +1,717 @@
-<!DOCTYPE html>  <html> <head>   <title>Sample21.java</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="Application.html">                 Application.java               </a>                                           <a class="source" href="Callbacks.html">                 Callbacks.java               </a>                                           <a class="source" href="DummyCallbackHandler.html">                 DummyCallbackHandler.java               </a>                                           <a class="source" href="Sample01.html">                 Sample01.java               </a>                                           <a class="source" href="Sample02.html">                 Sample02.java               </a>                                           <a class="source" href="Sample03.html">                 Sample03.java               </a>                                           <a class="source" href="Sample04.html">                 Sample04.java               </a>                                           <a class="source" href="Sample05.html">                 Sample05.java               </a>                                           <a class="source" href="Sample06.html">                 Sample06.java               </a>                                           <a class="source" href="Sample07.html">                 Sample07.java               </a>                                           <a class="source" href="Sample08.html">                 Sample08.java               </a>                                           <a class="source" href="Sample09.html">                 Sample09.java               </a>                                           <a class="source" href="Sample10.html">                 Sample10.java               </a>                                           <a class="source" href="Sample11.html">                 Sample11.java               </a>                                           <a class="source" href="Sample12.html">                 Sample12.java               </a>                                           <a class="source" href="Sample13.html">                 Sample13.java               </a>                                           <a class="source" href="Sample14.html">                 Sample14.java               </a>                                           <a class="source" href="Sample15.html">                 Sample15.java               </a>                                           <a class="source" href="Sample16.html">                 Sample16.java               </a>                                           <a class="source" href="Sample17.html">                 Sample17.java               </a>                                           <a class="source" href="Sample18.html">                 Sample18.java               </a>                                           <a class="source" href="Sample19.html">                 Sample19.java               </a>                                           <a class="source" href="Sample20.html">                 Sample20.java               </a>                                           <a class="source" href="Sample21.html">                 Sample21.java               </a>                                           <a class="source" href="Sample22.html">                 Sample22.java               </a>                                           <a class="source" href="Sample23.html">                 Sample23.java               </a>                                           <a class="source" href="Sample24.html">                 Sample24.java               </a>                                           <a class="source" href="Sample25.html">                 Sample25.java               </a>                                           <a class="source" href="Sample26.html">                 Sample26.java               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               Sample21.java             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <h3><i>This sample will show how to use Signature Api to Create and Send Envelope for signing using Java SDK</i></h3>             </td>             <td class="code">               <div class="highlight"><pre><span class="kn">package</span> <span class="n">controllers</span><span class="o">;</span>
+<!DOCTYPE html>
 
-</pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Import of necessary libraries</p>             </td>             <td class="code">               <div class="highlight"><pre>
-<span class="kn">import</span> <span class="nn">java.io.DataOutputStream</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.io.FileInputStream</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.io.FileOutputStream</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.util.UUID</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">common.Utils</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">models.Credentials</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">org.apache.commons.io.IOUtils</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.apache.commons.lang3.StringUtils</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.codehaus.jackson.node.ObjectNode</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">play.data.Form</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">play.libs.Json</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">play.mvc.Controller</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">play.mvc.Http</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">play.mvc.Http.MultipartFormData</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">play.mvc.Http.MultipartFormData.FilePart</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">play.mvc.Result</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">scala.actors.threadpool.Arrays</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">com.groupdocs.sdk.api.SignatureApi</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.groupdocs.sdk.api.StorageApi</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.groupdocs.sdk.common.ApiException</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.groupdocs.sdk.common.ApiInvoker</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.groupdocs.sdk.common.FileStream</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.groupdocs.sdk.common.GroupDocsRequestSigner</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.groupdocs.sdk.model.SignatureEnvelopeDocumentResponse</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.groupdocs.sdk.model.SignatureEnvelopeFieldSettings</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.groupdocs.sdk.model.SignatureEnvelopeResponse</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.groupdocs.sdk.model.SignatureEnvelopeSettings</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.groupdocs.sdk.model.SignatureFieldInfo</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.groupdocs.sdk.model.SignatureRoleInfo</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.sun.jersey.core.header.ContentDisposition</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Sample21</span> <span class="kd">extends</span> <span class="n">Controller</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">USER_INFO_FILE</span> <span class="o">=</span> <span class="s">&quot;UserInfo_sample21.tmp&quot;</span><span class="o">;</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h3>Set variables</h3>             </td>             <td class="code">               <div class="highlight"><pre>
-  <span class="kd">static</span> <span class="n">String</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;GroupDocs Java SDK Samples&quot;</span><span class="o">;</span>
-  <span class="kd">static</span> <span class="n">Form</span><span class="o">&lt;</span><span class="n">Credentials</span><span class="o">&gt;</span> <span class="n">form</span> <span class="o">=</span> <span class="n">form</span><span class="o">(</span><span class="n">Credentials</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-  <span class="kd">static</span> <span class="n">String</span> <span class="n">server</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">;</span> <span class="c1">// use &quot;&quot; for production, &quot;stage-&quot; for staging server</span>
-  <span class="kd">static</span> <span class="n">StorageApi</span> <span class="n">storageApi</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StorageApi</span><span class="o">();</span>
-  <span class="kd">static</span> <span class="n">SignatureApi</span> <span class="n">api</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SignatureApi</span><span class="o">();</span>
-  
-  <span class="kd">static</span> <span class="o">{</span>
-    <span class="n">storageApi</span><span class="o">.</span><span class="na">setBasePath</span><span class="o">(</span><span class="s">&quot;https://&quot;</span> <span class="o">+</span> <span class="n">server</span> <span class="o">+</span> <span class="s">&quot;api.groupdocs.com/v2.0&quot;</span><span class="o">);</span>
-    <span class="n">api</span><span class="o">.</span><span class="na">setBasePath</span><span class="o">(</span><span class="s">&quot;https://&quot;</span> <span class="o">+</span> <span class="n">server</span> <span class="o">+</span> <span class="s">&quot;api.groupdocs.com/v2.0&quot;</span><span class="o">);</span>
-  <span class="o">}</span>
-  
-  <span class="kd">public</span> <span class="kd">static</span> <span class="n">Result</span> <span class="nf">index</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">String</span> <span class="n">embedUrl</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-    <span class="n">Form</span><span class="o">&lt;</span><span class="n">Credentials</span><span class="o">&gt;</span> <span class="n">filledForm</span><span class="o">;</span>
-        <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">data</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;();</span>
-    <span class="n">String</span> <span class="n">sample</span> <span class="o">=</span> <span class="s">&quot;Sample21&quot;</span><span class="o">;</span>
-    <span class="n">Status</span> <span class="n">status</span><span class="o">;</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Check POST parameters</p>             </td>             <td class="code">               <div class="highlight"><pre>
-    <span class="k">if</span><span class="o">(</span><span class="n">request</span><span class="o">().</span><span class="na">method</span><span class="o">().</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="s">&quot;POST&quot;</span><span class="o">)){</span>
-      <span class="n">filledForm</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="na">bindFromRequest</span><span class="o">();</span>
-      <span class="k">if</span><span class="o">(</span><span class="n">filledForm</span><span class="o">.</span><span class="na">hasErrors</span><span class="o">()){</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="n">badRequest</span><span class="o">(</span><span class="n">views</span><span class="o">.</span><span class="na">html</span><span class="o">.</span><span class="na">sample21</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">title</span><span class="o">,</span> <span class="n">sample</span><span class="o">,</span> <span class="n">embedUrl</span><span class="o">,</span> <span class="n">filledForm</span><span class="o">));</span>
-      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Get POST data</p>             </td>             <td class="code">               <div class="highlight"><pre>
-        <span class="n">Credentials</span> <span class="n">credentials</span> <span class="o">=</span> <span class="n">filledForm</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
-        <span class="n">session</span><span class="o">().</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;clientId&quot;</span><span class="o">,</span> <span class="n">credentials</span><span class="o">.</span><span class="na">clientId</span><span class="o">);</span>
-        <span class="n">session</span><span class="o">().</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;privateKey&quot;</span><span class="o">,</span> <span class="n">credentials</span><span class="o">.</span><span class="na">privateKey</span><span class="o">);</span>
-        <span class="n">session</span><span class="o">().</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;basePath&quot;</span><span class="o">,</span> <span class="n">credentials</span><span class="o">.</span><span class="na">basePath</span><span class="o">);</span>
-
-                <span class="n">Http</span><span class="o">.</span><span class="na">MultipartFormData</span> <span class="n">multipartFormData</span> <span class="o">=</span> <span class="n">request</span><span class="o">().</span><span class="na">body</span><span class="o">().</span><span class="na">asMultipartFormData</span><span class="o">();</span>
-                <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">[]&gt;</span> <span class="n">formUrlEncodedData</span> <span class="o">=</span> <span class="n">multipartFormData</span><span class="o">.</span><span class="na">asFormUrlEncoded</span><span class="o">();</span>
-
-                <span class="n">String</span> <span class="n">sourse</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="na">getFormValue</span><span class="o">(</span><span class="n">formUrlEncodedData</span><span class="o">,</span> <span class="s">&quot;sourse&quot;</span><span class="o">);</span>
-        <span class="n">String</span> <span class="n">email</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="na">getFormValue</span><span class="o">(</span><span class="n">formUrlEncodedData</span><span class="o">,</span> <span class="s">&quot;email&quot;</span><span class="o">);</span>
-        <span class="n">String</span> <span class="n">firstName</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="na">getFormValue</span><span class="o">(</span><span class="n">formUrlEncodedData</span><span class="o">,</span> <span class="s">&quot;name&quot;</span><span class="o">);</span>
-        <span class="n">String</span> <span class="n">lastName</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="na">getFormValue</span><span class="o">(</span><span class="n">formUrlEncodedData</span><span class="o">,</span> <span class="s">&quot;lastName&quot;</span><span class="o">);</span>
-            <span class="n">String</span> <span class="n">callback</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="na">getFormValue</span><span class="o">(</span><span class="n">formUrlEncodedData</span><span class="o">,</span> <span class="s">&quot;callbackUrl&quot;</span><span class="o">);</span>
-        <span class="n">String</span> <span class="n">basePath</span> <span class="o">=</span> <span class="n">credentials</span><span class="o">.</span><span class="na">basePath</span><span class="o">;</span>
-                <span class="n">FilePart</span> <span class="n">filePart</span> <span class="o">=</span> <span class="n">multipartFormData</span><span class="o">.</span><span class="na">getFile</span><span class="o">(</span><span class="s">&quot;file&quot;</span><span class="o">);</span>
-            
-        <span class="k">try</span> <span class="o">{</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Check if all form fields are filled in</p>             </td>             <td class="code">               <div class="highlight"><pre>
-          <span class="k">if</span><span class="o">(</span><span class="n">email</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">firstName</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">lastName</span> <span class="o">==</span> <span class="kc">null</span><span class="o">){</span>
-            <span class="k">throw</span> <span class="k">new</span> <span class="nf">Exception</span><span class="o">(</span><span class="s">&quot;email or firstName or lastName is null!&quot;</span><span class="o">);</span>
-          <span class="o">}</span>
-                    <span class="n">String</span> <span class="n">documentId</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-
-
-                    <span class="k">if</span> <span class="o">(</span><span class="s">&quot;guid&quot;</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="n">sourse</span><span class="o">))</span> <span class="o">{</span>
-                        <span class="n">documentId</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="na">getFormValue</span><span class="o">(</span><span class="n">formUrlEncodedData</span><span class="o">,</span> <span class="s">&quot;fileId&quot;</span><span class="o">);</span>
-                    <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="s">&quot;url&quot;</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="n">sourse</span><span class="o">))</span> <span class="o">{</span>
-                        <span class="k">try</span> <span class="o">{</span>
-                            <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="na">getFormValue</span><span class="o">(</span><span class="n">formUrlEncodedData</span><span class="o">,</span> <span class="s">&quot;url&quot;</span><span class="o">);</span>
-                            <span class="n">documentId</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="na">getGuidByUrl</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">clientId</span><span class="o">,</span> <span class="n">credentials</span><span class="o">.</span><span class="na">privateKey</span><span class="o">,</span> <span class="n">credentials</span><span class="o">.</span><span class="na">basePath</span><span class="o">,</span> <span class="n">url</span><span class="o">);</span>
-                        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-                            <span class="n">filledForm</span><span class="o">.</span><span class="na">reject</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
-                            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-                            <span class="k">return</span> <span class="nf">ok</span><span class="o">(</span><span class="n">views</span><span class="o">.</span><span class="na">html</span><span class="o">.</span><span class="na">sample21</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">title</span><span class="o">,</span> <span class="n">sample</span><span class="o">,</span> <span class="n">embedUrl</span><span class="o">,</span> <span class="n">filledForm</span><span class="o">));</span>
-                        <span class="o">}</span>
-                    <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="s">&quot;local&quot;</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="n">sourse</span><span class="o">))</span> <span class="o">{</span>
-                        <span class="k">try</span> <span class="o">{</span>
-                            <span class="n">documentId</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="na">getGuidByFile</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">clientId</span><span class="o">,</span> <span class="n">credentials</span><span class="o">.</span><span class="na">privateKey</span><span class="o">,</span> <span class="n">credentials</span><span class="o">.</span><span class="na">basePath</span><span class="o">,</span> <span class="s">&quot;samples/signature/&quot;</span> <span class="o">+</span> <span class="n">filePart</span><span class="o">.</span><span class="na">getFilename</span><span class="o">(),</span> <span class="k">new</span> <span class="n">FileStream</span><span class="o">(</span><span class="k">new</span> <span class="n">FileInputStream</span><span class="o">(</span><span class="n">filePart</span><span class="o">.</span><span class="na">getFile</span><span class="o">())));</span>
-                        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-                            <span class="n">filledForm</span><span class="o">.</span><span class="na">reject</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
-                            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-                            <span class="k">return</span> <span class="nf">ok</span><span class="o">(</span><span class="n">views</span><span class="o">.</span><span class="na">html</span><span class="o">.</span><span class="na">sample21</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">title</span><span class="o">,</span> <span class="n">sample</span><span class="o">,</span> <span class="n">embedUrl</span><span class="o">,</span> <span class="n">filledForm</span><span class="o">));</span>
-                        <span class="o">}</span>
-                    <span class="o">}</span>
-                    <span class="k">if</span> <span class="o">(</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">(</span><span class="n">documentId</span><span class="o">))</span> <span class="o">{</span>
-                        <span class="n">filledForm</span><span class="o">.</span><span class="na">reject</span><span class="o">(</span><span class="s">&quot;GUID is empty or null!&quot;</span><span class="o">);</span>
-                        <span class="k">return</span> <span class="nf">ok</span><span class="o">(</span><span class="n">views</span><span class="o">.</span><span class="na">html</span><span class="o">.</span><span class="na">sample21</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">title</span><span class="o">,</span> <span class="n">sample</span><span class="o">,</span> <span class="n">embedUrl</span><span class="o">,</span> <span class="n">filledForm</span><span class="o">));</span>
-                    <span class="o">}</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Create Signature api object</p>             </td>             <td class="code">               <div class="highlight"><pre>
-          <span class="n">SignatureApi</span> <span class="n">api</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SignatureApi</span><span class="o">();</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Choose Server to use</p>             </td>             <td class="code">               <div class="highlight"><pre>
-          <span class="n">api</span><span class="o">.</span><span class="na">setBasePath</span><span class="o">(</span><span class="n">basePath</span><span class="o">);</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Make a requests to Signature Api to create an envelope</p>             </td>             <td class="code">               <div class="highlight"><pre>
-          <span class="n">SignatureEnvelopeSettings</span> <span class="n">env</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SignatureEnvelopeSettings</span><span class="o">();</span>
-          <span class="n">env</span><span class="o">.</span><span class="na">setEmailSubject</span><span class="o">(</span><span class="s">&quot;Sign this!&quot;</span><span class="o">);</span>
-          <span class="n">SignatureEnvelopeResponse</span> <span class="n">envelopeResponse</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="na">CreateSignatureEnvelope</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">clientId</span><span class="o">,</span> <span class="s">&quot;SampleEnvelope_&quot;</span> <span class="o">+</span> <span class="n">UUID</span><span class="o">.</span><span class="na">randomUUID</span><span class="o">(),</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="n">env</span><span class="o">);</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Get an ID of created envelope</p>             </td>             <td class="code">               <div class="highlight"><pre>
-          <span class="kd">final</span> <span class="n">String</span> <span class="n">envelopeId</span> <span class="o">=</span> <span class="n">envelopeResponse</span><span class="o">.</span><span class="na">getResult</span><span class="o">().</span><span class="na">getEnvelope</span><span class="o">().</span><span class="na">getId</span><span class="o">();</span>
-          
-
-</pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <h3>Make a request to Signature Api to add document to envelope</h3>             </td>             <td class="code">               <div class="highlight"><pre>
-          <span class="n">SignatureEnvelopeDocumentResponse</span> <span class="n">envelopeDocument</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="na">AddSignatureEnvelopeDocument</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">clientId</span><span class="o">,</span> <span class="n">envelopeId</span><span class="o">,</span> <span class="n">documentId</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
-                    <span class="n">envelopeResponse</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="na">assertResponse</span><span class="o">(</span><span class="n">envelopeResponse</span><span class="o">);</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>Update document ID after it's added to envelope</p>             </td>             <td class="code">               <div class="highlight"><pre>
-          <span class="n">documentId</span> <span class="o">=</span> <span class="n">envelopeDocument</span><span class="o">.</span><span class="na">getResult</span><span class="o">().</span><span class="na">getDocument</span><span class="o">().</span><span class="na">getDocumentId</span><span class="o">();</span>
-
-
-</pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <h3>Make a request to Signature Api to get all available roles</h3>             </td>             <td class="code">               <div class="highlight"><pre>
-          <span class="n">String</span> <span class="n">roleGuid</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-          <span class="n">List</span><span class="o">&lt;</span><span class="n">SignatureRoleInfo</span><span class="o">&gt;</span> <span class="n">roles</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="na">GetRolesList</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">clientId</span><span class="o">,</span> <span class="kc">null</span><span class="o">).</span><span class="na">getResult</span><span class="o">().</span><span class="na">getRoles</span><span class="o">();</span>
-          <span class="k">for</span><span class="o">(</span><span class="n">SignatureRoleInfo</span> <span class="n">role</span> <span class="o">:</span> <span class="n">roles</span><span class="o">){</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>Get an ID of Signer role</p>             </td>             <td class="code">               <div class="highlight"><pre>
-            <span class="k">if</span><span class="o">(</span><span class="n">role</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="s">&quot;Signer&quot;</span><span class="o">)){</span>
-                            <span class="n">roleGuid</span> <span class="o">=</span> <span class="n">role</span><span class="o">.</span><span class="na">getId</span><span class="o">();</span><span class="k">break</span><span class="o">;</span>
-            <span class="o">}</span>
-          <span class="o">}</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <h3>Make a request to Signature Api to add new recipient to envelope</h3>             </td>             <td class="code">               <div class="highlight"><pre>
-          <span class="n">String</span> <span class="n">recipientId</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="na">AddSignatureEnvelopeRecipient</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">clientId</span><span class="o">,</span> <span class="n">envelopeId</span><span class="o">,</span> <span class="n">email</span><span class="o">,</span> <span class="n">firstName</span><span class="o">,</span> <span class="n">lastName</span><span class="o">,</span> <span class="n">roleGuid</span><span class="o">,</span> <span class="kc">null</span><span class="o">).</span><span class="na">getResult</span><span class="o">().</span><span class="na">getRecipient</span><span class="o">().</span><span class="na">getId</span><span class="o">();</span>
-          
-
-</pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <h3>Make a request to Signature Api to get all available fields</h3>             </td>             <td class="code">               <div class="highlight"><pre>
-          <span class="n">String</span> <span class="n">fieldId</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-          <span class="n">List</span><span class="o">&lt;</span><span class="n">SignatureFieldInfo</span><span class="o">&gt;</span> <span class="n">fields</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="na">GetFieldsList</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">clientId</span><span class="o">,</span> <span class="kc">null</span><span class="o">).</span><span class="na">getResult</span><span class="o">().</span><span class="na">getFields</span><span class="o">();</span>
-          <span class="k">for</span><span class="o">(</span><span class="n">SignatureFieldInfo</span> <span class="n">field</span> <span class="o">:</span> <span class="n">fields</span><span class="o">){</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>Get an ID of single line field</p>             </td>             <td class="code">               <div class="highlight"><pre>
-            <span class="k">if</span><span class="o">(</span><span class="n">field</span><span class="o">.</span><span class="na">getFieldType</span><span class="o">()</span> <span class="o">==</span> <span class="mi">2</span><span class="o">){</span> <span class="c1">// single line, see http://scotland.groupdocs.com/wiki/display/SDS/field.type</span>
-              <span class="n">fieldId</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="na">getId</span><span class="o">();</span><span class="k">break</span><span class="o">;</span>
-            <span class="o">}</span>
-          <span class="o">}</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Create new field called City</p>             </td>             <td class="code">               <div class="highlight"><pre>
-          <span class="n">SignatureEnvelopeFieldSettings</span> <span class="n">envField</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SignatureEnvelopeFieldSettings</span><span class="o">();</span>
-          <span class="n">envField</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">&quot;City&quot;</span><span class="o">);</span>
-          <span class="n">envField</span><span class="o">.</span><span class="na">setLocationX</span><span class="o">(</span><span class="mf">0.3</span><span class="o">);</span>
-          <span class="n">envField</span><span class="o">.</span><span class="na">setLocationY</span><span class="o">(</span><span class="mf">0.2</span><span class="o">);</span>
-          <span class="n">envField</span><span class="o">.</span><span class="na">setPage</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <h3>Make a request to Signature Api to add city field to envelope</h3>             </td>             <td class="code">               <div class="highlight"><pre>
-          <span class="n">api</span><span class="o">.</span><span class="na">AddSignatureEnvelopeField</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">clientId</span><span class="o">,</span> <span class="n">envelopeId</span><span class="o">,</span> <span class="n">documentId</span><span class="o">,</span> <span class="n">recipientId</span><span class="o">,</span> <span class="n">fieldId</span><span class="o">,</span> <span class="n">envField</span><span class="o">);</span>
-          
-          <span class="n">fieldId</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-          <span class="n">envField</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SignatureEnvelopeFieldSettings</span><span class="o">();</span>
-          <span class="k">for</span><span class="o">(</span><span class="n">SignatureFieldInfo</span> <span class="n">field</span> <span class="o">:</span> <span class="n">fields</span><span class="o">){</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>Get an ID of signature field</p>             </td>             <td class="code">               <div class="highlight"><pre>
-            <span class="k">if</span><span class="o">(</span><span class="n">field</span><span class="o">.</span><span class="na">getFieldType</span><span class="o">()</span> <span class="o">==</span> <span class="mi">1</span><span class="o">){</span> <span class="c1">// signature, see http://scotland.groupdocs.com/wiki/display/SDS/field.type</span>
-              <span class="n">fieldId</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="na">getId</span><span class="o">();</span><span class="k">break</span><span class="o">;</span>
-            <span class="o">}</span>
-          <span class="o">}</span>
-          <span class="n">envField</span><span class="o">.</span><span class="na">setLocationX</span><span class="o">(</span><span class="mf">0.3</span><span class="o">);</span>
-          <span class="n">envField</span><span class="o">.</span><span class="na">setLocationY</span><span class="o">(</span><span class="mf">0.3</span><span class="o">);</span>
-          <span class="n">envField</span><span class="o">.</span><span class="na">setPage</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <h3>Make a request to Signature Api to add signature field to envelope</h3>             </td>             <td class="code">               <div class="highlight"><pre>
-          <span class="n">api</span><span class="o">.</span><span class="na">AddSignatureEnvelopeField</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">clientId</span><span class="o">,</span> <span class="n">envelopeId</span><span class="o">,</span> <span class="n">documentId</span><span class="o">,</span> <span class="n">recipientId</span><span class="o">,</span> <span class="n">fieldId</span><span class="o">,</span> <span class="n">envField</span><span class="o">);</span>
-          
-
-</pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <h3>Make a request to Signature Api to send envelope for signing</h3>             </td>             <td class="code">               <div class="highlight"><pre>
-          
-
-</pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>Check is callback entered</p>             </td>             <td class="code">               <div class="highlight"><pre>
-          <span class="k">if</span> <span class="o">(</span><span class="n">callback</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">callback</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">;</span>
-          <span class="o">}</span>
-          <span class="n">FileStream</span> <span class="n">stream</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileStream</span><span class="o">(</span><span class="n">IOUtils</span><span class="o">.</span><span class="na">toInputStream</span><span class="o">(</span><span class="n">callback</span><span class="o">));</span>
-          <span class="n">api</span><span class="o">.</span><span class="na">SignatureEnvelopeSend</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">clientId</span><span class="o">,</span> <span class="n">envelopeId</span><span class="o">,</span> <span class="n">stream</span><span class="o">);</span>
-          
-
-</pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>Store envelopeId in session for later ues in checkCallbackStatus action</p>             </td>             <td class="code">               <div class="highlight"><pre>
-          <span class="n">session</span><span class="o">().</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;envelopeId&quot;</span><span class="o">,</span> <span class="n">envelopeId</span><span class="o">);</span>
-          
-
-</pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>Construct embedded signature url</p>             </td>             <td class="code">               <div class="highlight"><pre>
-          <span class="k">if</span> <span class="o">(</span><span class="n">basePath</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;https://api.groupdocs.com/v2.0&quot;</span><span class="o">))</span> <span class="o">{</span>
-            <span class="n">embedUrl</span> <span class="o">=</span> <span class="s">&quot;https://apps.groupdocs.com/signature/signembed/&quot;</span> <span class="o">+</span> <span class="n">envelopeId</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span> <span class="o">+</span> <span class="n">recipientId</span><span class="o">;</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>iframe to dev server</p>             </td>             <td class="code">               <div class="highlight"><pre>
-                  <span class="o">}</span> <span class="k">else</span> <span class="k">if</span><span class="o">(</span><span class="n">basePath</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;https://dev-api.groupdocs.com/v2.0&quot;</span><span class="o">))</span> <span class="o">{</span>
-                    <span class="n">embedUrl</span> <span class="o">=</span> <span class="s">&quot;https://dev-apps.groupdocs.com/signature/signembed/&quot;</span> <span class="o">+</span> <span class="n">envelopeId</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span> <span class="o">+</span> <span class="n">recipientId</span><span class="o">;</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>iframe to test server</p>             </td>             <td class="code">               <div class="highlight"><pre>
-                  <span class="o">}</span> <span class="k">else</span> <span class="k">if</span><span class="o">(</span><span class="n">basePath</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;https://stage-api.groupdocs.com/v2.0&quot;</span><span class="o">))</span> <span class="o">{</span>
-                    <span class="n">embedUrl</span> <span class="o">=</span> <span class="s">&quot;https://stage-apps.groupdocs.com/signature/signembed/&quot;</span> <span class="o">+</span> <span class="n">envelopeId</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span> <span class="o">+</span> <span class="n">recipientId</span><span class="o">;</span>
-                  <span class="o">}</span>
-
-                    <span class="k">if</span> <span class="o">(!</span><span class="n">StringUtils</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">(</span><span class="n">callback</span><span class="o">))</span> <span class="o">{</span>
-                        <span class="n">FileOutputStream</span> <span class="n">fileOutputStream</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileOutputStream</span><span class="o">(</span><span class="n">USER_INFO_FILE</span><span class="o">);</span>
-                        <span class="n">DataOutputStream</span> <span class="n">dataOutputStream</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DataOutputStream</span><span class="o">(</span><span class="n">fileOutputStream</span><span class="o">);</span>
-
-                        <span class="n">StringBuilder</span> <span class="n">stringBuilder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">();</span>
-                        <span class="n">stringBuilder</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">clientId</span><span class="o">);</span>
-                        <span class="n">stringBuilder</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;|&quot;</span><span class="o">);</span>
-                        <span class="n">stringBuilder</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">privateKey</span><span class="o">);</span>
-                        <span class="n">stringBuilder</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;|&quot;</span><span class="o">);</span>
-                        <span class="n">stringBuilder</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">credentials</span><span class="o">.</span><span class="na">basePath</span><span class="o">);</span>
-
-                        <span class="n">dataOutputStream</span><span class="o">.</span><span class="na">writeUTF</span><span class="o">(</span><span class="n">stringBuilder</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
-
-                        <span class="n">dataOutputStream</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
-                        <span class="n">fileOutputStream</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
-                    <span class="o">}</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>Use embedded signature url in template</p>             </td>             <td class="code">               <div class="highlight"><pre>
-          <span class="n">status</span> <span class="o">=</span> <span class="n">ok</span><span class="o">(</span><span class="n">views</span><span class="o">.</span><span class="na">html</span><span class="o">.</span><span class="na">sample21</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">title</span><span class="o">,</span> <span class="n">sample</span><span class="o">,</span> <span class="n">embedUrl</span><span class="o">,</span> <span class="n">filledForm</span><span class="o">));</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <h3>Definition of Api errors and conclusion of the corresponding message</h3>             </td>             <td class="code">               <div class="highlight"><pre>
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">ApiException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-          <span class="k">if</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getCode</span><span class="o">()</span> <span class="o">==</span> <span class="mi">401</span><span class="o">){</span>
-            <span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">args</span> <span class="o">=</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="k">new</span> <span class="n">Object</span><span class="o">[]{</span><span class="s">&quot;https://apps.groupdocs.com/My/Manage&quot;</span><span class="o">,</span> <span class="s">&quot;Production Server&quot;</span><span class="o">});</span>
-            <span class="n">filledForm</span><span class="o">.</span><span class="na">reject</span><span class="o">(</span><span class="s">&quot;Wrong Credentials. Please make sure to use credentials from&quot;</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
-          <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-            <span class="n">filledForm</span><span class="o">.</span><span class="na">reject</span><span class="o">(</span><span class="s">&quot;Failed to access API: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
-          <span class="o">}</span>
-          <span class="n">status</span> <span class="o">=</span> <span class="n">badRequest</span><span class="o">(</span><span class="n">views</span><span class="o">.</span><span class="na">html</span><span class="o">.</span><span class="na">sample21</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">title</span><span class="o">,</span> <span class="n">sample</span><span class="o">,</span> <span class="n">embedUrl</span><span class="o">,</span> <span class="n">filledForm</span><span class="o">));</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <h3>Definition of filledForm errors and conclusion of the corresponding message</h3>             </td>             <td class="code">               <div class="highlight"><pre>
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-          <span class="k">if</span><span class="o">(</span><span class="n">filePart</span> <span class="o">==</span> <span class="kc">null</span><span class="o">){</span>
-
-            <span class="k">if</span><span class="o">(</span><span class="n">filePart</span> <span class="o">==</span> <span class="kc">null</span><span class="o">){</span>
-              <span class="n">filledForm</span><span class="o">.</span><span class="na">reject</span><span class="o">(</span><span class="s">&quot;fiDocument&quot;</span><span class="o">,</span> <span class="s">&quot;This field is required&quot;</span><span class="o">);</span>
-            <span class="o">}</span>
-          <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-            <span class="n">filledForm</span><span class="o">.</span><span class="na">reject</span><span class="o">(</span><span class="s">&quot;Unknown Error: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
-          <span class="o">}</span>
-          <span class="n">status</span> <span class="o">=</span> <span class="n">badRequest</span><span class="o">(</span><span class="n">views</span><span class="o">.</span><span class="na">html</span><span class="o">.</span><span class="na">sample21</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">title</span><span class="o">,</span> <span class="n">sample</span><span class="o">,</span> <span class="n">embedUrl</span><span class="o">,</span> <span class="n">filledForm</span><span class="o">));</span>
-        <span class="o">}</span>
-      <span class="o">}</span>
-    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-      <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">sampleValues</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;(</span><span class="n">session</span><span class="o">());</span>
-      <span class="n">sampleValues</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;email&quot;</span><span class="o">,</span> <span class="s">&quot;john@smith.com&quot;</span><span class="o">);</span>
-      <span class="n">sampleValues</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;firstName&quot;</span><span class="o">,</span> <span class="s">&quot;John&quot;</span><span class="o">);</span>
-      <span class="n">sampleValues</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;lastName&quot;</span><span class="o">,</span> <span class="s">&quot;Smith&quot;</span><span class="o">);</span>
-      
-      <span class="n">filledForm</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="na">bind</span><span class="o">(</span><span class="n">sampleValues</span><span class="o">);</span>
-      <span class="n">session</span><span class="o">().</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;basePath&quot;</span><span class="o">,</span> <span class="s">&quot;https://api.groupdocs.com/v2.0&quot;</span><span class="o">);</span>
-      <span class="n">status</span> <span class="o">=</span> <span class="n">ok</span><span class="o">(</span><span class="n">views</span><span class="o">.</span><span class="na">html</span><span class="o">.</span><span class="na">sample21</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">title</span><span class="o">,</span> <span class="n">sample</span><span class="o">,</span> <span class="n">embedUrl</span><span class="o">,</span> <span class="n">filledForm</span><span class="o">));</span>
-    <span class="o">}</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>Process template</p>             </td>             <td class="code">               <div class="highlight"><pre>
-    <span class="k">return</span> <span class="n">status</span><span class="o">;</span>
-  <span class="o">}</span>
-  
-  <span class="kd">public</span> <span class="kd">static</span> <span class="n">Result</span> <span class="nf">checkCallbackStatus</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">String</span> <span class="n">envelopeId</span> <span class="o">=</span> <span class="n">session</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;envelopeId&quot;</span><span class="o">);</span>
-    <span class="n">ObjectNode</span> <span class="n">result</span> <span class="o">=</span> <span class="n">Json</span><span class="o">.</span><span class="na">newObject</span><span class="o">();</span>
-    <span class="kt">boolean</span> <span class="n">status</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
-    <span class="n">String</span> <span class="n">message</span> <span class="o">=</span> <span class="s">&quot;Not everybody signed the envelope&quot;</span><span class="o">;</span>
+<html>
+<head>
+  <title>Sample21.java</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
     
-    <span class="k">if</span><span class="o">(</span><span class="n">envelopeId</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;.&quot;</span><span class="o">,</span> <span class="n">envelopeId</span><span class="o">).</span><span class="na">exists</span><span class="o">()){</span>
-      <span class="n">status</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
-      <span class="n">message</span> <span class="o">=</span> <span class="s">&quot;Everybody signed the envelope. Click &lt;a href=&#39;/downloadEnvelope&#39; target=&#39;_blank&#39;&gt;here&lt;/a&gt; to download it&quot;</span><span class="o">;</span>
-    <span class="o">}</span>
-    
-    <span class="n">result</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;status&quot;</span><span class="o">,</span> <span class="n">status</span><span class="o">);</span>
-    <span class="n">result</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;message&quot;</span><span class="o">,</span> <span class="n">message</span><span class="o">);</span>
-    <span class="k">return</span> <span class="nf">ok</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
-  <span class="o">}</span>
-  
-  <span class="kd">public</span> <span class="kd">static</span> <span class="n">Result</span> <span class="nf">downloadEnvelope</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">String</span> <span class="n">envelopeId</span> <span class="o">=</span> <span class="n">session</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;envelopeId&quot;</span><span class="o">);</span>
-    <span class="n">Result</span> <span class="n">status</span><span class="o">;</span>
-    
-    <span class="k">if</span><span class="o">(</span><span class="n">envelopeId</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;.&quot;</span><span class="o">,</span> <span class="n">envelopeId</span><span class="o">).</span><span class="na">exists</span><span class="o">()){</span>
-      <span class="n">String</span> <span class="n">clientId</span> <span class="o">=</span> <span class="n">session</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;clientId&quot;</span><span class="o">);</span>
-      <span class="n">String</span> <span class="n">privateKey</span> <span class="o">=</span> <span class="n">session</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;privateKey&quot;</span><span class="o">);</span>
-      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">clientId</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="n">privateKey</span><span class="o">);</span>
-      
-
-</pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <p>Create ApiInvoker using given privateKey
-        ApiInvoker.getInstance().setDebug(true);</p>             </td>             <td class="code">               <div class="highlight"><pre>
-      <span class="n">ApiInvoker</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">setRequestSigner</span><span class="o">(</span>
-          <span class="k">new</span> <span class="nf">GroupDocsRequestSigner</span><span class="o">(</span><span class="n">privateKey</span><span class="o">));</span>
-      <span class="k">try</span> <span class="o">{</span>
-        <span class="n">FileStream</span> <span class="n">zip</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="na">GetSignedEnvelopeDocuments</span><span class="o">(</span><span class="n">clientId</span><span class="o">,</span> <span class="n">envelopeId</span><span class="o">);</span>
-        <span class="n">response</span><span class="o">().</span><span class="na">setHeader</span><span class="o">(</span><span class="s">&quot;Content-Disposition&quot;</span><span class="o">,</span> <span class="n">ContentDisposition</span><span class="o">.</span><span class="na">type</span><span class="o">(</span><span class="s">&quot;attachment&quot;</span><span class="o">).</span><span class="na">fileName</span><span class="o">(</span><span class="n">zip</span><span class="o">.</span><span class="na">getFileName</span><span class="o">()).</span><span class="na">build</span><span class="o">().</span><span class="na">toString</span><span class="o">());</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="n">ok</span><span class="o">(</span><span class="n">zip</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">());</span>
-
-</pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <pre><code>        new File(".", envelopeId).delete();
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>
+    <ul class="sections">
         
-      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">ApiException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="n">badRequest</span><span class="o">(</span><span class="s">&quot;Failed to access API: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
-      <span class="o">}</span> 
-    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-      <span class="n">status</span> <span class="o">=</span> <span class="n">ok</span><span class="o">(</span><span class="s">&quot;Callback handler was not called yet.&quot;</span><span class="o">);</span>
-    <span class="o">}</span>
-    
-    <span class="k">return</span> <span class="n">status</span><span class="o">;</span>
-  <span class="o">}</span>
-  
-<span class="o">}</span>
+          <li id="title">
+              <div class="annotation">
+                  <h1>Sample21.java</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h3 id="-i-this-sample-will-show-how-to-use-signature-api-to-create-and-send-envelope-for-signing-using-java-sdk-i-"><i>This sample will show how to use Signature Api to Create and Send Envelope for signing using Java SDK</i></h3>
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">package</span> controllers;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Import of necessary libraries</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="keyword">import</span> com.fasterxml.jackson.databind.node.ObjectNode;
+<span class="keyword">import</span> com.groupdocs.sdk.api.SignatureApi;
+<span class="keyword">import</span> com.groupdocs.sdk.api.StorageApi;
+<span class="keyword">import</span> com.groupdocs.sdk.common.ApiException;
+<span class="keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
+<span class="keyword">import</span> com.groupdocs.sdk.common.FileStream;
+<span class="keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
+<span class="keyword">import</span> com.groupdocs.sdk.model.*;
+<span class="keyword">import</span> com.sun.jersey.core.header.ContentDisposition;
+<span class="keyword">import</span> common.Utils;
+<span class="keyword">import</span> models.Credentials;
+<span class="keyword">import</span> org.apache.commons.lang3.StringUtils;
+<span class="keyword">import</span> play.data.Form;
+<span class="keyword">import</span> play.libs.Json;
+<span class="keyword">import</span> play.mvc.Controller;
+<span class="keyword">import</span> play.mvc.Http;
+<span class="keyword">import</span> play.mvc.Http.MultipartFormData.FilePart;
+<span class="keyword">import</span> play.mvc.Result;
+
+<span class="keyword">import</span> java.io.DataOutputStream;
+<span class="keyword">import</span> java.io.File;
+<span class="keyword">import</span> java.io.FileInputStream;
+<span class="keyword">import</span> java.io.FileOutputStream;
+<span class="keyword">import</span> java.util.List;
+<span class="keyword">import</span> java.util.UUID;
+
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sample21</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>{
+    <span class="keyword">public</span> <span class="keyword">static</span> String USER_INFO_FILE = <span class="string">"UserInfo_sample21.tmp"</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">protected</span> <span class="keyword">static</span> Form&lt;Credentials&gt; form = Form.form(Credentials.<span class="class"><span class="keyword">class</span>);
+
+    <span class="title">public</span> <span class="title">static</span> <span class="title">Result</span> <span class="title">index</span>() </span>{
+
+        <span class="keyword">if</span> (Utils.isPOST(request())) {
+            form = Form.form(Credentials.<span class="class"><span class="keyword">class</span>).<span class="title">bindFromRequest</span>();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Check errors</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="keyword">if</span> (<span class="keyword">for</span>m.hasErrors()) {
+                <span class="keyword">return</span> badRequest(views.html.sample21.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+            }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Save credentials to session</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            Credentials credentials = <span class="keyword">for</span>m.get();
+            session().put(<span class="string">"clientId"</span>, credentials.getClientId());
+            session().put(<span class="string">"privateKey"</span>, credentials.getPrivateKey());
+            session().put(<span class="string">"basePath"</span>, credentials.getBasePath());
+            credentials.normalizeBasePath(<span class="string">"https://api.groupdocs.com/v2.0"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Get request parameters</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            Http.MultipartFormData body = request().body().asMultipartFormData();
+            String sourse = Utils.getFormValue(body, <span class="string">"sourse"</span>);
+            String email = Utils.getFormValue(body, <span class="string">"email"</span>);
+            String firstName = Utils.getFormValue(body, <span class="string">"name"</span>);
+            String lastName = Utils.getFormValue(body, <span class="string">"lastName"</span>);
+            String callback = Utils.getFormValue(body, <span class="string">"callbackUrl"</span>);
+            String basePath = credentials.getBasePath();
+            FilePart filePart = body.getFile(<span class="string">"file"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Initialize SDK with private key</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            ApiInvoker.getInstance().setRequestSigner(
+                    <span class="keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey()));
+
+            <span class="keyword">try</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                String guid = <span class="keyword">null</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                <span class="keyword">if</span> (<span class="string">"guid"</span>.equals(sourse)) { <span class="comment">// File GUID</span>
+                    guid = Utils.getFormValue(body, <span class="string">"fileId"</span>);
+                } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"url"</span>.equals(sourse)) { <span class="comment">// Upload file fron URL</span>
+                    String url = Utils.getFormValue(body, <span class="string">"url"</span>);
+                    StorageApi storageApi = <span class="keyword">new</span> StorageApi();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Initialize API with base path</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    storageApi.setBasePath(credentials.getBasePath());
+                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClientId(), url);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Check response status</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    uploadResponse = Utils.assertResponse(uploadResponse);
+                    guid = uploadResponse.getResult().getGuid();
+                } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"local"</span>.equals(sourse)) { <span class="comment">// Upload local file</span>
+                    Http.MultipartFormData.FilePart file = body.getFile(<span class="string">"file"</span>);
+                    StorageApi storageApi = <span class="keyword">new</span> StorageApi();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Initialize API with base path</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    storageApi.setBasePath(credentials.getBasePath());
+                    FileInputStream is = <span class="keyword">new</span> FileInputStream(file.getFile());
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), <span class="string">"uploaded"</span>, <span class="string">""</span>, <span class="keyword">new</span> FileStream(is));</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Check response status</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    uploadResponse = Utils.assertResponse(uploadResponse);
+                    guid = uploadResponse.getResult().getGuid();
+                }
+                guid = Utils.assertNotNull(guid);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Create Signature api object</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                SignatureApi signatureApi = <span class="keyword">new</span> SignatureApi();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Initialize API with base path</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                signatureApi.setBasePath(basePath);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Make a requests to Signature Api to create an envelope</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeSettingsInfo env = <span class="keyword">new</span> SignatureEnvelopeSettingsInfo();
+                env.setEmailSubject(<span class="string">"Sign this!"</span>);
+                SignatureEnvelopeResponse envelopeResponse = signatureApi.CreateSignatureEnvelope(credentials.getClientId(), <span class="string">"SampleEnvelope_"</span> + UUID.randomUUID(), <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">true</span>, env);
+                envelopeResponse = Utils.assertResponse(envelopeResponse);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Get an ID of created envelope</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                <span class="keyword">final</span> String envelopeGuid = envelopeResponse.getResult().getEnvelope().getId();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Make a request to Signature Api to add document to envelope</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeDocumentResponse envelopeDocument = signatureApi.AddSignatureEnvelopeDocument(credentials.getClientId(), envelopeGuid, guid, <span class="keyword">null</span>, <span class="keyword">true</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Check response status</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                envelopeResponse = Utils.assertResponse(envelopeResponse);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>Update document ID after it&#39;s added to envelope</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                String documentGuid = envelopeDocument.getResult().getDocument().getDocumentId();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>Make a request to Signature Api to get all available roles</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                SignatureRolesResponse signatureRolesResponse = signatureApi.GetRolesList(credentials.getClientId(), <span class="keyword">null</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>Check response status</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                signatureRolesResponse = Utils.assertResponse(signatureRolesResponse);
+                List&lt;SignatureRoleInfo&gt; roles = signatureRolesResponse.getResult().getRoles();
+                String roleGuid = <span class="keyword">null</span>;
+                <span class="keyword">for</span> (SignatureRoleInfo role : roles) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>Get an ID of Signer role</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    <span class="keyword">if</span> (<span class="string">"Signer"</span>.equalsIgnoreCase(role.getName())) {
+                        roleGuid = role.getId();
+                        <span class="keyword">break</span>;
+                    }
+                }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>Make a request to Signature Api to add new recipient to envelope</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeRecipientResponse signatureEnvelopeRecipientResponse = signatureApi.AddSignatureEnvelopeRecipient(credentials.getClientId(), envelopeGuid, email, firstName, lastName, roleGuid, <span class="keyword">null</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Check response status</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                signatureEnvelopeRecipientResponse = Utils.assertResponse(signatureEnvelopeRecipientResponse);
+                String recipientGuid = signatureEnvelopeRecipientResponse.getResult().getRecipient().getId();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>Make a request to Signature Api to get all available fields</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeDocumentsResponse getEnvelopDocument = signatureApi.GetSignatureEnvelopeDocuments(credentials.getClientId(), envelopeGuid);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>Check response status</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                getEnvelopDocument = Utils.assertResponse(getEnvelopDocument);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>Create new field called City</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeFieldSettingsInfo envField = <span class="keyword">new</span> SignatureEnvelopeFieldSettingsInfo();
+                envField.setName(<span class="string">"City"</span>);
+                envField.setLocationX(<span class="number">0.3</span>);
+                envField.setLocationY(<span class="number">0.2</span>);
+                envField.setLocationWidth(<span class="number">150.0</span>);
+                envField.setLocationHeight(<span class="number">50.0</span>);
+                envField.setForceNewField(<span class="keyword">true</span>);
+                envField.setPage(<span class="number">1</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>Make a request to Signature Api to add city field to envelope</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeFieldsResponse signatureEnvelopeFieldsResponse = signatureApi.AddSignatureEnvelopeField(credentials.getClientId(), envelopeGuid, getEnvelopDocument.getResult().getDocuments().get(<span class="number">0</span>).getDocumentId(), recipientGuid, <span class="string">"0545e589fb3e27c9bb7a1f59d0e3fcb9"</span>, envField);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>Check response status</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                Utils.assertNotNull(signatureEnvelopeFieldsResponse);
+                callback = (callback == <span class="keyword">null</span>) ? <span class="string">""</span> : callback;
+                WebhookInfo webhookInfo = <span class="keyword">new</span> WebhookInfo();
+                webhookInfo.setCallbackUrl(callback);
+                SignatureEnvelopeSendResponse signatureEnvelopeSendResponse = signatureApi.SignatureEnvelopeSend(credentials.getClientId(), envelopeGuid, webhookInfo);
+                Utils.assertResponse(signatureEnvelopeSendResponse);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>Store envelopeId in session for later ues in checkCallbackStatus action</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                session().put(<span class="string">"envelopeId"</span>, envelopeGuid);
+
+                <span class="keyword">if</span> (!StringUtils.isEmpty(callback)) {
+                    FileOutputStream fileOutputStream = <span class="keyword">new</span> FileOutputStream(USER_INFO_FILE);
+                    DataOutputStream dataOutputStream = <span class="keyword">new</span> DataOutputStream(fileOutputStream);
+
+                    StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder();
+                    stringBuilder.append(credentials.getClientId());
+                    stringBuilder.append(<span class="string">"|"</span>);
+                    stringBuilder.append(credentials.getPrivateKey());
+                    stringBuilder.append(<span class="string">"|"</span>);
+                    stringBuilder.append(credentials.getBasePath());
+
+                    dataOutputStream.writeUTF(stringBuilder.toString());
+
+                    dataOutputStream.flush();
+                    fileOutputStream.close();
+                }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                String server = credentials.getBasePath().substring(<span class="number">0</span>, credentials.getBasePath().indexOf(<span class="string">".com"</span>) + <span class="number">4</span>).replace(<span class="string">"api"</span>, <span class="string">"apps"</span>);
+                String embedUrl = server + <span class="string">"/signature/signembed/"</span> + envelopeGuid + <span class="string">"/"</span> + recipientGuid;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <p>Render view</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                <span class="keyword">return</span> ok(views.html.sample21.render(<span class="keyword">true</span>, embedUrl, form));
+            } <span class="keyword">catch</span> (Exception e) {
+                <span class="keyword">return</span> badRequest(views.html.sample21.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+            }
+        } <span class="keyword">else</span> <span class="keyword">if</span> (Utils.isGET(request())) {
+            form = <span class="keyword">for</span>m.bind(session());
+        }
+        <span class="keyword">return</span> ok(views.html.sample21.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+    }
+
+    <span class="keyword">public</span> <span class="keyword">static</span> Result checkCallbackStatus() {
+        String envelopeId = session().get(<span class="string">"envelopeId"</span>);
+        ObjectNode result = Json.newObject();
+        <span class="keyword">boolean</span> status = <span class="keyword">false</span>;
+        String message = <span class="string">"Not everybody signed the envelope"</span>;
+
+        <span class="keyword">if</span> (envelopeId != <span class="keyword">null</span> &amp;&amp; <span class="keyword">new</span> File(<span class="string">"."</span>, envelopeId).exists()) {
+            status = <span class="keyword">true</span>;
+            message = <span class="string">"Everybody signed the envelope. Click &lt;a href='/downloadEnvelope' target='_blank'&gt;here&lt;/a&gt; to download it"</span>;
+        }
+
+        result.put(<span class="string">"status"</span>, status);
+        result.put(<span class="string">"message"</span>, message);
+        <span class="keyword">return</span> ok(result);
+    }
+
+    <span class="keyword">public</span> <span class="keyword">static</span> Result downloadEnvelope() {
+        String envelopeId = session().get(<span class="string">"envelopeId"</span>);
+        Result status;
+
+        <span class="keyword">if</span> (envelopeId != <span class="keyword">null</span> &amp;&amp; <span class="keyword">new</span> File(<span class="string">"."</span>, envelopeId).exists()) {
+            String clientId = session().get(<span class="string">"clientId"</span>);
+            String privateKey = session().get(<span class="string">"privateKey"</span>);
+            System.out.println(clientId + <span class="string">" "</span> + privateKey);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p>Create ApiInvoker using given privateKey
+        ApiInvoker.getInstance().setDebug(true);</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            ApiInvoker.getInstance().setRequestSigner(
+                    <span class="keyword">new</span> GroupDocsRequestSigner(privateKey));
+            <span class="keyword">try</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <p>Create Signature api object</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                SignatureApi signatureApi = <span class="keyword">new</span> SignatureApi();
+
+                FileStream zip = signatureApi.GetSignedEnvelopeDocuments(clientId, envelopeId);
+                response().setHeader(<span class="string">"Content-Disposition"</span>, ContentDisposition.type(<span class="string">"attachment"</span>).fileName(zip.getFileName()).build().toString());
+                status = ok(zip.getInputStream());</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
+              <pre><code>        new File(&quot;.&quot;, envelopeId).delete();</code></pre>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+            } <span class="keyword">catch</span> (ApiException e) {
+                e.printStackTrace();
+                status = badRequest(<span class="string">"Failed to access API: "</span> + e.getMessage());
+            }
+        } <span class="keyword">else</span> {
+            status = ok(<span class="string">"Callback handler was not called yet."</span>);
+        }
+
+        <span class="keyword">return</span> status;
+    }
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
