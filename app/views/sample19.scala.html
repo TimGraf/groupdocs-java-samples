@@ -28,9 +28,9 @@
                 }
             </p>
         }
-        @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-        @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-        @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+        @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 50)
+        @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 50)
+        @inputText(aForm("basePath"), '_label -> "Base URL", 'size -> 50)
         <div style="background-color: #ccffcc; margin: 10px 0px; padding: 5px;">
         <div style="font-size: 14px;">Source File:</div>
         <div id="IDtypeChoice" class="file-choice-block">
@@ -63,7 +63,7 @@
     <div id="IDtypeChoiceTarget" class="file-choice-block">
     <input type="radio" value="guid" onchange="targetChanged(this.value);" id="IDfileIdRadioTarget" name="target"/>
         <label for="IDfileIdRadioTarget" class="file-choice-label">File GUID</label>
-    <input type="radio" value="target_url" onchange="targetChanged(this.value);" id="IDfileUrlRadioTarget" name="target"/>
+    <input type="radio" value="targetUrl" onchange="targetChanged(this.value);" id="IDfileUrlRadioTarget" name="target"/>
         <label for="IDfileUrlRadioTarget" class="file-choice-label">File URL</label>
     <input type="radio" value="local" onchange="targetChanged(this.value);" id="IDfilePartRadioTarget" name="target"/>
         <label for="IDfilePartRadioTarget" class="file-choice-label">Local file</label>
@@ -71,15 +71,15 @@
     <div id="guidTarget">
     @inputText(aForm("targetFileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
     </div>
-    <div id="target_urlTarget">
-    @inputText(aForm("target_url"), '_label -> "File Url", 'size -> 50, 'required -> true)
+    <div id="targetUrlTarget">
+    @inputText(aForm("targetUrl"), '_label -> "File Url", 'size -> 50, 'required -> true)
     </div>
     <div id="localTarget">
-    @inputFile(aForm("target_local"), '_label -> "Select file", 'required -> true)
+    @inputFile(aForm("targetLocal"), '_label -> "Select file", 'required -> true)
     </div>
     <script type="text/javascript" language="JavaScript">
     function targetChanged(id){
-    $.each(['guidTarget', 'target_urlTarget', 'localTarget'], function (index){
+    $.each(['guidTarget', 'targetUrlTarget', 'localTarget'], function (index){
     $('#' + this).hide();
     $('#' + this + ' input').removeAttr('required');
 } );

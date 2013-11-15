@@ -29,9 +29,9 @@
                     </p>
                 }
 
-                @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-                @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-                @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 50)
+                @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 50)
+                @inputText(aForm("basePath"), '_label -> "Base URL", 'size -> 50)
                 <div>
                     <div id="IDtypeChoice" class="file-choice-block">
                     <input type="radio" value="guid" onclick="" id="IDfileIdRadio" name="sourse"/>
@@ -42,13 +42,13 @@
                         <label for="IDfilePartRadio" class="file-choice-label">Local file</label>
                     </div>
                     <div id="guid">
-                    @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true, 'id -> "guidfield")
+                    @inputText(aForm("fileId"), '_label -> "File GUID", 'size -> 50, 'required -> true, 'id -> "guidField")
                     </div>
                     <div id="url">
-                    @inputText(aForm("url"), '_label -> "File Url", 'size -> 50, 'required -> true, 'id -> "urlfield")
+                    @inputText(aForm("url"), '_label -> "File Url", 'size -> 50, 'required -> true, 'id -> "urlField")
                     </div>
                     <div id="local">
-                    @inputFile(aForm("file"), '_label -> "Select file", 'required -> true, 'id -> "filefield")
+                    @inputFile(aForm("file"), '_label -> "Select file", 'required -> true, 'id -> "fileField")
                     </div>
                 </div>
                 <div style="background-color:#e5e5e5;border:3px double gray;width:700px;padding:3px;font-size:10pt;">
@@ -81,7 +81,7 @@
                         <option value="pdf">PDF</option>
                     </select>
                 </div>
-                <input type="submit" value="Assemble">
+                <input type="submit" value="Make request">
             }
         </div>
 

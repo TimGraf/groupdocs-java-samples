@@ -2,6 +2,7 @@ package controllers;
 
 import common.Utils;
 import models.Credentials;
+import org.apache.commons.lang3.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -27,11 +28,12 @@ public class Sample29 extends Controller {
             Map<String, String[]> body = request().body().asFormUrlEncoded();
             String url = body.get("url")[0];
             String clientId = body.get("clientId")[0];
-            String server_type = body.get("basePath")[0];
+            String basePath = body.get("basePath")[0];
+            basePath = StringUtils.isEmpty(basePath) ? "https://api.groupdocs.com/v2.0" : basePath;
 
             try {
                 //
-                String server = server_type.substring(0, server_type.indexOf(".com") + 4).replace("api", "apps");
+                String server = basePath.substring(0, basePath.indexOf(".com") + 4).replace("api", "apps");
                 String frameUrl = server + "/document-viewer/embed?url=" + url + "&user_id=" + clientId;
                 // Render view
                 return ok("{ \"iframe\": \"" + frameUrl + "\" }");
@@ -41,7 +43,6 @@ public class Sample29 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample29.render(false, null, form));
     }

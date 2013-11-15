@@ -31,21 +31,23 @@ public class Sample03 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             MultipartFormData body = request().body().asMultipartFormData();
             String sourse = Utils.getFormValue(body.asFormUrlEncoded(), "sourse");
+            String folderPath = Utils.getFormValue(body.asFormUrlEncoded(), "folderPath");
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 //
                 StorageApi storageApi = new StorageApi();
                 // Initialize API with base path
-                storageApi.setBasePath(credentials.getServer_type());
+                storageApi.setBasePath(credentials.getBasePath());
                 //
                 UploadResponse uploadResponse = null;
                 if ("local".equals(sourse)) {
@@ -53,11 +55,17 @@ public class Sample03 extends Controller {
                     FileInputStream is = new FileInputStream(filePart.getFile());
                     String callbackUrl = Utils.getFormValue(body.asFormUrlEncoded(), "callbackUrl");
                     // Upload file to current user storage from local computer
-                    uploadResponse = storageApi.Upload(credentials.getClient_id(), filePart.getFilename(), "uploaded", callbackUrl, new FileStream(is));
+                    if (folderPath.startsWith("\\") || folderPath.startsWith("/")){
+                        folderPath = folderPath.substring(1);
+                    }
+                    if (!folderPath.endsWith("\\") && !folderPath.endsWith("/")) {
+                        folderPath += "/";
+                    }
+                    uploadResponse = storageApi.Upload(credentials.getClientId(), folderPath + filePart.getFilename(), "uploaded", callbackUrl, new FileStream(is));
                 } else if ("url".equals(sourse)) {
                     String url = Utils.getFormValue(body.asFormUrlEncoded(), "url");
                     // Upload file to current user storage from url
-                    uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
+                    uploadResponse = storageApi.UploadWeb(credentials.getClientId(), url);
                 }
                 // Check response status
                 uploadResponse = Utils.assertResponse(uploadResponse);
@@ -68,7 +76,6 @@ public class Sample03 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample03.render(false, null, form));
     }

@@ -32,29 +32,30 @@ public class Sample06 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             MultipartFormData body = request().body().asMultipartFormData();
-            FilePart fi_document = body.getFile("fi_document");
-            FilePart fi_signature = body.getFile("fi_signature");
+            FilePart fiDocument = body.getFile("fiDocument");
+            FilePart fiSignature = body.getFile("fiSignature");
             String signerName = "GroupDocs Signer";
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
-                fi_document = Utils.assertNotNull(fi_document);
-                fi_signature = Utils.assertNotNull(fi_signature);
+                fiDocument = Utils.assertNotNull(fiDocument);
+                fiSignature = Utils.assertNotNull(fiSignature);
 
                 // Read document to sign from URL
-                String base64file = MimeUtils.readAsDataURL(fi_document.getFile(), fi_document.getContentType());
+                String base64file = MimeUtils.readAsDataURL(fiDocument.getFile(), fiDocument.getContentType());
                 //Read signature file from URL
-                String base64signature = MimeUtils.readAsDataURL(fi_signature.getFile(), fi_signature.getContentType());
+                String base64signature = MimeUtils.readAsDataURL(fiSignature.getFile(), fiSignature.getContentType());
                 // Set sign settings
                 SignatureSignDocumentDocumentSettingsInfo document = new SignatureSignDocumentDocumentSettingsInfo();
-                document.setName(fi_document.getFilename());
+                document.setName(fiDocument.getFilename());
                 document.setData(base64file);
                 // Create SignatureSignDocumentSignerSettings object
                 SignatureSignDocumentSignerSettingsInfo signer = new SignatureSignDocumentSignerSettingsInfo();
@@ -82,16 +83,16 @@ public class Sample06 extends Controller {
                 // Sign document using current user id and sign settings
                 SignatureApi signatureApi = new SignatureApi();
                 // Initialize API with base path
-                signatureApi.setBasePath(credentials.getServer_type());
+                signatureApi.setBasePath(credentials.getBasePath());
                 // Request sample method
-                SignatureSignDocumentResponse response = signatureApi.SignDocument(credentials.getClient_id(), requestBody);
+                SignatureSignDocumentResponse response = signatureApi.SignDocument(credentials.getClientId(), requestBody);
                 // Check request status
                 response = Utils.assertResponse(response);
                 String jobId = response.getResult().getJobId();
                 // Not good idea but need pause before get result of job
                 Thread.sleep(5000);
 
-                SignatureSignDocumentStatusResponse signResponse = signatureApi.GetSignDocumentStatus(credentials.getClient_id(), jobId);
+                SignatureSignDocumentStatusResponse signResponse = signatureApi.GetSignDocumentStatus(credentials.getClientId(), jobId);
                 signResponse = Utils.assertResponse(signResponse);
                 String guid = signResponse.getResult().getDocuments().get(0).getDocumentId();
                 guid = Utils.assertNotNull(guid);
@@ -102,7 +103,6 @@ public class Sample06 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample06.render(false, null, form));
     }

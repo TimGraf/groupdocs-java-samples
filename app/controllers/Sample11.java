@@ -33,19 +33,20 @@ public class Sample11 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             Http.MultipartFormData body = request().body().asMultipartFormData();
-            String annotation_type = Utils.getFormValue(body, "annotation_type");
+            String annotationType = Utils.getFormValue(body, "annotationType");
             String text = Utils.getFormValue(body, "text");
             String source = Utils.getFormValue(body, "sourse");
-            double box_x = Double.parseDouble(Utils.getFormValue(body, "box_x"));
-            double box_y = Double.parseDouble(Utils.getFormValue(body, "box_y"));
+            double boxX = Double.parseDouble(Utils.getFormValue(body, "boxX"));
+            double boxY = Double.parseDouble(Utils.getFormValue(body, "boxY"));
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 //
@@ -57,8 +58,8 @@ public class Sample11 extends Controller {
                     String url = Utils.getFormValue(body, "fileUrl");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
-                    storageApi.setBasePath(credentials.getServer_type());
-                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
+                    storageApi.setBasePath(credentials.getBasePath());
+                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClientId(), url);
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
@@ -66,9 +67,9 @@ public class Sample11 extends Controller {
                     Http.MultipartFormData.FilePart file = body.getFile("filePart");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
-                    storageApi.setBasePath(credentials.getServer_type());
+                    storageApi.setBasePath(credentials.getBasePath());
                     FileInputStream is = new FileInputStream(file.getFile());
-                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), "uploaded", "", new FileStream(is));
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
@@ -77,7 +78,7 @@ public class Sample11 extends Controller {
                 //
                 AntApi antApi = new AntApi();
                 // Initialize API with base path
-                antApi.setBasePath(credentials.getServer_type());
+                antApi.setBasePath(credentials.getBasePath());
                 // Create AnnotationReplyInfo object and fill it with data
                 AnnotationReplyInfo annotationReplyInfo = new AnnotationReplyInfo();
                 // Add entered text for annotation
@@ -89,50 +90,50 @@ public class Sample11 extends Controller {
                 // Create AnnotationInfo object and fill it with data
                 AnnotationInfo requestBody = new AnnotationInfo();
                 // Set type of annotation it can be text, area or point
-                requestBody.setType(annotation_type);
+                requestBody.setType(annotationType);
                 // Set replies from replies list
                 requestBody.setReplies(annotationReplyInfos);
                 // Check what type it was chosen
                 // If annotation type is text set all parameters
-                if (annotation_type.equals("text")) {
-                    double box_width = Double.parseDouble(Utils.getFormValue(body, "box_width"));
-                    double box_height = Double.parseDouble(Utils.getFormValue(body, "box_height"));
-                    int range_length = Integer.parseInt(Utils.getFormValue(body, "range_length"));
-                    int range_position = Integer.parseInt(Utils.getFormValue(body, "range_position"));
-                    double annotationPosition_x = Double.parseDouble(Utils.getFormValue(body, "annotationPosition_x"));
-                    double annotationPosition_y = Double.parseDouble(Utils.getFormValue(body, "annotationPosition_Y"));
+                if (annotationType.equals("text")) {
+                    double boxWidth = Double.parseDouble(Utils.getFormValue(body, "boxWidth"));
+                    double boxHeight = Double.parseDouble(Utils.getFormValue(body, "boxHeight"));
+                    int rangeLength = Integer.parseInt(Utils.getFormValue(body, "rangeLength"));
+                    int rangePosition = Integer.parseInt(Utils.getFormValue(body, "rangePosition"));
+                    double annotationPositionX = Double.parseDouble(Utils.getFormValue(body, "annotationPositionX"));
+                    double annotationPositionY = Double.parseDouble(Utils.getFormValue(body, "annotationPositionY"));
                     // Create rectangle object
                     Rectangle box = new Rectangle();
                     // Set rectangle parameters
-                    box.setX(box_x);
-                    box.setY(box_y);
-                    box.setWidth(box_width);
-                    box.setHeight(box_height);
+                    box.setX(boxX);
+                    box.setY(boxY);
+                    box.setWidth(boxWidth);
+                    box.setHeight(boxHeight);
                     // Create range object
                     Range range = new Range();
                     // Set range parameters
-                    range.setPosition(range_position);
-                    range.setLength(range_length);
+                    range.setPosition(rangePosition);
+                    range.setLength(rangeLength);
                     // Create point object
                     Point annotationPosition = new Point();
                     // Set point parameters
-                    annotationPosition.setX(annotationPosition_x);
-                    annotationPosition.setY(annotationPosition_y);
+                    annotationPosition.setX(annotationPositionX);
+                    annotationPosition.setY(annotationPositionY);
                     // Set annotation parameters to the AnnotationInfo object
                     requestBody.setBox(box);
                     requestBody.setRange(range);
                     requestBody.setAnnotationPosition(annotationPosition);
                     // If annotation type is area set only box and position parameters
-                } else if (annotation_type.equals("area")) {
-                    double box_width = Double.parseDouble(Utils.getFormValue(body, "box_width"));
-                    double box_height = Double.parseDouble(Utils.getFormValue(body, "box_height"));
+                } else if (annotationType.equals("area")) {
+                    double boxWidth = Double.parseDouble(Utils.getFormValue(body, "boxWidth"));
+                    double boxHeight = Double.parseDouble(Utils.getFormValue(body, "boxHeight"));
                     // Create rectangle object
                     Rectangle box = new Rectangle();
                     // Set rectangle parameters
-                    box.setX(box_x);
-                    box.setY(box_y);
-                    box.setWidth(box_width);
-                    box.setHeight(box_height);
+                    box.setX(boxX);
+                    box.setY(boxY);
+                    box.setWidth(boxWidth);
+                    box.setHeight(boxHeight);
                     // Create point object
                     Point annotationPosition = new Point();
                     // Set point parameters
@@ -142,12 +143,12 @@ public class Sample11 extends Controller {
                     requestBody.setBox(box);
                     requestBody.setAnnotationPosition(annotationPosition);
                     // If annotation type is point set only box x,y coordinates
-                } else if (annotation_type.equals("point")) {
+                } else if (annotationType.equals("point")) {
                     // Create rectangle object
                     Rectangle box = new Rectangle();
                     // Set rectangle parameters
-                    box.setX(box_x);
-                    box.setY(box_y);
+                    box.setX(boxX);
+                    box.setY(boxY);
                     box.setWidth(0.0);
                     box.setHeight(0.0);
                     // Create point object
@@ -159,8 +160,8 @@ public class Sample11 extends Controller {
                     requestBody.setBox(box);
                     requestBody.setAnnotationPosition(annotationPosition);
                 }
-                //###Make a request to Annotation API using client_id, fileId and requestBody
-                CreateAnnotationResponse annotationResponse = antApi.CreateAnnotation(credentials.getClient_id(), guid, requestBody);
+                //###Make a request to Annotation API using clientId, fileId and requestBody
+                CreateAnnotationResponse annotationResponse = antApi.CreateAnnotation(credentials.getClientId(), guid, requestBody);
                 annotationResponse = Utils.assertResponse(annotationResponse);
                 // Render view
                 return ok(views.html.sample11.render(true, annotationResponse.getResult(), form));
@@ -169,7 +170,6 @@ public class Sample11 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample11.render(false, null, form));
     }

@@ -32,24 +32,25 @@ public class Sample14 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             Http.MultipartFormData body = request().body().asMultipartFormData();
             String path = Utils.getFormValue(body, "path");
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 // Create Storage Api object
                 StorageApi storageApi = new StorageApi();
                 // Initialize API with base path
-                storageApi.setBasePath(credentials.getServer_type());
+                storageApi.setBasePath(credentials.getBasePath());
                 String folderId = "";
                 // Make request to Storage Api to get list of elements in the storage
-                ListEntitiesResponse listResponse = storageApi.ListEntities(credentials.getClient_id(), "", null, null, null, null, null, null, null);
+                ListEntitiesResponse listResponse = storageApi.ListEntities(credentials.getClientId(), "", null, null, null, null, null, null, null);
                 // Check request status
                 listResponse = Utils.assertResponse(listResponse);
                 // Get folders info from storage
@@ -66,9 +67,9 @@ public class Sample14 extends Controller {
                 // Create Doc Api object and get document metadata
                 DocApi metadata = new DocApi();
                 // Initialize API with base path
-                metadata.setBasePath(credentials.getServer_type());
+                metadata.setBasePath(credentials.getBasePath());
                 // Make request to Doc Api to get folder sharers
-                SharedUsersResponse sharedUsersResponse = metadata.GetFolderSharers(credentials.getClient_id(), folderId);
+                SharedUsersResponse sharedUsersResponse = metadata.GetFolderSharers(credentials.getClientId(), folderId);
                 // Check request status
                 sharedUsersResponse = Utils.assertResponse(sharedUsersResponse);
                 // Render view
@@ -78,7 +79,6 @@ public class Sample14 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample14.render(false, null, form));
     }

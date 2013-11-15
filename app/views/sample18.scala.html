@@ -18,10 +18,10 @@
     <br />
     <br/>
         <p style="color: green;">You entered:</p>
-        <p>Client Id = @aForm.data.get("client_id")</p>
-        <p>Private Key = @aForm.data.get("private_key")</p>
+        <p>Client Id = @aForm.data.get("clientId")</p>
+        <p>Private Key = @aForm.data.get("privateKey")</p>
         <p>File Id = @aForm.data.get("fileId")</p>
-        <p>Convert type = @aForm.data.get("convert_type")</p>
+        <p>Convert type = @aForm.data.get("convertType")</p>
         <div id="requestForm" style="padding:20px; border:1px solid black;">
             <p>Enter data for request and press "Make request" button</p>
             @myForm(routes.Sample18.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
@@ -34,9 +34,9 @@
                     </p>
                 }
 
-                @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-                @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-                @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 50)
+                @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 50)
+                @inputText(aForm("basePath"), '_label -> "Base URL", 'size -> 50)
                 <div>
                     <div id="IDtypeChoice" class="file-choice-block">
                     <input type="radio" value="guid" onclick="" id="IDfileIdRadio" name="sourse"/>
@@ -56,12 +56,12 @@
                     @inputFile(aForm("file"), '_label -> "Select file", 'required -> true)
                     </div>
                 </div>
-                @inputText(aForm("callbackUrl"), '_label -> "Callback Url", 'size -> 50)
+                @inputText(aForm("callbackUrl"), '_label -> "Callback URL", 'size -> 50)
                 <div style="color: #808080; font-size: 10px">
                     For test Callback you can use this URL: http://groupdocs-java-samples.herokuapp.com/callbacks/convert_callback
                 </div>
-                <label for='convert_type'>Convert Type</label>
-                <select name="convert_type" id="convert_type">
+                <label for='convertType'>Convert Type</label>
+                <select name="convertType" id="convertType">
                     <option value="doc">Doc</option>
                     <option value="pdf">PDF</option>
                     <option value="docx">Docx</option>

@@ -36,18 +36,19 @@ public class Sample18 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             Http.MultipartFormData body = request().body().asMultipartFormData();
             String sourse = Utils.getFormValue(body, "sourse");
-            String convert_type = Utils.getFormValue(body, "convert_type");
+            String convertType = Utils.getFormValue(body, "convertType");
             String callbackUrl = Utils.getFormValue(body, "callbackUrl");
             callbackUrl = (callbackUrl == null) ? "" : callbackUrl;
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 //
@@ -59,8 +60,8 @@ public class Sample18 extends Controller {
                     String url = Utils.getFormValue(body, "url");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
-                    storageApi.setBasePath(credentials.getServer_type());
-                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
+                    storageApi.setBasePath(credentials.getBasePath());
+                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClientId(), url);
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
@@ -68,9 +69,9 @@ public class Sample18 extends Controller {
                     Http.MultipartFormData.FilePart file = body.getFile("file");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
-                    storageApi.setBasePath(credentials.getServer_type());
+                    storageApi.setBasePath(credentials.getBasePath());
                     FileInputStream is = new FileInputStream(file.getFile());
-                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), "uploaded", "", new FileStream(is));
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
@@ -79,13 +80,13 @@ public class Sample18 extends Controller {
                 // Render view
                 AsyncApi api = new AsyncApi();
                 // Initialize API with base path
-                api.setBasePath(credentials.getServer_type());
-                ConvertResponse response = api.Convert(credentials.getClient_id(), guid, "", "description", false, callbackUrl, convert_type);
+                api.setBasePath(credentials.getBasePath());
+                ConvertResponse response = api.Convert(credentials.getClientId(), guid, "", "description", false, callbackUrl, convertType);
                 // Check response status
                 response = Utils.assertResponse(response);
                 Double jobId = response.getResult().getJob_id();
                 Thread.sleep(5000);
-                GetJobDocumentsResponse jobDocumentsResponse = api.GetJobDocuments(credentials.getClient_id(), jobId.toString(), "");
+                GetJobDocumentsResponse jobDocumentsResponse = api.GetJobDocuments(credentials.getClientId(), jobId.toString(), "");
                 jobDocumentsResponse = Utils.assertResponse(jobDocumentsResponse);
 
                 String resultGuid = jobDocumentsResponse.getResult().getInputs().get(0).getOutputs().get(0).getGuid();
@@ -94,11 +95,11 @@ public class Sample18 extends Controller {
                 DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
 
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(credentials.getClient_id());
+                stringBuilder.append(credentials.getClientId());
                 stringBuilder.append("|");
-                stringBuilder.append(credentials.getPrivate_key());
+                stringBuilder.append(credentials.getPrivateKey());
                 stringBuilder.append("|");
-                stringBuilder.append(credentials.getServer_type());
+                stringBuilder.append(credentials.getBasePath());
                 dataOutputStream.writeUTF(stringBuilder.toString());
                 dataOutputStream.flush();
                 fileOutputStream.close();
@@ -109,7 +110,6 @@ public class Sample18 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample18.render(false, null, form));
     }

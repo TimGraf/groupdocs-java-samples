@@ -34,14 +34,15 @@ public class Sample30 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             Http.MultipartFormData body = request().body().asMultipartFormData();
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 String fileName = Utils.getFormValue(body, "fileName");
@@ -50,8 +51,8 @@ public class Sample30 extends Controller {
                 //
                
                 StorageApi storageApi = new StorageApi();
-                storageApi.setBasePath(credentials.getServer_type());
-                ListEntitiesResponse allFiles = storageApi.ListEntities(credentials.getClient_id(), "", null, null, null, null, null, null, false);
+                storageApi.setBasePath(credentials.getBasePath());
+                ListEntitiesResponse allFiles = storageApi.ListEntities(credentials.getClientId(), "", null, null, null, null, null, null, false);
                 allFiles = Utils.assertResponse(allFiles);
                 for (FileSystemDocument document : allFiles.getResult().getFiles()) {
                     if (fileName.equals(document.getName())) {
@@ -60,7 +61,7 @@ public class Sample30 extends Controller {
                     }
                 }
                 guid = Utils.assertNotNull(guid);
-                DeleteResponse deleteResponse = storageApi.Delete(credentials.getClient_id(), guid);
+                DeleteResponse deleteResponse = storageApi.Delete(credentials.getClientId(), guid);
                 deleteResponse = Utils.assertResponse(deleteResponse);
                 // Render view
                 return ok(views.html.sample30.render(true, form));
@@ -69,7 +70,6 @@ public class Sample30 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample30.render(false, form));
     }

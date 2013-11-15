@@ -29,9 +29,9 @@
                         }
                     </p>
                 }
-                @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-                @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-                @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 50)
+                @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 50)
+                @inputText(aForm("basePath"), '_label -> "Base URL", 'size -> 50)
                 <div style="margin: 10px 0px">
                     <div>
                         <input type="radio" value="form" id="IDform" name="sourse" onclick="display('form')" />
@@ -43,10 +43,10 @@
                     </div>
                 </div>
                 <div id="IDformInput">
-                    @inputText(aForm("form_guid"), '_label -> "Form Guid", 'size -> 50)
+                    @inputText(aForm("formGuid"), '_label -> "Form Guid", 'size -> 50)
                 </div>
                 <div id="IDtemplateInput">
-                    @inputText(aForm("template_guid"), '_label -> "Template Guid", 'size -> 50)
+                    @inputText(aForm("templateGuid"), '_label -> "Template Guid", 'size -> 50)
                 </div>
                 @inputText(aForm("email"), '_label -> "Email for notification", 'size -> 50)
                 @inputText(aForm("callbackUrl"), '_label -> "Callback URL", 'size -> 50)

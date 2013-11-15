@@ -32,16 +32,17 @@ public class Sample08 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             Http.MultipartFormData body = request().body().asMultipartFormData();
             String sourse = Utils.getFormValue(body, "sourse");
             int pageNumber = Integer.parseInt(Utils.getFormValue(body, "pageNumber"));
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 //
@@ -52,16 +53,16 @@ public class Sample08 extends Controller {
                 } else if ("url".equals(sourse)) { // Upload file fron URL
                     String url = Utils.getFormValue(body, "url");
                     StorageApi storageApi = new StorageApi();
-                    storageApi.setBasePath(credentials.getServer_type());
-                    UploadResponse response = storageApi.UploadWeb(credentials.getClient_id(), url);
+                    storageApi.setBasePath(credentials.getBasePath());
+                    UploadResponse response = storageApi.UploadWeb(credentials.getClientId(), url);
                     response = Utils.assertResponse(response);
                     guid = response.getResult().getGuid();
                 } else if ("local".equals(sourse)) { // Upload local file
                     Http.MultipartFormData.FilePart file = body.getFile("file");
                     StorageApi storageApi = new StorageApi();
-                    storageApi.setBasePath(credentials.getServer_type());
+                    storageApi.setBasePath(credentials.getBasePath());
                     FileInputStream is = new FileInputStream(file.getFile());
-                    UploadResponse response = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
+                    UploadResponse response = storageApi.Upload(credentials.getClientId(), file.getFilename(), "uploaded", "", new FileStream(is));
                     response = Utils.assertResponse(response);
                     guid = response.getResult().getGuid();
                 }
@@ -69,9 +70,9 @@ public class Sample08 extends Controller {
                 //
                 DocApi api = new DocApi();
                 // Initialize API with base path
-                api.setBasePath(credentials.getServer_type());
+                api.setBasePath(credentials.getBasePath());
                 // Call sample method
-                GetImageUrlsResponse imageUrlsResponse = api.GetDocumentPagesImageUrls(credentials.getClient_id(), guid, pageNumber, 1, "250x350", null, null, null);
+                GetImageUrlsResponse imageUrlsResponse = api.GetDocumentPagesImageUrls(credentials.getClientId(), guid, pageNumber, 1, "250x350", null, null, null);
                 imageUrlsResponse = Utils.assertResponse(imageUrlsResponse);
                 // Render view
                 return ok(views.html.sample08.render(true, imageUrlsResponse.getResult().getUrl(), form));
@@ -80,7 +81,6 @@ public class Sample08 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample08.render(false, null, form));
     }

@@ -37,9 +37,10 @@ public class Sample33 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             Http.MultipartFormData body = request().body().asMultipartFormData();
             String url1 = Utils.getFormValue(body, "url1");
@@ -47,19 +48,19 @@ public class Sample33 extends Controller {
             String url3 = Utils.getFormValue(body, "url3");
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 // Create Api objects
                 StorageApi storageApi = new StorageApi();
                 AsyncApi asyncApi = new AsyncApi();
                 // Set base path
-                storageApi.setBasePath(credentials.getServer_type());
-                asyncApi.setBasePath(credentials.getServer_type());
+                storageApi.setBasePath(credentials.getBasePath());
+                asyncApi.setBasePath(credentials.getBasePath());
 
                 List<String> guids = new ArrayList<String>();
                 for (String url : Arrays.asList(url1, url2, url3)) {
-                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
+                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClientId(), url);
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guids.add(uploadResponse.getResult().getGuid());
                 }
@@ -72,30 +73,34 @@ public class Sample33 extends Controller {
                 jobInfo.setEmail_results(true);
                 jobInfo.setName("Test Job " + Long.toString(org.joda.time.DateTime.now().getMillis()));
                 // Create new job
-                CreateJobResponse createJobResponse = asyncApi.CreateJob(credentials.getClient_id(), jobInfo);
+                CreateJobResponse createJobResponse = asyncApi.CreateJob(credentials.getClientId(), jobInfo);
                 createJobResponse = Utils.assertResponse(createJobResponse);
                 String jobId = Double.toString(createJobResponse.getResult().getJob_id());
                 // Add uploaded documents to job
                 for (String guid : guids) {
                     // Add uploaded documents to job
-                    AddJobDocumentResponse addJobDocumentResponse = asyncApi.AddJobDocument(credentials.getClient_id(), jobId, guid, false, null);
+                    AddJobDocumentResponse addJobDocumentResponse = asyncApi.AddJobDocument(credentials.getClientId(), jobId, guid, false, null);
                     addJobDocumentResponse = Utils.assertResponse(addJobDocumentResponse);
                 }
                 // Change job status
                 jobInfo.setStatus("0");
                 // Update job with new status
-                UpdateJobResponse updateJobResponse = asyncApi.UpdateJob(credentials.getClient_id(), jobId, jobInfo);
+                UpdateJobResponse updateJobResponse = asyncApi.UpdateJob(credentials.getClientId(), jobId, jobInfo);
                 updateJobResponse = Utils.assertResponse(updateJobResponse);
                 // Delay for server proccesing
-                Thread.sleep(5000);
                 // Get result document guid from job
-                GetJobDocumentsResponse getJobDocumentsResponse = asyncApi.GetJobDocuments(credentials.getClient_id(), jobId, null);
-                getJobDocumentsResponse = Utils.assertResponse(getJobDocumentsResponse);
+                GetJobDocumentsResponse getJobDocumentsResponse = null;
+                int count = 10;
+                do {
+                    Thread.sleep(5000);
+                    getJobDocumentsResponse = asyncApi.GetJobDocuments(credentials.getClientId(), jobId, null);
+                    getJobDocumentsResponse = Utils.assertResponse(getJobDocumentsResponse);
+                } while ("Inprogress".equalsIgnoreCase(getJobDocumentsResponse.getResult().getJob_status()) && (count--) > 0);
                 //
-                String server = credentials.getServer_type().substring(0, credentials.getServer_type().indexOf(".com") + 4).replace("api", "apps");
+                String server = credentials.getBasePath().substring(0, credentials.getBasePath().indexOf(".com") + 4).replace("api", "apps");
                 String iframeUrl = server + "/document-viewer/embed/" + getJobDocumentsResponse.getResult().getOutputs().get(0).getGuid();
                 //
-                GroupDocsRequestSigner groupDocsRequestSigner = new GroupDocsRequestSigner(credentials.getPrivate_key());
+                GroupDocsRequestSigner groupDocsRequestSigner = new GroupDocsRequestSigner(credentials.getPrivateKey());
                 String signedIframeUrl = groupDocsRequestSigner.signUrl(iframeUrl);
 
                 // Render view
@@ -105,7 +110,6 @@ public class Sample33 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample33.render(false, null, form));
     }

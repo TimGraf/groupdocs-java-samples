@@ -26,20 +26,21 @@ public class Sample02 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 //
                 StorageApi storageApi = new StorageApi();
                 // Initialize API with base path
-                storageApi.setBasePath(credentials.getServer_type());
+                storageApi.setBasePath(credentials.getBasePath());
                 // Call sample method
-                ListEntitiesResponse listEntitiesResponse = storageApi.ListEntities(credentials.getClient_id(), "", null, null, null, null, null, null, null);
+                ListEntitiesResponse listEntitiesResponse = storageApi.ListEntities(credentials.getClientId(), "", null, null, null, null, null, null, null);
                 // Check response status
                 listEntitiesResponse = Utils.assertResponse(listEntitiesResponse);
 
@@ -50,7 +51,6 @@ public class Sample02 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample02.render(false, null, form));
     }

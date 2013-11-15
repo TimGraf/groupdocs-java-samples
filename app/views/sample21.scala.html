@@ -28,9 +28,9 @@
                         }
                     </p>
                 }
-                @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-                @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-                @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 50)
+                @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 50)
+                @inputText(aForm("basePath"), '_label -> "Base URL", 'size -> 50)
                 @inputText(aForm("email"), '_label -> "Recipient Email", 'size -> 50, 'required -> true)
                 @inputText(aForm("name"), '_label -> "First Name", 'size -> 50, 'required -> true)
                 @inputText(aForm("lastName"), '_label -> "Last Name", 'size -> 50, 'required -> true)
@@ -44,13 +44,13 @@
                         <label for="IDfilePartRadio" class="file-choice-label">Local file</label>
                     </div>
                     <div id="guid">
-                    @inputText(aForm("fileId"), '_label -> "Document to sign", 'size -> 50, 'required -> true, 'id -> "guidfield")
+                    @inputText(aForm("fileId"), '_label -> "Document to sign", 'size -> 50, 'required -> true, 'id -> "guidField")
                     </div>
                     <div id="url">
-                    @inputText(aForm("url"), '_label -> "File Url", 'size -> 50, 'required -> true, 'id -> "urlfield")
+                    @inputText(aForm("url"), '_label -> "File Url", 'size -> 50, 'required -> true, 'id -> "urlField")
                     </div>
                     <div id="local">
-                    @inputFile(aForm("file"), '_label -> "Select file", 'required -> true, 'id -> "filefield")
+                    @inputFile(aForm("file"), '_label -> "Select file", 'required -> true, 'id -> "fileField")
                     </div>
                 </div>
                 @inputText(aForm("callbackUrl"), '_label -> "Callback URL", 'size -> 50)
@@ -79,7 +79,7 @@
     $.getJSON('/checkCallbackStatus', function(data) {
     console.log(data);
     if(data.status){
-    $("#results_status").html(data.message);
+    $("#resultsStatus").html(data.message);
 } else
 {
     setTimeout(checkCallbackStatus, 10000);

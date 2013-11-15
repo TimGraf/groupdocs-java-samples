@@ -32,9 +32,10 @@ public class Sample23 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             Http.MultipartFormData body = request().body().asMultipartFormData();
             String width = Utils.getFormValue(body, "width");
@@ -42,7 +43,7 @@ public class Sample23 extends Controller {
             String sourse = Utils.getFormValue(body, "sourse");
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 //
@@ -54,8 +55,8 @@ public class Sample23 extends Controller {
                     String url = Utils.getFormValue(body, "url");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
-                    storageApi.setBasePath(credentials.getServer_type());
-                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
+                    storageApi.setBasePath(credentials.getBasePath());
+                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClientId(), url);
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
@@ -63,9 +64,9 @@ public class Sample23 extends Controller {
                     Http.MultipartFormData.FilePart file = body.getFile("file");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
-                    storageApi.setBasePath(credentials.getServer_type());
+                    storageApi.setBasePath(credentials.getBasePath());
                     FileInputStream is = new FileInputStream(file.getFile());
-                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), "uploaded", "", new FileStream(is));
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
@@ -74,9 +75,9 @@ public class Sample23 extends Controller {
                 // Create DocApi object
                 DocApi docApi = new DocApi();
                 // Initialize API with base path
-                docApi.setBasePath(credentials.getServer_type());
+                docApi.setBasePath(credentials.getBasePath());
                 // Get document metadata
-                GetImageUrlsResponse viewDocumentResponse = docApi.GetDocumentPagesImageUrls(credentials.getClient_id(), guid, 0, 1, "650x500", null, null, null);
+                GetImageUrlsResponse viewDocumentResponse = docApi.GetDocumentPagesImageUrls(credentials.getClientId(), guid, 0, 1, "650x500", null, null, null);
                 // Check response status
                 viewDocumentResponse = Utils.assertResponse(viewDocumentResponse);
                 String image = "";
@@ -90,7 +91,6 @@ public class Sample23 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample23.render(false, null, form));
     }

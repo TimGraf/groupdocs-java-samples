@@ -34,21 +34,22 @@ public class Sample04 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             Http.MultipartFormData body = request().body().asMultipartFormData();
             String fileData = Utils.getFormValue(body.asFormUrlEncoded(), "fileData");
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 //
                 StorageApi storageApi = new StorageApi();
                 // Initialize API with base path
-                storageApi.setBasePath(credentials.getServer_type());
+                storageApi.setBasePath(credentials.getBasePath());
                 //
                 String guid = null;
                 //
@@ -56,22 +57,22 @@ public class Sample04 extends Controller {
                     guid = Utils.getFormValue(body.asFormUrlEncoded(), "fileId");
                 } else if ("IDfileUrl".equals(fileData)) { // Upload file fron URL
                     String fileUrl = Utils.getFormValue(body.asFormUrlEncoded(), "fileUrl");
-                    UploadResponse response = storageApi.UploadWeb(credentials.getClient_id(), fileUrl);
+                    UploadResponse response = storageApi.UploadWeb(credentials.getClientId(), fileUrl);
                     response = Utils.assertResponse(response);
                     guid = response.getResult().getGuid();
                 } else if ("IDfilePart".equals(fileData)) { // Upload local file
                     Http.MultipartFormData.FilePart filePart = body.getFile("filePart");
                     FileInputStream is = new FileInputStream(filePart.getFile());
-                    UploadResponse response = storageApi.Upload(credentials.getClient_id(), filePart.getFilename(), "uploaded", "", new FileStream(is));
+                    UploadResponse response = storageApi.Upload(credentials.getClientId(), filePart.getFilename(), "uploaded", "", new FileStream(is));
                     response = Utils.assertResponse(response);
                     guid = response.getResult().getGuid();
                 }
                 guid = Utils.assertNotNull(guid);
-                String fileName = Utils.getFileNameByGuid(credentials.getClient_id(), credentials.getPrivate_key(), credentials.getServer_type(), guid);
+                String fileName = Utils.getFileNameByGuid(credentials.getClientId(), credentials.getPrivateKey(), credentials.getBasePath(), guid);
                 //
                 SharedApi sharedApi = new SharedApi();
                 // Initialize API with base path
-                sharedApi.setBasePath(credentials.getServer_type());
+                sharedApi.setBasePath(credentials.getBasePath());
                 // Download file from storage
                 FileStream fileStream = sharedApi.Download(guid, fileName, false);
                 fileStream = Utils.assertNotNull(fileStream);
@@ -95,7 +96,6 @@ public class Sample04 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample04.render(false, null, form));
     }

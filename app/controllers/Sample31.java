@@ -38,12 +38,13 @@ public class Sample31 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             Http.MultipartFormData body = request().body().asMultipartFormData();
-            String template_guid = Utils.getFormValue(body, "template_guid");
+            String templateGuid = Utils.getFormValue(body, "templateGuid");
             String callbackUrl = Utils.getFormValue(body, "callbackUrl");
             String email = Utils.getFormValue(body, "email");
             String name = Utils.getFormValue(body, "name");
@@ -52,7 +53,7 @@ public class Sample31 extends Controller {
             String street = Utils.getFormValue(body, "street");
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 //
@@ -91,28 +92,28 @@ public class Sample31 extends Controller {
 
                 MergeApi mergeApi = new MergeApi();
                 // Initialize API with base path
-                mergeApi.setBasePath(credentials.getServer_type());
+                mergeApi.setBasePath(credentials.getBasePath());
 
                 // Add DataSource to GroupDocs
-                AddDatasourceResponse addDatasourceResponse = mergeApi.AddDataSource(credentials.getClient_id(), datasource);
+                AddDatasourceResponse addDatasourceResponse = mergeApi.AddDataSource(credentials.getClientId(), datasource);
                 // Check response status
                 addDatasourceResponse = Utils.assertResponse(addDatasourceResponse);
 
                 // If status ok merge Datasource to new pdf file
-                MergeTemplateResponse mergeTemplateResponse = mergeApi.MergeDatasource(credentials.getClient_id(), template_guid, Double.toString(addDatasourceResponse.getResult().getDatasource_id()), "pdf", null);
+                MergeTemplateResponse mergeTemplateResponse = mergeApi.MergeDatasource(credentials.getClientId(), templateGuid, Double.toString(addDatasourceResponse.getResult().getDatasource_id()), "pdf", null);
                 // Check response status
                 mergeTemplateResponse = Utils.assertResponse(mergeTemplateResponse);
 
                 AsyncApi asyncApi = new AsyncApi();
                 // Initialize API with base path
-                asyncApi.setBasePath(credentials.getServer_type());
+                asyncApi.setBasePath(credentials.getBasePath());
 
                 GetJobDocumentsResponse jobDocumentsResponse = null;
                 for (int n = 0; n < 5; n++) {
                     // Delay necessary that the inquiry would manage to be processed
                     Thread.sleep(2000);
                     // Make request to api for get document info by job id
-                    jobDocumentsResponse = asyncApi.GetJobDocuments(credentials.getClient_id(), Double.toString(mergeTemplateResponse.getResult().getJob_id()), null);
+                    jobDocumentsResponse = asyncApi.GetJobDocuments(credentials.getClientId(), Double.toString(mergeTemplateResponse.getResult().getJob_id()), null);
                     // Check response status
                     jobDocumentsResponse = Utils.assertResponse(jobDocumentsResponse);
                     // Check job status, if status is Completed or Archived exit from cycle
@@ -138,9 +139,9 @@ public class Sample31 extends Controller {
 
                 SignatureApi signatureApi = new SignatureApi();
                 // Initialize API with base path
-                signatureApi.setBasePath(credentials.getServer_type());
+                signatureApi.setBasePath(credentials.getBasePath());
 
-                SignatureEnvelopeResponse signatureEnvelopeResponse = signatureApi.CreateSignatureEnvelope(credentials.getClient_id(), fileName, null, null, null, null, null);
+                SignatureEnvelopeResponse signatureEnvelopeResponse = signatureApi.CreateSignatureEnvelope(credentials.getClientId(), fileName, null, null, null, null, null);
                 // Check response status
                 signatureEnvelopeResponse = Utils.assertResponse(signatureEnvelopeResponse);
                 String envilopeId = signatureEnvelopeResponse.getResult().getEnvelope().getId();
@@ -148,12 +149,12 @@ public class Sample31 extends Controller {
                 Thread.sleep(5000);
 
                 // Add uploaded document to envelope
-                SignatureEnvelopeDocumentResponse signatureEnvelopeDocumentResponse = signatureApi.AddSignatureEnvelopeDocument(credentials.getClient_id(), envilopeId, guid, null, null);
+                SignatureEnvelopeDocumentResponse signatureEnvelopeDocumentResponse = signatureApi.AddSignatureEnvelopeDocument(credentials.getClientId(), envilopeId, guid, null, null);
                 // Check response status
                 signatureEnvelopeDocumentResponse = Utils.assertResponse(signatureEnvelopeDocumentResponse);
 
                 // Get role list for curent user
-                SignatureRolesResponse signatureRolesResponse = signatureApi.GetRolesList(credentials.getClient_id(), null);
+                SignatureRolesResponse signatureRolesResponse = signatureApi.GetRolesList(credentials.getClientId(), null);
                 // Check response status
                 signatureRolesResponse = Utils.assertResponse(signatureRolesResponse);
 
@@ -171,22 +172,22 @@ public class Sample31 extends Controller {
                 SignatureFieldSettingsInfo signatureFieldSettings = new SignatureFieldSettingsInfo();
                 signatureFieldSettings.setName(fieldName);
 
-                SignatureFieldResponse signatureFieldResponse = signatureApi.CreateSignatureField(credentials.getClient_id(), signatureFieldSettings);
+                SignatureFieldResponse signatureFieldResponse = signatureApi.CreateSignatureField(credentials.getClientId(), signatureFieldSettings);
                 // Check response status
                 signatureFieldResponse = Utils.assertResponse(signatureFieldResponse);
 
                 // Add recipient to envelope
-                SignatureEnvelopeRecipientResponse signatureEnvelopeRecipientResponse = signatureApi.AddSignatureEnvelopeRecipient(credentials.getClient_id(), envilopeId, "sample@example.com", "test", "test", roleId, null);
+                SignatureEnvelopeRecipientResponse signatureEnvelopeRecipientResponse = signatureApi.AddSignatureEnvelopeRecipient(credentials.getClientId(), envilopeId, "sample@example.com", "test", "test", roleId, null);
                 // Check response status
                 signatureEnvelopeRecipientResponse = Utils.assertResponse(signatureEnvelopeRecipientResponse);
 
                 // Get recipient id
-                SignatureEnvelopeRecipientsResponse signatureEnvelopeRecipientsResponse = signatureApi.GetSignatureEnvelopeRecipients(credentials.getClient_id(), envilopeId);
+                SignatureEnvelopeRecipientsResponse signatureEnvelopeRecipientsResponse = signatureApi.GetSignatureEnvelopeRecipients(credentials.getClientId(), envilopeId);
                 // Check response status
                 signatureEnvelopeRecipientsResponse = Utils.assertResponse(signatureEnvelopeRecipientsResponse);
 
                 String recipientId = signatureEnvelopeRecipientsResponse.getResult().getRecipients().get(0).getId();
-                SignatureEnvelopeDocumentsResponse envelopeDocumentsResponse = signatureApi.GetSignatureEnvelopeDocuments(credentials.getClient_id(), envilopeId);
+                SignatureEnvelopeDocumentsResponse envelopeDocumentsResponse = signatureApi.GetSignatureEnvelopeDocuments(credentials.getClientId(), envilopeId);
                 // Check response status
                 envelopeDocumentsResponse = Utils.assertResponse(envelopeDocumentsResponse);
 
@@ -199,17 +200,17 @@ public class Sample31 extends Controller {
                 signatureEnvelopeFieldSettings.setForceNewField(true);
                 signatureEnvelopeFieldSettings.setPage(1);
 
-                SignatureEnvelopeFieldsResponse signatureEnvelopeFieldsResponse = signatureApi.AddSignatureEnvelopeField(credentials.getClient_id(), envilopeId, envelopeDocumentsResponse.getResult().getDocuments().get(0).getDocumentId(), recipientId, "0545e589fb3e27c9bb7a1f59d0e3fcb9", signatureEnvelopeFieldSettings);
+                SignatureEnvelopeFieldsResponse signatureEnvelopeFieldsResponse = signatureApi.AddSignatureEnvelopeField(credentials.getClientId(), envilopeId, envelopeDocumentsResponse.getResult().getDocuments().get(0).getDocumentId(), recipientId, "0545e589fb3e27c9bb7a1f59d0e3fcb9", signatureEnvelopeFieldSettings);
                 // Check response status
                 signatureEnvelopeFieldsResponse = Utils.assertResponse(signatureEnvelopeFieldsResponse);
 
                 WebhookInfo webhookInfo = new WebhookInfo();
                 webhookInfo.setCallbackUrl(callbackUrl);
-                SignatureEnvelopeSendResponse signatureEnvelopeSendResponse = signatureApi.SignatureEnvelopeSend(credentials.getClient_id(), envilopeId, webhookInfo);
+                SignatureEnvelopeSendResponse signatureEnvelopeSendResponse = signatureApi.SignatureEnvelopeSend(credentials.getClientId(), envilopeId, webhookInfo);
                 // Check response status
                 signatureEnvelopeSendResponse = Utils.assertResponse(signatureEnvelopeSendResponse);
 
-                String server = credentials.getServer_type().substring(0, credentials.getServer_type().indexOf(".com") + 4).replace("api", "apps");
+                String server = credentials.getBasePath().substring(0, credentials.getBasePath().indexOf(".com") + 4).replace("api", "apps");
                 String frameUrl = server + "/signature2/signembed/" + envilopeId + "/" + recipientId;
 
                 // Render view
@@ -219,7 +220,6 @@ public class Sample31 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample31.render(false, null, form));
     }

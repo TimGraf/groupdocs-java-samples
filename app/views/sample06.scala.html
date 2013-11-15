@@ -13,7 +13,7 @@
     <h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 6</h3>
 
     <div class='samplecontent' style="padding:10px;">
-        <i>This sample will show how to use StorageApi to upload file to GroupDocs using Java SDK</i> <br/>
+        <i>This sample will show how to add a Signature to a document in GroupDocs Signature using Java SDK</i> <br/>
     <br />
         <a href="@routes.Assets.at("docs/Sample06.html")">Docs for this sample</a>
     <br />
@@ -29,11 +29,11 @@
                         }
                     </p>
                 }
-                @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-                @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-                @inputFile(aForm("fi_document"), '_label -> "Document to sign", 'required -> true)
-                @inputFile(aForm("fi_signature"), '_label -> "Signature image", 'required -> true)
-                @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 50)
+                @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 50)
+                @inputFile(aForm("fiDocument"), '_label -> "Document to sign", 'required -> true)
+                @inputFile(aForm("fiSignature"), '_label -> "Signature image", 'required -> true)
+                @inputText(aForm("basePath"), '_label -> "Base URL", 'size -> 50)
                 <input type="submit" id='btnLoad' value="Make Request">
             }
         </div>
@@ -42,7 +42,7 @@
             <br/>
             <div style="padding:20px; border:1px solid black;">
                 <p>
-                    Results: <span id="results_status" style="color:red;display:none;">
+                    Results: <span id="resultsStatus" style="color:red;display:none;">
                     (Please wait for ajax response)
                 </span>
                 </p>

@@ -19,9 +19,9 @@
     @if(aForm != null) {
         <br/>
         <p>You entered:</p>
-        <p>ClientID = @aForm.data.get("client_id")</p>
-        <p>PrivateKey = @aForm.data.get("private_key")</p>
-        <p>Base path = @aForm.data.get("server_type")</p>
+        <p>ClientID = @aForm.data.get("clientId")</p>
+        <p>PrivateKey = @aForm.data.get("privateKey")</p>
+        <p>Base path = @aForm.data.get("basePath")</p>
     }
     <br/>
     <div id="requestForm" style="padding:20px; border:1px solid black;">
@@ -36,8 +36,8 @@
                     }
                 </p>
             }
-            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-            @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
+            @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 50)
+            @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 50)
             <div id="GuidDiv" style="margin-top: 10px">
             <input type="radio" name="sourse" value="guid" id="GuidInput" checked/>
                 <label for="GuidInput">File ID (GUID)</label>
@@ -52,53 +52,53 @@
             </div>
 
             <div id="guidBlock" style="display: block;">
-            @inputText(aForm("srcPath"), '_label -> "GUID", 'id -> "guidfield", 'size -> 50, 'required -> true)
+            @inputText(aForm("srcPath"), '_label -> "GUID", 'id -> "guidField", 'size -> 50, 'required -> true)
             </div>
             <div id="fileBlock" style="display: none;">
-            @inputFile(aForm("file"), '_label -> "Local File", 'id -> "filefield", 'required -> true)
+            @inputFile(aForm("file"), '_label -> "Local File", 'id -> "fileField", 'required -> true)
             </div>
             <div id="urlBlock" style="display: none;">
-            @inputText(aForm("url"), '_label -> "File URL", 'id -> "urlfield", 'size -> 50, 'required -> true)
+            @inputText(aForm("url"), '_label -> "File URL", 'id -> "urlField", 'size -> 50, 'required -> true)
             </div>
             @inputText(aForm("destPath"), '_label -> "Destination folder", 'size -> 50, 'required -> true)
-            @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+            @inputText(aForm("basePath"), '_label -> "Base URL", 'size -> 50)
             <input type="submit" name="copy" value="Copy"/>
             <input type="submit" name="move" value="Move"/>
         }
     </div>
 
     @if(success && action == "move") {
-        <h4><span style="color: green">File was <font color="blue">Move'ed</font> to the @moveResult.getDst_file.getDocument_path folder</span></h4>
+        <h4><span style="color: green">File was <span style="color:blue">Move'ed</span> to the @moveResult.getDst_file.getDocument_path folder</span></h4>
     }
     @if(success && action == "copy") {
-        <h4><span style="color: green">File was <font color="blue">Copy'ed</font> to the @moveResult.getDst_file.getDocument_path folder</span></h4>
+        <h4><span style="color: green">File was <span style="color:blue">Copy'ed</span> to the @moveResult.getDst_file.getDocument_path folder</span></h4>
     }
     <br/>
     <script type="text/javascript" language="JavaScript">
     (function (){
     document.getElementById('GuidDiv').onclick = function (){
     document.getElementById('guidBlock').style.display = 'block';
-    document.getElementById('guidfield').setAttribute('required', 'required');
+    document.getElementById('guidField').setAttribute('required', 'required');
     document.getElementById('fileBlock').style.display = 'none';
-    document.getElementById('filefield').removeAttribute('required');
+    document.getElementById('fileField').removeAttribute('required');
     document.getElementById('urlBlock').style.display = 'none';
-    document.getElementById('urlfield').removeAttribute('required');
+    document.getElementById('urlField').removeAttribute('required');
 } ;
     document.getElementById('LocalDiv').onclick = function (){
     document.getElementById('fileBlock').style.display = 'block';
-    document.getElementById('filefield').setAttribute('required', 'required');
+    document.getElementById('fileField').setAttribute('required', 'required');
     document.getElementById('guidBlock').style.display = 'none';
-    document.getElementById('guidfield').removeAttribute('required');
+    document.getElementById('guidField').removeAttribute('required');
     document.getElementById('urlBlock').style.display = 'none';
-    document.getElementById('urlfield').removeAttribute('required');
+    document.getElementById('urlField').removeAttribute('required');
     };
     document.getElementById('UrlDiv').onclick = function (){
     document.getElementById('urlBlock').style.display = 'block';
-    document.getElementById('urlfield').setAttribute('required', 'required');
+    document.getElementById('urlField').setAttribute('required', 'required');
     document.getElementById('guidBlock').style.display = 'none';
-    document.getElementById('guidfield').removeAttribute('required');
+    document.getElementById('guidField').removeAttribute('required');
     document.getElementById('fileBlock').style.display = 'none';
-    document.getElementById('filefield').removeAttribute('required');
+    document.getElementById('fileField').removeAttribute('required');
     };
     document.getElementById('GuidDiv').onclick();
     })();

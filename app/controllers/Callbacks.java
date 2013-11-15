@@ -34,7 +34,7 @@ import java.io.FileOutputStream;
  */
 public class Callbacks extends Controller {
 
-    public static Result convert_callback() {
+    public static Result convertCallback() {
         try {
             FileInputStream fileInputStream = new FileInputStream(Sample18.USER_INFO_FILE);
             DataInputStream dataInputStream = new DataInputStream(fileInputStream);
@@ -83,7 +83,7 @@ public class Callbacks extends Controller {
         return ok("");
     }
 
-    public static Result compare_callback() {
+    public static Result compareCallback() {
         try {
             FileInputStream fileInputStream = new FileInputStream(Sample19.USER_INFO_FILE);
             DataInputStream dataInputStream = new DataInputStream(fileInputStream);
@@ -132,7 +132,7 @@ public class Callbacks extends Controller {
     }
 
 
-    public static Result signature_callback() {
+    public static Result signatureCallback() {
         try {
             FileInputStream fileInputStream = new FileInputStream(Sample21.USER_INFO_FILE);
             DataInputStream dataInputStream = new DataInputStream(fileInputStream);
@@ -182,7 +182,7 @@ public class Callbacks extends Controller {
         return ok("");
     }
 
-    public static Result publish_callback() throws Exception{
+    public static Result publishCallback() throws Exception{
         FileInputStream fileInputStream = new FileInputStream(Sample32.USER_INFO_FILE);
         DataInputStream dataInputStream = new DataInputStream(fileInputStream);
         String data = dataInputStream.readUTF();

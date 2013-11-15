@@ -27,24 +27,25 @@ public class Sample20 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             Http.MultipartFormData body = request().body().asMultipartFormData();
-            String file_id = Utils.getFormValue(body, "resultFileId");
+            String fileId = Utils.getFormValue(body, "resultFileId");
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 //
-                file_id = Utils.assertNotNull(file_id);
+                fileId = Utils.assertNotNull(fileId);
                 // Create StorageApi object
                 ComparisonApi api = new ComparisonApi();
                 // Initialize API with base path
-                api.setBasePath(credentials.getServer_type());
-                ChangesResponse changesResponse = api.GetChanges(credentials.getClient_id(), file_id);
+                api.setBasePath(credentials.getBasePath());
+                ChangesResponse changesResponse = api.GetChanges(credentials.getClientId(), fileId);
                 // Check response status
                 changesResponse = Utils.assertResponse(changesResponse);
                 // Render view
@@ -54,7 +55,6 @@ public class Sample20 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample20.render(false, null, form));
     }

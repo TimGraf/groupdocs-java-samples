@@ -31,25 +31,26 @@ public class Sample34 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             Http.MultipartFormData body = request().body().asMultipartFormData();
             String folder = Utils.getFormValue(body.asFormUrlEncoded(), "folder");
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 //
                 StorageApi storageApi = new StorageApi();
                 // Initialize API with base path
-                storageApi.setBasePath(credentials.getServer_type());
+                storageApi.setBasePath(credentials.getBasePath());
                 //
                 folder = folder.replaceAll("\\\\", "/");
                 // Create folder with provided name
-                CreateFolderResponse createFolderResponse = storageApi.Create(credentials.getClient_id(), folder);
+                CreateFolderResponse createFolderResponse = storageApi.Create(credentials.getClientId(), folder);
                 // Check response status
                 createFolderResponse = Utils.assertResponse(createFolderResponse);
                 //
@@ -61,7 +62,6 @@ public class Sample34 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample34.render(false, null, form));
     }

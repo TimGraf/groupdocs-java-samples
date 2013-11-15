@@ -39,16 +39,17 @@ public class Sample19 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             Http.MultipartFormData body = request().body().asMultipartFormData();
             String sourse = Utils.getFormValue(body, "sourse");
             String callbackUrl = Utils.getFormValue(body, "callbackUrl");
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 //
@@ -60,8 +61,8 @@ public class Sample19 extends Controller {
                     String url = Utils.getFormValue(body, "url");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
-                    storageApi.setBasePath(credentials.getServer_type());
-                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
+                    storageApi.setBasePath(credentials.getBasePath());
+                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClientId(), url);
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     sourseGuid = uploadResponse.getResult().getGuid();
@@ -69,9 +70,9 @@ public class Sample19 extends Controller {
                     Http.MultipartFormData.FilePart file = body.getFile("local");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
-                    storageApi.setBasePath(credentials.getServer_type());
+                    storageApi.setBasePath(credentials.getBasePath());
                     FileInputStream is = new FileInputStream(file.getFile());
-                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), "uploaded", "", new FileStream(is));
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     sourseGuid = uploadResponse.getResult().getGuid();
@@ -82,11 +83,11 @@ public class Sample19 extends Controller {
                 if ("guid".equals(sourse)) { // File GUID
                     targetGuid = Utils.getFormValue(body, "targetFileId");
                 } else if ("url".equals(sourse)) { // Upload file fron URL
-                    String url = Utils.getFormValue(body, "target_url");
+                    String url = Utils.getFormValue(body, "targetUrl");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
-                    storageApi.setBasePath(credentials.getServer_type());
-                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
+                    storageApi.setBasePath(credentials.getBasePath());
+                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClientId(), url);
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     targetGuid = uploadResponse.getResult().getGuid();
@@ -94,9 +95,9 @@ public class Sample19 extends Controller {
                     Http.MultipartFormData.FilePart file = body.getFile("target_local");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
-                    storageApi.setBasePath(credentials.getServer_type());
+                    storageApi.setBasePath(credentials.getBasePath());
                     FileInputStream is = new FileInputStream(file.getFile());
-                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), "uploaded", "", new FileStream(is));
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     targetGuid = uploadResponse.getResult().getGuid();
@@ -106,20 +107,20 @@ public class Sample19 extends Controller {
 
                 ComparisonApi api = new ComparisonApi();
                 // Initialize API with base path
-                api.setBasePath(credentials.getServer_type());
+                api.setBasePath(credentials.getBasePath());
                 callbackUrl = callbackUrl == null ? "" : callbackUrl;
 
-                CompareResponse compareResponse = api.Compare(credentials.getClient_id(), sourseGuid, targetGuid, callbackUrl);
+                CompareResponse compareResponse = api.Compare(credentials.getClientId(), sourseGuid, targetGuid, callbackUrl);
                 compareResponse = Utils.assertResponse(compareResponse);
 
                 AsyncApi asyncApi = new AsyncApi();
                 // Initialize API with base path
-                asyncApi.setBasePath(credentials.getServer_type());
+                asyncApi.setBasePath(credentials.getBasePath());
                 //
                 GetJobDocumentsResponse jobDocumentsResponse = null;
                 do {
                     Thread.sleep(5000);
-                    jobDocumentsResponse = asyncApi.GetJobDocuments(credentials.getClient_id(), compareResponse.getResult().getJob_id().toString(), "");
+                    jobDocumentsResponse = asyncApi.GetJobDocuments(credentials.getClientId(), compareResponse.getResult().getJob_id().toString(), "");
                     jobDocumentsResponse = Utils.assertResponse(jobDocumentsResponse);
                 } while ("Inprogress".equalsIgnoreCase(jobDocumentsResponse.getResult().getJob_status()));
                 String resultGuid = jobDocumentsResponse.getResult().getOutputs().get(0).getGuid();
@@ -127,8 +128,8 @@ public class Sample19 extends Controller {
 
                 MgmtApi mgmtApi = new MgmtApi();
                 // Initialize API with base path
-                mgmtApi.setBasePath(credentials.getServer_type());
-                GetUserEmbedKeyResponse userEmbedKeyResponse = mgmtApi.GetUserEmbedKey(credentials.getClient_id(), "comparison");
+                mgmtApi.setBasePath(credentials.getBasePath());
+                GetUserEmbedKeyResponse userEmbedKeyResponse = mgmtApi.GetUserEmbedKey(credentials.getClientId(), "comparison");
                 Utils.assertResponse(userEmbedKeyResponse);
                 String compareKey = userEmbedKeyResponse.getResult().getKey().getGuid();
 
@@ -136,18 +137,18 @@ public class Sample19 extends Controller {
                 DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
 
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(credentials.getClient_id());
+                stringBuilder.append(credentials.getClientId());
                 stringBuilder.append("|");
-                stringBuilder.append(credentials.getPrivate_key());
+                stringBuilder.append(credentials.getPrivateKey());
                 stringBuilder.append("|");
-                stringBuilder.append(credentials.getServer_type());
+                stringBuilder.append(credentials.getBasePath());
 
                 dataOutputStream.writeUTF(stringBuilder.toString());
 
                 dataOutputStream.flush();
                 fileOutputStream.close();
 
-                String server = credentials.getServer_type().substring(0, credentials.getServer_type().indexOf(".com") + 4).replace("api", "apps");
+                String server = credentials.getBasePath().substring(0, credentials.getBasePath().indexOf(".com") + 4).replace("api", "apps");
 
                 // Render view
                 return ok(views.html.sample19.render(true, resultGuid, compareKey, server, form));
@@ -156,7 +157,6 @@ public class Sample19 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample19.render(false, null, null, null, form));
     }

@@ -19,9 +19,9 @@
     @if(aForm != null) {
         <br/>
         <p>You entered:</p>
-        <p>ClientID = @aForm.data.get("client_id")</p>
-        <p>PrivateKey = @aForm.data.get("private_key")</p>
-        <p>Base path = @aForm.data.get("server_type")</p>
+        <p>ClientID = @aForm.data.get("clientId")</p>
+        <p>PrivateKey = @aForm.data.get("privateKey")</p>
+        <p>Base path = @aForm.data.get("basePath")</p>
     }
     <br/>
     <div id="requestForm" style="padding:20px; border:1px solid black;">
@@ -35,9 +35,9 @@
                     }
                 </p>
             }
-            @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-            @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-            @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+            @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 50)
+            @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 50)
+            @inputText(aForm("basePath"), '_label -> "Base URL", 'size -> 50)
             <input type="submit" value="Make Request">
         }
     </div>

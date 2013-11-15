@@ -32,9 +32,9 @@
                         }
                     </p>
                 }
-                @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-                @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-                @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 50)
+                @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 50)
+                @inputText(aForm("basePath"), '_label -> "Base URL", 'size -> 50)
                 <div>
                     <div id="IDtypeChoice" class="file-choice-block">
                     <input type="radio" value="guid" onclick="" id="IDfileIdRadio" name="sourse"/>
@@ -62,7 +62,7 @@
         @if(success) {
             <div style="padding:20px; border:1px solid black;">
                 <p>Results:</p>
-                <iframe src='https://apps.groupdocs.com/assembly2/questionnaire-assembly/ @guid' width='600' height='650'></iframe>
+                <iframe src='https://apps.groupdocs.com/assembly2/questionnaire-assembly/@guid' width='600' height='650'></iframe>
             </div>
         }
     </div>

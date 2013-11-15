@@ -29,20 +29,21 @@ public class Sample07 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 //
                 StorageApi storageApi = new StorageApi();
                 // Initialize API with base path
-                storageApi.setBasePath(credentials.getServer_type());
+                storageApi.setBasePath(credentials.getBasePath());
                 // Get all Entities with thumbnails from current user
-                ListEntitiesResponse response = storageApi.ListEntities(credentials.getClient_id(), "", null, null, null, null, null, null, true);
+                ListEntitiesResponse response = storageApi.ListEntities(credentials.getClientId(), "", null, null, null, null, null, null, true);
                 // Check request status
                 response = Utils.assertResponse(response);
                 // Get all files
@@ -54,7 +55,6 @@ public class Sample07 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample07.render(false, null, form));
     }

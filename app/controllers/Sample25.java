@@ -38,9 +38,10 @@ public class Sample25 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             Http.MultipartFormData body = request().body().asMultipartFormData();
             String width = Utils.getFormValue(body, "width");
@@ -48,7 +49,7 @@ public class Sample25 extends Controller {
             String sourse = Utils.getFormValue(body, "sourse");
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 //
@@ -60,8 +61,8 @@ public class Sample25 extends Controller {
                     String url = Utils.getFormValue(body, "url");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
-                    storageApi.setBasePath(credentials.getServer_type());
-                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
+                    storageApi.setBasePath(credentials.getBasePath());
+                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClientId(), url);
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
@@ -69,9 +70,9 @@ public class Sample25 extends Controller {
                     Http.MultipartFormData.FilePart file = body.getFile("file");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
-                    storageApi.setBasePath(credentials.getServer_type());
+                    storageApi.setBasePath(credentials.getBasePath());
                     FileInputStream is = new FileInputStream(file.getFile());
-                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), "uploaded", "", new FileStream(is));
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
@@ -80,9 +81,9 @@ public class Sample25 extends Controller {
 
                 DocApi docApi = new DocApi();
                 // Initialize API with base path
-                docApi.setBasePath(credentials.getServer_type());
+                docApi.setBasePath(credentials.getBasePath());
                 // Get all fields from template
-                TemplateFieldsResponse templateFieldsResponse = docApi.GetTemplateFields(credentials.getClient_id(), guid, false);
+                TemplateFieldsResponse templateFieldsResponse = docApi.GetTemplateFields(credentials.getClientId(), guid, false);
                 // Check response status
                 templateFieldsResponse = Utils.assertResponse(templateFieldsResponse);
                 // Create DataSource object
@@ -107,13 +108,13 @@ public class Sample25 extends Controller {
 
                 MergeApi mergeApi = new MergeApi();
                 // Initialize API with base path
-                mergeApi.setBasePath(credentials.getServer_type());
+                mergeApi.setBasePath(credentials.getBasePath());
                 // Add DataSource to the GroupDocs
-                AddDatasourceResponse addDataSource = mergeApi.AddDataSource(credentials.getClient_id(), dataSource);
+                AddDatasourceResponse addDataSource = mergeApi.AddDataSource(credentials.getClientId(), dataSource);
                 // Check response status
                 addDataSource = Utils.assertResponse(addDataSource);
                 // Merge DataSource and convert to the pdf
-                MergeTemplateResponse mergeTemplateResponse = mergeApi.MergeDatasource(credentials.getClient_id(), guid, Double.toString(addDataSource.getResult().getDatasource_id()), "pdf", "");
+                MergeTemplateResponse mergeTemplateResponse = mergeApi.MergeDatasource(credentials.getClientId(), guid, Double.toString(addDataSource.getResult().getDatasource_id()), "pdf", "");
                 // Check response status
                 mergeTemplateResponse = Utils.assertResponse(mergeTemplateResponse);
 
@@ -121,11 +122,11 @@ public class Sample25 extends Controller {
 
                 AsyncApi asyncApi = new AsyncApi();
                 // Initialize API with base path
-                asyncApi.setBasePath(credentials.getServer_type());
+                asyncApi.setBasePath(credentials.getBasePath());
                 // Check job status
                 GetJobDocumentsResponse jobDocumentsResponse = null;
                 for (int n = 0; n < 5; n++) {
-                    jobDocumentsResponse = asyncApi.GetJobDocuments(credentials.getClient_id(), Double.toString(mergeTemplateResponse.getResult().getJob_id()), "");
+                    jobDocumentsResponse = asyncApi.GetJobDocuments(credentials.getClientId(), Double.toString(mergeTemplateResponse.getResult().getJob_id()), "");
                     jobDocumentsResponse = Utils.assertResponse(jobDocumentsResponse);
                     String jobStatus = jobDocumentsResponse.getResult().getJob_status().trim();
                     if ("Completed".equalsIgnoreCase(jobStatus) || "Archived".equalsIgnoreCase(jobStatus)) {
@@ -141,8 +142,8 @@ public class Sample25 extends Controller {
                 // Get file from storage
                 StorageApi storageApi = new StorageApi();
                 // Initialize API with base path
-                storageApi.setBasePath(credentials.getServer_type());
-                FileStream fileStream = storageApi.GetFile(credentials.getClient_id(), guid);
+                storageApi.setBasePath(credentials.getBasePath());
+                FileStream fileStream = storageApi.GetFile(credentials.getClientId(), guid);
                 // Check request result
                 FileStream downloadedFile = Utils.assertNotNull(fileStream);
                 Utils.assertNotNull(downloadedFile.getInputStream());
@@ -159,7 +160,7 @@ public class Sample25 extends Controller {
                 StreamUtils.copy(downloadedFile.getInputStream(), newFile);
                 newFile.close();
 
-                String server = credentials.getServer_type().substring(0, credentials.getServer_type().indexOf(".com") + 4).replace("api", "apps");
+                String server = credentials.getBasePath().substring(0, credentials.getBasePath().indexOf(".com") + 4).replace("api", "apps");
                 String messages = "File was converted and downloaded to the " + downloadPath + downloadedFile.getFileName();
                 // If request was successfull
                 // Generation of iframe URL using $pageImage->result->guid
@@ -172,7 +173,6 @@ public class Sample25 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample25.render(false, null, null, form));
     }

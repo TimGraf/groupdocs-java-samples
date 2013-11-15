@@ -28,14 +28,14 @@
                         }
                     </p>
                 }
-                @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
+                @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 50)
                 <span style="display: none">
-                    @inputText(aForm("private_key"), '_label -> "Client ID", 'size -> 50, 'value -> "display: none")
+                    @inputText(aForm("privateKey"), '_label -> "Client ID", 'size -> 50, 'value -> "display: none")
                 </span>
-                @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                @inputText(aForm("basePath"), '_label -> "Base URL", 'size -> 50)
                 <input id="gdButton" type='filepicker' data-fp-store-access="public" data-fp-apikey="AjhtkJk6rRLWQxanzZAFVz" value='Upload file' data-fp-store-path="files/" onchange="upload(event.fpfile.url);" style="margin-left: 152px; width: 327px;" />
             }
-            <span id="results_status" style="color:red;display:none;"> (Please wait for ajax response) </span>
+            <span id="resultsStatus" style="color:red;display:none;"> (Please wait for ajax response) </span>
         </div>
         <br/>
         <div id="iframeDiv" style="padding:20px; border:1px solid black; display: none;">
@@ -45,7 +45,7 @@
     <script type="text/javascript">
         function upload(url) {
             var form = document.forms.gdform;
-            var preLoad = document.getElementById("results_status");
+            var preLoad = document.getElementById("resultsStatus");
             preLoad.style.display = "block";
             document.getElementById("gdButton").style.display = "none";
             xhttp = new XMLHttpRequest();
@@ -58,7 +58,7 @@
 
                     if (iframe != null) {
                         var button = document.getElementById("gdButton").style.display = "block";
-                        var preLoad = document.getElementById("results_status");
+                        var preLoad = document.getElementById("resultsStatus");
                         preLoad.style.display = "none";
                         var iframeDiv = document.getElementById("iframeDiv");
                         var iframeShow = document.getElementById("iframe");
@@ -73,7 +73,7 @@
             }
             xhttp.open('POST','/sample29',true);
             xhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-            var str= 'url=' + url + '&basePath=' + document.forms.gdform.server_type.value + '&clientId=' + document.forms.gdform.client_id.value;
+            var str= 'url=' + url + '&basePath=' + document.forms.gdform.basePath.value + '&clientId=' + document.forms.gdform.clientId.value;
             xhttp.send(str);
         }
     </script>

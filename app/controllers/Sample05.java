@@ -35,22 +35,23 @@ public class Sample05 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             Http.MultipartFormData body = request().body().asMultipartFormData();
             String sourse = Utils.getFormValue(body.asFormUrlEncoded(), "sourse");
             String guid = Utils.getFormValue(body.asFormUrlEncoded(), "srcPath");
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 //
                 StorageApi storageApi = new StorageApi();
                 // Initialize API with base path
-                storageApi.setBasePath(credentials.getServer_type());
+                storageApi.setBasePath(credentials.getBasePath());
                 //
                 String uploadDir = "";
                 String fileName = null;
@@ -61,14 +62,14 @@ public class Sample05 extends Controller {
                     FileInputStream is = new FileInputStream(filePart.getFile());
                     String callbackUrl = Utils.getFormValue(body.asFormUrlEncoded(), "callbackUrl");
                     // Upload file to current user storage from local computer
-                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClient_id(), filePart.getFilename(), "uploaded", callbackUrl, new FileStream(is));
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), filePart.getFilename(), "uploaded", callbackUrl, new FileStream(is));
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
                     Thread.sleep(3000);
                 } else if ("url".equals(sourse)) {
                     String url = Utils.getFormValue(body.asFormUrlEncoded(), "url");
-                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
+                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClientId(), url);
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
@@ -81,7 +82,7 @@ public class Sample05 extends Controller {
                     return badRequest(views.html.sample05.render(false, null, form, null));
                 }
 
-                ListEntitiesResponse response = storageApi.ListEntities(credentials.getClient_id(), uploadDir, 0, null, null, null, null, null, null);
+                ListEntitiesResponse response = storageApi.ListEntities(credentials.getClientId(), uploadDir, 0, null, null, null, null, null, null);
                 // Check response status
                 response = Utils.assertResponse(response);
                 // Get document name and document ID
@@ -103,10 +104,10 @@ public class Sample05 extends Controller {
                 FileMoveResponse copyMoveResponse = null;
 
                 if (Utils.getFormValue(body.asFormUrlEncoded(), "copy") != null) {
-                    copyMoveResponse = storageApi.MoveFile(credentials.getClient_id(), copyToPath, null, Double.toString(fileId), null);
+                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, null, Double.toString(fileId), null);
                     action = "copy";
                 } else if (Utils.getFormValue(body.asFormUrlEncoded(), "move") != null) {
-                    copyMoveResponse = storageApi.MoveFile(credentials.getClient_id(), copyToPath, null, null, Double.toString(fileId));
+                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, null, null, Double.toString(fileId));
                     action = "move";
                 }
                 // Check response status
@@ -118,7 +119,6 @@ public class Sample05 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample05.render(false, null, form, null));
     }

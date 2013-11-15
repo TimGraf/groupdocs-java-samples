@@ -28,20 +28,22 @@ public class Sample01 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
+
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 //
                 MgmtApi mgmtApi = new MgmtApi();
                 // Initialize API with base path
-                mgmtApi.setBasePath(credentials.getServer_type());
+                mgmtApi.setBasePath(credentials.getBasePath());
                 // Call sample method
-                UserInfoResponse userInfoResponse = mgmtApi.GetUserProfile(credentials.getClient_id());
+                UserInfoResponse userInfoResponse = mgmtApi.GetUserProfile(credentials.getClientId());
                 // Check response status
                 userInfoResponse = Utils.assertResponse(userInfoResponse);
                 //
@@ -53,7 +55,6 @@ public class Sample01 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample01.render(false, null, form));
     }

@@ -33,15 +33,16 @@ public class Sample28 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             Http.MultipartFormData body = request().body().asMultipartFormData();
             String guid = Utils.getFormValue(body, "fileId");
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 //
@@ -49,14 +50,14 @@ public class Sample28 extends Controller {
                 // Create Annotation object
                 AntApi antApi = new AntApi();
                 // Initialize API with base path
-                antApi.setBasePath(credentials.getServer_type());
+                antApi.setBasePath(credentials.getBasePath());
                 // Make a request to Annotation API using clientId and fileId
-                ListAnnotationsResponse listAnnotationsResponse = antApi.ListAnnotations(credentials.getClient_id(), guid);
+                ListAnnotationsResponse listAnnotationsResponse = antApi.ListAnnotations(credentials.getClientId(), guid);
                 listAnnotationsResponse = Utils.assertResponse(listAnnotationsResponse);
                 for (AnnotationInfo annotationInfo : listAnnotationsResponse.getResult().getAnnotations()){
-                    antApi.DeleteAnnotation(credentials.getClient_id(), annotationInfo.getGuid());
+                    antApi.DeleteAnnotation(credentials.getClientId(), annotationInfo.getGuid());
                 }
-                String server = credentials.getServer_type().substring(0, credentials.getServer_type().indexOf(".com") + 4).replace("api", "apps");
+                String server = credentials.getBasePath().substring(0, credentials.getBasePath().indexOf(".com") + 4).replace("api", "apps");
                 String frameUrl = server + "/document-viewer/embed/" + guid;
                 // Render view
                 return ok(views.html.sample28.render(true, frameUrl, form));
@@ -65,7 +66,6 @@ public class Sample28 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample28.render(false, null, form));
     }

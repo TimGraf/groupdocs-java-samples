@@ -26,22 +26,23 @@ public class Sample15 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 // Create Doc Api object and get document metadata
                 DocApi docApi = new DocApi();
                 // Initialize API with base path
-                docApi.setBasePath(credentials.getServer_type());
+                docApi.setBasePath(credentials.getBasePath());
 
                 // Make request to get documents views
-                DocumentViewsResponse documentViewsResponse = docApi.GetDocumentViews(credentials.getClient_id(), null, null);
+                DocumentViewsResponse documentViewsResponse = docApi.GetDocumentViews(credentials.getClientId(), null, null);
                 // Check request status
                 documentViewsResponse = Utils.assertResponse(documentViewsResponse);
 
@@ -52,7 +53,6 @@ public class Sample15 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample15.render(false, null, form));
     }

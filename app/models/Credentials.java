@@ -1,36 +1,40 @@
 package models;
 
+import org.apache.commons.lang.StringUtils;
 import play.data.validation.Constraints;
 
 public class Credentials {
     @Constraints.Required
-    private String client_id;
+    private String clientId;
     @Constraints.Required
-    private String private_key;
-    @Constraints.Required
-    private String server_type;
+    private String privateKey;
+    private String basePath;
 
-    public String getClient_id() {
-        return client_id;
+    public String getClientId() {
+        return clientId;
     }
 
-    public void setClient_id(String client_id) {
-        this.client_id = client_id;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
-    public String getPrivate_key() {
-        return private_key;
+    public String getPrivateKey() {
+        return privateKey;
     }
 
-    public void setPrivate_key(String private_key) {
-        this.private_key = private_key;
+    public void setPrivateKey(String privateKey) {
+        this.privateKey = privateKey;
     }
 
-    public String getServer_type() {
-        return server_type;
+    public String getBasePath() {
+        return basePath;
     }
 
-    public void setServer_type(String server_type) {
-        this.server_type = server_type;
+    public void setBasePath(String basePath) {
+        this.basePath = basePath;
+    }
+
+    public void normalizeBasePath(String basePath) {
+        this.basePath = (StringUtils.isEmpty(this.basePath)) ? basePath : this.basePath;
     }
 }

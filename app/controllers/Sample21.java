@@ -43,9 +43,10 @@ public class Sample21 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             Http.MultipartFormData body = request().body().asMultipartFormData();
             String sourse = Utils.getFormValue(body, "sourse");
@@ -53,11 +54,11 @@ public class Sample21 extends Controller {
             String firstName = Utils.getFormValue(body, "name");
             String lastName = Utils.getFormValue(body, "lastName");
             String callback = Utils.getFormValue(body, "callbackUrl");
-            String basePath = credentials.getServer_type();
+            String basePath = credentials.getBasePath();
             FilePart filePart = body.getFile("file");
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 //
@@ -69,8 +70,8 @@ public class Sample21 extends Controller {
                     String url = Utils.getFormValue(body, "url");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
-                    storageApi.setBasePath(credentials.getServer_type());
-                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClient_id(), url);
+                    storageApi.setBasePath(credentials.getBasePath());
+                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClientId(), url);
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
@@ -78,9 +79,9 @@ public class Sample21 extends Controller {
                     Http.MultipartFormData.FilePart file = body.getFile("file");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
-                    storageApi.setBasePath(credentials.getServer_type());
+                    storageApi.setBasePath(credentials.getBasePath());
                     FileInputStream is = new FileInputStream(file.getFile());
-                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClient_id(), file.getFilename(), "uploaded", "", new FileStream(is));
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), "uploaded", "", new FileStream(is));
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
@@ -93,20 +94,20 @@ public class Sample21 extends Controller {
                 // Make a requests to Signature Api to create an envelope
                 SignatureEnvelopeSettingsInfo env = new SignatureEnvelopeSettingsInfo();
                 env.setEmailSubject("Sign this!");
-                SignatureEnvelopeResponse envelopeResponse = signatureApi.CreateSignatureEnvelope(credentials.getClient_id(), "SampleEnvelope_" + UUID.randomUUID(), null, null, null, true, env);
+                SignatureEnvelopeResponse envelopeResponse = signatureApi.CreateSignatureEnvelope(credentials.getClientId(), "SampleEnvelope_" + UUID.randomUUID(), null, null, null, true, env);
                 envelopeResponse = Utils.assertResponse(envelopeResponse);
                 // Get an ID of created envelope
-                final String envelopeId = envelopeResponse.getResult().getEnvelope().getId();
+                final String envelopeGuid = envelopeResponse.getResult().getEnvelope().getId();
 
                 // Make a request to Signature Api to add document to envelope
-                SignatureEnvelopeDocumentResponse envelopeDocument = signatureApi.AddSignatureEnvelopeDocument(credentials.getClient_id(), envelopeId, guid, null, true);
+                SignatureEnvelopeDocumentResponse envelopeDocument = signatureApi.AddSignatureEnvelopeDocument(credentials.getClientId(), envelopeGuid, guid, null, true);
                 // Check response status
                 envelopeResponse = Utils.assertResponse(envelopeResponse);
                 // Update document ID after it's added to envelope
-                String documentId = envelopeDocument.getResult().getDocument().getDocumentId();
+                String documentGuid = envelopeDocument.getResult().getDocument().getDocumentId();
 
                 // Make a request to Signature Api to get all available roles
-                SignatureRolesResponse signatureRolesResponse = signatureApi.GetRolesList(credentials.getClient_id(), null);
+                SignatureRolesResponse signatureRolesResponse = signatureApi.GetRolesList(credentials.getClientId(), null);
                 // Check response status
                 signatureRolesResponse = Utils.assertResponse(signatureRolesResponse);
                 List<SignatureRoleInfo> roles = signatureRolesResponse.getResult().getRoles();
@@ -119,13 +120,13 @@ public class Sample21 extends Controller {
                     }
                 }
                 // Make a request to Signature Api to add new recipient to envelope
-                SignatureEnvelopeRecipientResponse signatureEnvelopeRecipientResponse = signatureApi.AddSignatureEnvelopeRecipient(credentials.getClient_id(), envelopeId, email, firstName, lastName, roleGuid, null);
+                SignatureEnvelopeRecipientResponse signatureEnvelopeRecipientResponse = signatureApi.AddSignatureEnvelopeRecipient(credentials.getClientId(), envelopeGuid, email, firstName, lastName, roleGuid, null);
                 // Check response status
                 signatureEnvelopeRecipientResponse = Utils.assertResponse(signatureEnvelopeRecipientResponse);
-                String recipientId = signatureEnvelopeRecipientResponse.getResult().getRecipient().getId();
+                String recipientGuid = signatureEnvelopeRecipientResponse.getResult().getRecipient().getId();
 
                 // Make a request to Signature Api to get all available fields
-                SignatureEnvelopeDocumentsResponse getEnvelopDocument = signatureApi.GetSignatureEnvelopeDocuments(credentials.getClient_id(), envelopeId);
+                SignatureEnvelopeDocumentsResponse getEnvelopDocument = signatureApi.GetSignatureEnvelopeDocuments(credentials.getClientId(), envelopeGuid);
                 // Check response status
                 getEnvelopDocument = Utils.assertResponse(getEnvelopDocument);
                 // Create new field called City
@@ -138,28 +139,28 @@ public class Sample21 extends Controller {
                 envField.setForceNewField(true);
                 envField.setPage(1);
                 // Make a request to Signature Api to add city field to envelope
-                SignatureEnvelopeFieldsResponse signatureEnvelopeFieldsResponse = signatureApi.AddSignatureEnvelopeField(credentials.getClient_id(), envelopeId, getEnvelopDocument.getResult().getDocuments().get(0).getDocumentId(), recipientId, "0545e589fb3e27c9bb7a1f59d0e3fcb9", envField);
+                SignatureEnvelopeFieldsResponse signatureEnvelopeFieldsResponse = signatureApi.AddSignatureEnvelopeField(credentials.getClientId(), envelopeGuid, getEnvelopDocument.getResult().getDocuments().get(0).getDocumentId(), recipientGuid, "0545e589fb3e27c9bb7a1f59d0e3fcb9", envField);
                 // Check response status
                 Utils.assertNotNull(signatureEnvelopeFieldsResponse);
                 callback = (callback == null) ? "" : callback;
                 WebhookInfo webhookInfo = new WebhookInfo();
                 webhookInfo.setCallbackUrl(callback);
-                SignatureEnvelopeSendResponse signatureEnvelopeSendResponse = signatureApi.SignatureEnvelopeSend(credentials.getClient_id(), envelopeId, webhookInfo);
+                SignatureEnvelopeSendResponse signatureEnvelopeSendResponse = signatureApi.SignatureEnvelopeSend(credentials.getClientId(), envelopeGuid, webhookInfo);
                 Utils.assertResponse(signatureEnvelopeSendResponse);
 
                 // Store envelopeId in session for later ues in checkCallbackStatus action
-                session().put("envelopeId", envelopeId);
+                session().put("envelopeId", envelopeGuid);
 
                 if (!StringUtils.isEmpty(callback)) {
                     FileOutputStream fileOutputStream = new FileOutputStream(USER_INFO_FILE);
                     DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
 
                     StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append(credentials.getClient_id());
+                    stringBuilder.append(credentials.getClientId());
                     stringBuilder.append("|");
-                    stringBuilder.append(credentials.getPrivate_key());
+                    stringBuilder.append(credentials.getPrivateKey());
                     stringBuilder.append("|");
-                    stringBuilder.append(credentials.getServer_type());
+                    stringBuilder.append(credentials.getBasePath());
 
                     dataOutputStream.writeUTF(stringBuilder.toString());
 
@@ -167,8 +168,8 @@ public class Sample21 extends Controller {
                     fileOutputStream.close();
                 }
                 //
-                String server = credentials.getServer_type().substring(0, credentials.getServer_type().indexOf(".com") + 4).replace("api", "apps");
-                String embedUrl = server + "/signature/signembed/" + envelopeId + "/" + recipientId;
+                String server = credentials.getBasePath().substring(0, credentials.getBasePath().indexOf(".com") + 4).replace("api", "apps");
+                String embedUrl = server + "/signature/signembed/" + envelopeGuid + "/" + recipientGuid;
                 // Render view
                 return ok(views.html.sample21.render(true, embedUrl, form));
             } catch (Exception e) {
@@ -176,7 +177,6 @@ public class Sample21 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample21.render(false, null, form));
     }
@@ -202,11 +202,11 @@ public class Sample21 extends Controller {
         Result status;
 
         if (envelopeId != null && new File(".", envelopeId).exists()) {
-            String clientId = session().get("client_id");
-            String privateKey = session().get("private_key");
+            String clientId = session().get("clientId");
+            String privateKey = session().get("privateKey");
             System.out.println(clientId + " " + privateKey);
 
-            //Create ApiInvoker using given private_key
+            //Create ApiInvoker using given privateKey
 //			ApiInvoker.getInstance().setDebug(true);
             ApiInvoker.getInstance().setRequestSigner(
                     new GroupDocsRequestSigner(privateKey));

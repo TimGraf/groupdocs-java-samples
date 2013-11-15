@@ -9,6 +9,7 @@ import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.UserInfo;
 import com.groupdocs.sdk.model.UserInfoResponse;
 import common.Utils;
+import org.apache.commons.lang3.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -31,9 +32,10 @@ public class Sample26 extends Controller {
             Http.MultipartFormData body = request().body().asMultipartFormData();
             String login = Utils.getFormValue(body, "login");
             String password = Utils.getFormValue(body, "password");
-            String server_type = Utils.getFormValue(body, "server_type");
+            String basePath = Utils.getFormValue(body, "basePath");
+            basePath = StringUtils.isEmpty(basePath) ? "https://api.groupdocs.com/v2.0" : basePath;
 
-            session().put("server_type", server_type);
+            session().put("basePath", basePath);
 
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
@@ -42,7 +44,7 @@ public class Sample26 extends Controller {
                 // Create SharedApi object
                 SharedApi sharedApi = new SharedApi();
                 // Initialize API with base path
-                sharedApi.setBasePath(server_type);
+                sharedApi.setBasePath(basePath);
                 // Login to the GroupDocs
                 UserInfoResponse userInfoResponse = sharedApi.LoginUser(login, password);
                 // Check result status
@@ -56,7 +58,6 @@ public class Sample26 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample26.render(false, null, form));
     }

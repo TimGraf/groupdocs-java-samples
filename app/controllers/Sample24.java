@@ -27,24 +27,25 @@ public class Sample24 extends Controller {
             }
             // Save credentials to session
             Credentials credentials = form.get();
-            session().put("client_id", credentials.getClient_id());
-            session().put("private_key", credentials.getPrivate_key());
-            session().put("server_type", credentials.getServer_type());
+            session().put("clientId", credentials.getClientId());
+            session().put("privateKey", credentials.getPrivateKey());
+            session().put("basePath", credentials.getBasePath());
+            credentials.normalizeBasePath("https://api.groupdocs.com/v2.0");
             // Get request parameters
             Http.MultipartFormData body = request().body().asMultipartFormData();
             String url = Utils.getFormValue(body, "url");
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
-                    new GroupDocsRequestSigner(credentials.getPrivate_key()));
+                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
 
             try {
                 //
                 //Create Storage object
                 StorageApi api = new StorageApi();
                 // Initialize API with base path
-                api.setBasePath(credentials.getServer_type());
+                api.setBasePath(credentials.getBasePath());
                 // Upload file to current user storage
-                UploadResponse response = api.UploadWeb(credentials.getClient_id(), url);
+                UploadResponse response = api.UploadWeb(credentials.getClientId(), url);
                 // Check response status
                 response = Utils.assertResponse(response);
                 // Render view
@@ -54,7 +55,6 @@ public class Sample24 extends Controller {
             }
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
-            session().put("server_type", "https://api.groupdocs.com/v2.0");
         }
         return ok(views.html.sample24.render(false, null, form));
     }

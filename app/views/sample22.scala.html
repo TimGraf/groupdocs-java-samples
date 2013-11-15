@@ -18,8 +18,8 @@
     <br />
     <br/>
         <p style="color: green">You entered:</p>
-        <p>Client Id = @aForm.data.get("client_id")</p>
-        <p>Private Key = @aForm.data.get("private_key")</p>
+        <p>Client Id = @aForm.data.get("clientId")</p>
+        <p>Private Key = @aForm.data.get("privateKey")</p>
         <p>File Id = @aForm.data.get("fileId")</p>
         <p>Collaboration = @aForm.data.get("email")</p>
         <div id="requestForm" style="padding:20px; border:1px solid black;">
@@ -33,12 +33,12 @@
                         }
                     </p>
                 }
-                @inputText(aForm("client_id"), '_label -> "Client ID", 'size -> 50)
-                @inputText(aForm("private_key"), '_label -> "Private Key", 'size -> 50)
-                @inputText(aForm("server_type"), '_label -> "Base URL", 'size -> 50)
+                @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 50)
+                @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 50)
+                @inputText(aForm("basePath"), '_label -> "Base URL", 'size -> 50)
                 @inputText(aForm("email"), '_label -> "Email", 'size -> 50, 'required -> true)
-                @inputText(aForm("first_name"), '_label -> "First Name", 'size -> 50, 'required -> true)
-                @inputText(aForm("last_name"), '_label -> "Last Name", 'size -> 50, 'required -> true)
+                @inputText(aForm("firstName"), '_label -> "First Name", 'size -> 50, 'required -> true)
+                @inputText(aForm("lastName"), '_label -> "Last Name", 'size -> 50, 'required -> true)
                 <div>
                     <div id="IDtypeChoice" class="file-choice-block">
                     <input type="radio" value="guid" onclick="" id="IDfileIdRadio" name="sourse"/>
