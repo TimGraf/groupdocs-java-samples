@@ -1,0 +1,50 @@
+@(success: Boolean, documentName: String, aForm: play.data.Form[Credentials])
+
+@import helper._
+
+@* Register customInput as field constructor for this page (customize input field) *@
+@implicitField = @{
+    FieldConstructor(customInput.f)
+}
+
+@main() {
+
+    <h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 36</h3>
+
+    <div class='samplecontent' style="padding:10px;">
+        <i>This sample will show how to download document after sign envelope using Java SDK</i> <br/>
+    <br />
+        <a href="@routes.Assets.at("docs/Sample36.html")">Docs for this sample</a>
+    <br />
+    <br/>
+        <div id="requestForm" style="padding:20px; border:1px solid black;">
+            <p>Enter data for request and press "Make request" button</p>
+            @myForm(routes.Sample36.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+                @if(aForm.hasGlobalErrors) {
+                    <p>
+                        Error:
+                        @for(validationError <- aForm.globalErrors) {
+                            <span style="display: block; color: red; font-size: 12px;">@validationError.message</span>
+                        }
+                    </p>
+                }
+                @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 50)
+                @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 50)
+                @inputText(aForm("basePath"), '_label -> "Base URL", 'size -> 50)
+                <div>
+                    <div id="url">
+                    @inputText(aForm("envelopeGuid"), '_label -> "Signed envelop guid", 'size -> 50, 'required -> true, 'id -> "envelopeGuid")
+                    </div>
+                </div>
+                <input type="submit" value="Make Request">
+            }
+        </div>
+
+        @if(success) {
+            <div style="padding:20px; border:1px solid black;">
+                <span style="color: green">Files from the envelope were downloaded to server's local folder. You can check them
+                    <a href="/public/@documentName">here</a></span>
+            </div>
+        }
+    </div>
+}

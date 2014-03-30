@@ -5,7 +5,7 @@ import play.Project._
 object ApplicationBuild extends Build {
 
     val appName         = "groupdocs-java-samples"
-    val appVersion      = "1.8.0"
+    val appVersion      = "1.8.1"
 
     val appDependencies = Seq(
         "com.sun.jersey" % "jersey-core" % "1.13",
@@ -13,7 +13,7 @@ object ApplicationBuild extends Build {
         "log4j" % "log4j" % "1.2.11",
         "org.apache.commons" % "commons-io" % "1.3.2",
         "com.sun.jersey" % "jersey-client" % "1.9.1",
-        "com.groupdocs" % "groupdocs-java-client" % "1.7.0",
+        "com.groupdocs" % "groupdocs-java-client" % "1.8.1",
         "com.typesafe" %% "play-plugins-mailer" % "2.1-RC2"
     )
 
