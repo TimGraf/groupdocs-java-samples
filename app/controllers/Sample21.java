@@ -169,7 +169,7 @@ public class Sample21 extends Controller {
                 }
                 //
                 String server = credentials.getBasePath().substring(0, credentials.getBasePath().indexOf(".com") + 4).replace("api", "apps");
-                String embedUrl = server + "/signature/signembed/" + envelopeGuid + "/" + recipientGuid;
+                String embedUrl = server + "/signature2/signembed/" + envelopeGuid + "/" + recipientGuid;
                 // Render view
                 return ok(views.html.sample21.render(true, embedUrl, form));
             } catch (Exception e) {

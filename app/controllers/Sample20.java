@@ -45,8 +45,9 @@ public class Sample20 extends Controller {
                 ComparisonApi api = new ComparisonApi();
                 // Initialize API with base path
                 api.setBasePath(credentials.getBasePath());
-                ChangesResponse changesResponse = api.GetChanges(credentials.getClientId(), fileId);
+                ChangesResponse changesResponse = api.GetChanges(fileId);
                 // Check response status
+                changesResponse = Utils.assertResponse(changesResponse);
                 changesResponse = Utils.assertResponse(changesResponse);
                 // Render view
                 return ok(views.html.sample20.render(true, changesResponse.getResult(), form));

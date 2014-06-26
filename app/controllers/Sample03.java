@@ -39,6 +39,9 @@ public class Sample03 extends Controller {
             MultipartFormData body = request().body().asMultipartFormData();
             String sourse = Utils.getFormValue(body.asFormUrlEncoded(), "sourse");
             String folderPath = Utils.getFormValue(body.asFormUrlEncoded(), "folderPath");
+            if (folderPath == null) {
+                folderPath = "";
+            }
             // Initialize SDK with private key
             ApiInvoker.getInstance().setRequestSigner(
                     new GroupDocsRequestSigner(credentials.getPrivateKey()));
@@ -54,12 +57,14 @@ public class Sample03 extends Controller {
                     FilePart filePart = body.getFile("file");
                     FileInputStream is = new FileInputStream(filePart.getFile());
                     String callbackUrl = Utils.getFormValue(body.asFormUrlEncoded(), "callbackUrl");
-                    // Upload file to current user storage from local computer
+                    //Upload file to current user storage from local computer
                     if (folderPath.startsWith("\\") || folderPath.startsWith("/")){
-                        folderPath = folderPath.substring(1);
+                       folderPath = folderPath.substring(1);
                     }
-                    if (!folderPath.endsWith("\\") && !folderPath.endsWith("/")) {
-                        folderPath += "/";
+                    if (folderPath != "") {
+                        if (!folderPath.endsWith("\\") && !folderPath.endsWith("/")) {
+                            folderPath += "/";
+                        }
                     }
                     uploadResponse = storageApi.Upload(credentials.getClientId(), folderPath + filePart.getFilename(), "uploaded", callbackUrl, new FileStream(is));
                 } else if ("url".equals(sourse)) {
