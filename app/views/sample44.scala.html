@@ -1,0 +1,75 @@
+@(success: Boolean, embedUrl: String, embedUrl2: String, aForm: Form[Credentials])
+
+@import helper._
+
+@* Register customInput as field constructor for this page (customize input field) *@
+@implicitField = @{
+FieldConstructor(customInput.f)
+}
+
+@main() {
+
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 44</h3>
+
+<div class='samplecontent' style="padding:10px;">
+    <i>This sample will show how to assemble document and add multiple Signatures and Signers to a document using Java SDK</i> <br/>
+    <br />
+    <a href="@routes.Assets.at("docs/Sample44.html")">Docs for this sample</a>
+    <br />
+    <br/>
+    <div id="requestForm" style="padding:20px; border:1px solid black;">
+        <p>Enter data for request and press "Make request" button</p>
+        @myForm(routes.Sample44.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+        @if(aForm.hasGlobalErrors) {
+        <p>
+            Error:
+            @for(validationError <- aForm.globalErrors) {
+            <span style="display: block; color: red; font-size: 12px;">@validationError.message</span>
+            }
+        </p>
+        }
+
+        @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 50)
+        @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 50)
+        @inputText(aForm("basePath"), '_label -> "Base URL", 'size -> 50)
+        <div>
+            <div id="local">
+                @inputFile(aForm("file"), '_label -> "Select file", 'required -> true, 'id -> "fileField")
+            </div>
+        </div>
+        <div style="background-color:#e5e5e5;border:3px double gray;width:700px;padding:3px;font-size:10pt;">
+            <label for="firstName">Signer name?</label>
+            <br>
+            <input type="text" name="firstName" id="firstName" value="">
+            <br>
+            <span>What is signer gender?</span>
+            <input type="checkbox" name="gender" value="Man" id="man" checked> <label for="man">Man</label>
+            <input type="checkbox" name="gender" value="Woman" id="woman"> <label for="woman">Woman</label>
+            <br>
+            <br>
+        </div>
+        @inputText(aForm("firstEmail"), '_label -> "First signer email ", 'size -> 50)
+        @inputText(aForm("secondEmail"), '_label -> "Second signer email ", 'size -> 50)
+        @inputText(aForm("lastName"), '_label -> "Signer last name", 'size -> 50)
+        <input type="submit" value="Make request">
+        }
+    </div>
+
+    @if(success) {
+    <div id="result" style="padding:20px; border:1px solid black;">
+        <p>Results:</p>
+        <p></p>
+        <div>
+            <span style="color: green">Document for first signer</span>
+            <iframe id="downloadframe" src="@embedUrl" frameborder="0" width="800" height="1000"></iframe>
+            <p></p>
+        </div>
+        <div>
+            <span style="color: green">Document for second signer</span>
+            <iframe id="downloadframe" src="@embedUrl2" frameborder="0" width="800" height="1000"></iframe>
+        </div>
+    </div>
+    }
+</div>
+
+}
