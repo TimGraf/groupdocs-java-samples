@@ -1,0 +1,102 @@
+@(success: Boolean, parameter: com.groupdocs.sdk.model.GetDocumentInfoResult, aForm: Form[Credentials])
+
+@import helper._
+
+@* Register customInput as field constructor for this page (customize input field) *@
+@implicitField = @{
+FieldConstructor(customInput.f)
+}
+
+@main() {
+
+    <h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> - Sample 45</h3>
+
+    <div class='samplecontent' style="padding:10px;">
+        <i>This sample will show how to check statistic info for the document using Java SDK</i> <br/>
+        <br />
+        <a href="@routes.Assets.at("docs/Sample45.html")">Docs for this sample</a>
+        <br />
+        <br/>
+        <div id="requestForm" style="padding:20px; border:1px solid black;">
+            <p>Enter data for request and press "Make request" button</p>
+            @myForm(routes.Sample45.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+                @if(aForm.hasGlobalErrors) {
+                    <p>
+                        Error:
+                        @for(validationError <- aForm.globalErrors) {
+                        <span style="display: block; color: red; font-size: 12px;">@validationError.message</span>
+                        }
+                    </p>
+                }
+
+                @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 50)
+                @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 50)
+                @inputText(aForm("basePath"), '_label -> "Base URL", 'size -> 50)
+                @inputText(aForm("fileName"), '_label -> "File name  ", 'size -> 50, 'required -> true)
+                @inputText(aForm("folderName"), '_label -> "Folder name  ", 'size -> 50 )
+
+                <input type="submit" value="Make request">
+            }
+        </div>
+
+        @if(success) {
+            <div id="result" style="padding:20px; border:1px solid black;">
+                <p>Results:</p>
+                <p>Total document's info: </p>
+                <div>
+                    <table border="1">
+                        <tr>
+                            <td><span style='color: green'>Parameter</span></td>
+                            <td><span style='color: green'>Info </span></td>
+                        </tr>
+                        <tr>
+                            <td>page_count</td>
+                            <td>@parameter.getPage_count.toString</td>
+                        </tr>
+                        <tr>
+                            <td>views_count</td>
+                            <td>@parameter.getViews_count.toString</td>
+                        </tr>
+                        <tr><td>name</td> <td>@parameter.getLast_view.getDocument.getName.toString </td></tr>
+                        <tr><td>version</td> <td>@parameter.getLast_view.getDocument.getVersion.toString</td></tr>
+                        <tr><td>size</td> <td>@parameter.getLast_view.getDocument.getSize.toString</td></tr>
+                        <tr><td>type</td> <td>@parameter.getLast_view.getDocument.getType.toString</td></tr>
+                        <tr><td>type_str</td> <td>@parameter.getLast_view.getDocument.getType_str.toString</td></tr>
+                        <tr><td>file_type_str</td> <td>@parameter.getLast_view.getDocument.getFile_type_str.toString</td></tr>
+                        <tr><td>document_path</td> <td>@parameter.getLast_view.getDocument.getDocument_path.toString</td></tr>
+                        <tr><td>access</td> <td>@parameter.getLast_view.getDocument.getAccess.toString</td></tr>
+                        <tr><td>url</td> <td>@parameter.getLast_view.getDocument.getUrl.toString</td></tr>
+                        <tr><td>file_type</td> <td>@parameter.getLast_view.getDocument.getFile_type.toString</td></tr>
+                        <tr><td>id</td> <td>@parameter.getLast_view.getDocument.getId.toString</td></tr>
+                        <tr><td>guid</td> <td> @parameter.getLast_view.getDocument.getGuid.toString </td></tr>
+                        <tr><td>short_url</td> <td> @parameter.getLast_view().getShort_url().toString </td></tr>
+                        <tr><td>viewed_on</td> <td> @parameter.getLast_view().getViewed_on().toString </td></tr>
+                        <tr bgcolor='#808080'><td></td> <td></td></tr>
+
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+<script type=text/javascript>
+
+     var allTd = document.getElementsByTagName("td");
+      var createClickHandler =
+            function(row)
+            {
+                return function() {
+                                        alert(row);
+                                 };
+            };
+     for(var i = 0; i < allTd.length; i++) {
+         var td = allTd[i];
+         if (td.innerText.length > 72) {
+              var oldText = td.innerText;
+              newText = td.innerText.slice(0, td.innerText.length - 45) + '…';
+              td.innerText = newText
+              td.onclick = createClickHandler(oldText)
+         }
+     }
+
+ </script>
+}
