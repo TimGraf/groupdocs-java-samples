@@ -1,0 +1,82 @@
+@(success: Boolean, email: String, url: String, aForm: Form[Credentials])
+
+@import helper._
+
+@* Register customInput as field constructor for this page (customize input field) *@
+@implicitField = @{
+    FieldConstructor(customInput.f)
+}
+
+@main() {
+
+    <h3 style="text-align:center;"><a href="/">GroupDocs Java Java Samples</a> <br/>
+        <div id="title">Sample 38 - This sample will show how to create new user and add him as collaborator to doc with annotations</div>
+    </h3>
+
+    <div class='samplecontent' style="padding:10px;">
+    <i>This sample will show how to create new user and add him as collaborator to doc with annotations</i> <br/>
+    <br />
+    <a href="@routes.Assets.at("docs/Sample38.html")">Docs for this sample</a>
+    <br />
+    <br/>
+    <div id="requestForm" style="padding:20px; border:1px solid black;">
+    <p>Enter data for request and press "Make request" button</p>
+    @myForm(routes.Sample38.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+        @if(aForm.hasGlobalErrors) {
+            <p>
+                Error:
+                @for(validationError <- aForm.globalErrors) {
+                    <span style="display: block; color: red; font-size: 12px;">@validationError.message</span>
+                }
+            </p>
+        }
+        @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 50)
+        @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 50)
+        @inputText(aForm("basePath"), '_label -> "Base URL", 'size -> 50)
+        <div id="IDtypeChoice" class="file-choice-block">
+        <input type="radio" value="guid" onclick="" id="IDfileIdRadio" name="sourse"/>
+            <label for="IDfileIdRadio" class="file-choice-label">File GUID</label>
+        <input type="radio" value="url" onclick="" id="IDfileUrlRadio" name="sourse"/>
+            <label for="IDfileUrlRadio" class="file-choice-label">File URL</label>
+        <input type="radio" value="local" onclick="" id="IDfilePartRadio" name="sourse"/>
+            <label for="IDfilePartRadio" class="file-choice-label">Local file</label>
+        </div>
+        <div id="guid">
+        @inputText(aForm("sourceFileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
+        </div>
+        <div id="url">
+        @inputText(aForm("url"), '_label -> "File Url", 'size -> 50, 'required -> true)
+        </div>
+        <div id="local">
+        @inputFile(aForm("local"), '_label -> "Select file", 'required -> true)
+        </div>
+        <div>
+        @inputText(aForm("email"), '_label -> "Email", 'size -> 50, 'required -> true, 'id -> "email")
+        </div>
+        <div>
+        @inputText(aForm("firstName"), '_label -> "First Name", 'size -> 50, 'required -> true, 'id -> "firstName")
+        </div>
+        <div>
+        @inputText(aForm("lastName"), '_label -> "Last name", 'size -> 50, 'required -> true, 'id -> "lastName")
+        </div>
+        <script type="text/javascript" language="JavaScript">
+        $(function(){
+        changeType.allChk = ['guid', 'url', 'local'];
+        $('#IDfileIdRadio, #IDfileUrlRadio, #IDfilePartRadio').click(changeType);
+        $('#IDfileIdRadio').click();
+    } );
+</script>
+</div>
+<br />
+<input type="submit" value="Make Request"/>
+    }
+@if(success) {
+    <div style="padding:20px; border:1px solid black;">
+        <p>New collaborations: <strong>@email</strong></p>
+        <p>Results:</p>
+        <iframe src="@url" width="875" height="800"></iframe>
+    </div>
+}
+</div>
+</div>
+    }

@@ -233,4 +233,46 @@ public class Callbacks extends Controller {
         mail.sendHtml(message);
         return ok("");
     }
+
+
+    public static Result checkGuidCallback() throws Exception {
+        String result = "";
+//counter to not wait forever
+        int counter = 0;
+//Check folder for downloaded file
+        do {
+            //Set max. iterations
+            if (counter >= 10) {
+                result = "Error";
+                break;
+            }
+            Thread.sleep(5);
+            //Check is downloads folder exist
+            if (/*file_exists(__DIR__ . '/../../callback_info.txt')*/new File(Sample39.USER_INFO_FILE).exists()) {
+                FileInputStream fileInputStream = new FileInputStream(Sample39.USER_INFO_FILE);
+                DataInputStream dataInputStream = new DataInputStream(fileInputStream);
+                String data = dataInputStream.readUTF();
+                fileInputStream.close();
+
+                String cid = data.split("\\|")[0];
+                String pkey = data.split("\\|")[1];
+                String burl = data.split("\\|")[2];
+                if (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
+                    return ok("ClientID or PrivateKEY or base path is not found!");
+                } else {
+                    return ok(data);
+                }
+
+//                //If folder don't exist create it
+//                $callbackInfo = __DIR__ . '/../../callback_info.txt';
+//                //Local path to the text file with user data
+//                $info = file($callbackInfo);
+//                //Get user data from text file
+//                $result = trim($info[0]);
+            } else {
+                counter++;
+            }
+        } while (true);
+        return null;
+    }
 }

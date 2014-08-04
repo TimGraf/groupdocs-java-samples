@@ -1,0 +1,88 @@
+@(success: Boolean, fileName: String, server: String, envelopeId: String, recipientId: String, aForm: Form[Credentials])
+
+@import helper._
+
+@* Register customInput as field constructor for this page (customize input field) *@
+@implicitField = @{
+    FieldConstructor(customInput.f)
+}
+
+@main() {
+
+    <h3 style="text-align:center;"><a href="/">GroupDocs Java Java Samples</a> <br/>
+        <div id="title">Sample 37 - How to use StorageApi to Create and Upload Envelop to GroupDocs account and get signed document</div>
+    </h3>
+
+    <div class='samplecontent' style="padding:10px;">
+    <i>This sample will show how to use StorageApi to Create and Upload Envelop to GroupDocs account and get signed document </i> <br/>
+    <br />
+    <a href="@routes.Assets.at("docs/Sample37.html")">Docs for this sample</a>
+    <br />
+    <br/>
+    <div id="requestForm" style="padding:20px; border:1px solid black;">
+    <p>Enter data for request and press "Make request" button</p>
+    @myForm(routes.Sample37.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+        @if(aForm.hasGlobalErrors) {
+            <p>
+                Error:
+                @for(validationError <- aForm.globalErrors) {
+                    <span style="display: block; color: red; font-size: 12px;">@validationError.message</span>
+                }
+            </p>
+        }
+        @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 50)
+        @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 50)
+        @inputText(aForm("basePath"), '_label -> "Base URL", 'size -> 50)
+        <div id="IDtypeChoice" class="file-choice-block">
+        <input type="radio" value="guid" onclick="" id="IDfileIdRadio" name="sourse"/>
+            <label for="IDfileIdRadio" class="file-choice-label">File GUID</label>
+        <input type="radio" value="url" onclick="" id="IDfileUrlRadio" name="sourse"/>
+            <label for="IDfileUrlRadio" class="file-choice-label">File URL</label>
+        <input type="radio" value="local" onclick="" id="IDfilePartRadio" name="sourse"/>
+            <label for="IDfilePartRadio" class="file-choice-label">Local file</label>
+        </div>
+        <div id="guid">
+        @inputText(aForm("sourceFileId"), '_label -> "File GUID", 'size -> 50, 'required -> true)
+        </div>
+        <div id="url">
+        @inputText(aForm("url"), '_label -> "File Url", 'size -> 50, 'required -> true)
+        </div>
+        <div id="local">
+        @inputFile(aForm("local"), '_label -> "Select file", 'required -> true)
+        </div>
+        <div>
+        @inputText(aForm("email"), '_label -> "Email", 'size -> 50, 'required -> true, 'id -> "email")
+        </div>
+        <div>
+        @inputText(aForm("name"), '_label -> "Name", 'size -> 50, 'required -> true, 'id -> "name")
+        </div>
+        <div>
+        @inputText(aForm("lastName"), '_label -> "Last name", 'size -> 50, 'required -> true, 'id -> "lastName")
+        </div>
+        <div>
+        @inputText(aForm("callbackUrl"), '_label -> "Callback URL", 'size -> 50, 'required -> false, 'id -> "callbackUrl")
+            <div style="color: #808080; font-size: 10px">
+                For test Callback you can use this URL: http://groupdocs-php-samples.herokuapp.com/callbacks/sample37_callback
+            </div>
+        </div>
+        <script type="text/javascript" language="JavaScript">
+        $(function(){
+        changeType.allChk = ['guid', 'url', 'local'];
+        $('#IDfileIdRadio, #IDfileUrlRadio, #IDfilePartRadio').click(changeType);
+        $('#IDfileIdRadio').click();
+    } );
+</script>
+</div>
+<br />
+<input type="submit" value="Make Request"/>
+    }
+@if(success) {
+    <div style="padding:20px; border:1px solid black;">
+        <p>File was uploaded to GroupDocs. Here you can see your <strong>@fileName</strong> file in the GroupDocs Embedded Viewer.</p>
+        <p>Results:</p>
+        <iframe src="@server/signature2/signembed/@envelopeId/@recipientId" width="875" height="800"></iframe>
+    </div>
+}
+</div>
+</div>
+    }

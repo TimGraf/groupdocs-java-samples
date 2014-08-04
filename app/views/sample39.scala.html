@@ -1,0 +1,242 @@
+@(success: Boolean, url: String)
+
+@import helper._
+
+@* Register customInput as field constructor for this page (customize input field) *@
+@implicitField = @{
+    FieldConstructor(customInput.f)
+}
+
+@main() {
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="http://dev-apps-groupdocs.dynabic.com/content/signaturewidgets/groupdocs.sign.js"></script>
+    <script type="text/javascript">
+
+    $ ( document ).ready ( setTimeout ( check, 5000 ) ) ;
+    function check ( ) {
+
+    if ( ( $ ( "input[name=callbackUrl]" ).val ( ) != "" ) && ( document.getElementById ( "result" ) != null ) ) {
+    $ ( '#resultsStatus' ).fadeIn ( "slow" ) ;
+    $.ajax ( {
+    type : 'POST',
+    url : '/callbacks/check_guid',
+    success : function ( data ) {
+    var result = null ;
+    result = data
+    if ( result != null ) {
+    $ ( "#result" ).css ( "display", "none" ) ;
+    var guid = result ;
+    var leftvar = ( screen.width - 800 ) / 2 ;
+    var topvar = ( screen.height - 600 ) / 2 ;
+    window.open ( '/popup?guid=' + guid, 'Redirect window', 'width=850,height=500,left=' + leftvar + ',top=' + topvar + ',resizable=no,scrollbars=no,location=no' ) ;
+    } else {
+    var leftvar = ( screen.width - 800 ) / 2 ;
+    var topvar = ( screen.height - 600 ) / 2 ;
+    window.open ( '/popup', 'Redirect window', 'width=850,height=500,left=' + leftvar + ',top=' + topvar + ',resizable=no,scrollbars=no,location=no' ) ;
+    }
+    },
+    dataType : "text"
+    } ) ;
+    }
+    }
+    function setLogic ( ) {
+    if ( $ ( "#useWidget" ).is ( ':checked' ) ) {
+    $ ( "#btnLoad" ).prop ( 'type', 'button' ) ;
+    $ ( "#btnLoad" ).attr ( 'onClick', 'load();' ) ;
+    $ ( "#form" ).removeAttr ( "type" ) ;
+    $ ( "#form" ).removeAttr ( "method" ) ;
+    $ ( "#form" ).attr ( 'action', '#' ) ;
+    $ ( "#signature" ).css ( "display", "block" ) ;
+    $ ( "#fiSignatureLabel" ).css ( "display", "block" ) ;
+    $ ( "#callBackLabel" ).css ( "display", "none" ) ;
+    $ ( "#callbackUrl" ).css ( "display", "none" ) ;
+    $ ( "#emailLabel" ).css ( "display", "none" ) ;
+    $ ( "#email" ).css ( "display", "none" ) ;
+    $ ( "#nameLabel" ).css ( "display", "none" ) ;
+    $ ( "#name" ).css ( "display", "none" ) ;
+    $ ( "#lastNameLabel" ).css ( "display", "none" ) ;
+    $ ( "#lastName" ).css ( "display", "none" ) ;
+    $ ( "#result" ).css ( "display", "none" ) ;
+    } else {
+    $ ( "#form" ).attr ( 'action', 'sample39' ) ;
+    $ ( "#form" ).attr ( 'method', 'post' ) ;
+    $ ( "#btnLoad" ).prop ( 'type', 'multipart/form-data' ) ;
+    $ ( "#signature" ).css ( "display", "none" ) ;
+    $ ( "#fiSignatureLabel" ).css ( "display", "none" ) ;
+    $ ( "#callBackLabel" ).css ( "display", "block" ) ;
+    $ ( "#callbackUrl" ).css ( "display", "block" ) ;
+    $ ( "#btnLoad" ).prop ( 'type', 'submit' ) ;
+    $ ( "#btnLoad" ).removeAttr ( 'onClick' ) ;
+    $ ( "#emailLabel" ).css ( "display", "block" ) ;
+    $ ( "#email" ).css ( "display", "block" ) ;
+    $ ( "#nameLabel" ).css ( "display", "block" ) ;
+    $ ( "#name" ).css ( "display", "block" ) ;
+    $ ( "#lastNameLabel" ).css ( "display", "block" ) ;
+    $ ( "#lastName" ).css ( "display", "block" ) ;
+    $ ( "#result" ).css ( "display", "block" ) ;
+    }
+    }
+
+    function load ( ) {
+    $ ( '#resultsStatus' ).fadeIn ( "slow" ) ;
+    var inputDocument, inputSignature, fileDocument, fileSignature, frDocument, frSignature ;
+    if ( typeof window.FileReader !== 'function' ) {
+    $ ( "enteredData" ).append ( "p", "The file API isn't supported on this browser yet." ) ;
+    return ;
+    }
+    inputDocument = document.getElementById ( 'document' ) ;
+    if ( ! inputDocument ) {
+    $ ( "enteredData" ).append ( "p", "Um, couldn't find the fileinput element." ) ;
+    }
+    else if ( ! inputDocument.files ) {
+    $ ( "enteredData" ).append ( "p", "This browser doesn't seem to support the `files` property of file inputs." ) ;
+    }
+    else if ( ! inputDocument.files[ 0 ] ) {
+    $ ( "#files_form" ).append ( "<p class='error'>Please select a file before clicking 'Load'</p>" ) ;
+    }
+    else {
+    fileDocument = inputDocument.files[ 0 ] ;
+    frDocument = new FileReader ( ) ;
+    frDocument.onload = receivedDocument ;
+    frDocument.readAsDataURL ( fileDocument ) ;
+    }
+
+
+    function receivedDocument ( ) {
+
+    inputSignature = document.getElementById ( 'signature' ) ;
+    if ( ! inputSignature ) {
+    $ ( "enteredData" ).append ( "Um, couldn't find the fileinput element." ) ;
+    }
+    else if ( ! inputSignature.files ) {
+    $ ( "enteredData" ).append ( "p", "This browser doesn't seem to support the `files` property of file inputs." ) ;
+    }
+    else if ( ! inputSignature.files[ 0 ] ) {
+    $ ( "enteredData" ).append ( "<p>Please select a file before clicking 'Load'</p>" ) ;
+    }
+    else {
+    fileSignature = inputSignature.files[ 0 ] ;
+    frSignature = new FileReader ( ) ;
+    frSignature.onload = receivedSignature ;
+    frSignature.readAsDataURL ( fileSignature ) ;
+    }
+    }
+
+    function receivedSignature ( ) {
+    var span = document.createElement ( 'span' ) ;
+    span.innerHTML =[ '<img class="thumb" width="100" src="', frSignature.result, '"/>' ].join ( '' ) ;
+    signDocument ( ) ;
+    }
+
+    function signDocument ( ) {
+    $ ( "body" ).sign ( {
+    userId : $ ( '#clientId' ).val ( ),
+    privateKey : $ ( '#privateKey' ).val ( ),
+    signMethod : "/sample-39-how-to-add-a-signature-to-a-document-and-redirect-after-signing-with-groupdocs-widget",
+    onError : function ( e, data ) {
+    alert ( data ) ;
+    },
+    onSigned : function ( e, data ) {
+    $ ( '#resultsStatus' ).fadeOut ( "slow" ) ;
+    var result = $.parseJSON ( data ) ;
+    if ( result.error == null ) {
+    var guid = result.guid ;
+    $ ( "#clientId" ).val ( result.clientId ) ;
+    $ ( "#privateKey" ).val ( result.privateKey ) ;
+    var leftvar = ( screen.width - 800 ) / 2 ;
+    var topvar = ( screen.height - 600 ) / 2 ;
+    window.open ( '/popup?guid=' + guid, 'Redirect window', 'width=850,height=500,left=' + leftvar + ',top=' + topvar + ',resizable=no,scrollbars=no,location=no' ) ;
+    }
+    }
+    } ) ;
+    $ ( "body" ).sign ( "addDocument", {
+    name : fileDocument.name,
+    data : frDocument.result
+    } ) ;
+    $ ( "body" ).sign ( "addSigner", {
+    name : 'Marketplace Team',
+    top : 0.03319,
+    left : 0.52171,
+    width : 100,
+    height : 40,
+    data : frSignature.result
+    } ) ;
+    $ ( "body" ).sign ( "sign" ) ;
+    }
+    }
+
+    </script>
+
+    <h3 style="text-align:center;"><a href="/">GroupDocs Java Java Samples</a> <br/>
+        <div id="title">Sample 39 - This sample will show how to add a Signature to a document and redirect after signing with GroupDocs widget</div>
+    </h3>
+
+    <div class='samplecontent' style="padding:10px;">
+    <i>This sample will show how to add a Signature to a document and redirect after signing with GroupDocs widget</i> <br/>
+    <br />
+    <a href="@routes.Assets.at("docs/Sample39.html")">Docs for this sample</a>
+    <br />
+    <br/>
+    <div id="requestForm" style="padding:20px; border:1px solid black;">
+    <p>Enter data for request and press "Make request" button</p>
+    @myForm(routes.Sample39.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+
+        <div>
+            <label for="clientId" class="file-choice-label">Client ID</label>
+            <input type="text" value="" id="clientId" name="clientId" size="50" />
+        </div>
+        <div>
+            <label for="privateKey" class="file-choice-label">Private Key</label>
+            <input type="text" value="" id="privateKey" name="privateKey" size="50" />
+        </div>
+        <div>
+            <label for="basePath" class="file-choice-label">Base URL</label>
+            <input type="text" value="" id="basePath" name="basePath" size="50" />
+        </div>
+        <div>
+            <label for="document" class="file-choice-label">Document to sign</label>
+            <input type="file" id="document" name="file"/>
+        </div>
+        <div>
+            <label for="signature" class="file-choice-label" id="fiSignatureLabel" style="display:none;">Signature</label>
+            <input type="file" id="signature" name="signature" style="display:none;"/>
+        </div>
+
+        <div>
+            <input type="checkbox" value="" id="useWidget" name="useWidget" onclick="setLogic();"/>
+            <label for="useWidget" class="file-choice-label">Sign document with Widget </label>
+        </div>
+        <div>
+            <label for="email" class="file-choice-label" id="emailLabel">E-mail</label>
+            <input type="text" value="" id="email" name="email" size="50" />
+        </div>
+        <div>
+            <label for="name" class="file-choice-label" id="nameLabel">Name</label>
+            <input type="text" value="" id="name" name="name" size="50" />
+        </div>
+        <div>
+            <label for="lastName" class="file-choice-label" id="lastNameLabel">Last name</label>
+            <input type="text" value="" id="lastName" name="lastName" size="50"/>
+        </div>
+        <div>
+            <label for="callbackUrl" id="callBackLabel" >callbackUrl</label>
+            <input type="text" name="callbackUrl" id="callbackUrl" value="" size="50"/>
+            <span class="optional">(Optional)<br />For test Callback you can use this URL: http://groupdocs-php-samples.herokuapp.com/callbacks/sample39_callback</span>
+        </div>
+</div>
+<br />
+        <input type='submit' id='btnLoad' value='Upload and sign the document'/>
+        <span id="resultsStatus" style="color:red;display:none;"> (Please wait for ajax response) </span>
+    }
+@if(success) {
+    <div style="padding:20px; border:1px solid black;">
+        @*<p>New collaborations: <strong>@email</strong></p>*@
+        <p>Results:</p>
+        <iframe src="@url" width="875" height="800"></iframe>
+    </div>
+}
+</div>
+</div>
+    }
