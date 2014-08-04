@@ -2,6 +2,7 @@
 package controllers;
 //Import of necessary libraries
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.groupdocs.sdk.api.AntApi;
 import com.groupdocs.sdk.api.MgmtApi;
 import com.groupdocs.sdk.api.SignatureApi;
@@ -14,6 +15,7 @@ import common.Utils;
 import models.Credentials;
 import org.apache.commons.lang3.StringUtils;
 import play.data.Form;
+import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -33,6 +35,13 @@ public class Sample39 extends BaseController {
     public static Result index() {
 
         if (Utils.isPOST(request())) {
+
+            String[] names = request().queryString().get("name");
+
+//            Http.RawBuffer rawBuffer = request().body().asRaw();
+//            String jsonStr = new String(rawBuffer.asBytes());
+//            JsonNode json = Json.parse(jsonStr);
+
             Http.MultipartFormData body = request().body().asMultipartFormData();
 //            form = Form.form(Credentials.class).bindFromRequest();
             // Check errors

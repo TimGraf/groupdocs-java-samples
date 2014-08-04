@@ -82,6 +82,8 @@ GET         /sample-38-how-to-create-new-user-and-add-him-as-collaborator-to-doc
 POST        /sample-38-how-to-create-new-user-and-add-him-as-collaborator-to-doc-with-annotations                              controllers.Sample38.index()
 GET         /sample-39-how-to-add-a-signature-to-a-document-and-redirect-after-signing-with-groupdocs-widget                   controllers.Sample39.index()
 POST        /sample-39-how-to-add-a-signature-to-a-document-and-redirect-after-signing-with-groupdocs-widget                   controllers.Sample39.index()
+GET         /sample-40-how-to-set-callback-for-signature-form-and-re-direct-when-it-was-signed                                 controllers.Sample40.index()
+POST        /sample-40-how-to-set-callback-for-signature-form-and-re-direct-when-it-was-signed                                 controllers.Sample40.index()
 GET         /sample-42-how-to-download-document-with-annotations-using-groupdocs                                               controllers.Sample42.index()
 POST        /sample-42-how-to-download-document-with-annotations-using-groupdocs                                               controllers.Sample42.index()
 GET         /sample-43-how-to-add-numeration-in-the-doc-file                                                                   controllers.Sample43.index()
@@ -95,6 +97,9 @@ POST        /dummyCallbackHandler                                               
 PUT         /dummyCallbackHandler                                                                                              controllers.DummyCallbackHandler.index()
 GET         /checkCallbackStatus                                                                                               controllers.Sample21.checkCallbackStatus()
 GET         /downloadEnvelope                                                                                                  controllers.Sample21.downloadEnvelope()
+
+GET         /sample40_callback                                                                                                  controllers.Callbacks.formRedirectCallback()
+POST        /sample40_callback                                                                                                  controllers.Callbacks.formRedirectCallback()
 
 GET         /callbacks/convert_callback                                                                                        controllers.Callbacks.convertCallback()
 POST        /callbacks/convert_callback                                                                                        controllers.Callbacks.convertCallback()

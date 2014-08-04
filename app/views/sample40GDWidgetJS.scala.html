@@ -1,0 +1,128 @@
+<script type="text/javascript">
+$ ( document ).ready ( setTimeout ( check, 5000 ) ) ;
+function check ( ) {
+if ( ( $ ( "input[name=callbackUrl]" ).val ( ) != "" ) && ( document.getElementById ( "result" ) != null ) ) {
+$ ( '#resultsStatus' ).fadeIn ( "slow" ) ;
+$.ajax ( {
+type : 'POST',
+url : '/callbacks/check_guid',
+success : function ( data ) {
+var result = null ;
+result = data
+if ( result != null ) {
+$ ( "#result" ).css ( "display", "none" ) ;
+var guid = result ;
+var leftvar = ( screen.width - 800 ) / 2 ;
+var topvar = ( screen.height - 600 ) / 2 ;
+window.open ( '/popup?guid=' + guid, 'Redirect window', 'width=850,height=500,left=' + leftvar + ',top=' + topvar + ',resizable=no,scrollbars=no,location=no' ) ;
+} else {
+var leftvar = ( screen.width - 800 ) / 2 ;
+var topvar = ( screen.height - 600 ) / 2 ;
+window.open ( '/popup', 'Redirect window', 'width=850,height=500,left=' + leftvar + ',top=' + topvar + ',resizable=no,scrollbars=no,location=no' ) ;
+}
+},
+dataType : "text"
+} ) ;
+}
+}
+function setLogic ( ) {
+if ( $ ( "#useWidget" ).is ( ':checked' ) ) {
+$ ( "#btnLoad" ).prop ( 'type', 'button' ) ;
+$ ( "#btnLoad" ).attr ( 'onClick', 'load();' ) ;
+$ ( "#form" ).removeAttr ( "type" ) ;
+$ ( "#form" ).removeAttr ( "method" ) ;
+$ ( "#form" ).attr ( 'action', '#' ) ;
+$ ( "#filesPanel" ).show ( ) ;
+$ ( "#fieldsPanel" ).hide ( ) ;
+} else {
+$ ( "#form" ).attr ( 'action', '/sample-39-how-to-add-a-signature-to-a-document-and-redirect-after-signing-with-groupdocs-widget' ) ;
+$ ( "#form" ).attr ( 'method', 'post' ) ;
+$ ( "#btnLoad" ).prop ( 'type', 'multipart/form-data' ) ;
+$ ( "#signature" ).css ( "display", "none" ) ;
+$ ( "#fieldsPanel" ).show ( ) ;
+$ ( "#filesPanel" ).hide ( ) ;
+}
+}
+function load ( ) {
+$ ( '#resultsStatus' ).fadeIn ( "slow" ) ;
+var inputDocument, inputSignature, fileDocument, fileSignature, frDocument, frSignature ;
+if ( typeof window.FileReader !== 'function' ) {
+$ ( "enteredData" ).append ( "p", "The file API isn't supported on this browser yet." ) ;
+return ;
+}
+inputDocument = document.getElementById ( 'document' ) ;
+if ( ! inputDocument ) {
+$ ( "enteredData" ).append ( "p", "Um, couldn't find the fileinput element." ) ;
+}
+else if ( ! inputDocument.files ) {
+$ ( "enteredData" ).append ( "p", "This browser doesn't seem to support the `files` property of file inputs." ) ;
+}
+else if ( ! inputDocument.files[ 0 ] ) {
+$ ( "#files_form" ).append ( "<p class='error'>Please select a file before clicking 'Load'</p>" ) ;
+}
+else {
+fileDocument = inputDocument.files[ 0 ] ;
+frDocument = new FileReader ( ) ;
+frDocument.onload = receivedDocument ;
+frDocument.readAsDataURL ( fileDocument ) ;
+}
+function receivedDocument ( ) {
+inputSignature = document.getElementById ( 'signature' ) ;
+if ( ! inputSignature ) {
+$ ( "enteredData" ).append ( "Um, couldn't find the fileinput element." ) ;
+}
+else if ( ! inputSignature.files ) {
+$ ( "enteredData" ).append ( "p", "This browser doesn't seem to support the `files` property of file inputs." ) ;
+}
+else if ( ! inputSignature.files[ 0 ] ) {
+$ ( "enteredData" ).append ( "<p>Please select a file before clicking 'Load'</p>" ) ;
+}
+else {
+fileSignature = inputSignature.files[ 0 ] ;
+frSignature = new FileReader ( ) ;
+frSignature.onload = receivedSignature ;
+frSignature.readAsDataURL ( fileSignature ) ;
+}
+}
+function receivedSignature ( ) {
+var span = document.createElement ( 'span' ) ;
+span.innerHTML =[ '<img class="thumb" width="100" src="', frSignature.result, '"/>' ].join ( '' ) ;
+signDocument ( ) ;
+}
+function signDocument ( ) {
+$ ( "body" ).sign ( {
+userId : $ ( '#clientId' ).val ( ),
+privateKey : $ ( '#privateKey' ).val ( ),
+signMethod : "/sample-39-how-to-add-a-signature-to-a-document-and-redirect-after-signing-with-groupdocs-widget",
+onError : function ( e, data ) {
+alert ( data ) ;
+},
+onSigned : function ( e, data ) {
+$ ( '#resultsStatus' ).fadeOut ( "slow" ) ;
+var result = $.parseJSON ( data ) ;
+if ( result.error == null ) {
+var guid = result.guid ;
+$ ( "#clientId" ).val ( result.clientId ) ;
+$ ( "#privateKey" ).val ( result.privateKey ) ;
+var leftvar = ( screen.width - 800 ) / 2 ;
+var topvar = ( screen.height - 600 ) / 2 ;
+window.open ( '/popup?guid=' + guid, 'Redirect window', 'width=850,height=500,left=' + leftvar + ',top=' + topvar + ',resizable=no,scrollbars=no,location=no' ) ;
+}
+}
+} ) ;
+$ ( "body" ).sign ( "addDocument", {
+name : fileDocument.name,
+data : frDocument.result
+} ) ;
+$ ( "body" ).sign ( "addSigner", {
+name : 'Marketplace Team',
+top : 0.03319,
+left : 0.52171,
+width : 100,
+height : 40,
+data : frSignature.result
+} ) ;
+$ ( "body" ).sign ( "sign" ) ;
+}
+}
+</script>

@@ -1,6 +1,8 @@
 package controllers;
 
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
+import models.Credentials;
+import play.data.validation.Constraints;
 import play.mvc.Controller;
 
 import java.util.HashMap;
@@ -32,5 +34,30 @@ public class BaseController extends Controller {
     public static String signUrl(String pkey, String url) {
         GroupDocsRequestSigner groupDocsRequestSigner = new GroupDocsRequestSigner(pkey);
         return groupDocsRequestSigner.signUrl(url);
+    }
+
+    /**
+     * Form class for sample 40
+     */
+    public static class Sample40Form extends Credentials {
+        @Constraints.Required
+        private String formGuid;
+        private String callbackUrl;
+
+        public String getFormGuid() {
+            return formGuid;
+        }
+
+        public void setFormGuid(String formGuid) {
+            this.formGuid = formGuid;
+        }
+
+        public String getCallbackUrl() {
+            return callbackUrl == null ? "" : callbackUrl;
+        }
+
+        public void setCallbackUrl(String callbackUrl) {
+            this.callbackUrl = callbackUrl;
+        }
     }
 }

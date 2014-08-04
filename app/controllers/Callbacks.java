@@ -10,6 +10,7 @@ import com.groupdocs.sdk.common.GroupDocsRequestSigner;
 import com.groupdocs.sdk.model.GetJobDocumentsResponse;
 import com.groupdocs.sdk.model.SignatureEnvelopeDocumentsResponse;
 import com.groupdocs.sdk.model.SignatureFormDocumentsResponse;
+import com.groupdocs.sdk.model.SignatureFormParticipantResponse;
 import com.typesafe.plugin.MailerAPI;
 import com.typesafe.plugin.MailerPlugin;
 import common.Utils;
@@ -19,6 +20,7 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import views.html.defaultpages.error;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -182,7 +184,7 @@ public class Callbacks extends Controller {
         return ok("");
     }
 
-    public static Result publishCallback() throws Exception{
+    public static Result publishCallback() throws Exception {
         FileInputStream fileInputStream = new FileInputStream(Sample32.USER_INFO_FILE);
         DataInputStream dataInputStream = new DataInputStream(fileInputStream);
         String data = dataInputStream.readUTF();
@@ -215,13 +217,13 @@ public class Callbacks extends Controller {
         String subject = "Reminder: An envelope has to be signed on GroupDocs";
         String message =
                 "<html>" +
-                "<head>" +
-                "<title>Sign form notification</title>" +
-                "</head>" +
-                "<body>" +
-                "<p>Document" + documentName + " is signed</p>" +
-                "</body>" +
-                "</html>";
+                        "<head>" +
+                        "<title>Sign form notification</title>" +
+                        "</head>" +
+                        "<body>" +
+                        "<p>Document" + documentName + " is signed</p>" +
+                        "</body>" +
+                        "</html>";
         String from = "From: Remainder <noreply@groupdocs.com>";
 
         // Configure section "# Email configuration" in application.conf
@@ -274,5 +276,52 @@ public class Callbacks extends Controller {
             }
         } while (true);
         return null;
+    }
+
+    public static Result formRedirectCallback() {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(Sample40.USER_INFO_FILE);
+            DataInputStream dataInputStream = new DataInputStream(fileInputStream);
+            String data = dataInputStream.readUTF();
+            fileInputStream.close();
+
+            String cid = data.split("\\|")[0];
+            String pkey = data.split("\\|")[1];
+            String burl = data.split("\\|")[2];
+            if (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
+                return ok("ClientID or PrivateKEY or base path is not found!");
+            }
+
+            ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(pkey));
+            Http.RawBuffer rawBuffer = request().body().asRaw();
+            String jsonStr = new String(rawBuffer.asBytes());
+            JsonNode json = Json.parse(jsonStr);
+
+            //Get job id from array
+            String formId = json.get("SourceId").asText();
+            String jobStatus = json.get("EventType").asText();
+
+            JsonNode serializedData = Json.parse(json.get("SerializedData").asText());
+            String participant = serializedData.get("ParticipantGuid").asText();
+            if ("JobCompleted".equals(jobStatus)) {
+                //Create AsyncApi object
+                SignatureApi signatureApi = new SignatureApi();
+                signatureApi.setBasePath(burl);
+                //Create Storage Api object
+                StorageApi storageApi = new StorageApi();
+                storageApi.setBasePath(burl);
+                //Get document from envelop
+                SignatureFormParticipantResponse signatureFormParticipantResponse = signatureApi.GetSignatureFormParticipant(formId, participant);
+                Utils.assertResponse(signatureFormParticipantResponse);
+
+                //Get signed document GUID
+                String guid = signatureFormParticipantResponse.getResult().getParticipant().getDocumentGuid();
+                return ok(guid);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ok(e.getMessage());
+        }
+        return ok("");
     }
 }
