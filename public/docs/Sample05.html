@@ -31,7 +31,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="keyword">package</span> controllers;</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">package</span> controllers;</pre></div></div>
             
         </li>
         
@@ -47,26 +47,26 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>
-<span class="keyword">import</span> com.groupdocs.sdk.api.StorageApi;
-<span class="keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
-<span class="keyword">import</span> com.groupdocs.sdk.common.FileStream;
-<span class="keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
-<span class="keyword">import</span> com.groupdocs.sdk.model.FileMoveResponse;
-<span class="keyword">import</span> com.groupdocs.sdk.model.FileSystemDocument;
-<span class="keyword">import</span> com.groupdocs.sdk.model.ListEntitiesResponse;
-<span class="keyword">import</span> com.groupdocs.sdk.model.UploadResponse;
-<span class="keyword">import</span> common.Utils;
-<span class="keyword">import</span> models.Credentials;
-<span class="keyword">import</span> org.apache.commons.lang3.StringUtils;
-<span class="keyword">import</span> play.data.Form;
-<span class="keyword">import</span> play.mvc.Controller;
-<span class="keyword">import</span> play.mvc.Http;
-<span class="keyword">import</span> play.mvc.Result;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.api.StorageApi;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.FileStream;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.FileMoveResponse;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.FileSystemDocument;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.ListEntitiesResponse;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.UploadResponse;
+<span class="hljs-keyword">import</span> common.Utils;
+<span class="hljs-keyword">import</span> models.Credentials;
+<span class="hljs-keyword">import</span> org.apache.commons.lang3.StringUtils;
+<span class="hljs-keyword">import</span> play.data.Form;
+<span class="hljs-keyword">import</span> play.mvc.Controller;
+<span class="hljs-keyword">import</span> play.mvc.Http;
+<span class="hljs-keyword">import</span> play.mvc.Result;
 
-<span class="keyword">import</span> java.io.File;
-<span class="keyword">import</span> java.io.FileInputStream;
+<span class="hljs-keyword">import</span> java.io.File;
+<span class="hljs-keyword">import</span> java.io.FileInputStream;
 
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sample05</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>{</pre></div></div>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sample05</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span> </span>{</pre></div></div>
             
         </li>
         
@@ -80,12 +80,12 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">protected</span> <span class="keyword">static</span> Form&lt;Credentials&gt; form = Form.form(Credentials.<span class="class"><span class="keyword">class</span>);
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">static</span> Form&lt;Credentials&gt; form = Form.form(Credentials.class);
 
-    <span class="title">public</span> <span class="title">static</span> <span class="title">Result</span> <span class="title">index</span>() </span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">index</span>() {
 
-        <span class="keyword">if</span> (Utils.isPOST(request())) {
-            form = Form.form(Credentials.<span class="class"><span class="keyword">class</span>).<span class="title">bindFromRequest</span>();</pre></div></div>
+        <span class="hljs-keyword">if</span> (Utils.isPOST(request())) {
+            form = Form.form(Credentials.class).bindFromRequest();</pre></div></div>
             
         </li>
         
@@ -100,8 +100,8 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            <span class="keyword">if</span> (<span class="keyword">for</span>m.hasErrors()) {
-                <span class="keyword">return</span> badRequest(views.html.sample05.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form, <span class="keyword">null</span>));
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> (form.hasErrors()) {
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>));
             }</pre></div></div>
             
         </li>
@@ -117,11 +117,11 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            Credentials credentials = <span class="keyword">for</span>m.get();
-            session().put(<span class="string">"clientId"</span>, credentials.getClientId());
-            session().put(<span class="string">"privateKey"</span>, credentials.getPrivateKey());
-            session().put(<span class="string">"basePath"</span>, credentials.getBasePath());
-            credentials.normalizeBasePath(<span class="string">"https://api.groupdocs.com/v2.0"</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>            Credentials credentials = form.get();
+            session().put(<span class="hljs-string">"clientId"</span>, credentials.getClientId());
+            session().put(<span class="hljs-string">"privateKey"</span>, credentials.getPrivateKey());
+            session().put(<span class="hljs-string">"basePath"</span>, credentials.getBasePath());
+            credentials.normalizeBasePath(<span class="hljs-string">"https://api.groupdocs.com/v2.0"</span>);</pre></div></div>
             
         </li>
         
@@ -137,8 +137,8 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>            Http.MultipartFormData body = request().body().asMultipartFormData();
-            String sourse = Utils.getFormValue(body.asFormUrlEncoded(), <span class="string">"sourse"</span>);
-            String guid = Utils.getFormValue(body.asFormUrlEncoded(), <span class="string">"srcPath"</span>);</pre></div></div>
+            String sourse = Utils.getFormValue(body.asFormUrlEncoded(), <span class="hljs-string">"sourse"</span>);
+            String guid = Utils.getFormValue(body.asFormUrlEncoded(), <span class="hljs-string">"srcPath"</span>);</pre></div></div>
             
         </li>
         
@@ -154,9 +154,9 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>            ApiInvoker.getInstance().setRequestSigner(
-                    <span class="keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey()));
+                    <span class="hljs-keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey()));
 
-            <span class="keyword">try</span> {</pre></div></div>
+            <span class="hljs-keyword">try</span> {</pre></div></div>
             
         </li>
         
@@ -170,7 +170,7 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>                StorageApi storageApi = <span class="keyword">new</span> StorageApi();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                StorageApi storageApi = <span class="hljs-keyword">new</span> StorageApi();</pre></div></div>
             
         </li>
         
@@ -199,14 +199,14 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>                String uploadDir = <span class="string">""</span>;
-                String fileName = <span class="keyword">null</span>;
-                Double fileId = <span class="number">0</span>d;
+            <div class="content"><div class='highlight'><pre>                String uploadDir = <span class="hljs-string">""</span>;
+                String fileName = <span class="hljs-keyword">null</span>;
+                Double fileId = <span class="hljs-number">0</span>d;
 
-                <span class="keyword">if</span> (<span class="string">"local"</span>.equals(sourse)) {
-                    Http.MultipartFormData.FilePart filePart = body.getFile(<span class="string">"file"</span>);
-                    FileInputStream is = <span class="keyword">new</span> FileInputStream(filePart.getFile());
-                    String callbackUrl = Utils.getFormValue(body.asFormUrlEncoded(), <span class="string">"callbackUrl"</span>);</pre></div></div>
+                <span class="hljs-keyword">if</span> (<span class="hljs-string">"local"</span>.equals(sourse)) {
+                    Http.MultipartFormData.FilePart filePart = body.getFile(<span class="hljs-string">"file"</span>);
+                    FileInputStream is = <span class="hljs-keyword">new</span> FileInputStream(filePart.getFile());
+                    String callbackUrl = Utils.getFormValue(body.asFormUrlEncoded(), <span class="hljs-string">"callbackUrl"</span>);</pre></div></div>
             
         </li>
         
@@ -221,7 +221,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), filePart.getFilename(), <span class="string">"uploaded"</span>, callbackUrl, <span class="keyword">new</span> FileStream(is));</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), filePart.getFilename(), <span class="hljs-string">"uploaded"</span>, callbackUrl, <span class="hljs-keyword">new</span> FileStream(is));</pre></div></div>
             
         </li>
         
@@ -238,9 +238,9 @@
             
             <div class="content"><div class='highlight'><pre>                    uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
-                    Thread.sleep(<span class="number">3000</span>);
-                } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"url"</span>.equals(sourse)) {
-                    String url = Utils.getFormValue(body.asFormUrlEncoded(), <span class="string">"url"</span>);
+                    Thread.sleep(<span class="hljs-number">3000</span>);
+                } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">"url"</span>.equals(sourse)) {
+                    String url = Utils.getFormValue(body.asFormUrlEncoded(), <span class="hljs-string">"url"</span>);
                     UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClientId(), url);</pre></div></div>
             
         </li>
@@ -258,16 +258,16 @@
             
             <div class="content"><div class='highlight'><pre>                    uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
-                    uploadDir = <span class="string">"My Web Documents"</span>;
+                    uploadDir = <span class="hljs-string">"My Web Documents"</span>;
                 }
-                String destPath = Utils.getFormValue(body.asFormUrlEncoded(), <span class="string">"destPath"</span>);
+                String destPath = Utils.getFormValue(body.asFormUrlEncoded(), <span class="hljs-string">"destPath"</span>);
                 destPath = Utils.assertNotNull(destPath);
 
-                <span class="keyword">if</span> (StringUtils.isEmpty(guid)) {
-                    <span class="keyword">return</span> badRequest(views.html.sample05.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form, <span class="keyword">null</span>));
+                <span class="hljs-keyword">if</span> (StringUtils.isEmpty(guid)) {
+                    <span class="hljs-keyword">return</span> badRequest(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>));
                 }
 
-                ListEntitiesResponse response = storageApi.ListEntities(credentials.getClientId(), uploadDir, <span class="number">0</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</pre></div></div>
+                ListEntitiesResponse response = storageApi.ListEntities(credentials.getClientId(), uploadDir, <span class="hljs-number">0</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>);</pre></div></div>
             
         </li>
         
@@ -297,29 +297,29 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="keyword">for</span> (FileSystemDocument document : response.getResult().getFiles()) {
-                    <span class="keyword">if</span> (guid.equals(document.getGuid())) {
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">for</span> (FileSystemDocument document : response.getResult().getFiles()) {
+                    <span class="hljs-keyword">if</span> (guid.equals(document.getGuid())) {
                         fileName = document.getName();
                         fileId = document.getId();
-                        <span class="keyword">break</span>;
+                        <span class="hljs-keyword">break</span>;
                     }
                 }
                 guid = Utils.assertNotNull(guid);
                 fileName = Utils.assertNotNull(fileName);
-                <span class="keyword">if</span> (fileName.contains(<span class="string">"http:"</span>)) {
-                    fileName = fileName.split(<span class="string">"/"</span>)[fileName.split(<span class="string">"/"</span>).length - <span class="number">1</span>];
+                <span class="hljs-keyword">if</span> (fileName.contains(<span class="hljs-string">"http:"</span>)) {
+                    fileName = fileName.split(<span class="hljs-string">"/"</span>)[fileName.split(<span class="hljs-string">"/"</span>).length - <span class="hljs-number">1</span>];
                 }
-                String copyToPath = (destPath + File.separator + fileName).replaceAll(<span class="string">"\\\\"</span>, <span class="string">"/"</span>).replaceAll(<span class="string">"//"</span>, <span class="string">"/"</span>);
+                String copyToPath = (destPath + File.separator + fileName).replaceAll(<span class="hljs-string">"\\\\"</span>, <span class="hljs-string">"/"</span>).replaceAll(<span class="hljs-string">"//"</span>, <span class="hljs-string">"/"</span>);
 
-                String action = <span class="keyword">null</span>;
-                FileMoveResponse copyMoveResponse = <span class="keyword">null</span>;
+                String action = <span class="hljs-keyword">null</span>;
+                FileMoveResponse copyMoveResponse = <span class="hljs-keyword">null</span>;
 
-                <span class="keyword">if</span> (Utils.getFormValue(body.asFormUrlEncoded(), <span class="string">"copy"</span>) != <span class="keyword">null</span>) {
-                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, <span class="keyword">null</span>, Double.toString(fileId), <span class="keyword">null</span>);
-                    action = <span class="string">"copy"</span>;
-                } <span class="keyword">else</span> <span class="keyword">if</span> (Utils.getFormValue(body.asFormUrlEncoded(), <span class="string">"move"</span>) != <span class="keyword">null</span>) {
-                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, <span class="keyword">null</span>, <span class="keyword">null</span>, Double.toString(fileId));
-                    action = <span class="string">"move"</span>;
+                <span class="hljs-keyword">if</span> (Utils.getFormValue(body.asFormUrlEncoded(), <span class="hljs-string">"copy"</span>) != <span class="hljs-keyword">null</span>) {
+                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, <span class="hljs-keyword">null</span>, Double.toString(fileId), <span class="hljs-keyword">null</span>);
+                    action = <span class="hljs-string">"copy"</span>;
+                } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Utils.getFormValue(body.asFormUrlEncoded(), <span class="hljs-string">"move"</span>) != <span class="hljs-keyword">null</span>) {
+                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, Double.toString(fileId));
+                    action = <span class="hljs-string">"move"</span>;
                 }</pre></div></div>
             
         </li>
@@ -350,14 +350,14 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="keyword">return</span> ok(views.html.sample05.render(<span class="keyword">true</span>, copyMoveResponse.getResult(), form, action));
-            } <span class="keyword">catch</span> (Exception e) {
-                <span class="keyword">return</span> badRequest(views.html.sample05.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form, <span class="keyword">null</span>));
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">return</span> ok(views.html.sample05.render(<span class="hljs-keyword">true</span>, copyMoveResponse.getResult(), form, action));
+            } <span class="hljs-keyword">catch</span> (Exception e) {
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>));
             }
-        } <span class="keyword">else</span> <span class="keyword">if</span> (Utils.isGET(request())) {
-            form = <span class="keyword">for</span>m.bind(session());
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Utils.isGET(request())) {
+            form = form.bind(session());
         }
-        <span class="keyword">return</span> ok(views.html.sample05.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form, <span class="keyword">null</span>));
+        <span class="hljs-keyword">return</span> ok(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>));
     }
 }</pre></div></div>
             

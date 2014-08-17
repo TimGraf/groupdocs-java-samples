@@ -31,7 +31,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="keyword">package</span> controllers;</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">package</span> controllers;</pre></div></div>
             
         </li>
         
@@ -47,25 +47,25 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>
-<span class="keyword">import</span> com.groupdocs.sdk.api.SharedApi;
-<span class="keyword">import</span> com.groupdocs.sdk.api.StorageApi;
-<span class="keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
-<span class="keyword">import</span> com.groupdocs.sdk.common.FileStream;
-<span class="keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
-<span class="keyword">import</span> com.groupdocs.sdk.model.UploadResponse;
-<span class="keyword">import</span> common.Utils;
-<span class="keyword">import</span> models.Credentials;
-<span class="keyword">import</span> org.apache.commons.io.IOUtils;
-<span class="keyword">import</span> play.data.Form;
-<span class="keyword">import</span> play.mvc.Controller;
-<span class="keyword">import</span> play.mvc.Http;
-<span class="keyword">import</span> play.mvc.Result;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.api.SharedApi;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.api.StorageApi;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.FileStream;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.UploadResponse;
+<span class="hljs-keyword">import</span> common.Utils;
+<span class="hljs-keyword">import</span> models.Credentials;
+<span class="hljs-keyword">import</span> org.apache.commons.io.IOUtils;
+<span class="hljs-keyword">import</span> play.data.Form;
+<span class="hljs-keyword">import</span> play.mvc.Controller;
+<span class="hljs-keyword">import</span> play.mvc.Http;
+<span class="hljs-keyword">import</span> play.mvc.Result;
 
-<span class="keyword">import</span> java.io.File;
-<span class="keyword">import</span> java.io.FileInputStream;
-<span class="keyword">import</span> java.io.FileOutputStream;
+<span class="hljs-keyword">import</span> java.io.File;
+<span class="hljs-keyword">import</span> java.io.FileInputStream;
+<span class="hljs-keyword">import</span> java.io.FileOutputStream;
 
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sample04</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>{</pre></div></div>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sample04</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span> </span>{</pre></div></div>
             
         </li>
         
@@ -79,12 +79,12 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">protected</span> <span class="keyword">static</span> Form&lt;Credentials&gt; form = Form.form(Credentials.<span class="class"><span class="keyword">class</span>);
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">static</span> Form&lt;Credentials&gt; form = Form.form(Credentials.class);
 
-    <span class="title">public</span> <span class="title">static</span> <span class="title">Result</span> <span class="title">index</span>() </span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">index</span>() {
 
-        <span class="keyword">if</span> (Utils.isPOST(request())) {
-            form = Form.form(Credentials.<span class="class"><span class="keyword">class</span>).<span class="title">bindFromRequest</span>();</pre></div></div>
+        <span class="hljs-keyword">if</span> (Utils.isPOST(request())) {
+            form = Form.form(Credentials.class).bindFromRequest();</pre></div></div>
             
         </li>
         
@@ -99,8 +99,8 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            <span class="keyword">if</span> (<span class="keyword">for</span>m.hasErrors()) {
-                <span class="keyword">return</span> badRequest(views.html.sample04.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> (form.hasErrors()) {
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample04.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
             }</pre></div></div>
             
         </li>
@@ -116,11 +116,11 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            Credentials credentials = <span class="keyword">for</span>m.get();
-            session().put(<span class="string">"clientId"</span>, credentials.getClientId());
-            session().put(<span class="string">"privateKey"</span>, credentials.getPrivateKey());
-            session().put(<span class="string">"basePath"</span>, credentials.getBasePath());
-            credentials.normalizeBasePath(<span class="string">"https://api.groupdocs.com/v2.0"</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>            Credentials credentials = form.get();
+            session().put(<span class="hljs-string">"clientId"</span>, credentials.getClientId());
+            session().put(<span class="hljs-string">"privateKey"</span>, credentials.getPrivateKey());
+            session().put(<span class="hljs-string">"basePath"</span>, credentials.getBasePath());
+            credentials.normalizeBasePath(<span class="hljs-string">"https://api.groupdocs.com/v2.0"</span>);</pre></div></div>
             
         </li>
         
@@ -136,7 +136,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>            Http.MultipartFormData body = request().body().asMultipartFormData();
-            String fileData = Utils.getFormValue(body.asFormUrlEncoded(), <span class="string">"fileData"</span>);</pre></div></div>
+            String fileData = Utils.getFormValue(body.asFormUrlEncoded(), <span class="hljs-string">"fileData"</span>);</pre></div></div>
             
         </li>
         
@@ -152,9 +152,9 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>            ApiInvoker.getInstance().setRequestSigner(
-                    <span class="keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey()));
+                    <span class="hljs-keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey()));
 
-            <span class="keyword">try</span> {</pre></div></div>
+            <span class="hljs-keyword">try</span> {</pre></div></div>
             
         </li>
         
@@ -168,7 +168,7 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>                StorageApi storageApi = <span class="keyword">new</span> StorageApi();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                StorageApi storageApi = <span class="hljs-keyword">new</span> StorageApi();</pre></div></div>
             
         </li>
         
@@ -197,7 +197,7 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>                String guid = <span class="keyword">null</span>;</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                String guid = <span class="hljs-keyword">null</span>;</pre></div></div>
             
         </li>
         
@@ -211,17 +211,17 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="keyword">if</span> (<span class="string">"IDfileId"</span>.equals(fileData)) { <span class="comment">// File GUID</span>
-                    guid = Utils.getFormValue(body.asFormUrlEncoded(), <span class="string">"fileId"</span>);
-                } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"IDfileUrl"</span>.equals(fileData)) { <span class="comment">// Upload file fron URL</span>
-                    String fileUrl = Utils.getFormValue(body.asFormUrlEncoded(), <span class="string">"fileUrl"</span>);
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">if</span> (<span class="hljs-string">"IDfileId"</span>.equals(fileData)) { <span class="hljs-comment">// File GUID</span>
+                    guid = Utils.getFormValue(body.asFormUrlEncoded(), <span class="hljs-string">"fileId"</span>);
+                } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">"IDfileUrl"</span>.equals(fileData)) { <span class="hljs-comment">// Upload file fron URL</span>
+                    String fileUrl = Utils.getFormValue(body.asFormUrlEncoded(), <span class="hljs-string">"fileUrl"</span>);
                     UploadResponse response = storageApi.UploadWeb(credentials.getClientId(), fileUrl);
                     response = Utils.assertResponse(response);
                     guid = response.getResult().getGuid();
-                } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"IDfilePart"</span>.equals(fileData)) { <span class="comment">// Upload local file</span>
-                    Http.MultipartFormData.FilePart filePart = body.getFile(<span class="string">"filePart"</span>);
-                    FileInputStream is = <span class="keyword">new</span> FileInputStream(filePart.getFile());
-                    UploadResponse response = storageApi.Upload(credentials.getClientId(), filePart.getFilename(), <span class="string">"uploaded"</span>, <span class="string">""</span>, <span class="keyword">new</span> FileStream(is));
+                } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">"IDfilePart"</span>.equals(fileData)) { <span class="hljs-comment">// Upload local file</span>
+                    Http.MultipartFormData.FilePart filePart = body.getFile(<span class="hljs-string">"filePart"</span>);
+                    FileInputStream is = <span class="hljs-keyword">new</span> FileInputStream(filePart.getFile());
+                    UploadResponse response = storageApi.Upload(credentials.getClientId(), filePart.getFilename(), <span class="hljs-string">"uploaded"</span>, <span class="hljs-string">""</span>, <span class="hljs-keyword">new</span> FileStream(is));
                     response = Utils.assertResponse(response);
                     guid = response.getResult().getGuid();
                 }
@@ -240,7 +240,7 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>                SharedApi sharedApi = <span class="keyword">new</span> SharedApi();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                SharedApi sharedApi = <span class="hljs-keyword">new</span> SharedApi();</pre></div></div>
             
         </li>
         
@@ -270,7 +270,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                FileStream fileStream = sharedApi.Download(guid, fileName, <span class="keyword">false</span>);
+            <div class="content"><div class='highlight'><pre>                FileStream fileStream = sharedApi.Download(guid, fileName, <span class="hljs-keyword">false</span>);
                 fileStream = Utils.assertNotNull(fileStream);
                 Utils.assertNotNull(fileStream.getInputStream());</pre></div></div>
             
@@ -287,8 +287,8 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="keyword">if</span> (fileStream.getFileName() == <span class="keyword">null</span>) {
-                    fileStream.setFileName(fileName.split(<span class="string">"/"</span>)[fileName.split(<span class="string">"/"</span>).length - <span class="number">1</span>]);
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">if</span> (fileStream.getFileName() == <span class="hljs-keyword">null</span>) {
+                    fileStream.setFileName(fileName.split(<span class="hljs-string">"/"</span>)[fileName.split(<span class="hljs-string">"/"</span>).length - <span class="hljs-number">1</span>]);
                 }</pre></div></div>
             
         </li>
@@ -304,10 +304,10 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                String separator = System.getProperty(<span class="string">"file.separator"</span>);
-                String path = <span class="keyword">new</span> File(<span class="string">"."</span>).getAbsolutePath();
-                String downloadPath = path + separator + <span class="string">"public"</span> + separator + <span class="string">"images"</span> + separator;
-                FileOutputStream newFile = <span class="keyword">new</span> FileOutputStream(downloadPath + fileStream.getFileName());</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                String separator = System.getProperty(<span class="hljs-string">"file.separator"</span>);
+                String path = <span class="hljs-keyword">new</span> File(<span class="hljs-string">"."</span>).getAbsolutePath();
+                String downloadPath = path + separator + <span class="hljs-string">"public"</span> + separator + <span class="hljs-string">"images"</span> + separator;
+                FileOutputStream newFile = <span class="hljs-keyword">new</span> FileOutputStream(downloadPath + fileStream.getFileName());</pre></div></div>
             
         </li>
         
@@ -338,14 +338,14 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="keyword">return</span> ok(views.html.sample04.render(<span class="keyword">true</span>, fileStream, form));
-            } <span class="keyword">catch</span> (Exception e) {
-                <span class="keyword">return</span> badRequest(views.html.sample04.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">return</span> ok(views.html.sample04.render(<span class="hljs-keyword">true</span>, fileStream, form));
+            } <span class="hljs-keyword">catch</span> (Exception e) {
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample04.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
             }
-        } <span class="keyword">else</span> <span class="keyword">if</span> (Utils.isGET(request())) {
-            form = <span class="keyword">for</span>m.bind(session());
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Utils.isGET(request())) {
+            form = form.bind(session());
         }
-        <span class="keyword">return</span> ok(views.html.sample04.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+        <span class="hljs-keyword">return</span> ok(views.html.sample04.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
     }
 }</pre></div></div>
             

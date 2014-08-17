@@ -31,7 +31,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="keyword">package</span> controllers;</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">package</span> controllers;</pre></div></div>
             
         </li>
         
@@ -47,34 +47,34 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>
-<span class="keyword">import</span> com.fasterxml.jackson.databind.node.ObjectNode;
-<span class="keyword">import</span> com.groupdocs.sdk.api.SignatureApi;
-<span class="keyword">import</span> com.groupdocs.sdk.api.StorageApi;
-<span class="keyword">import</span> com.groupdocs.sdk.common.ApiException;
-<span class="keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
-<span class="keyword">import</span> com.groupdocs.sdk.common.FileStream;
-<span class="keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
-<span class="keyword">import</span> com.groupdocs.sdk.model.*;
-<span class="keyword">import</span> com.sun.jersey.core.header.ContentDisposition;
-<span class="keyword">import</span> common.Utils;
-<span class="keyword">import</span> models.Credentials;
-<span class="keyword">import</span> org.apache.commons.lang3.StringUtils;
-<span class="keyword">import</span> play.data.Form;
-<span class="keyword">import</span> play.libs.Json;
-<span class="keyword">import</span> play.mvc.Controller;
-<span class="keyword">import</span> play.mvc.Http;
-<span class="keyword">import</span> play.mvc.Http.MultipartFormData.FilePart;
-<span class="keyword">import</span> play.mvc.Result;
+<span class="hljs-keyword">import</span> com.fasterxml.jackson.databind.node.ObjectNode;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.api.SignatureApi;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.api.StorageApi;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.ApiException;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.FileStream;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.*;
+<span class="hljs-keyword">import</span> com.sun.jersey.core.header.ContentDisposition;
+<span class="hljs-keyword">import</span> common.Utils;
+<span class="hljs-keyword">import</span> models.Credentials;
+<span class="hljs-keyword">import</span> org.apache.commons.lang3.StringUtils;
+<span class="hljs-keyword">import</span> play.data.Form;
+<span class="hljs-keyword">import</span> play.libs.Json;
+<span class="hljs-keyword">import</span> play.mvc.Controller;
+<span class="hljs-keyword">import</span> play.mvc.Http;
+<span class="hljs-keyword">import</span> play.mvc.Http.MultipartFormData.FilePart;
+<span class="hljs-keyword">import</span> play.mvc.Result;
 
-<span class="keyword">import</span> java.io.DataOutputStream;
-<span class="keyword">import</span> java.io.File;
-<span class="keyword">import</span> java.io.FileInputStream;
-<span class="keyword">import</span> java.io.FileOutputStream;
-<span class="keyword">import</span> java.util.List;
-<span class="keyword">import</span> java.util.UUID;
+<span class="hljs-keyword">import</span> java.io.DataOutputStream;
+<span class="hljs-keyword">import</span> java.io.File;
+<span class="hljs-keyword">import</span> java.io.FileInputStream;
+<span class="hljs-keyword">import</span> java.io.FileOutputStream;
+<span class="hljs-keyword">import</span> java.util.List;
+<span class="hljs-keyword">import</span> java.util.UUID;
 
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sample21</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>{
-    <span class="keyword">public</span> <span class="keyword">static</span> String USER_INFO_FILE = <span class="string">"UserInfo_sample21.tmp"</span>;</pre></div></div>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sample21</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span> </span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String USER_INFO_FILE = <span class="hljs-string">"UserInfo_sample21.tmp"</span>;</pre></div></div>
             
         </li>
         
@@ -88,12 +88,12 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">protected</span> <span class="keyword">static</span> Form&lt;Credentials&gt; form = Form.form(Credentials.<span class="class"><span class="keyword">class</span>);
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">static</span> Form&lt;Credentials&gt; form = Form.form(Credentials.class);
 
-    <span class="title">public</span> <span class="title">static</span> <span class="title">Result</span> <span class="title">index</span>() </span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">index</span>() {
 
-        <span class="keyword">if</span> (Utils.isPOST(request())) {
-            form = Form.form(Credentials.<span class="class"><span class="keyword">class</span>).<span class="title">bindFromRequest</span>();</pre></div></div>
+        <span class="hljs-keyword">if</span> (Utils.isPOST(request())) {
+            form = Form.form(Credentials.class).bindFromRequest();</pre></div></div>
             
         </li>
         
@@ -108,8 +108,8 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            <span class="keyword">if</span> (<span class="keyword">for</span>m.hasErrors()) {
-                <span class="keyword">return</span> badRequest(views.html.sample21.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> (form.hasErrors()) {
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample21.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
             }</pre></div></div>
             
         </li>
@@ -125,11 +125,11 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            Credentials credentials = <span class="keyword">for</span>m.get();
-            session().put(<span class="string">"clientId"</span>, credentials.getClientId());
-            session().put(<span class="string">"privateKey"</span>, credentials.getPrivateKey());
-            session().put(<span class="string">"basePath"</span>, credentials.getBasePath());
-            credentials.normalizeBasePath(<span class="string">"https://api.groupdocs.com/v2.0"</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>            Credentials credentials = form.get();
+            session().put(<span class="hljs-string">"clientId"</span>, credentials.getClientId());
+            session().put(<span class="hljs-string">"privateKey"</span>, credentials.getPrivateKey());
+            session().put(<span class="hljs-string">"basePath"</span>, credentials.getBasePath());
+            credentials.normalizeBasePath(<span class="hljs-string">"https://api.groupdocs.com/v2.0"</span>);</pre></div></div>
             
         </li>
         
@@ -145,13 +145,13 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>            Http.MultipartFormData body = request().body().asMultipartFormData();
-            String sourse = Utils.getFormValue(body, <span class="string">"sourse"</span>);
-            String email = Utils.getFormValue(body, <span class="string">"email"</span>);
-            String firstName = Utils.getFormValue(body, <span class="string">"name"</span>);
-            String lastName = Utils.getFormValue(body, <span class="string">"lastName"</span>);
-            String callback = Utils.getFormValue(body, <span class="string">"callbackUrl"</span>);
+            String sourse = Utils.getFormValue(body, <span class="hljs-string">"sourse"</span>);
+            String email = Utils.getFormValue(body, <span class="hljs-string">"email"</span>);
+            String firstName = Utils.getFormValue(body, <span class="hljs-string">"name"</span>);
+            String lastName = Utils.getFormValue(body, <span class="hljs-string">"lastName"</span>);
+            String callback = Utils.getFormValue(body, <span class="hljs-string">"callbackUrl"</span>);
             String basePath = credentials.getBasePath();
-            FilePart filePart = body.getFile(<span class="string">"file"</span>);</pre></div></div>
+            FilePart filePart = body.getFile(<span class="hljs-string">"file"</span>);</pre></div></div>
             
         </li>
         
@@ -167,9 +167,9 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>            ApiInvoker.getInstance().setRequestSigner(
-                    <span class="keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey()));
+                    <span class="hljs-keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey()));
 
-            <span class="keyword">try</span> {</pre></div></div>
+            <span class="hljs-keyword">try</span> {</pre></div></div>
             
         </li>
         
@@ -183,7 +183,7 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>                String guid = <span class="keyword">null</span>;</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                String guid = <span class="hljs-keyword">null</span>;</pre></div></div>
             
         </li>
         
@@ -197,11 +197,11 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="keyword">if</span> (<span class="string">"guid"</span>.equals(sourse)) { <span class="comment">// File GUID</span>
-                    guid = Utils.getFormValue(body, <span class="string">"fileId"</span>);
-                } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"url"</span>.equals(sourse)) { <span class="comment">// Upload file fron URL</span>
-                    String url = Utils.getFormValue(body, <span class="string">"url"</span>);
-                    StorageApi storageApi = <span class="keyword">new</span> StorageApi();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">if</span> (<span class="hljs-string">"guid"</span>.equals(sourse)) { <span class="hljs-comment">// File GUID</span>
+                    guid = Utils.getFormValue(body, <span class="hljs-string">"fileId"</span>);
+                } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">"url"</span>.equals(sourse)) { <span class="hljs-comment">// Upload file fron URL</span>
+                    String url = Utils.getFormValue(body, <span class="hljs-string">"url"</span>);
+                    StorageApi storageApi = <span class="hljs-keyword">new</span> StorageApi();</pre></div></div>
             
         </li>
         
@@ -234,9 +234,9 @@
             
             <div class="content"><div class='highlight'><pre>                    uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
-                } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"local"</span>.equals(sourse)) { <span class="comment">// Upload local file</span>
-                    Http.MultipartFormData.FilePart file = body.getFile(<span class="string">"file"</span>);
-                    StorageApi storageApi = <span class="keyword">new</span> StorageApi();</pre></div></div>
+                } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">"local"</span>.equals(sourse)) { <span class="hljs-comment">// Upload local file</span>
+                    Http.MultipartFormData.FilePart file = body.getFile(<span class="hljs-string">"file"</span>);
+                    StorageApi storageApi = <span class="hljs-keyword">new</span> StorageApi();</pre></div></div>
             
         </li>
         
@@ -252,8 +252,8 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>                    storageApi.setBasePath(credentials.getBasePath());
-                    FileInputStream is = <span class="keyword">new</span> FileInputStream(file.getFile());
-                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), <span class="string">"uploaded"</span>, <span class="string">""</span>, <span class="keyword">new</span> FileStream(is));</pre></div></div>
+                    FileInputStream is = <span class="hljs-keyword">new</span> FileInputStream(file.getFile());
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), <span class="hljs-string">"uploaded"</span>, <span class="hljs-string">""</span>, <span class="hljs-keyword">new</span> FileStream(is));</pre></div></div>
             
         </li>
         
@@ -286,7 +286,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                SignatureApi signatureApi = <span class="keyword">new</span> SignatureApi();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                SignatureApi signatureApi = <span class="hljs-keyword">new</span> SignatureApi();</pre></div></div>
             
         </li>
         
@@ -316,9 +316,9 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeSettingsInfo env = <span class="keyword">new</span> SignatureEnvelopeSettingsInfo();
-                env.setEmailSubject(<span class="string">"Sign this!"</span>);
-                SignatureEnvelopeResponse envelopeResponse = signatureApi.CreateSignatureEnvelope(credentials.getClientId(), <span class="string">"SampleEnvelope_"</span> + UUID.randomUUID(), <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">true</span>, env);
+            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeSettingsInfo env = <span class="hljs-keyword">new</span> SignatureEnvelopeSettingsInfo();
+                env.setEmailSubject(<span class="hljs-string">"Sign this!"</span>);
+                SignatureEnvelopeResponse envelopeResponse = signatureApi.CreateSignatureEnvelope(credentials.getClientId(), <span class="hljs-string">"SampleEnvelope_"</span> + UUID.randomUUID(), <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">true</span>, env);
                 envelopeResponse = Utils.assertResponse(envelopeResponse);</pre></div></div>
             
         </li>
@@ -334,7 +334,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="keyword">final</span> String envelopeGuid = envelopeResponse.getResult().getEnvelope().getId();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">final</span> String envelopeGuid = envelopeResponse.getResult().getEnvelope().getId();</pre></div></div>
             
         </li>
         
@@ -349,7 +349,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeDocumentResponse envelopeDocument = signatureApi.AddSignatureEnvelopeDocument(credentials.getClientId(), envelopeGuid, guid, <span class="keyword">null</span>, <span class="keyword">true</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeDocumentResponse envelopeDocument = signatureApi.AddSignatureEnvelopeDocument(credentials.getClientId(), envelopeGuid, guid, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">true</span>);</pre></div></div>
             
         </li>
         
@@ -375,7 +375,7 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
-              <p>Update document ID after it&#39;s added to envelope</p>
+              <p>Update document ID after it’s added to envelope</p>
 
             </div>
             
@@ -394,7 +394,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                SignatureRolesResponse signatureRolesResponse = signatureApi.GetRolesList(credentials.getClientId(), <span class="keyword">null</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                SignatureRolesResponse signatureRolesResponse = signatureApi.GetRolesList(credentials.getClientId(), <span class="hljs-keyword">null</span>);</pre></div></div>
             
         </li>
         
@@ -411,8 +411,8 @@
             
             <div class="content"><div class='highlight'><pre>                signatureRolesResponse = Utils.assertResponse(signatureRolesResponse);
                 List&lt;SignatureRoleInfo&gt; roles = signatureRolesResponse.getResult().getRoles();
-                String roleGuid = <span class="keyword">null</span>;
-                <span class="keyword">for</span> (SignatureRoleInfo role : roles) {</pre></div></div>
+                String roleGuid = <span class="hljs-keyword">null</span>;
+                <span class="hljs-keyword">for</span> (SignatureRoleInfo role : roles) {</pre></div></div>
             
         </li>
         
@@ -427,9 +427,9 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                    <span class="keyword">if</span> (<span class="string">"Signer"</span>.equalsIgnoreCase(role.getName())) {
+            <div class="content"><div class='highlight'><pre>                    <span class="hljs-keyword">if</span> (<span class="hljs-string">"Signer"</span>.equalsIgnoreCase(role.getName())) {
                         roleGuid = role.getId();
-                        <span class="keyword">break</span>;
+                        <span class="hljs-keyword">break</span>;
                     }
                 }</pre></div></div>
             
@@ -446,7 +446,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeRecipientResponse signatureEnvelopeRecipientResponse = signatureApi.AddSignatureEnvelopeRecipient(credentials.getClientId(), envelopeGuid, email, firstName, lastName, roleGuid, <span class="keyword">null</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeRecipientResponse signatureEnvelopeRecipientResponse = signatureApi.AddSignatureEnvelopeRecipient(credentials.getClientId(), envelopeGuid, email, firstName, lastName, roleGuid, <span class="hljs-keyword">null</span>);</pre></div></div>
             
         </li>
         
@@ -507,14 +507,14 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeFieldSettingsInfo envField = <span class="keyword">new</span> SignatureEnvelopeFieldSettingsInfo();
-                envField.setName(<span class="string">"City"</span>);
-                envField.setLocationX(<span class="number">0.3</span>);
-                envField.setLocationY(<span class="number">0.2</span>);
-                envField.setLocationWidth(<span class="number">150.0</span>);
-                envField.setLocationHeight(<span class="number">50.0</span>);
-                envField.setForceNewField(<span class="keyword">true</span>);
-                envField.setPage(<span class="number">1</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeFieldSettingsInfo envField = <span class="hljs-keyword">new</span> SignatureEnvelopeFieldSettingsInfo();
+                envField.setName(<span class="hljs-string">"City"</span>);
+                envField.setLocationX(<span class="hljs-number">0.3</span>);
+                envField.setLocationY(<span class="hljs-number">0.2</span>);
+                envField.setLocationWidth(<span class="hljs-number">150.0</span>);
+                envField.setLocationHeight(<span class="hljs-number">50.0</span>);
+                envField.setForceNewField(<span class="hljs-keyword">true</span>);
+                envField.setPage(<span class="hljs-number">1</span>);</pre></div></div>
             
         </li>
         
@@ -529,7 +529,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeFieldsResponse signatureEnvelopeFieldsResponse = signatureApi.AddSignatureEnvelopeField(credentials.getClientId(), envelopeGuid, getEnvelopDocument.getResult().getDocuments().get(<span class="number">0</span>).getDocumentId(), recipientGuid, <span class="string">"0545e589fb3e27c9bb7a1f59d0e3fcb9"</span>, envField);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeFieldsResponse signatureEnvelopeFieldsResponse = signatureApi.AddSignatureEnvelopeField(credentials.getClientId(), envelopeGuid, getEnvelopDocument.getResult().getDocuments().get(<span class="hljs-number">0</span>).getDocumentId(), recipientGuid, <span class="hljs-string">"0545e589fb3e27c9bb7a1f59d0e3fcb9"</span>, envField);</pre></div></div>
             
         </li>
         
@@ -545,8 +545,8 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>                Utils.assertNotNull(signatureEnvelopeFieldsResponse);
-                callback = (callback == <span class="keyword">null</span>) ? <span class="string">""</span> : callback;
-                WebhookInfo webhookInfo = <span class="keyword">new</span> WebhookInfo();
+                callback = (callback == <span class="hljs-keyword">null</span>) ? <span class="hljs-string">""</span> : callback;
+                WebhookInfo webhookInfo = <span class="hljs-keyword">new</span> WebhookInfo();
                 webhookInfo.setCallbackUrl(callback);
                 SignatureEnvelopeSendResponse signatureEnvelopeSendResponse = signatureApi.SignatureEnvelopeSend(credentials.getClientId(), envelopeGuid, webhookInfo);
                 Utils.assertResponse(signatureEnvelopeSendResponse);</pre></div></div>
@@ -564,17 +564,17 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                session().put(<span class="string">"envelopeId"</span>, envelopeGuid);
+            <div class="content"><div class='highlight'><pre>                session().put(<span class="hljs-string">"envelopeId"</span>, envelopeGuid);
 
-                <span class="keyword">if</span> (!StringUtils.isEmpty(callback)) {
-                    FileOutputStream fileOutputStream = <span class="keyword">new</span> FileOutputStream(USER_INFO_FILE);
-                    DataOutputStream dataOutputStream = <span class="keyword">new</span> DataOutputStream(fileOutputStream);
+                <span class="hljs-keyword">if</span> (!StringUtils.isEmpty(callback)) {
+                    FileOutputStream fileOutputStream = <span class="hljs-keyword">new</span> FileOutputStream(USER_INFO_FILE);
+                    DataOutputStream dataOutputStream = <span class="hljs-keyword">new</span> DataOutputStream(fileOutputStream);
 
-                    StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder();
+                    StringBuilder stringBuilder = <span class="hljs-keyword">new</span> StringBuilder();
                     stringBuilder.append(credentials.getClientId());
-                    stringBuilder.append(<span class="string">"|"</span>);
+                    stringBuilder.append(<span class="hljs-string">"|"</span>);
                     stringBuilder.append(credentials.getPrivateKey());
-                    stringBuilder.append(<span class="string">"|"</span>);
+                    stringBuilder.append(<span class="hljs-string">"|"</span>);
                     stringBuilder.append(credentials.getBasePath());
 
                     dataOutputStream.writeUTF(stringBuilder.toString());
@@ -595,8 +595,8 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>                String server = credentials.getBasePath().substring(<span class="number">0</span>, credentials.getBasePath().indexOf(<span class="string">".com"</span>) + <span class="number">4</span>).replace(<span class="string">"api"</span>, <span class="string">"apps"</span>);
-                String embedUrl = server + <span class="string">"/signature/signembed/"</span> + envelopeGuid + <span class="string">"/"</span> + recipientGuid;</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                String server = credentials.getBasePath().substring(<span class="hljs-number">0</span>, credentials.getBasePath().indexOf(<span class="hljs-string">".com"</span>) + <span class="hljs-number">4</span>).replace(<span class="hljs-string">"api"</span>, <span class="hljs-string">"apps"</span>);
+                String embedUrl = server + <span class="hljs-string">"/signature2/signembed/"</span> + envelopeGuid + <span class="hljs-string">"/"</span> + recipientGuid;</pre></div></div>
             
         </li>
         
@@ -611,40 +611,40 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="keyword">return</span> ok(views.html.sample21.render(<span class="keyword">true</span>, embedUrl, form));
-            } <span class="keyword">catch</span> (Exception e) {
-                <span class="keyword">return</span> badRequest(views.html.sample21.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">return</span> ok(views.html.sample21.render(<span class="hljs-keyword">true</span>, embedUrl, form));
+            } <span class="hljs-keyword">catch</span> (Exception e) {
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample21.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
             }
-        } <span class="keyword">else</span> <span class="keyword">if</span> (Utils.isGET(request())) {
-            form = <span class="keyword">for</span>m.bind(session());
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Utils.isGET(request())) {
+            form = form.bind(session());
         }
-        <span class="keyword">return</span> ok(views.html.sample21.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+        <span class="hljs-keyword">return</span> ok(views.html.sample21.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
     }
 
-    <span class="keyword">public</span> <span class="keyword">static</span> Result checkCallbackStatus() {
-        String envelopeId = session().get(<span class="string">"envelopeId"</span>);
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">checkCallbackStatus</span>() {
+        String envelopeId = session().get(<span class="hljs-string">"envelopeId"</span>);
         ObjectNode result = Json.newObject();
-        <span class="keyword">boolean</span> status = <span class="keyword">false</span>;
-        String message = <span class="string">"Not everybody signed the envelope"</span>;
+        <span class="hljs-keyword">boolean</span> status = <span class="hljs-keyword">false</span>;
+        String message = <span class="hljs-string">"Not everybody signed the envelope"</span>;
 
-        <span class="keyword">if</span> (envelopeId != <span class="keyword">null</span> &amp;&amp; <span class="keyword">new</span> File(<span class="string">"."</span>, envelopeId).exists()) {
-            status = <span class="keyword">true</span>;
-            message = <span class="string">"Everybody signed the envelope. Click &lt;a href='/downloadEnvelope' target='_blank'&gt;here&lt;/a&gt; to download it"</span>;
+        <span class="hljs-keyword">if</span> (envelopeId != <span class="hljs-keyword">null</span> &amp;&amp; <span class="hljs-keyword">new</span> File(<span class="hljs-string">"."</span>, envelopeId).exists()) {
+            status = <span class="hljs-keyword">true</span>;
+            message = <span class="hljs-string">"Everybody signed the envelope. Click &lt;a href='/downloadEnvelope' target='_blank'&gt;here&lt;/a&gt; to download it"</span>;
         }
 
-        result.put(<span class="string">"status"</span>, status);
-        result.put(<span class="string">"message"</span>, message);
-        <span class="keyword">return</span> ok(result);
+        result.put(<span class="hljs-string">"status"</span>, status);
+        result.put(<span class="hljs-string">"message"</span>, message);
+        <span class="hljs-keyword">return</span> ok(result);
     }
 
-    <span class="keyword">public</span> <span class="keyword">static</span> Result downloadEnvelope() {
-        String envelopeId = session().get(<span class="string">"envelopeId"</span>);
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">downloadEnvelope</span>() {
+        String envelopeId = session().get(<span class="hljs-string">"envelopeId"</span>);
         Result status;
 
-        <span class="keyword">if</span> (envelopeId != <span class="keyword">null</span> &amp;&amp; <span class="keyword">new</span> File(<span class="string">"."</span>, envelopeId).exists()) {
-            String clientId = session().get(<span class="string">"clientId"</span>);
-            String privateKey = session().get(<span class="string">"privateKey"</span>);
-            System.out.println(clientId + <span class="string">" "</span> + privateKey);</pre></div></div>
+        <span class="hljs-keyword">if</span> (envelopeId != <span class="hljs-keyword">null</span> &amp;&amp; <span class="hljs-keyword">new</span> File(<span class="hljs-string">"."</span>, envelopeId).exists()) {
+            String clientId = session().get(<span class="hljs-string">"clientId"</span>);
+            String privateKey = session().get(<span class="hljs-string">"privateKey"</span>);
+            System.out.println(clientId + <span class="hljs-string">" "</span> + privateKey);</pre></div></div>
             
         </li>
         
@@ -661,8 +661,8 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>            ApiInvoker.getInstance().setRequestSigner(
-                    <span class="keyword">new</span> GroupDocsRequestSigner(privateKey));
-            <span class="keyword">try</span> {</pre></div></div>
+                    <span class="hljs-keyword">new</span> GroupDocsRequestSigner(privateKey));
+            <span class="hljs-keyword">try</span> {</pre></div></div>
             
         </li>
         
@@ -677,10 +677,10 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                SignatureApi signatureApi = <span class="keyword">new</span> SignatureApi();
+            <div class="content"><div class='highlight'><pre>                SignatureApi signatureApi = <span class="hljs-keyword">new</span> SignatureApi();
 
                 FileStream zip = signatureApi.GetSignedEnvelopeDocuments(clientId, envelopeId);
-                response().setHeader(<span class="string">"Content-Disposition"</span>, ContentDisposition.type(<span class="string">"attachment"</span>).fileName(zip.getFileName()).build().toString());
+                response().setHeader(<span class="hljs-string">"Content-Disposition"</span>, ContentDisposition.type(<span class="hljs-string">"attachment"</span>).fileName(zip.getFileName()).build().toString());
                 status = ok(zip.getInputStream());</pre></div></div>
             
         </li>
@@ -692,20 +692,20 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
-              <pre><code>        new File(&quot;.&quot;, envelopeId).delete();</code></pre>
-
+              <pre><code>        <span class="hljs-keyword">new</span> File(<span class="hljs-string">"."</span>, envelopeId).delete();
+</code></pre>
             </div>
             
             <div class="content"><div class='highlight'><pre>
-            } <span class="keyword">catch</span> (ApiException e) {
+            } <span class="hljs-keyword">catch</span> (ApiException e) {
                 e.printStackTrace();
-                status = badRequest(<span class="string">"Failed to access API: "</span> + e.getMessage());
+                status = badRequest(<span class="hljs-string">"Failed to access API: "</span> + e.getMessage());
             }
-        } <span class="keyword">else</span> {
-            status = ok(<span class="string">"Callback handler was not called yet."</span>);
+        } <span class="hljs-keyword">else</span> {
+            status = ok(<span class="hljs-string">"Callback handler was not called yet."</span>);
         }
 
-        <span class="keyword">return</span> status;
+        <span class="hljs-keyword">return</span> status;
     }
 }</pre></div></div>
             

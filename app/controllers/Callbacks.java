@@ -3,6 +3,7 @@ package controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.groupdocs.sdk.api.AsyncApi;
 import com.groupdocs.sdk.api.SignatureApi;
+import com.groupdocs.sdk.api.AntApi;
 import com.groupdocs.sdk.api.StorageApi;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.FileStream;
@@ -24,9 +25,10 @@ import views.html.defaultpages.error;
 
 import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-
+import java.util.ArrayList;
 /**
  * Created with IntelliJ IDEA.
  * User: work
@@ -321,6 +323,65 @@ public class Callbacks extends Controller {
         } catch (Exception e) {
             e.printStackTrace();
             return ok(e.getMessage());
+        }
+        return ok("");
+    }
+	public static Result userRightsCallback() {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(Sample41.USER_INFO_FILE);
+            DataInputStream dataInputStream = new DataInputStream(fileInputStream);
+            String data = dataInputStream.readUTF();
+            fileInputStream.close();
+
+            String cid = data.split("\\|")[0];
+            String pkey = data.split("\\|")[1];
+            String burl = data.split("\\|")[2];
+            if (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
+                return ok("ClientID or PrivateKEY or base path is not found!");
+            }
+
+            ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(pkey));
+            Http.RawBuffer rawBuffer = request().body().asRaw();
+            String jsonStr = new String(rawBuffer.asBytes());
+            JsonNode json = Json.parse(jsonStr);
+            //Get job id from array
+            JsonNode serializedData = Json.parse(json.get("SerializedData").asText());
+            String documentGuid = serializedData.get("DocumentGuid").asText();
+            String userGuid = serializedData.get("UserGuid").asText();
+
+            AntApi antApi = new AntApi();
+            antApi.setBasePath(burl);
+            GetCollaboratorsResponse getCollaboratorsResponse = antApi.GetAnnotationCollaborators(cid, documentGuid);
+            getCollaboratorsResponse = Utils.assertResponse(getCollaboratorsResponse);
+            //Create ReviewerInfo array
+            ReviewerInfo reviewerInfo = new ReviewerInfo();
+            ArrayList<ReviewerInfo> reviewers = new ArrayList<ReviewerInfo>();
+            int i = 1;
+            while (i <= getCollaboratorsResponse.getResult().getCollaborators().size()){
+                if (getCollaboratorsResponse.getResult().getCollaborators().get(i).getGuid().contains(userGuid)){
+                    reviewerInfo.setId(getCollaboratorsResponse.getResult().getCollaborators().get(i).getId());
+                    reviewerInfo.setAccess_rights("1");
+                    reviewers.add(reviewerInfo);
+                }
+            }
+            SetReviewerRightsResponse setReviewerRightsResponse = antApi.SetReviewerRights(cid, documentGuid, reviewers);
+
+
+            if (new File("/../../callback_info.txt").exists()) {
+                new File("/../../callback_info.txt").delete();
+            }
+
+            try {
+                File makefile = new File("output.txt");
+                FileWriter fwrite = new FileWriter(makefile);
+                fwrite.write("User rights was set to view only");
+                fwrite.flush();
+                fwrite.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return ok("");
     }

@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>Sample22.java</title>
+  <title>Sample38.java</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -15,7 +15,7 @@
         
           <li id="title">
               <div class="annotation">
-                  <h1>Sample22.java</h1>
+                  <h1>Sample38.java</h1>
               </div>
           </li>
         
@@ -27,7 +27,7 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <h3 id="-i-this-sample-will-show-how-to-use-b-setannotationcollaborators-b-method-from-annotation-api-to-set-collaborator-for-document-i-"><i>This sample will show how to use <b>SetAnnotationCollaborators</b> method from Annotation Api to set collaborator for document</i></h3>
+              <h3 id="-i-this-sample-will-show-how-to-use-b-upload-b-method-from-storage-api-to-upload-file-to-groupdocs-storage-i-"><i>This sample will show how to use <b>Upload</b> method from Storage Api to upload file to GroupDocs Storage </i></h3>
 
             </div>
             
@@ -49,6 +49,7 @@
             <div class="content"><div class='highlight'><pre>
 <span class="hljs-keyword">import</span> com.groupdocs.sdk.api.AntApi;
 <span class="hljs-keyword">import</span> com.groupdocs.sdk.api.MgmtApi;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.api.SignatureApi;
 <span class="hljs-keyword">import</span> com.groupdocs.sdk.api.StorageApi;
 <span class="hljs-keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
 <span class="hljs-keyword">import</span> com.groupdocs.sdk.common.FileStream;
@@ -56,16 +57,18 @@
 <span class="hljs-keyword">import</span> com.groupdocs.sdk.model.*;
 <span class="hljs-keyword">import</span> common.Utils;
 <span class="hljs-keyword">import</span> models.Credentials;
+<span class="hljs-keyword">import</span> org.apache.commons.io.IOUtils;
+<span class="hljs-keyword">import</span> play.Play;
 <span class="hljs-keyword">import</span> play.data.Form;
-<span class="hljs-keyword">import</span> play.mvc.Controller;
 <span class="hljs-keyword">import</span> play.mvc.Http;
 <span class="hljs-keyword">import</span> play.mvc.Result;
 
+<span class="hljs-keyword">import</span> java.io.File;
 <span class="hljs-keyword">import</span> java.io.FileInputStream;
-<span class="hljs-keyword">import</span> java.util.ArrayList;
-<span class="hljs-keyword">import</span> java.util.List;
+<span class="hljs-keyword">import</span> java.io.FileOutputStream;
+<span class="hljs-keyword">import</span> java.util.Arrays;
 
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sample22</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span> </span>{</pre></div></div>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sample38</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">BaseController</span> </span>{</pre></div></div>
             
         </li>
         
@@ -84,6 +87,7 @@
     <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">index</span>() {
 
         <span class="hljs-keyword">if</span> (Utils.isPOST(request())) {
+            Http.MultipartFormData body = request().body().asMultipartFormData();
             form = Form.form(Credentials.class).bindFromRequest();</pre></div></div>
             
         </li>
@@ -100,7 +104,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> (form.hasErrors()) {
-                <span class="hljs-keyword">return</span> badRequest(views.html.sample22.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample38.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, form));
             }</pre></div></div>
             
         </li>
@@ -135,13 +139,10 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            Http.MultipartFormData body = request().body().asMultipartFormData();
-            String sourse = Utils.getFormValue(body, <span class="hljs-string">"sourse"</span>);
+            <div class="content"><div class='highlight'><pre>            String sourse = Utils.getFormValue(body, <span class="hljs-string">"sourse"</span>);
             String email = Utils.getFormValue(body, <span class="hljs-string">"email"</span>);
             String firstName = Utils.getFormValue(body, <span class="hljs-string">"firstName"</span>);
-            String lastName = Utils.getFormValue(body, <span class="hljs-string">"lastName"</span>);
-            String callback = Utils.getFormValue(body, <span class="hljs-string">"callbackUrl"</span>);
-            String basePath = credentials.getBasePath();</pre></div></div>
+            String lastName = Utils.getFormValue(body, <span class="hljs-string">"lastName"</span>);</pre></div></div>
             
         </li>
         
@@ -159,7 +160,9 @@
             <div class="content"><div class='highlight'><pre>            ApiInvoker.getInstance().setRequestSigner(
                     <span class="hljs-keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey()));
 
-            <span class="hljs-keyword">try</span> {</pre></div></div>
+            <span class="hljs-keyword">try</span> {
+
+                String guid = <span class="hljs-keyword">null</span>;</pre></div></div>
             
         </li>
         
@@ -173,10 +176,11 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>                email = Utils.assertNotNull(email);
-                firstName = Utils.assertNotNull(firstName);
-                lastName = Utils.assertNotNull(lastName);
-                basePath = Utils.assertNotNull(basePath);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">if</span> (<span class="hljs-string">"guid"</span>.equals(sourse)) { <span class="hljs-comment">// File GUID</span>
+                    guid = Utils.getFormValue(body, <span class="hljs-string">"fileId"</span>);
+                } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">"url"</span>.equals(sourse)) { <span class="hljs-comment">// Upload file fron URL</span>
+                    String url = Utils.getFormValue(body, <span class="hljs-string">"url"</span>);
+                    StorageApi storageApi = <span class="hljs-keyword">new</span> StorageApi();</pre></div></div>
             
         </li>
         
@@ -187,10 +191,12 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              
+              <p>Initialize API with base path</p>
+
             </div>
             
-            <div class="content"><div class='highlight'><pre>                String guid = <span class="hljs-keyword">null</span>;</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                    storageApi.setBasePath(credentials.getBasePath());
+                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClientId(), url);</pre></div></div>
             
         </li>
         
@@ -201,13 +207,14 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
-              
+              <p>Check response status</p>
+
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">if</span> (<span class="hljs-string">"guid"</span>.equals(sourse)) { <span class="hljs-comment">// File GUID</span>
-                    guid = Utils.getFormValue(body, <span class="hljs-string">"fileId"</span>);
-                } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">"url"</span>.equals(sourse)) { <span class="hljs-comment">// Upload file fron URL</span>
-                    String url = Utils.getFormValue(body, <span class="hljs-string">"url"</span>);
+            <div class="content"><div class='highlight'><pre>                    uploadResponse = Utils.assertResponse(uploadResponse);
+                    guid = uploadResponse.getResult().getGuid();
+                } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">"local"</span>.equals(sourse)) { <span class="hljs-comment">// Upload local file</span>
+                    Http.MultipartFormData.FilePart file = body.getFile(<span class="hljs-string">"local"</span>);
                     StorageApi storageApi = <span class="hljs-keyword">new</span> StorageApi();</pre></div></div>
             
         </li>
@@ -224,7 +231,8 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>                    storageApi.setBasePath(credentials.getBasePath());
-                    UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClientId(), url);</pre></div></div>
+                    FileInputStream is = <span class="hljs-keyword">new</span> FileInputStream(file.getFile());
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), <span class="hljs-string">"uploaded"</span>, <span class="hljs-string">""</span>, <span class="hljs-keyword">new</span> FileStream(is));</pre></div></div>
             
         </li>
         
@@ -241,9 +249,8 @@
             
             <div class="content"><div class='highlight'><pre>                    uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
-                } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">"local"</span>.equals(sourse)) { <span class="hljs-comment">// Upload local file</span>
-                    Http.MultipartFormData.FilePart file = body.getFile(<span class="hljs-string">"file"</span>);
-                    StorageApi storageApi = <span class="hljs-keyword">new</span> StorageApi();</pre></div></div>
+                }
+                guid = Utils.assertNotNull(guid);</pre></div></div>
             
         </li>
         
@@ -254,13 +261,12 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
-              <p>Initialize API with base path</p>
+              <p>Create Annotation object</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                    storageApi.setBasePath(credentials.getBasePath());
-                    FileInputStream is = <span class="hljs-keyword">new</span> FileInputStream(file.getFile());
-                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), <span class="hljs-string">"uploaded"</span>, <span class="hljs-string">""</span>, <span class="hljs-keyword">new</span> FileStream(is));</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                AntApi antApi = <span class="hljs-keyword">new</span> AntApi();
+                antApi.setBasePath(credentials.getBasePath());</pre></div></div>
             
         </li>
         
@@ -271,14 +277,12 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
-              <p>Check response status</p>
+              <p>Create Storage Api object</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                    uploadResponse = Utils.assertResponse(uploadResponse);
-                    guid = uploadResponse.getResult().getGuid();
-                }
-                guid = Utils.assertNotNull(guid);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                StorageApi storageApi = <span class="hljs-keyword">new</span> StorageApi();
+                storageApi.setBasePath(credentials.getBasePath());</pre></div></div>
             
         </li>
         
@@ -289,11 +293,12 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
-              <p>Create AntApi object</p>
+              <p>Create MgmtApi object (this class allow manipulations with User account)</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                MgmtApi mgmtApi = <span class="hljs-keyword">new</span> MgmtApi();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                MgmtApi mgmtApi = <span class="hljs-keyword">new</span> MgmtApi();
+                mgmtApi.setBasePath(credentials.getBasePath());</pre></div></div>
             
         </li>
         
@@ -304,11 +309,12 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
-              <p>Initialize API with base path</p>
+              <p>Get all users from accaunt</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                mgmtApi.setBasePath(basePath);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                GetAccountUsersResponse getAccountUsersResponse = mgmtApi.GetAccountUsers(credentials.getClientId());
+                Utils.assertResponse(getAccountUsersResponse);</pre></div></div>
             
         </li>
         
@@ -319,11 +325,12 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
-              <p>Create User info object</p>
+              <p>Loop for all users</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                UserInfo user = <span class="hljs-keyword">new</span> UserInfo();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                String userGuid = <span class="hljs-keyword">null</span>;
+                <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; getAccountUsersResponse.getResult().getUsers().size(); i++) {</pre></div></div>
             
         </li>
         
@@ -334,11 +341,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
-              <p>Create Role info object</p>
+              <p>Check whether there is a user with entered email</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                RoleInfo role = <span class="hljs-keyword">new</span> RoleInfo();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                    <span class="hljs-keyword">if</span> (email.equals(getAccountUsersResponse.getResult().getUsers().get(i).getPrimary_email())) {</pre></div></div>
             
         </li>
         
@@ -349,11 +356,14 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
-              <p>Create array of roles.</p>
+              <p>Get user GUID</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                List&lt;RoleInfo&gt; roleList = <span class="hljs-keyword">new</span> ArrayList&lt;RoleInfo&gt;();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                        userGuid = getAccountUsersResponse.getResult().getUsers().get(i).getGuid();
+                        <span class="hljs-keyword">break</span>;
+                    }
+                }</pre></div></div>
             
         </li>
         
@@ -364,11 +374,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
-              <p>Set user role Id. Can be: 1 -  SysAdmin, 2 - Admin, 3 - User, 4 - Guest</p>
+              <p>Check is user with entered email was founded in GroupDocs account, if not user will be created</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                role.setId(<span class="hljs-number">3.0</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">if</span> (userGuid == <span class="hljs-keyword">null</span>) {</pre></div></div>
             
         </li>
         
@@ -379,11 +389,12 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
-              <p>Set user role name. Can be: SysAdmin, Admin, User, Guest</p>
+              <h3 id="create-user-info-object">Create User info object</h3>
+<p>Create User info object</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                role.setName(<span class="hljs-string">"User"</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                    UserInfo user = <span class="hljs-keyword">new</span> UserInfo();</pre></div></div>
             
         </li>
         
@@ -394,12 +405,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
-              <p>Add RoleInfo object to roles array</p>
+              <p>Create Role info object</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                roleList.add(role);
-                user.setNickname(firstName);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                    RoleInfo role = <span class="hljs-keyword">new</span> RoleInfo();</pre></div></div>
             
         </li>
         
@@ -410,11 +420,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
-              <p>Set first name as entered first name</p>
+              <p>Set user role Id. Can be: 1 -  SysAdmin, 2 - Admin, 3 - User, 4 - Guest</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                user.setFirstname(firstName);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                    role.setId(<span class="hljs-number">3</span>d);</pre></div></div>
             
         </li>
         
@@ -425,12 +435,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
-              <p>Set last name as entered last name</p>
+              <p>Set user role name. Can be: SysAdmin, Admin, User, Guest</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                user.setLastname(lastName);
-                user.setRoles(roleList);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                    role.setName(<span class="hljs-string">"User"</span>);</pre></div></div>
             
         </li>
         
@@ -441,11 +450,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
-              <p>Set email as entered email</p>
+              <p>Set nick name as entered first name</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                user.setPrimary_email(email);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                    user.setNickname(firstName);</pre></div></div>
             
         </li>
         
@@ -456,11 +465,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
-              <p>Creating of new user. $clientId - user id, $firstName - entered first name, $user - object with new user info</p>
+              <p>Set first name as entered first name</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                UpdateAccountUserResponse updateAccountUserResponse = mgmtApi.UpdateAccountUser(credentials.getClientId(), email, user);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                    user.setFirstname(firstName);</pre></div></div>
             
         </li>
         
@@ -471,11 +480,12 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
-              <p>Check response status</p>
+              <p>Set last name as entered last name</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                updateAccountUserResponse = Utils.assertResponse(updateAccountUserResponse);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                    user.setLastname(lastName);
+                    user.setRoles(Arrays.asList(role));</pre></div></div>
             
         </li>
         
@@ -486,11 +496,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
-              <p>Create AntApi object</p>
+              <p>Set email as entered email</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                AntApi ant = <span class="hljs-keyword">new</span> AntApi();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                    user.setPrimary_email(email);</pre></div></div>
             
         </li>
         
@@ -501,11 +511,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
-              <p>Initialize API with base path</p>
+              <p>Creating of new user. $clientId - user id, $firstName - entered first name, $user - object with new user info</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                ant.setBasePath(basePath);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                    UpdateAccountUserResponse updateAccountUserResponse = mgmtApi.UpdateAccountUser(credentials.getClientId(), email, user);</pre></div></div>
             
         </li>
         
@@ -516,11 +526,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
-              <p>Create List object</p>
+              <p>Check the result of the request</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                List&lt;String&gt; emailList = <span class="hljs-keyword">new</span> ArrayList&lt;String&gt;();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                    Utils.assertResponse(updateAccountUserResponse);</pre></div></div>
             
         </li>
         
@@ -531,11 +541,12 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-31">&#182;</a>
               </div>
-              <p>Add email to the list</p>
+              <p>Get user GUID</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                emailList.add(email);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                    userGuid = updateAccountUserResponse.getResult().getGuid();
+                }</pre></div></div>
             
         </li>
         
@@ -546,12 +557,12 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
-              <p>Make request to Annotation api for setting collaborator for document</p>
+              <p>Get all collaborators for current document</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                SetCollaboratorsResponse response = ant.SetAnnotationCollaborators(credentials.getClientId(), guid, <span class="hljs-string">"v2.0"</span>, emailList);
-                Utils.assertResponse(response);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                GetCollaboratorsResponse getCollaboratorsResponse = antApi.GetAnnotationCollaborators(credentials.getClientId(), guid);
+                Utils.assertResponse(getCollaboratorsResponse);</pre></div></div>
             
         </li>
         
@@ -562,11 +573,25 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
-              <p>Make request to Annotation api to receive all collaborators for entered file id</p>
+              <pre><code>               <span class="hljs-comment">//Loop for checking all collaborators</span>
+               <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> n = <span class="hljs-number">0</span>; n &lt; getCollaboratorsResponse.getResult().getCollaborators().size(); n++) {
+                   <span class="hljs-comment">//Check is user with entered email already in collaborators</span>
+                   <span class="hljs-keyword">if</span> (userGuid.equals(getCollaboratorsResponse.getResult().getCollaborators().get(n).getGuid())) {
+                       <span class="hljs-comment">//Add user GUID as "uid" parameter to the iframe URL</span>
+                       url = url + <span class="hljs-string">"?uid="</span> + userGuid;
+                       <span class="hljs-comment">//Sign iframe URL</span>
+                       url = $signer-&gt;signUrl($url);
+                       <span class="hljs-keyword">break</span>;
+                   }
+               }
+</code></pre><p>Add user as collaborators for the document</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                GetCollaboratorsResponse getCollaborators = ant.GetAnnotationCollaborators(credentials.getClientId(), guid);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                SetCollaboratorsResponse setCollaboratorsResponse = antApi.SetAnnotationCollaborators(credentials.getClientId(), guid, <span class="hljs-string">"v2.0"</span>, Arrays.asList(email));
+                Utils.assertResponse(setCollaboratorsResponse);
+
+                String server = credentials.getBasePath().substring(<span class="hljs-number">0</span>, credentials.getBasePath().indexOf(<span class="hljs-string">".com"</span>) + <span class="hljs-number">4</span>).replace(<span class="hljs-string">"api"</span>, <span class="hljs-string">"apps"</span>);</pre></div></div>
             
         </li>
         
@@ -577,12 +602,12 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
-              <p>Set reviewers rights for new user.</p>
+              <p><a href="https://apps.groupdocs.com/document-annotation2/embed/453d79b8ab6f5b7b9c8bcd63c5675961430707da41296b72f0fb42b3102053fa?uid=88932effe9df5881&amp;signature=h4kkqUuFfim0UCnJEque7CDx1n8">https://apps.groupdocs.com/document-annotation2/embed/453d79b8ab6f5b7b9c8bcd63c5675961430707da41296b72f0fb42b3102053fa?uid=88932effe9df5881&amp;signature=h4kkqUuFfim0UCnJEque7CDx1n8</a></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                SetReviewerRightsResponse reviewerRightsResponse = ant.SetReviewerRights(updateAccountUserResponse.getResult().getGuid(), guid, getCollaborators.getResult().getCollaborators());
-                reviewerRightsResponse = Utils.assertResponse(reviewerRightsResponse);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                String url = server + <span class="hljs-string">"/document-annotation2/embed/"</span> + guid + <span class="hljs-string">"?uid="</span> + userGuid;
+                url = <span class="hljs-keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey()).signUrl(url);</pre></div></div>
             
         </li>
         
@@ -593,64 +618,19 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
-              <p>Check is callback entered</p>
+              <p>Result message with link to downloaded file for view in browser</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                callback = (callback == <span class="hljs-keyword">null</span>) ? <span class="hljs-string">""</span> : callback;</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-36">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-36">&#182;</a>
-              </div>
-              <p>Set callback url. CallBack work results you can see here: <a href="http://groupdocs-php-samples.herokuapp.com/callbacks/annotation_check_file">http://groupdocs-php-samples.herokuapp.com/callbacks/annotation_check_file</a></p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>                SetSessionCallbackUrlResponse setCallBack = ant.SetSessionCallbackUrl(updateAccountUserResponse.getResult().getGuid(), guid, callback);</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-37">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-37">&#182;</a>
-              </div>
-              <p>Generation of iframe URL using $pageImage-&gt;result-&gt;guid</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>                String server = credentials.getBasePath().substring(<span class="hljs-number">0</span>, credentials.getBasePath().indexOf(<span class="hljs-string">".com"</span>) + <span class="hljs-number">4</span>).replace(<span class="hljs-string">"api"</span>, <span class="hljs-string">"apps"</span>);
-                String iframeUrl = server + <span class="hljs-string">"/document-annotation2/embed/"</span> + guid + <span class="hljs-string">"?&amp;uid="</span> + updateAccountUserResponse.getResult().getGuid() + <span class="hljs-string">"&amp;download=true"</span>;</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-38">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-38">&#182;</a>
-              </div>
-              <p>Render view</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">return</span> ok(views.html.sample22.render(<span class="hljs-keyword">true</span>, iframeUrl, form));
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">return</span> ok(views.html.sample38.render(<span class="hljs-keyword">true</span>, setCollaboratorsResponse.getResult().getCollaborators().get(<span class="hljs-number">0</span>).getPrimary_email(), url, form));
             } <span class="hljs-keyword">catch</span> (Exception e) {
-                <span class="hljs-keyword">return</span> badRequest(views.html.sample22.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample38.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, form));
             }
+
         } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Utils.isGET(request())) {
             form = form.bind(session());
         }
-        <span class="hljs-keyword">return</span> ok(views.html.sample22.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
+        <span class="hljs-keyword">return</span> ok(views.html.sample38.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, form));
     }
 }</pre></div></div>
             

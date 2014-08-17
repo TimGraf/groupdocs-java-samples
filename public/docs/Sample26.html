@@ -32,7 +32,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>
-<span class="keyword">package</span> controllers;</pre></div></div>
+<span class="hljs-keyword">package</span> controllers;</pre></div></div>
             
         </li>
         
@@ -48,19 +48,19 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>
-<span class="keyword">import</span> com.groupdocs.sdk.api.SharedApi;
-<span class="keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
-<span class="keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
-<span class="keyword">import</span> com.groupdocs.sdk.model.UserInfo;
-<span class="keyword">import</span> com.groupdocs.sdk.model.UserInfoResponse;
-<span class="keyword">import</span> common.Utils;
-<span class="keyword">import</span> org.apache.commons.lang3.StringUtils;
-<span class="keyword">import</span> play.data.Form;
-<span class="keyword">import</span> play.mvc.Controller;
-<span class="keyword">import</span> play.mvc.Http;
-<span class="keyword">import</span> play.mvc.Result;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.api.SharedApi;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.UserInfo;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.UserInfoResponse;
+<span class="hljs-keyword">import</span> common.Utils;
+<span class="hljs-keyword">import</span> org.apache.commons.lang3.StringUtils;
+<span class="hljs-keyword">import</span> play.data.Form;
+<span class="hljs-keyword">import</span> play.mvc.Controller;
+<span class="hljs-keyword">import</span> play.mvc.Http;
+<span class="hljs-keyword">import</span> play.mvc.Result;
 
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sample26</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>{</pre></div></div>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sample26</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span> </span>{</pre></div></div>
             
         </li>
         
@@ -74,11 +74,11 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">protected</span> <span class="keyword">static</span> Form form = Form.form();
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">static</span> Form form = Form.form();
 
-    <span class="keyword">public</span> <span class="keyword">static</span> Result index() {
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">index</span>() {
 
-        <span class="keyword">if</span> (Utils.isPOST(request())) {
+        <span class="hljs-keyword">if</span> (Utils.isPOST(request())) {
             form = Form.form().bindFromRequest();</pre></div></div>
             
         </li>
@@ -94,8 +94,8 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            <span class="keyword">if</span> (<span class="keyword">for</span>m.hasErrors()) {
-                <span class="keyword">return</span> badRequest(views.html.sample26.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> (form.hasErrors()) {
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample26.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
             }</pre></div></div>
             
         </li>
@@ -112,12 +112,12 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>            Http.MultipartFormData body = request().body().asMultipartFormData();
-            String login = Utils.getFormValue(body, <span class="string">"login"</span>);
-            String password = Utils.getFormValue(body, <span class="string">"password"</span>);
-            String basePath = Utils.getFormValue(body, <span class="string">"basePath"</span>);
-            basePath = StringUtils.isEmpty(basePath) ? <span class="string">"https://api.groupdocs.com/v2.0"</span> : basePath;
+            String login = Utils.getFormValue(body, <span class="hljs-string">"login"</span>);
+            String password = Utils.getFormValue(body, <span class="hljs-string">"password"</span>);
+            String basePath = Utils.getFormValue(body, <span class="hljs-string">"basePath"</span>);
+            basePath = StringUtils.isEmpty(basePath) ? <span class="hljs-string">"https://api.groupdocs.com/v2.0"</span> : basePath;
 
-            session().put(<span class="string">"basePath"</span>, basePath);</pre></div></div>
+            session().put(<span class="hljs-string">"basePath"</span>, basePath);</pre></div></div>
             
         </li>
         
@@ -133,8 +133,8 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>            ApiInvoker.getInstance().setRequestSigner(
-                    <span class="keyword">new</span> GroupDocsRequestSigner(<span class="string">"any_value"</span>));
-            <span class="keyword">try</span> {</pre></div></div>
+                    <span class="hljs-keyword">new</span> GroupDocsRequestSigner(<span class="hljs-string">"any_value"</span>));
+            <span class="hljs-keyword">try</span> {</pre></div></div>
             
         </li>
         
@@ -149,7 +149,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                SharedApi sharedApi = <span class="keyword">new</span> SharedApi();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                SharedApi sharedApi = <span class="hljs-keyword">new</span> SharedApi();</pre></div></div>
             
         </li>
         
@@ -223,14 +223,14 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="keyword">return</span> ok(views.html.sample26.render(<span class="keyword">true</span>, userInfo, form));
-            } <span class="keyword">catch</span> (Exception e) {
-                <span class="keyword">return</span> badRequest(views.html.sample26.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">return</span> ok(views.html.sample26.render(<span class="hljs-keyword">true</span>, userInfo, form));
+            } <span class="hljs-keyword">catch</span> (Exception e) {
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample26.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
             }
-        } <span class="keyword">else</span> <span class="keyword">if</span> (Utils.isGET(request())) {
-            form = <span class="keyword">for</span>m.bind(session());
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Utils.isGET(request())) {
+            form = form.bind(session());
         }
-        <span class="keyword">return</span> ok(views.html.sample26.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+        <span class="hljs-keyword">return</span> ok(views.html.sample26.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
     }
 }</pre></div></div>
             

@@ -1,0 +1,131 @@
+@(success: Boolean, signedUrl: String, aForm: Form[Credentials] )
+
+@import helper._
+
+@* Register customInput as field constructor for this page (customize input field) *@
+@implicitField = @{
+FieldConstructor(customInput.f)
+}
+
+@main() {
+
+<h3 style="text-align:center;"><a href="/">GroupDocs Java SDK Samples</a> <br/>
+    <div id="title">Sample 41 - How to set callback for Annotation and manage user rights</div>
+</h3>
+
+<div class='samplecontent' style="padding:10px;">
+    <i>This sample will show how to set callback for Annotation and manage user rights using Java SDK</i> <br/>
+    <br />
+    <a href="@routes.Assets.at("docs/Sample41.html")">Docs for this sample</a>
+    <br />
+    @if(aForm != null) {
+    <br/>
+    <p>You entered:</p>
+    <p>ClientID = @aForm.data.get("clientId")</p>
+    <p>PrivateKey = @aForm.data.get("privateKey")</p>
+    <p>Base path = @aForm.data.get("basePath")</p>
+    }
+    <br/>
+    <div id="requestForm" style="padding:20px; border:1px solid black;">
+        <p>Enter data for request and press "Make request" button</p>
+
+        @myForm(routes.Sample41.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+        @if(aForm.hasGlobalErrors) {
+        <p>
+            Error:
+            @for(validationError <- aForm.globalErrors) {
+            <span style="display: block; color: red; font-size: 12px;">@validationError.message</span>
+            }
+        </p>
+        }
+        @inputText(aForm("clientId"), '_label -> "Client ID", 'size -> 50)
+        @inputText(aForm("privateKey"), '_label -> "Private Key", 'size -> 50)
+        <div id="GuidDiv" style="margin-top: 10px">
+            <input type="radio" name="sourse" value="guid" id="GuidInput" />
+            <label for="GuidInput">File ID (GUID)</label>
+        </div>
+        <div id="LocalDiv">
+            <input type="radio" name="sourse" value="local" id="LocalInput" checked/>
+            <label for="LocalInput">Upload local file</label>
+        </div>
+        <div id="UrlDiv" style="margin-bottom: 10px">
+            <input type="radio" name="sourse" value="url" id="UrlInput"/>
+            <label for="UrlInput">Upload file from URL</label>
+        </div>
+
+        <div id="guidBlock" style="display: block;">
+            @inputText(aForm("guid"), '_label -> "GUID", 'id -> "guidField", 'size -> 50, 'required -> true)
+        </div>
+        <div id="fileBlock" style="display: none;">
+            @inputFile(aForm("file"), '_label -> "Local File", 'id -> "fileField", 'required -> true)
+        </div>
+        <div id="urlBlock" style="display: none;">
+            @inputText(aForm("url"), '_label -> "File URL", 'id -> "urlField", 'size -> 50, 'required -> true)
+        </div>
+        @inputText(aForm("email"), '_label -> "First collaborator email", 'size -> 50, 'required -> true)
+        @inputText(aForm("secondEmail"), '_label -> "Second collaborator email", 'size -> 50 )
+        @inputText(aForm("callbackUrl"), '_label -> "Callback URL", 'size -> 50)
+        <div style="color: #808080; font-size: 10px">
+            For test Callback you can use this URL: http://groupdocs-java-samples.herokuapp.com/callbacks/user_rights_callback
+        </div>
+        <br />
+        @inputText(aForm("basePath"), '_label -> "Base URL", 'size -> 50)
+        <input type="submit" id='btnLoad' value="Make Request">
+        }
+    </div>
+    @if(success) {
+    <br/>
+    <div id="result" style="padding:20px; border:1px solid black;">
+        <p>Results:</p>
+        <p></p>
+        <iframe id="viewer" src="@signedUrl" frameborder="0" width="720" height="600"></iframe>
+    </div>
+    }
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript">
+        function checkCallbackStatus(){
+            $.getJSON('/checkCallbackStatus', function(data) {
+                console.log(data);
+                if(data.status){
+                    $("#resultsStatus").html(data.message);
+                } else
+                {
+                    setTimeout(checkCallbackStatus, 10000);
+                }
+            });
+        }
+        $(document).ready(checkCallbackStatus);
+</script>
+    <script type="text/javascript" language="JavaScript">
+
+    (function (){
+    document.getElementById('GuidDiv').onclick = function (){
+    document.getElementById('guidBlock').style.display = 'block';
+    document.getElementById('guidField').setAttribute('required', 'required');
+    document.getElementById('fileBlock').style.display = 'none';
+    document.getElementById('fileField').removeAttribute('required');
+    document.getElementById('urlBlock').style.display = 'none';
+    document.getElementById('urlField').removeAttribute('required');
+} ;
+    document.getElementById('LocalDiv').onclick = function (){
+    document.getElementById('fileBlock').style.display = 'block';
+    document.getElementById('fileField').setAttribute('required', 'required');
+    document.getElementById('guidBlock').style.display = 'none';
+    document.getElementById('guidField').removeAttribute('required');
+    document.getElementById('urlBlock').style.display = 'none';
+    document.getElementById('urlField').removeAttribute('required');
+    };
+    document.getElementById('UrlDiv').onclick = function (){
+    document.getElementById('urlBlock').style.display = 'block';
+    document.getElementById('urlField').setAttribute('required', 'required');
+    document.getElementById('guidBlock').style.display = 'none';
+    document.getElementById('guidField').removeAttribute('required');
+    document.getElementById('fileBlock').style.display = 'none';
+    document.getElementById('fileField').removeAttribute('required');
+    };
+    document.getElementById('LocalDiv').onclick();
+    })();
+</script>
+</div>
+
+}

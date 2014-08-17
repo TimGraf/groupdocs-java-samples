@@ -84,6 +84,8 @@ GET         /sample-39-how-to-add-a-signature-to-a-document-and-redirect-after-s
 POST        /sample-39-how-to-add-a-signature-to-a-document-and-redirect-after-signing-with-groupdocs-widget                   controllers.Sample39.index()
 GET         /sample-40-how-to-set-callback-for-signature-form-and-re-direct-when-it-was-signed                                 controllers.Sample40.index()
 POST        /sample-40-how-to-set-callback-for-signature-form-and-re-direct-when-it-was-signed                                 controllers.Sample40.index()
+GET         /sample-41-how-to-set-callback-for-annotation-and-manage-user-rights                                               controllers.Sample41.index()
+POST        /sample-41-how-to-set-callback-for-annotation-and-manage-user-rights                                               controllers.Sample41.index()
 GET         /sample-42-how-to-download-document-with-annotations-using-groupdocs                                               controllers.Sample42.index()
 POST        /sample-42-how-to-download-document-with-annotations-using-groupdocs                                               controllers.Sample42.index()
 GET         /sample-43-how-to-add-numeration-in-the-doc-file                                                                   controllers.Sample43.index()
@@ -109,8 +111,12 @@ POST        /callbacks/publish_callback                                         
 
 GET         /callbacks/annotation_callback                                                                                     controllers.Callbacks.publishCallback()
 POST        /callbacks/annotation_callback                                                                                     controllers.Callbacks.publishCallback()
+
 GET         /callbacks/check_guid                                                                                              controllers.Callbacks.checkGuidCallback()
 POST        /callbacks/check_guid                                                                                              controllers.Callbacks.checkGuidCallback()
+
+GET         /callbacks/user_rights_callback                                                                                    controllers.Callbacks.userRightsCallback()
+POST        /callbacks/user_rights_callback                                                                                    controllers.Callbacks.userRightsCallback()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                                                                                      controllers.Assets.at(path="/public", file)

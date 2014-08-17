@@ -30,33 +30,33 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="keyword">package</span> controllers;
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">package</span> controllers;
 
-<span class="keyword">import</span> com.groupdocs.sdk.api.AsyncApi;
-<span class="keyword">import</span> com.groupdocs.sdk.api.MergeApi;
-<span class="keyword">import</span> com.groupdocs.sdk.api.SignatureApi;
-<span class="keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
-<span class="keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
-<span class="keyword">import</span> com.groupdocs.sdk.model.*;
-<span class="keyword">import</span> common.Utils;
-<span class="keyword">import</span> models.Credentials;
-<span class="keyword">import</span> play.data.Form;
-<span class="keyword">import</span> play.mvc.Controller;
-<span class="keyword">import</span> play.mvc.Http;
-<span class="keyword">import</span> play.mvc.Result;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.api.AsyncApi;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.api.MergeApi;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.api.SignatureApi;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.*;
+<span class="hljs-keyword">import</span> common.Utils;
+<span class="hljs-keyword">import</span> models.Credentials;
+<span class="hljs-keyword">import</span> play.data.Form;
+<span class="hljs-keyword">import</span> play.mvc.Controller;
+<span class="hljs-keyword">import</span> play.mvc.Http;
+<span class="hljs-keyword">import</span> play.mvc.Result;
 
-<span class="keyword">import</span> java.util.Arrays;
-<span class="keyword">import</span> java.util.Date;
-<span class="keyword">import</span> java.util.Random;
+<span class="hljs-keyword">import</span> java.util.Arrays;
+<span class="hljs-keyword">import</span> java.util.Date;
+<span class="hljs-keyword">import</span> java.util.Random;
 
-<span class="javadoc">/**
+<span class="hljs-javadoc">/**
  * Created with IntelliJ IDEA.
  * User: work
  * Date: 07.09.13
  * Time: 16:10
  * This sample will show how to dynamically create your own questionnaire using forms and build signature form from the result document
  */</span>
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sample31</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>{</pre></div></div>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sample31</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span> </span>{</pre></div></div>
             
         </li>
         
@@ -70,12 +70,12 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">protected</span> <span class="keyword">static</span> Form&lt;Credentials&gt; form = Form.form(Credentials.<span class="class"><span class="keyword">class</span>);
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">static</span> Form&lt;Credentials&gt; form = Form.form(Credentials.class);
 
-    <span class="title">public</span> <span class="title">static</span> <span class="title">Result</span> <span class="title">index</span>() </span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">index</span>() {
 
-        <span class="keyword">if</span> (Utils.isPOST(request())) {
-            form = Form.form(Credentials.<span class="class"><span class="keyword">class</span>).<span class="title">bindFromRequest</span>();</pre></div></div>
+        <span class="hljs-keyword">if</span> (Utils.isPOST(request())) {
+            form = Form.form(Credentials.class).bindFromRequest();</pre></div></div>
             
         </li>
         
@@ -90,8 +90,8 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            <span class="keyword">if</span> (<span class="keyword">for</span>m.hasErrors()) {
-                <span class="keyword">return</span> badRequest(views.html.sample31.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> (form.hasErrors()) {
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample31.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
             }</pre></div></div>
             
         </li>
@@ -107,11 +107,11 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            Credentials credentials = <span class="keyword">for</span>m.get();
-            session().put(<span class="string">"clientId"</span>, credentials.getClientId());
-            session().put(<span class="string">"privateKey"</span>, credentials.getPrivateKey());
-            session().put(<span class="string">"basePath"</span>, credentials.getBasePath());
-            credentials.normalizeBasePath(<span class="string">"https://api.groupdocs.com/v2.0"</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>            Credentials credentials = form.get();
+            session().put(<span class="hljs-string">"clientId"</span>, credentials.getClientId());
+            session().put(<span class="hljs-string">"privateKey"</span>, credentials.getPrivateKey());
+            session().put(<span class="hljs-string">"basePath"</span>, credentials.getBasePath());
+            credentials.normalizeBasePath(<span class="hljs-string">"https://api.groupdocs.com/v2.0"</span>);</pre></div></div>
             
         </li>
         
@@ -127,13 +127,13 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>            Http.MultipartFormData body = request().body().asMultipartFormData();
-            String templateGuid = Utils.getFormValue(body, <span class="string">"templateGuid"</span>);
-            String callbackUrl = Utils.getFormValue(body, <span class="string">"callbackUrl"</span>);
-            String email = Utils.getFormValue(body, <span class="string">"email"</span>);
-            String name = Utils.getFormValue(body, <span class="string">"name"</span>);
-            String country = Utils.getFormValue(body, <span class="string">"country"</span>);
-            String city = Utils.getFormValue(body, <span class="string">"city"</span>);
-            String street = Utils.getFormValue(body, <span class="string">"street"</span>);</pre></div></div>
+            String templateGuid = Utils.getFormValue(body, <span class="hljs-string">"templateGuid"</span>);
+            String callbackUrl = Utils.getFormValue(body, <span class="hljs-string">"callbackUrl"</span>);
+            String email = Utils.getFormValue(body, <span class="hljs-string">"email"</span>);
+            String name = Utils.getFormValue(body, <span class="hljs-string">"name"</span>);
+            String country = Utils.getFormValue(body, <span class="hljs-string">"country"</span>);
+            String city = Utils.getFormValue(body, <span class="hljs-string">"city"</span>);
+            String street = Utils.getFormValue(body, <span class="hljs-string">"street"</span>);</pre></div></div>
             
         </li>
         
@@ -149,9 +149,9 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>            ApiInvoker.getInstance().setRequestSigner(
-                    <span class="keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey()));
+                    <span class="hljs-keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey()));
 
-            <span class="keyword">try</span> {</pre></div></div>
+            <span class="hljs-keyword">try</span> {</pre></div></div>
             
         </li>
         
@@ -165,40 +165,40 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>                DatasourceField datasourceField = <span class="keyword">null</span>;
-                Datasource datasource = <span class="keyword">new</span> Datasource();
+            <div class="content"><div class='highlight'><pre>                DatasourceField datasourceField = <span class="hljs-keyword">null</span>;
+                Datasource datasource = <span class="hljs-keyword">new</span> Datasource();
 
-                datasourceField = <span class="keyword">new</span> DatasourceField();
-                datasourceField.setName(<span class="string">"email"</span>);
-                datasourceField.setType(<span class="string">"text"</span>);
+                datasourceField = <span class="hljs-keyword">new</span> DatasourceField();
+                datasourceField.setName(<span class="hljs-string">"email"</span>);
+                datasourceField.setType(<span class="hljs-string">"text"</span>);
                 datasourceField.setValues(Arrays.asList(email));
                 datasource.getFields().add(datasourceField);
 
-                datasourceField = <span class="keyword">new</span> DatasourceField();
-                datasourceField.setName(<span class="string">"country"</span>);
-                datasourceField.setType(<span class="string">"text"</span>);
+                datasourceField = <span class="hljs-keyword">new</span> DatasourceField();
+                datasourceField.setName(<span class="hljs-string">"country"</span>);
+                datasourceField.setType(<span class="hljs-string">"text"</span>);
                 datasourceField.setValues(Arrays.asList(country));
                 datasource.getFields().add(datasourceField);
 
-                datasourceField = <span class="keyword">new</span> DatasourceField();
-                datasourceField.setName(<span class="string">"name"</span>);
-                datasourceField.setType(<span class="string">"text"</span>);
+                datasourceField = <span class="hljs-keyword">new</span> DatasourceField();
+                datasourceField.setName(<span class="hljs-string">"name"</span>);
+                datasourceField.setType(<span class="hljs-string">"text"</span>);
                 datasourceField.setValues(Arrays.asList(name));
                 datasource.getFields().add(datasourceField);
 
-                datasourceField = <span class="keyword">new</span> DatasourceField();
-                datasourceField.setName(<span class="string">"street"</span>);
-                datasourceField.setType(<span class="string">"text"</span>);
+                datasourceField = <span class="hljs-keyword">new</span> DatasourceField();
+                datasourceField.setName(<span class="hljs-string">"street"</span>);
+                datasourceField.setType(<span class="hljs-string">"text"</span>);
                 datasourceField.setValues(Arrays.asList(street));
                 datasource.getFields().add(datasourceField);
 
-                datasourceField = <span class="keyword">new</span> DatasourceField();
-                datasourceField.setName(<span class="string">"city"</span>);
-                datasourceField.setType(<span class="string">"text"</span>);
+                datasourceField = <span class="hljs-keyword">new</span> DatasourceField();
+                datasourceField.setName(<span class="hljs-string">"city"</span>);
+                datasourceField.setType(<span class="hljs-string">"text"</span>);
                 datasourceField.setValues(Arrays.asList(city));
                 datasource.getFields().add(datasourceField);
 
-                MergeApi mergeApi = <span class="keyword">new</span> MergeApi();</pre></div></div>
+                MergeApi mergeApi = <span class="hljs-keyword">new</span> MergeApi();</pre></div></div>
             
         </li>
         
@@ -258,7 +258,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                MergeTemplateResponse mergeTemplateResponse = mergeApi.MergeDatasource(credentials.getClientId(), templateGuid, Double.toString(addDatasourceResponse.getResult().getDatasource_id()), <span class="string">"pdf"</span>, <span class="keyword">null</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                MergeTemplateResponse mergeTemplateResponse = mergeApi.MergeDatasource(credentials.getClientId(), templateGuid, Double.toString(addDatasourceResponse.getResult().getDatasource_id()), <span class="hljs-string">"pdf"</span>, <span class="hljs-keyword">null</span>);</pre></div></div>
             
         </li>
         
@@ -275,7 +275,7 @@
             
             <div class="content"><div class='highlight'><pre>                mergeTemplateResponse = Utils.assertResponse(mergeTemplateResponse);
 
-                AsyncApi asyncApi = <span class="keyword">new</span> AsyncApi();</pre></div></div>
+                AsyncApi asyncApi = <span class="hljs-keyword">new</span> AsyncApi();</pre></div></div>
             
         </li>
         
@@ -292,8 +292,8 @@
             
             <div class="content"><div class='highlight'><pre>                asyncApi.setBasePath(credentials.getBasePath());
 
-                GetJobDocumentsResponse jobDocumentsResponse = <span class="keyword">null</span>;
-                <span class="keyword">for</span> (<span class="keyword">int</span> n = <span class="number">0</span>; n &lt; <span class="number">5</span>; n++) {</pre></div></div>
+                GetJobDocumentsResponse jobDocumentsResponse = <span class="hljs-keyword">null</span>;
+                <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> n = <span class="hljs-number">0</span>; n &lt; <span class="hljs-number">5</span>; n++) {</pre></div></div>
             
         </li>
         
@@ -308,7 +308,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                    Thread.sleep(<span class="number">2000</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                    Thread.sleep(<span class="hljs-number">2000</span>);</pre></div></div>
             
         </li>
         
@@ -323,7 +323,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                    jobDocumentsResponse = asyncApi.GetJobDocuments(credentials.getClientId(), Double.toString(mergeTemplateResponse.getResult().getJob_id()), <span class="keyword">null</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                    jobDocumentsResponse = asyncApi.GetJobDocuments(credentials.getClientId(), Double.toString(mergeTemplateResponse.getResult().getJob_id()), <span class="hljs-keyword">null</span>);</pre></div></div>
             
         </li>
         
@@ -354,8 +354,8 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>                    String jobStatus = jobDocumentsResponse.getResult().getJob_status();
-                    <span class="keyword">if</span> (<span class="string">"Completed"</span>.equalsIgnoreCase(jobStatus) || <span class="string">"Archived"</span>.equalsIgnoreCase(jobStatus)) {
-                        <span class="keyword">break</span>;
+                    <span class="hljs-keyword">if</span> (<span class="hljs-string">"Completed"</span>.equalsIgnoreCase(jobStatus) || <span class="hljs-string">"Archived"</span>.equalsIgnoreCase(jobStatus)) {
+                        <span class="hljs-keyword">break</span>;
                     }
                 }</pre></div></div>
             
@@ -372,10 +372,10 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="keyword">if</span> (<span class="string">"Postponed"</span>.equalsIgnoreCase(jobDocumentsResponse.getResult().getJob_status())) {
-                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"Job is postponed!"</span>);
-                } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"Pending"</span>.equalsIgnoreCase(jobDocumentsResponse.getResult().getJob_status())) {
-                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"Job is pending!"</span>);
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">if</span> (<span class="hljs-string">"Postponed"</span>.equalsIgnoreCase(jobDocumentsResponse.getResult().getJob_status())) {
+                    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">"Job is postponed!"</span>);
+                } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">"Pending"</span>.equalsIgnoreCase(jobDocumentsResponse.getResult().getJob_status())) {
+                    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">"Job is pending!"</span>);
                 }</pre></div></div>
             
         </li>
@@ -391,7 +391,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                String guid = jobDocumentsResponse.getResult().getInputs().get(<span class="number">0</span>).getOutputs().get(<span class="number">0</span>).getGuid();
+            <div class="content"><div class='highlight'><pre>                String guid = jobDocumentsResponse.getResult().getInputs().get(<span class="hljs-number">0</span>).getOutputs().get(<span class="hljs-number">0</span>).getGuid();
                 guid = Utils.assertNotNull(guid);</pre></div></div>
             
         </li>
@@ -407,11 +407,11 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                String fileName = jobDocumentsResponse.getResult().getInputs().get(<span class="number">0</span>).getOutputs().get(<span class="number">0</span>).getName();
+            <div class="content"><div class='highlight'><pre>                String fileName = jobDocumentsResponse.getResult().getInputs().get(<span class="hljs-number">0</span>).getOutputs().get(<span class="hljs-number">0</span>).getName();
                 fileName = Utils.assertNotNull(fileName);
 
 
-                SignatureApi signatureApi = <span class="keyword">new</span> SignatureApi();</pre></div></div>
+                SignatureApi signatureApi = <span class="hljs-keyword">new</span> SignatureApi();</pre></div></div>
             
         </li>
         
@@ -428,7 +428,7 @@
             
             <div class="content"><div class='highlight'><pre>                signatureApi.setBasePath(credentials.getBasePath());
 
-                SignatureEnvelopeResponse signatureEnvelopeResponse = signatureApi.CreateSignatureEnvelope(credentials.getClientId(), fileName, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</pre></div></div>
+                SignatureEnvelopeResponse signatureEnvelopeResponse = signatureApi.CreateSignatureEnvelope(credentials.getClientId(), fileName, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>);</pre></div></div>
             
         </li>
         
@@ -446,7 +446,7 @@
             <div class="content"><div class='highlight'><pre>                signatureEnvelopeResponse = Utils.assertResponse(signatureEnvelopeResponse);
                 String envilopeId = signatureEnvelopeResponse.getResult().getEnvelope().getId();
 
-                Thread.sleep(<span class="number">5000</span>);</pre></div></div>
+                Thread.sleep(<span class="hljs-number">5000</span>);</pre></div></div>
             
         </li>
         
@@ -461,7 +461,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeDocumentResponse signatureEnvelopeDocumentResponse = signatureApi.AddSignatureEnvelopeDocument(credentials.getClientId(), envilopeId, guid, <span class="keyword">null</span>, <span class="keyword">null</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeDocumentResponse signatureEnvelopeDocumentResponse = signatureApi.AddSignatureEnvelopeDocument(credentials.getClientId(), envilopeId, guid, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>);</pre></div></div>
             
         </li>
         
@@ -491,7 +491,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                SignatureRolesResponse signatureRolesResponse = signatureApi.GetRolesList(credentials.getClientId(), <span class="keyword">null</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                SignatureRolesResponse signatureRolesResponse = signatureApi.GetRolesList(credentials.getClientId(), <span class="hljs-keyword">null</span>);</pre></div></div>
             
         </li>
         
@@ -508,7 +508,7 @@
             
             <div class="content"><div class='highlight'><pre>                signatureRolesResponse = Utils.assertResponse(signatureRolesResponse);
 
-                String roleId = <span class="keyword">null</span>;</pre></div></div>
+                String roleId = <span class="hljs-keyword">null</span>;</pre></div></div>
             
         </li>
         
@@ -523,16 +523,16 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="keyword">for</span> (SignatureRoleInfo signatureRoleInfo : signatureRolesResponse.getResult().getRoles()){
-                    <span class="keyword">if</span> (<span class="string">"Signer"</span>.equalsIgnoreCase(signatureRoleInfo.getName())){
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">for</span> (SignatureRoleInfo signatureRoleInfo : signatureRolesResponse.getResult().getRoles()){
+                    <span class="hljs-keyword">if</span> (<span class="hljs-string">"Signer"</span>.equalsIgnoreCase(signatureRoleInfo.getName())){
                         roleId = signatureRoleInfo.getId();
-                        <span class="keyword">break</span>;
+                        <span class="hljs-keyword">break</span>;
                     }
                 }
                 roleId = Utils.assertNotNull(roleId);
 
-                String fieldName = <span class="string">"SignatureSample"</span> + <span class="keyword">new</span> Random(<span class="keyword">new</span> Date().getTime()).nextInt();
-                SignatureFieldSettingsInfo signatureFieldSettings = <span class="keyword">new</span> SignatureFieldSettingsInfo();
+                String fieldName = <span class="hljs-string">"SignatureSample"</span> + <span class="hljs-keyword">new</span> Random(<span class="hljs-keyword">new</span> Date().getTime()).nextInt();
+                SignatureFieldSettingsInfo signatureFieldSettings = <span class="hljs-keyword">new</span> SignatureFieldSettingsInfo();
                 signatureFieldSettings.setName(fieldName);
 
                 SignatureFieldResponse signatureFieldResponse = signatureApi.CreateSignatureField(credentials.getClientId(), signatureFieldSettings);</pre></div></div>
@@ -565,7 +565,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeRecipientResponse signatureEnvelopeRecipientResponse = signatureApi.AddSignatureEnvelopeRecipient(credentials.getClientId(), envilopeId, <span class="string">"sample@example.com"</span>, <span class="string">"test"</span>, <span class="string">"test"</span>, roleId, <span class="keyword">null</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                SignatureEnvelopeRecipientResponse signatureEnvelopeRecipientResponse = signatureApi.AddSignatureEnvelopeRecipient(credentials.getClientId(), envilopeId, <span class="hljs-string">"sample@example.com"</span>, <span class="hljs-string">"test"</span>, <span class="hljs-string">"test"</span>, roleId, <span class="hljs-keyword">null</span>);</pre></div></div>
             
         </li>
         
@@ -612,7 +612,7 @@
             
             <div class="content"><div class='highlight'><pre>                signatureEnvelopeRecipientsResponse = Utils.assertResponse(signatureEnvelopeRecipientsResponse);
 
-                String recipientId = signatureEnvelopeRecipientsResponse.getResult().getRecipients().get(<span class="number">0</span>).getId();
+                String recipientId = signatureEnvelopeRecipientsResponse.getResult().getRecipients().get(<span class="hljs-number">0</span>).getId();
                 SignatureEnvelopeDocumentsResponse envelopeDocumentsResponse = signatureApi.GetSignatureEnvelopeDocuments(credentials.getClientId(), envilopeId);</pre></div></div>
             
         </li>
@@ -630,16 +630,16 @@
             
             <div class="content"><div class='highlight'><pre>                envelopeDocumentsResponse = Utils.assertResponse(envelopeDocumentsResponse);
 
-                SignatureEnvelopeFieldSettingsInfo signatureEnvelopeFieldSettings = <span class="keyword">new</span> SignatureEnvelopeFieldSettingsInfo();
-                signatureEnvelopeFieldSettings.setLocationX(<span class="number">0.15</span>);
-                signatureEnvelopeFieldSettings.setLocationY(<span class="number">0.73</span>);
-                signatureEnvelopeFieldSettings.setLocationWidth(<span class="number">150.0</span>);
-                signatureEnvelopeFieldSettings.setLocationHeight(<span class="number">50.0</span>);
+                SignatureEnvelopeFieldSettingsInfo signatureEnvelopeFieldSettings = <span class="hljs-keyword">new</span> SignatureEnvelopeFieldSettingsInfo();
+                signatureEnvelopeFieldSettings.setLocationX(<span class="hljs-number">0.15</span>);
+                signatureEnvelopeFieldSettings.setLocationY(<span class="hljs-number">0.73</span>);
+                signatureEnvelopeFieldSettings.setLocationWidth(<span class="hljs-number">150.0</span>);
+                signatureEnvelopeFieldSettings.setLocationHeight(<span class="hljs-number">50.0</span>);
                 signatureEnvelopeFieldSettings.setName(fieldName);
-                signatureEnvelopeFieldSettings.setForceNewField(<span class="keyword">true</span>);
-                signatureEnvelopeFieldSettings.setPage(<span class="number">1</span>);
+                signatureEnvelopeFieldSettings.setForceNewField(<span class="hljs-keyword">true</span>);
+                signatureEnvelopeFieldSettings.setPage(<span class="hljs-number">1</span>);
 
-                SignatureEnvelopeFieldsResponse signatureEnvelopeFieldsResponse = signatureApi.AddSignatureEnvelopeField(credentials.getClientId(), envilopeId, envelopeDocumentsResponse.getResult().getDocuments().get(<span class="number">0</span>).getDocumentId(), recipientId, <span class="string">"0545e589fb3e27c9bb7a1f59d0e3fcb9"</span>, signatureEnvelopeFieldSettings);</pre></div></div>
+                SignatureEnvelopeFieldsResponse signatureEnvelopeFieldsResponse = signatureApi.AddSignatureEnvelopeField(credentials.getClientId(), envilopeId, envelopeDocumentsResponse.getResult().getDocuments().get(<span class="hljs-number">0</span>).getDocumentId(), recipientId, <span class="hljs-string">"0545e589fb3e27c9bb7a1f59d0e3fcb9"</span>, signatureEnvelopeFieldSettings);</pre></div></div>
             
         </li>
         
@@ -656,7 +656,7 @@
             
             <div class="content"><div class='highlight'><pre>                signatureEnvelopeFieldsResponse = Utils.assertResponse(signatureEnvelopeFieldsResponse);
 
-                WebhookInfo webhookInfo = <span class="keyword">new</span> WebhookInfo();
+                WebhookInfo webhookInfo = <span class="hljs-keyword">new</span> WebhookInfo();
                 webhookInfo.setCallbackUrl(callbackUrl);
                 SignatureEnvelopeSendResponse signatureEnvelopeSendResponse = signatureApi.SignatureEnvelopeSend(credentials.getClientId(), envilopeId, webhookInfo);</pre></div></div>
             
@@ -675,8 +675,8 @@
             
             <div class="content"><div class='highlight'><pre>                signatureEnvelopeSendResponse = Utils.assertResponse(signatureEnvelopeSendResponse);
 
-                String server = credentials.getBasePath().substring(<span class="number">0</span>, credentials.getBasePath().indexOf(<span class="string">".com"</span>) + <span class="number">4</span>).replace(<span class="string">"api"</span>, <span class="string">"apps"</span>);
-                String frameUrl = server + <span class="string">"/signature2/signembed/"</span> + envilopeId + <span class="string">"/"</span> + recipientId;</pre></div></div>
+                String server = credentials.getBasePath().substring(<span class="hljs-number">0</span>, credentials.getBasePath().indexOf(<span class="hljs-string">".com"</span>) + <span class="hljs-number">4</span>).replace(<span class="hljs-string">"api"</span>, <span class="hljs-string">"apps"</span>);
+                String frameUrl = server + <span class="hljs-string">"/signature2/signembed/"</span> + envilopeId + <span class="hljs-string">"/"</span> + recipientId;</pre></div></div>
             
         </li>
         
@@ -691,14 +691,14 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="keyword">return</span> ok(views.html.sample31.render(<span class="keyword">true</span>, frameUrl, form));
-            } <span class="keyword">catch</span> (Exception e) {
-                <span class="keyword">return</span> badRequest(views.html.sample31.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">return</span> ok(views.html.sample31.render(<span class="hljs-keyword">true</span>, frameUrl, form));
+            } <span class="hljs-keyword">catch</span> (Exception e) {
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample31.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
             }
-        } <span class="keyword">else</span> <span class="keyword">if</span> (Utils.isGET(request())) {
-            form = <span class="keyword">for</span>m.bind(session());
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Utils.isGET(request())) {
+            form = form.bind(session());
         }
-        <span class="keyword">return</span> ok(views.html.sample31.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+        <span class="hljs-keyword">return</span> ok(views.html.sample31.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
     }
 }</pre></div></div>
             

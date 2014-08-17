@@ -30,25 +30,25 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="keyword">package</span> controllers;
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">package</span> controllers;
 
-<span class="keyword">import</span> common.Utils;
-<span class="keyword">import</span> models.Credentials;
-<span class="keyword">import</span> org.apache.commons.lang3.StringUtils;
-<span class="keyword">import</span> play.data.Form;
-<span class="keyword">import</span> play.mvc.Controller;
-<span class="keyword">import</span> play.mvc.Result;
+<span class="hljs-keyword">import</span> common.Utils;
+<span class="hljs-keyword">import</span> models.Credentials;
+<span class="hljs-keyword">import</span> org.apache.commons.lang3.StringUtils;
+<span class="hljs-keyword">import</span> play.data.Form;
+<span class="hljs-keyword">import</span> play.mvc.Controller;
+<span class="hljs-keyword">import</span> play.mvc.Result;
 
-<span class="keyword">import</span> java.util.Map;
+<span class="hljs-keyword">import</span> java.util.Map;
 
-<span class="javadoc">/**
+<span class="hljs-javadoc">/**
  * Created with IntelliJ IDEA.
  * User: work
  * Date: 05.09.13
  * Time: 9:51
  * This sample will show how to use Filepicker.io to upload document and get it's URL
  */</span>
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sample29</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>{</pre></div></div>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sample29</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span> </span>{</pre></div></div>
             
         </li>
         
@@ -62,20 +62,20 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>    protected static Form&lt;Credentials&gt; form = Form.form(Credentials.class);
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">static</span> Form&lt;Credentials&gt; form = Form.form(Credentials.class);
 
-    public static Result index() {
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">index</span>() {
 
-        if (Utils.isPOST(request())) {
+        <span class="hljs-keyword">if</span> (Utils.isPOST(request())) {
             form = Form.form(Credentials.class).bindFromRequest();
 
             Map&lt;String, String[]&gt; body = request().body().asFormUrlEncoded();
-            String url = body.get("url")[0];
-            String clientId = body.get("clientId")[0];
-            String basePath = body.get("basePath")[0];
-            basePath = StringUtils.isEmpty(basePath) ? "https://api.groupdocs.com/v2.0" : basePath;
+            String url = body.get(<span class="hljs-string">"url"</span>)[<span class="hljs-number">0</span>];
+            String clientId = body.get(<span class="hljs-string">"clientId"</span>)[<span class="hljs-number">0</span>];
+            String basePath = body.get(<span class="hljs-string">"basePath"</span>)[<span class="hljs-number">0</span>];
+            basePath = StringUtils.isEmpty(basePath) ? <span class="hljs-string">"https://api.groupdocs.com/v2.0"</span> : basePath;
 
-            try {</pre></div></div>
+            <span class="hljs-keyword">try</span> {</pre></div></div>
             
         </li>
         
@@ -89,8 +89,8 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>                String server = basePath.substring(<span class="number">0</span>, basePath.indexOf(<span class="string">".com"</span>) + <span class="number">4</span>).replace(<span class="string">"api"</span>, <span class="string">"apps"</span>);
-                String frameUrl = server + <span class="string">"/document-viewer/embed?url="</span> + url + <span class="string">"&amp;user_id="</span> + clientId;</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                String server = basePath.substring(<span class="hljs-number">0</span>, basePath.indexOf(<span class="hljs-string">".com"</span>) + <span class="hljs-number">4</span>).replace(<span class="hljs-string">"api"</span>, <span class="hljs-string">"apps"</span>);
+                String frameUrl = server + <span class="hljs-string">"/document-viewer/embed?url="</span> + url + <span class="hljs-string">"&amp;user_id="</span> + clientId;</pre></div></div>
             
         </li>
         
@@ -105,15 +105,15 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="keyword">return</span> ok(<span class="string">"{ \"iframe\": \""</span> + frameUrl + <span class="string">"\" }"</span>);
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">return</span> ok(<span class="hljs-string">"{ \"iframe\": \""</span> + frameUrl + <span class="hljs-string">"\" }"</span>);
 
-            } <span class="keyword">catch</span> (Exception e) {
-                <span class="keyword">return</span> badRequest(views.html.sample29.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+            } <span class="hljs-keyword">catch</span> (Exception e) {
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample29.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
             }
-        } <span class="keyword">else</span> <span class="keyword">if</span> (Utils.isGET(request())) {
-            form = <span class="keyword">for</span>m.bind(session());
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Utils.isGET(request())) {
+            form = form.bind(session());
         }
-        <span class="keyword">return</span> ok(views.html.sample29.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+        <span class="hljs-keyword">return</span> ok(views.html.sample29.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
     }
 }</pre></div></div>
             

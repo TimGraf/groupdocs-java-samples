@@ -30,38 +30,38 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="keyword">package</span> controllers;
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">package</span> controllers;
 
-<span class="keyword">import</span> com.fasterxml.jackson.databind.JsonNode;
-<span class="keyword">import</span> play.libs.Json;
-<span class="keyword">import</span> play.mvc.BodyParser;
-<span class="keyword">import</span> play.mvc.Controller;
-<span class="keyword">import</span> play.mvc.Result;
+<span class="hljs-keyword">import</span> com.fasterxml.jackson.databind.JsonNode;
+<span class="hljs-keyword">import</span> play.libs.Json;
+<span class="hljs-keyword">import</span> play.mvc.BodyParser;
+<span class="hljs-keyword">import</span> play.mvc.Controller;
+<span class="hljs-keyword">import</span> play.mvc.Result;
 
-<span class="keyword">import</span> java.io.File;
-<span class="keyword">import</span> java.io.IOException;
-<span class="keyword">import</span> java.util.HashMap;
-<span class="keyword">import</span> java.util.Map;
+<span class="hljs-keyword">import</span> java.io.File;
+<span class="hljs-keyword">import</span> java.io.IOException;
+<span class="hljs-keyword">import</span> java.util.HashMap;
+<span class="hljs-keyword">import</span> java.util.Map;
 
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DummyCallbackHandler</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DummyCallbackHandler</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span> </span>{
 
-    <span class="annotation">@BodyParser</span>.Of(value = BodyParser.TolerantText.<span class="class"><span class="keyword">class</span>)
-    <span class="title">public</span> <span class="title">static</span> <span class="title">Result</span> <span class="title">index</span>() </span>{
-        System.out.println(<span class="string">"Method: "</span> + request().method());
-        System.out.println(<span class="string">"URL: "</span> + request().uri());
-        System.out.println(<span class="string">"Headers: "</span> + flattenMap(request().headers()));
+    <span class="hljs-annotation">@BodyParser</span>.Of(value = BodyParser.TolerantText.class)
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">index</span>() {
+        System.out.println(<span class="hljs-string">"Method: "</span> + request().method());
+        System.out.println(<span class="hljs-string">"URL: "</span> + request().uri());
+        System.out.println(<span class="hljs-string">"Headers: "</span> + flattenMap(request().headers()));
         String rawBody = request().body().asText();
-        System.out.println(<span class="string">"Body: "</span> + rawBody);
-        System.out.println(<span class="string">""</span>);
+        System.out.println(<span class="hljs-string">"Body: "</span> + rawBody);
+        System.out.println(<span class="hljs-string">""</span>);
 
         JsonNode json = (JsonNode) Json.parse(rawBody);
-        <span class="keyword">if</span> (json != <span class="keyword">null</span> &amp;&amp; json.findPath(<span class="string">"SourceId"</span>) != <span class="keyword">null</span>) {
-            String sourceId = json.findPath(<span class="string">"SourceId"</span>).asText();
-            <span class="keyword">try</span> {
-                File tempFile = <span class="keyword">new</span> File(<span class="string">"."</span>, sourceId);
+        <span class="hljs-keyword">if</span> (json != <span class="hljs-keyword">null</span> &amp;&amp; json.findPath(<span class="hljs-string">"SourceId"</span>) != <span class="hljs-keyword">null</span>) {
+            String sourceId = json.findPath(<span class="hljs-string">"SourceId"</span>).asText();
+            <span class="hljs-keyword">try</span> {
+                File tempFile = <span class="hljs-keyword">new</span> File(<span class="hljs-string">"."</span>, sourceId);
                 tempFile.createNewFile();
-                System.out.println(<span class="string">"File created: "</span> + tempFile.getAbsolutePath());
-            } <span class="keyword">catch</span> (IOException e) {</pre></div></div>
+                System.out.println(<span class="hljs-string">"File created: "</span> + tempFile.getAbsolutePath());
+            } <span class="hljs-keyword">catch</span> (IOException e) {</pre></div></div>
             
         </li>
         
@@ -80,17 +80,17 @@
             }
         }
 
-        <span class="keyword">return</span> ok();
+        <span class="hljs-keyword">return</span> ok();
     }
 
-    <span class="keyword">private</span> <span class="keyword">static</span> Map&lt;String, String&gt; flattenMap(Map&lt;String, String[]&gt; headers) {
-        Map&lt;String, String&gt; temp = <span class="keyword">new</span> HashMap&lt;String, String&gt;();
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Map&lt;String, String&gt; <span class="hljs-title">flattenMap</span>(Map&lt;String, String[]&gt; headers) {
+        Map&lt;String, String&gt; temp = <span class="hljs-keyword">new</span> HashMap&lt;String, String&gt;();
 
-        <span class="keyword">for</span> (String header : headers.keySet()) {
+        <span class="hljs-keyword">for</span> (String header : headers.keySet()) {
             temp.put(header, request().getHeader(header));
         }
 
-        <span class="keyword">return</span> temp;
+        <span class="hljs-keyword">return</span> temp;
     }
 }</pre></div></div>
             

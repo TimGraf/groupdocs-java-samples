@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>BaseController.java</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>BaseController.java</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">package</span> controllers;
+
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
+<span class="hljs-keyword">import</span> models.Credentials;
+<span class="hljs-keyword">import</span> play.data.validation.Constraints;
+<span class="hljs-keyword">import</span> play.mvc.Controller;
+
+<span class="hljs-keyword">import</span> java.util.HashMap;
+<span class="hljs-keyword">import</span> java.util.regex.Pattern;
+
+<span class="hljs-javadoc">/**
+ *<span class="hljs-javadoctag"> @author</span> Aleksey Permyakov
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BaseController</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span> </span>{
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> HashMap&lt;Pattern, String&gt; api2base = <span class="hljs-keyword">new</span> HashMap&lt;Pattern, String&gt;(){{
+        put(Pattern.compile(<span class="hljs-string">"^(https|http)://api\\.groupdocs\\.com/v2\\.0.*"</span>), <span class="hljs-string">"https://apps.groupdocs.com"</span>);
+        put(Pattern.compile(<span class="hljs-string">"^(https|http)://dev-api\\.groupdocs\\.com/v2\\.0.*"</span>), <span class="hljs-string">"https://dev-apps.groupdocs.com"</span>);
+        put(Pattern.compile(<span class="hljs-string">"^(https|http)://stage-api\\.groupdocs\\.com/v2\\.0.*"</span>), <span class="hljs-string">"https://stage-apps.groupdocs.com"</span>);
+        put(Pattern.compile(<span class="hljs-string">"^(https|http)://realtime-api\\.groupdocs\\.com.*"</span>), <span class="hljs-string">"http://realtime-apps.groupdocs.com"</span>);
+    }};
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">apiPath2framePath</span>(String apiPath){
+        <span class="hljs-keyword">return</span> apiPath2framePath(apiPath, <span class="hljs-string">""</span>);
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">apiPath2framePath</span>(String apiPath, String suffix){
+        <span class="hljs-keyword">for</span> (Pattern pattern : api2base.keySet()) {
+            <span class="hljs-keyword">if</span> (pattern.matcher(apiPath).matches()) {
+                <span class="hljs-keyword">return</span> api2base.get(pattern) + (suffix.startsWith(<span class="hljs-string">"/"</span>) ? suffix : <span class="hljs-string">"/"</span> + suffix);
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">signUrl</span>(String pkey, String url) {
+        GroupDocsRequestSigner groupDocsRequestSigner = <span class="hljs-keyword">new</span> GroupDocsRequestSigner(pkey);
+        <span class="hljs-keyword">return</span> groupDocsRequestSigner.signUrl(url);
+    }
+
+    <span class="hljs-javadoc">/**
+     * Form class for sample 40
+     */</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sample40Form</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Credentials</span> </span>{
+        <span class="hljs-annotation">@Constraints</span>.Required
+        <span class="hljs-keyword">private</span> String formGuid;
+        <span class="hljs-keyword">private</span> String callbackUrl;
+
+        <span class="hljs-keyword">public</span> String <span class="hljs-title">getFormGuid</span>() {
+            <span class="hljs-keyword">return</span> formGuid;
+        }
+
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setFormGuid</span>(String formGuid) {
+            <span class="hljs-keyword">this</span>.formGuid = formGuid;
+        }
+
+        <span class="hljs-keyword">public</span> String <span class="hljs-title">getCallbackUrl</span>() {
+            <span class="hljs-keyword">return</span> callbackUrl == <span class="hljs-keyword">null</span> ? <span class="hljs-string">""</span> : callbackUrl;
+        }
+
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setCallbackUrl</span>(String callbackUrl) {
+            <span class="hljs-keyword">this</span>.callbackUrl = callbackUrl;
+        }
+    }
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

@@ -30,32 +30,32 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="keyword">package</span> controllers;
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">package</span> controllers;
 
-<span class="keyword">import</span> com.groupdocs.sdk.api.AsyncApi;
-<span class="keyword">import</span> com.groupdocs.sdk.api.StorageApi;
-<span class="keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
-<span class="keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
-<span class="keyword">import</span> com.groupdocs.sdk.model.*;
-<span class="keyword">import</span> common.Utils;
-<span class="keyword">import</span> models.Credentials;
-<span class="keyword">import</span> play.data.Form;
-<span class="keyword">import</span> play.mvc.Controller;
-<span class="keyword">import</span> play.mvc.Http;
-<span class="keyword">import</span> play.mvc.Result;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.api.AsyncApi;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.api.StorageApi;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.*;
+<span class="hljs-keyword">import</span> common.Utils;
+<span class="hljs-keyword">import</span> models.Credentials;
+<span class="hljs-keyword">import</span> play.data.Form;
+<span class="hljs-keyword">import</span> play.mvc.Controller;
+<span class="hljs-keyword">import</span> play.mvc.Http;
+<span class="hljs-keyword">import</span> play.mvc.Result;
 
-<span class="keyword">import</span> java.util.ArrayList;
-<span class="keyword">import</span> java.util.Arrays;
-<span class="keyword">import</span> java.util.List;
+<span class="hljs-keyword">import</span> java.util.ArrayList;
+<span class="hljs-keyword">import</span> java.util.Arrays;
+<span class="hljs-keyword">import</span> java.util.List;
 
-<span class="javadoc">/**
+<span class="hljs-javadoc">/**
  * Created with IntelliJ IDEA.
  * User: liosha
  * Date: 25.10.13
  * Time: 11:52
  * To change this template use File | Settings | File Templates.
  */</span>
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sample33</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>{</pre></div></div>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sample33</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span> </span>{</pre></div></div>
             
         </li>
         
@@ -69,12 +69,12 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">protected</span> <span class="keyword">static</span> Form&lt;Credentials&gt; form = Form.form(Credentials.<span class="class"><span class="keyword">class</span>);
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">static</span> Form&lt;Credentials&gt; form = Form.form(Credentials.class);
 
-    <span class="title">public</span> <span class="title">static</span> <span class="title">Result</span> <span class="title">index</span>() </span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">index</span>() {
 
-        <span class="keyword">if</span> (Utils.isPOST(request())) {
-            form = Form.form(Credentials.<span class="class"><span class="keyword">class</span>).<span class="title">bindFromRequest</span>();</pre></div></div>
+        <span class="hljs-keyword">if</span> (Utils.isPOST(request())) {
+            form = Form.form(Credentials.class).bindFromRequest();</pre></div></div>
             
         </li>
         
@@ -89,8 +89,8 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            <span class="keyword">if</span> (<span class="keyword">for</span>m.hasErrors()) {
-                <span class="keyword">return</span> badRequest(views.html.sample33.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> (form.hasErrors()) {
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample33.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
             }</pre></div></div>
             
         </li>
@@ -106,11 +106,11 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            Credentials credentials = <span class="keyword">for</span>m.get();
-            session().put(<span class="string">"clientId"</span>, credentials.getClientId());
-            session().put(<span class="string">"privateKey"</span>, credentials.getPrivateKey());
-            session().put(<span class="string">"basePath"</span>, credentials.getBasePath());
-            credentials.normalizeBasePath(<span class="string">"https://api.groupdocs.com/v2.0"</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>            Credentials credentials = form.get();
+            session().put(<span class="hljs-string">"clientId"</span>, credentials.getClientId());
+            session().put(<span class="hljs-string">"privateKey"</span>, credentials.getPrivateKey());
+            session().put(<span class="hljs-string">"basePath"</span>, credentials.getBasePath());
+            credentials.normalizeBasePath(<span class="hljs-string">"https://api.groupdocs.com/v2.0"</span>);</pre></div></div>
             
         </li>
         
@@ -126,9 +126,9 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>            Http.MultipartFormData body = request().body().asMultipartFormData();
-            String url1 = Utils.getFormValue(body, <span class="string">"url1"</span>);
-            String url2 = Utils.getFormValue(body, <span class="string">"url2"</span>);
-            String url3 = Utils.getFormValue(body, <span class="string">"url3"</span>);</pre></div></div>
+            String url1 = Utils.getFormValue(body, <span class="hljs-string">"url1"</span>);
+            String url2 = Utils.getFormValue(body, <span class="hljs-string">"url2"</span>);
+            String url3 = Utils.getFormValue(body, <span class="hljs-string">"url3"</span>);</pre></div></div>
             
         </li>
         
@@ -144,9 +144,9 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>            ApiInvoker.getInstance().setRequestSigner(
-                    <span class="keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey()));
+                    <span class="hljs-keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey()));
 
-            <span class="keyword">try</span> {</pre></div></div>
+            <span class="hljs-keyword">try</span> {</pre></div></div>
             
         </li>
         
@@ -161,8 +161,8 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                StorageApi storageApi = <span class="keyword">new</span> StorageApi();
-                AsyncApi asyncApi = <span class="keyword">new</span> AsyncApi();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                StorageApi storageApi = <span class="hljs-keyword">new</span> StorageApi();
+                AsyncApi asyncApi = <span class="hljs-keyword">new</span> AsyncApi();</pre></div></div>
             
         </li>
         
@@ -180,8 +180,8 @@
             <div class="content"><div class='highlight'><pre>                storageApi.setBasePath(credentials.getBasePath());
                 asyncApi.setBasePath(credentials.getBasePath());
 
-                List&lt;String&gt; guids = <span class="keyword">new</span> ArrayList&lt;String&gt;();
-                <span class="keyword">for</span> (String url : Arrays.asList(url1, url2, url3)) {
+                List&lt;String&gt; guids = <span class="hljs-keyword">new</span> ArrayList&lt;String&gt;();
+                <span class="hljs-keyword">for</span> (String url : Arrays.asList(url1, url2, url3)) {
                     UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClientId(), url);
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guids.add(uploadResponse.getResult().getGuid());
@@ -200,12 +200,12 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                JobInfo jobInfo = <span class="keyword">new</span> JobInfo();
-                jobInfo.setActions(<span class="string">"convert, combine"</span>);
-                jobInfo.setOut_formats(Arrays.asList(<span class="string">"pdf"</span>));
-                jobInfo.setStatus(<span class="string">"-1"</span>);
-                jobInfo.setEmail_results(<span class="keyword">true</span>);
-                jobInfo.setName(<span class="string">"Test Job "</span> + Long.toString(org.joda.time.DateTime.now().getMillis()));</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                JobInfo jobInfo = <span class="hljs-keyword">new</span> JobInfo();
+                jobInfo.setActions(<span class="hljs-string">"convert, combine"</span>);
+                jobInfo.setOut_formats(Arrays.asList(<span class="hljs-string">"pdf"</span>));
+                jobInfo.setStatus(<span class="hljs-string">"-1"</span>);
+                jobInfo.setEmail_results(<span class="hljs-keyword">true</span>);
+                jobInfo.setName(<span class="hljs-string">"Test Job "</span> + Long.toString(org.joda.time.DateTime.now().getMillis()));</pre></div></div>
             
         </li>
         
@@ -237,7 +237,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="keyword">for</span> (String guid : guids) {</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">for</span> (String guid : guids) {</pre></div></div>
             
         </li>
         
@@ -252,7 +252,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                    AddJobDocumentResponse addJobDocumentResponse = asyncApi.AddJobDocument(credentials.getClientId(), jobId, guid, <span class="keyword">false</span>, <span class="keyword">null</span>);
+            <div class="content"><div class='highlight'><pre>                    AddJobDocumentResponse addJobDocumentResponse = asyncApi.AddJobDocument(credentials.getClientId(), jobId, guid, <span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>);
                     addJobDocumentResponse = Utils.assertResponse(addJobDocumentResponse);
                 }</pre></div></div>
             
@@ -269,7 +269,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                jobInfo.setStatus(<span class="string">"0"</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                jobInfo.setStatus(<span class="hljs-string">"0"</span>);</pre></div></div>
             
         </li>
         
@@ -301,13 +301,13 @@ Get result document guid from job</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                GetJobDocumentsResponse getJobDocumentsResponse = <span class="keyword">null</span>;
-                <span class="keyword">int</span> count = <span class="number">10</span>;
+            <div class="content"><div class='highlight'><pre>                GetJobDocumentsResponse getJobDocumentsResponse = <span class="hljs-keyword">null</span>;
+                <span class="hljs-keyword">int</span> count = <span class="hljs-number">10</span>;
                 do {
-                    Thread.sleep(<span class="number">5000</span>);
-                    getJobDocumentsResponse = asyncApi.GetJobDocuments(credentials.getClientId(), jobId, <span class="keyword">null</span>);
+                    Thread.sleep(<span class="hljs-number">5000</span>);
+                    getJobDocumentsResponse = asyncApi.GetJobDocuments(credentials.getClientId(), jobId, <span class="hljs-keyword">null</span>);
                     getJobDocumentsResponse = Utils.assertResponse(getJobDocumentsResponse);
-                } <span class="keyword">while</span> (<span class="string">"Inprogress"</span>.equalsIgnoreCase(getJobDocumentsResponse.getResult().getJob_status()) &amp;&amp; (count--) &gt; <span class="number">0</span>);</pre></div></div>
+                } <span class="hljs-keyword">while</span> (<span class="hljs-string">"Inprogress"</span>.equalsIgnoreCase(getJobDocumentsResponse.getResult().getJob_status()) &amp;&amp; (count--) &gt; <span class="hljs-number">0</span>);</pre></div></div>
             
         </li>
         
@@ -321,8 +321,8 @@ Get result document guid from job</p>
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>                String server = credentials.getBasePath().substring(<span class="number">0</span>, credentials.getBasePath().indexOf(<span class="string">".com"</span>) + <span class="number">4</span>).replace(<span class="string">"api"</span>, <span class="string">"apps"</span>);
-                String iframeUrl = server + <span class="string">"/document-viewer/embed/"</span> + getJobDocumentsResponse.getResult().getOutputs().get(<span class="number">0</span>).getGuid();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                String server = credentials.getBasePath().substring(<span class="hljs-number">0</span>, credentials.getBasePath().indexOf(<span class="hljs-string">".com"</span>) + <span class="hljs-number">4</span>).replace(<span class="hljs-string">"api"</span>, <span class="hljs-string">"apps"</span>);
+                String iframeUrl = server + <span class="hljs-string">"/document-viewer/embed/"</span> + getJobDocumentsResponse.getResult().getOutputs().get(<span class="hljs-number">0</span>).getGuid();</pre></div></div>
             
         </li>
         
@@ -336,7 +336,7 @@ Get result document guid from job</p>
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>                GroupDocsRequestSigner groupDocsRequestSigner = <span class="keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey());
+            <div class="content"><div class='highlight'><pre>                GroupDocsRequestSigner groupDocsRequestSigner = <span class="hljs-keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey());
                 String signedIframeUrl = groupDocsRequestSigner.signUrl(iframeUrl);</pre></div></div>
             
         </li>
@@ -352,14 +352,14 @@ Get result document guid from job</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="keyword">return</span> ok(views.html.sample33.render(<span class="keyword">true</span>, signedIframeUrl, form));
-            } <span class="keyword">catch</span> (Exception e) {
-                <span class="keyword">return</span> badRequest(views.html.sample33.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">return</span> ok(views.html.sample33.render(<span class="hljs-keyword">true</span>, signedIframeUrl, form));
+            } <span class="hljs-keyword">catch</span> (Exception e) {
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample33.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
             }
-        } <span class="keyword">else</span> <span class="keyword">if</span> (Utils.isGET(request())) {
-            form = <span class="keyword">for</span>m.bind(session());
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Utils.isGET(request())) {
+            form = form.bind(session());
         }
-        <span class="keyword">return</span> ok(views.html.sample33.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+        <span class="hljs-keyword">return</span> ok(views.html.sample33.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
     }
 }</pre></div></div>
             

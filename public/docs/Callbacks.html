@@ -30,205 +30,209 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="keyword">package</span> controllers;
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">package</span> controllers;
 
-<span class="keyword">import</span> com.fasterxml.jackson.databind.JsonNode;
-<span class="keyword">import</span> com.groupdocs.sdk.api.AsyncApi;
-<span class="keyword">import</span> com.groupdocs.sdk.api.SignatureApi;
-<span class="keyword">import</span> com.groupdocs.sdk.api.StorageApi;
-<span class="keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
-<span class="keyword">import</span> com.groupdocs.sdk.common.FileStream;
-<span class="keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
-<span class="keyword">import</span> com.groupdocs.sdk.model.GetJobDocumentsResponse;
-<span class="keyword">import</span> com.groupdocs.sdk.model.SignatureEnvelopeDocumentsResponse;
-<span class="keyword">import</span> com.groupdocs.sdk.model.SignatureFormDocumentsResponse;
-<span class="keyword">import</span> com.typesafe.plugin.MailerAPI;
-<span class="keyword">import</span> com.typesafe.plugin.MailerPlugin;
-<span class="keyword">import</span> common.Utils;
-<span class="keyword">import</span> org.apache.commons.lang3.StringUtils;
-<span class="keyword">import</span> org.apache.log4j.lf5.util.StreamUtils;
-<span class="keyword">import</span> play.libs.Json;
-<span class="keyword">import</span> play.mvc.Controller;
-<span class="keyword">import</span> play.mvc.Http;
-<span class="keyword">import</span> play.mvc.Result;
+<span class="hljs-keyword">import</span> com.fasterxml.jackson.databind.JsonNode;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.api.AsyncApi;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.api.SignatureApi;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.api.AntApi;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.api.StorageApi;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.FileStream;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.GetJobDocumentsResponse;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.SignatureEnvelopeDocumentsResponse;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.SignatureFormDocumentsResponse;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.SignatureFormParticipantResponse;
+<span class="hljs-keyword">import</span> com.typesafe.plugin.MailerAPI;
+<span class="hljs-keyword">import</span> com.typesafe.plugin.MailerPlugin;
+<span class="hljs-keyword">import</span> common.Utils;
+<span class="hljs-keyword">import</span> org.apache.commons.lang3.StringUtils;
+<span class="hljs-keyword">import</span> org.apache.log4j.lf5.util.StreamUtils;
+<span class="hljs-keyword">import</span> play.libs.Json;
+<span class="hljs-keyword">import</span> play.mvc.Controller;
+<span class="hljs-keyword">import</span> play.mvc.Http;
+<span class="hljs-keyword">import</span> play.mvc.Result;
+<span class="hljs-keyword">import</span> views.html.defaultpages.error;
 
-<span class="keyword">import</span> java.io.DataInputStream;
-<span class="keyword">import</span> java.io.File;
-<span class="keyword">import</span> java.io.FileInputStream;
-<span class="keyword">import</span> java.io.FileOutputStream;
-
-<span class="javadoc">/**
+<span class="hljs-keyword">import</span> java.io.DataInputStream;
+<span class="hljs-keyword">import</span> java.io.File;
+<span class="hljs-keyword">import</span> java.io.FileWriter;
+<span class="hljs-keyword">import</span> java.io.FileInputStream;
+<span class="hljs-keyword">import</span> java.io.FileOutputStream;
+<span class="hljs-keyword">import</span> java.util.ArrayList;
+<span class="hljs-javadoc">/**
  * Created with IntelliJ IDEA.
  * User: work
  * Date: 10.07.13
  * Time: 11:33
  * To change this template use File | Settings | File Templates.
  */</span>
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Callbacks</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>{
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Callbacks</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span> </span>{
 
-    <span class="keyword">public</span> <span class="keyword">static</span> Result convertCallback() {
-        <span class="keyword">try</span> {
-            FileInputStream fileInputStream = <span class="keyword">new</span> FileInputStream(Sample18.USER_INFO_FILE);
-            DataInputStream dataInputStream = <span class="keyword">new</span> DataInputStream(fileInputStream);
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">convertCallback</span>() {
+        <span class="hljs-keyword">try</span> {
+            FileInputStream fileInputStream = <span class="hljs-keyword">new</span> FileInputStream(Sample18.USER_INFO_FILE);
+            DataInputStream dataInputStream = <span class="hljs-keyword">new</span> DataInputStream(fileInputStream);
             String data = dataInputStream.readUTF();
             fileInputStream.close();
 
-            String cid = data.split(<span class="string">"\\|"</span>)[<span class="number">0</span>];
-            String pkey = data.split(<span class="string">"\\|"</span>)[<span class="number">1</span>];
-            String burl = data.split(<span class="string">"\\|"</span>)[<span class="number">2</span>];
-            <span class="keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
-                <span class="keyword">return</span> ok(<span class="string">"ClientID or PrivateKEY or base path is not found!"</span>);
+            String cid = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">0</span>];
+            String pkey = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">1</span>];
+            String burl = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">2</span>];
+            <span class="hljs-keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
+                <span class="hljs-keyword">return</span> ok(<span class="hljs-string">"ClientID or PrivateKEY or base path is not found!"</span>);
             }
 
-            ApiInvoker.getInstance().setRequestSigner(<span class="keyword">new</span> GroupDocsRequestSigner(pkey));
+            ApiInvoker.getInstance().setRequestSigner(<span class="hljs-keyword">new</span> GroupDocsRequestSigner(pkey));
             Http.RawBuffer rawBuffer = request().body().asRaw();
-            String jsonStr = <span class="keyword">new</span> String(rawBuffer.asBytes());
+            String jsonStr = <span class="hljs-keyword">new</span> String(rawBuffer.asBytes());
             JsonNode json = Json.parse(jsonStr);
 
-            String jobId = json.get(<span class="string">"SourceId"</span>).asText();
+            String jobId = json.get(<span class="hljs-string">"SourceId"</span>).asText();
 
-            Thread.sleep(<span class="number">5</span>);
-            AsyncApi asyncApi = <span class="keyword">new</span> AsyncApi();
+            Thread.sleep(<span class="hljs-number">5</span>);
+            AsyncApi asyncApi = <span class="hljs-keyword">new</span> AsyncApi();
             asyncApi.setBasePath(burl);
-            GetJobDocumentsResponse jobDocumentsResponse = asyncApi.GetJobDocuments(cid, jobId, <span class="string">""</span>);
+            GetJobDocumentsResponse jobDocumentsResponse = asyncApi.GetJobDocuments(cid, jobId, <span class="hljs-string">""</span>);
             jobDocumentsResponse = Utils.assertResponse(jobDocumentsResponse);
-            String resultGuid = jobDocumentsResponse.getResult().getInputs().get(<span class="number">0</span>).getOutputs().get(<span class="number">0</span>).getGuid();
-            String resultName = jobDocumentsResponse.getResult().getInputs().get(<span class="number">0</span>).getOutputs().get(<span class="number">0</span>).getName();
+            String resultGuid = jobDocumentsResponse.getResult().getInputs().get(<span class="hljs-number">0</span>).getOutputs().get(<span class="hljs-number">0</span>).getGuid();
+            String resultName = jobDocumentsResponse.getResult().getInputs().get(<span class="hljs-number">0</span>).getOutputs().get(<span class="hljs-number">0</span>).getName();
 
-            StorageApi storageApi = <span class="keyword">new</span> StorageApi();
+            StorageApi storageApi = <span class="hljs-keyword">new</span> StorageApi();
             storageApi.setBasePath(burl);
             FileStream fileStream = storageApi.GetFile(cid, burl);
-            String outDir = <span class="string">"out"</span>;
-            <span class="keyword">if</span> (!<span class="keyword">new</span> File(outDir).exists()) {
-                <span class="keyword">new</span> File(outDir).mkdir();
+            String outDir = <span class="hljs-string">"out"</span>;
+            <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">new</span> File(outDir).exists()) {
+                <span class="hljs-keyword">new</span> File(outDir).mkdir();
             }
-            <span class="keyword">if</span> (<span class="keyword">new</span> File(outDir + <span class="string">"/"</span> + resultName).exists()) {
-                <span class="keyword">new</span> File(outDir + <span class="string">"/"</span> + resultName).delete();
+            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">new</span> File(outDir + <span class="hljs-string">"/"</span> + resultName).exists()) {
+                <span class="hljs-keyword">new</span> File(outDir + <span class="hljs-string">"/"</span> + resultName).delete();
             }
-            <span class="keyword">new</span> File(outDir + <span class="string">"/"</span> + resultName).createNewFile();
-            FileOutputStream fileOutputStream = <span class="keyword">new</span> FileOutputStream(outDir + <span class="string">"/"</span> + resultName);
+            <span class="hljs-keyword">new</span> File(outDir + <span class="hljs-string">"/"</span> + resultName).createNewFile();
+            FileOutputStream fileOutputStream = <span class="hljs-keyword">new</span> FileOutputStream(outDir + <span class="hljs-string">"/"</span> + resultName);
             StreamUtils.copy(fileStream.getInputStream(), fileOutputStream);
             fileOutputStream.close();
-        } <span class="keyword">catch</span> (Exception e) {
+        } <span class="hljs-keyword">catch</span> (Exception e) {
             e.printStackTrace();
         }
-        <span class="keyword">return</span> ok(<span class="string">""</span>);
+        <span class="hljs-keyword">return</span> ok(<span class="hljs-string">""</span>);
     }
 
-    <span class="keyword">public</span> <span class="keyword">static</span> Result compareCallback() {
-        <span class="keyword">try</span> {
-            FileInputStream fileInputStream = <span class="keyword">new</span> FileInputStream(Sample19.USER_INFO_FILE);
-            DataInputStream dataInputStream = <span class="keyword">new</span> DataInputStream(fileInputStream);
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">compareCallback</span>() {
+        <span class="hljs-keyword">try</span> {
+            FileInputStream fileInputStream = <span class="hljs-keyword">new</span> FileInputStream(Sample19.USER_INFO_FILE);
+            DataInputStream dataInputStream = <span class="hljs-keyword">new</span> DataInputStream(fileInputStream);
             String data = dataInputStream.readUTF();
             fileInputStream.close();
 
-            String cid = data.split(<span class="string">"\\|"</span>)[<span class="number">0</span>];
-            String pkey = data.split(<span class="string">"\\|"</span>)[<span class="number">1</span>];
-            String burl = data.split(<span class="string">"\\|"</span>)[<span class="number">2</span>];
-            <span class="keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
-                <span class="keyword">return</span> ok(<span class="string">"ClientID or PrivateKEY or base path is not found!"</span>);
+            String cid = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">0</span>];
+            String pkey = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">1</span>];
+            String burl = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">2</span>];
+            <span class="hljs-keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
+                <span class="hljs-keyword">return</span> ok(<span class="hljs-string">"ClientID or PrivateKEY or base path is not found!"</span>);
             }
 
-            ApiInvoker.getInstance().setRequestSigner(<span class="keyword">new</span> GroupDocsRequestSigner(pkey));
+            ApiInvoker.getInstance().setRequestSigner(<span class="hljs-keyword">new</span> GroupDocsRequestSigner(pkey));
             Http.RawBuffer rawBuffer = request().body().asRaw();
-            String jsonStr = <span class="keyword">new</span> String(rawBuffer.asBytes());
+            String jsonStr = <span class="hljs-keyword">new</span> String(rawBuffer.asBytes());
             JsonNode json = Json.parse(jsonStr);
 
-            String jobId = json.get(<span class="string">"SourceId"</span>).asText();
-            Thread.sleep(<span class="number">5</span>);
-            AsyncApi asyncApi = <span class="keyword">new</span> AsyncApi();
+            String jobId = json.get(<span class="hljs-string">"SourceId"</span>).asText();
+            Thread.sleep(<span class="hljs-number">5</span>);
+            AsyncApi asyncApi = <span class="hljs-keyword">new</span> AsyncApi();
             asyncApi.setBasePath(burl);
-            GetJobDocumentsResponse jobDocumentsResponse = asyncApi.GetJobDocuments(cid, jobId, <span class="string">""</span>);
+            GetJobDocumentsResponse jobDocumentsResponse = asyncApi.GetJobDocuments(cid, jobId, <span class="hljs-string">""</span>);
             jobDocumentsResponse = Utils.assertResponse(jobDocumentsResponse);
-            String resultGuid = jobDocumentsResponse.getResult().getOutputs().get(<span class="number">0</span>).getGuid();
-            String resultName = jobDocumentsResponse.getResult().getOutputs().get(<span class="number">0</span>).getName();
+            String resultGuid = jobDocumentsResponse.getResult().getOutputs().get(<span class="hljs-number">0</span>).getGuid();
+            String resultName = jobDocumentsResponse.getResult().getOutputs().get(<span class="hljs-number">0</span>).getName();
 
-            StorageApi storageApi = <span class="keyword">new</span> StorageApi();
+            StorageApi storageApi = <span class="hljs-keyword">new</span> StorageApi();
             storageApi.setBasePath(burl);
             FileStream fileStream = storageApi.GetFile(cid, burl);
-            String outDir = <span class="string">"out"</span>;
-            <span class="keyword">if</span> (!<span class="keyword">new</span> File(outDir).exists()) {
-                <span class="keyword">new</span> File(outDir).mkdir();
+            String outDir = <span class="hljs-string">"out"</span>;
+            <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">new</span> File(outDir).exists()) {
+                <span class="hljs-keyword">new</span> File(outDir).mkdir();
             }
-            <span class="keyword">if</span> (<span class="keyword">new</span> File(outDir + <span class="string">"/"</span> + resultName).exists()) {
-                <span class="keyword">new</span> File(outDir + <span class="string">"/"</span> + resultName).delete();
+            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">new</span> File(outDir + <span class="hljs-string">"/"</span> + resultName).exists()) {
+                <span class="hljs-keyword">new</span> File(outDir + <span class="hljs-string">"/"</span> + resultName).delete();
             }
-            <span class="keyword">new</span> File(outDir + <span class="string">"/"</span> + resultName).createNewFile();
-            FileOutputStream fileOutputStream = <span class="keyword">new</span> FileOutputStream(outDir + <span class="string">"/"</span> + resultName);
+            <span class="hljs-keyword">new</span> File(outDir + <span class="hljs-string">"/"</span> + resultName).createNewFile();
+            FileOutputStream fileOutputStream = <span class="hljs-keyword">new</span> FileOutputStream(outDir + <span class="hljs-string">"/"</span> + resultName);
             StreamUtils.copy(fileStream.getInputStream(), fileOutputStream);
             fileOutputStream.close();
-        } <span class="keyword">catch</span> (Exception e) {
+        } <span class="hljs-keyword">catch</span> (Exception e) {
             e.printStackTrace();
         }
-        <span class="keyword">return</span> ok(<span class="string">""</span>);
+        <span class="hljs-keyword">return</span> ok(<span class="hljs-string">""</span>);
     }
 
 
-    <span class="keyword">public</span> <span class="keyword">static</span> Result signatureCallback() {
-        <span class="keyword">try</span> {
-            FileInputStream fileInputStream = <span class="keyword">new</span> FileInputStream(Sample21.USER_INFO_FILE);
-            DataInputStream dataInputStream = <span class="keyword">new</span> DataInputStream(fileInputStream);
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">signatureCallback</span>() {
+        <span class="hljs-keyword">try</span> {
+            FileInputStream fileInputStream = <span class="hljs-keyword">new</span> FileInputStream(Sample21.USER_INFO_FILE);
+            DataInputStream dataInputStream = <span class="hljs-keyword">new</span> DataInputStream(fileInputStream);
             String data = dataInputStream.readUTF();
             fileInputStream.close();
 
-            String cid = data.split(<span class="string">"\\|"</span>)[<span class="number">0</span>];
-            String pkey = data.split(<span class="string">"\\|"</span>)[<span class="number">1</span>];
-            String burl = data.split(<span class="string">"\\|"</span>)[<span class="number">2</span>];
-            <span class="keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
-                <span class="keyword">return</span> ok(<span class="string">"ClientID or PrivateKEY or base path is not found!"</span>);
+            String cid = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">0</span>];
+            String pkey = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">1</span>];
+            String burl = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">2</span>];
+            <span class="hljs-keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
+                <span class="hljs-keyword">return</span> ok(<span class="hljs-string">"ClientID or PrivateKEY or base path is not found!"</span>);
             }
 
-            ApiInvoker.getInstance().setRequestSigner(<span class="keyword">new</span> GroupDocsRequestSigner(pkey));
+            ApiInvoker.getInstance().setRequestSigner(<span class="hljs-keyword">new</span> GroupDocsRequestSigner(pkey));
             Http.RawBuffer rawBuffer = request().body().asRaw();
-            String jsonStr = <span class="keyword">new</span> String(rawBuffer.asBytes());
+            String jsonStr = <span class="hljs-keyword">new</span> String(rawBuffer.asBytes());
             JsonNode json = Json.parse(jsonStr);
 
-            String envilopeId = json.get(<span class="string">"SourceId"</span>).asText();
-            Thread.sleep(<span class="number">5</span>);
+            String envilopeId = json.get(<span class="hljs-string">"SourceId"</span>).asText();
+            Thread.sleep(<span class="hljs-number">5</span>);
 
-            SignatureApi signatureApi = <span class="keyword">new</span> SignatureApi();
+            SignatureApi signatureApi = <span class="hljs-keyword">new</span> SignatureApi();
             signatureApi.setBasePath(burl);
             SignatureEnvelopeDocumentsResponse envelopeDocumentsResponse = signatureApi.GetSignatureEnvelopeDocuments(cid, envilopeId);
             envelopeDocumentsResponse = Utils.assertResponse(envelopeDocumentsResponse);
 
-            String resultGuid = envelopeDocumentsResponse.getResult().getDocuments().get(<span class="number">0</span>).getDocumentId();
-            String resultName = envelopeDocumentsResponse.getResult().getDocuments().get(<span class="number">0</span>).getDocumentId();
+            String resultGuid = envelopeDocumentsResponse.getResult().getDocuments().get(<span class="hljs-number">0</span>).getDocumentId();
+            String resultName = envelopeDocumentsResponse.getResult().getDocuments().get(<span class="hljs-number">0</span>).getDocumentId();
 
-            StorageApi storageApi = <span class="keyword">new</span> StorageApi();
+            StorageApi storageApi = <span class="hljs-keyword">new</span> StorageApi();
             storageApi.setBasePath(burl);
             FileStream fileStream = storageApi.GetFile(cid, burl);
-            String outDir = <span class="string">"out"</span>;
-            <span class="keyword">if</span> (!<span class="keyword">new</span> File(outDir).exists()) {
-                <span class="keyword">new</span> File(outDir).mkdir();
+            String outDir = <span class="hljs-string">"out"</span>;
+            <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">new</span> File(outDir).exists()) {
+                <span class="hljs-keyword">new</span> File(outDir).mkdir();
             }
-            <span class="keyword">if</span> (<span class="keyword">new</span> File(outDir + <span class="string">"/"</span> + resultName).exists()) {
-                <span class="keyword">new</span> File(outDir + <span class="string">"/"</span> + resultName).delete();
+            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">new</span> File(outDir + <span class="hljs-string">"/"</span> + resultName).exists()) {
+                <span class="hljs-keyword">new</span> File(outDir + <span class="hljs-string">"/"</span> + resultName).delete();
             }
-            <span class="keyword">new</span> File(outDir + <span class="string">"/"</span> + resultName).createNewFile();
-            FileOutputStream fileOutputStream = <span class="keyword">new</span> FileOutputStream(outDir + <span class="string">"/"</span> + resultName);
+            <span class="hljs-keyword">new</span> File(outDir + <span class="hljs-string">"/"</span> + resultName).createNewFile();
+            FileOutputStream fileOutputStream = <span class="hljs-keyword">new</span> FileOutputStream(outDir + <span class="hljs-string">"/"</span> + resultName);
             StreamUtils.copy(fileStream.getInputStream(), fileOutputStream);
             fileOutputStream.close();
-        } <span class="keyword">catch</span> (Exception e) {
+        } <span class="hljs-keyword">catch</span> (Exception e) {
             e.printStackTrace();
         }
-        <span class="keyword">return</span> ok(<span class="string">""</span>);
+        <span class="hljs-keyword">return</span> ok(<span class="hljs-string">""</span>);
     }
 
-    <span class="keyword">public</span> <span class="keyword">static</span> Result publishCallback() <span class="keyword">throws</span> Exception{
-        FileInputStream fileInputStream = <span class="keyword">new</span> FileInputStream(Sample32.USER_INFO_FILE);
-        DataInputStream dataInputStream = <span class="keyword">new</span> DataInputStream(fileInputStream);
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">publishCallback</span>() <span class="hljs-keyword">throws</span> Exception {
+        FileInputStream fileInputStream = <span class="hljs-keyword">new</span> FileInputStream(Sample32.USER_INFO_FILE);
+        DataInputStream dataInputStream = <span class="hljs-keyword">new</span> DataInputStream(fileInputStream);
         String data = dataInputStream.readUTF();
         fileInputStream.close();
 
-        String cid = data.split(<span class="string">"\\|"</span>)[<span class="number">0</span>];
-        String pkey = data.split(<span class="string">"\\|"</span>)[<span class="number">1</span>];
-        String burl = data.split(<span class="string">"\\|"</span>)[<span class="number">2</span>];
-        String email = data.split(<span class="string">"\\|"</span>)[<span class="number">3</span>];
-        <span class="keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl) || StringUtils.isEmpty(email)) {
-            <span class="keyword">return</span> ok(<span class="string">"ClientID or PrivateKEY or base path or email is not found!"</span>);
+        String cid = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">0</span>];
+        String pkey = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">1</span>];
+        String burl = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">2</span>];
+        String email = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">3</span>];
+        <span class="hljs-keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl) || StringUtils.isEmpty(email)) {
+            <span class="hljs-keyword">return</span> ok(<span class="hljs-string">"ClientID or PrivateKEY or base path or email is not found!"</span>);
         }
 
-        ApiInvoker.getInstance().setRequestSigner(<span class="keyword">new</span> GroupDocsRequestSigner(pkey));</pre></div></div>
+        ApiInvoker.getInstance().setRequestSigner(<span class="hljs-keyword">new</span> GroupDocsRequestSigner(pkey));</pre></div></div>
             
         </li>
         
@@ -244,7 +248,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>        Http.RawBuffer rawBuffer = request().body().asRaw();
-        String jsonStr = <span class="keyword">new</span> String(rawBuffer.asBytes());</pre></div></div>
+        String jsonStr = <span class="hljs-keyword">new</span> String(rawBuffer.asBytes());</pre></div></div>
             
         </li>
         
@@ -274,9 +278,9 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        String formId = json.get(<span class="string">"SourceId"</span>).asText();
+            <div class="content"><div class='highlight'><pre>        String formId = json.get(<span class="hljs-string">"SourceId"</span>).asText();
 
-        SignatureApi signatureApi = <span class="keyword">new</span> SignatureApi();</pre></div></div>
+        SignatureApi signatureApi = <span class="hljs-keyword">new</span> SignatureApi();</pre></div></div>
             
         </li>
         
@@ -307,7 +311,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        String documentName = signatureFormDocumentsResponse.getResult().getDocuments().get(<span class="number">0</span>).getName();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>        String documentName = signatureFormDocumentsResponse.getResult().getDocuments().get(<span class="hljs-number">0</span>).getName();</pre></div></div>
             
         </li>
         
@@ -322,17 +326,17 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        String subject = <span class="string">"Reminder: An envelope has to be signed on GroupDocs"</span>;
+            <div class="content"><div class='highlight'><pre>        String subject = <span class="hljs-string">"Reminder: An envelope has to be signed on GroupDocs"</span>;
         String message =
-                <span class="string">"&lt;html&gt;"</span> +
-                <span class="string">"&lt;head&gt;"</span> +
-                <span class="string">"&lt;title&gt;Sign form notification&lt;/title&gt;"</span> +
-                <span class="string">"&lt;/head&gt;"</span> +
-                <span class="string">"&lt;body&gt;"</span> +
-                <span class="string">"&lt;p&gt;Document"</span> + documentName + <span class="string">" is signed&lt;/p&gt;"</span> +
-                <span class="string">"&lt;/body&gt;"</span> +
-                <span class="string">"&lt;/html&gt;"</span>;
-        String from = <span class="string">"From: Remainder &lt;noreply@groupdocs.com&gt;"</span>;</pre></div></div>
+                <span class="hljs-string">"&lt;html&gt;"</span> +
+                        <span class="hljs-string">"&lt;head&gt;"</span> +
+                        <span class="hljs-string">"&lt;title&gt;Sign form notification&lt;/title&gt;"</span> +
+                        <span class="hljs-string">"&lt;/head&gt;"</span> +
+                        <span class="hljs-string">"&lt;body&gt;"</span> +
+                        <span class="hljs-string">"&lt;p&gt;Document"</span> + documentName + <span class="hljs-string">" is signed&lt;/p&gt;"</span> +
+                        <span class="hljs-string">"&lt;/body&gt;"</span> +
+                        <span class="hljs-string">"&lt;/html&gt;"</span>;
+        String from = <span class="hljs-string">"From: Remainder &lt;noreply@groupdocs.com&gt;"</span>;</pre></div></div>
             
         </li>
         
@@ -343,14 +347,14 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <p>Configure section &quot;# Email configuration&quot; in application.conf</p>
+              <p>Configure section “# Email configuration” in application.conf</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        MailerAPI mail = play.Play.application().plugin(MailerPlugin.<span class="class"><span class="keyword">class</span>).<span class="title">email</span>();
-        <span class="title">mail</span>.<span class="title">setSubject</span>(<span class="title">subject</span>);
-        <span class="title">mail</span>.<span class="title">setCharset</span>("<span class="title">utf</span>-8");
-        <span class="title">mail</span>.<span class="title">setReplyTo</span>(<span class="title">email</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>        MailerAPI mail = play.Play.application().plugin(MailerPlugin.class).email();
+        mail.setSubject(subject);
+        mail.setCharset(<span class="hljs-string">"utf-8"</span>);
+        mail.setReplyTo(email);</pre></div></div>
             
         </li>
         
@@ -366,7 +370,308 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>        mail.sendHtml(message);
-        <span class="keyword">return</span> ok(<span class="string">""</span>);
+        <span class="hljs-keyword">return</span> ok(<span class="hljs-string">""</span>);
+    }
+
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">checkGuidCallback</span>() <span class="hljs-keyword">throws</span> Exception {
+        String result = <span class="hljs-string">""</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>counter to not wait forever</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">int</span> counter = <span class="hljs-number">0</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Check folder for downloaded file</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        do {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Set max. iterations</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> (counter &gt;= <span class="hljs-number">10</span>) {
+                result = <span class="hljs-string">"Error"</span>;
+                <span class="hljs-keyword">break</span>;
+            }
+            Thread.sleep(<span class="hljs-number">5</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Check is downloads folder exist</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> (<span class="hljs-comment">/*file_exists(__DIR__ . '/../../callback_info.txt')*/</span><span class="hljs-keyword">new</span> File(Sample39.USER_INFO_FILE).exists()) {
+                FileInputStream fileInputStream = <span class="hljs-keyword">new</span> FileInputStream(Sample39.USER_INFO_FILE);
+                DataInputStream dataInputStream = <span class="hljs-keyword">new</span> DataInputStream(fileInputStream);
+                String data = dataInputStream.readUTF();
+                fileInputStream.close();
+
+                String cid = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">0</span>];
+                String pkey = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">1</span>];
+                String burl = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">2</span>];
+                <span class="hljs-keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
+                    <span class="hljs-keyword">return</span> ok(<span class="hljs-string">"ClientID or PrivateKEY or base path is not found!"</span>);
+                } <span class="hljs-keyword">else</span> {
+                    <span class="hljs-keyword">return</span> ok(data);
+                }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <pre><code>           <span class="hljs-comment">//If folder don't exist create it</span>
+           $callbackInfo = __DIR__ . <span class="hljs-string">'/../../callback_info.txt'</span>;
+           <span class="hljs-comment">//Local path to the text file with user data</span>
+           $info = file($callbackInfo);
+           <span class="hljs-comment">//Get user data from text file</span>
+           $result = trim($info[<span class="hljs-number">0</span>]);
+</code></pre>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            } <span class="hljs-keyword">else</span> {
+                counter++;
+            }
+        } <span class="hljs-keyword">while</span> (<span class="hljs-keyword">true</span>);
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">formRedirectCallback</span>() {
+        <span class="hljs-keyword">try</span> {
+            FileInputStream fileInputStream = <span class="hljs-keyword">new</span> FileInputStream(Sample40.USER_INFO_FILE);
+            DataInputStream dataInputStream = <span class="hljs-keyword">new</span> DataInputStream(fileInputStream);
+            String data = dataInputStream.readUTF();
+            fileInputStream.close();
+
+            String cid = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">0</span>];
+            String pkey = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">1</span>];
+            String burl = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">2</span>];
+            <span class="hljs-keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
+                <span class="hljs-keyword">return</span> ok(<span class="hljs-string">"ClientID or PrivateKEY or base path is not found!"</span>);
+            }
+
+            ApiInvoker.getInstance().setRequestSigner(<span class="hljs-keyword">new</span> GroupDocsRequestSigner(pkey));
+            Http.RawBuffer rawBuffer = request().body().asRaw();
+            String jsonStr = <span class="hljs-keyword">new</span> String(rawBuffer.asBytes());
+            JsonNode json = Json.parse(jsonStr);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Get job id from array</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            String formId = json.get(<span class="hljs-string">"SourceId"</span>).asText();
+            String jobStatus = json.get(<span class="hljs-string">"EventType"</span>).asText();
+
+            JsonNode serializedData = Json.parse(json.get(<span class="hljs-string">"SerializedData"</span>).asText());
+            String participant = serializedData.get(<span class="hljs-string">"ParticipantGuid"</span>).asText();
+            <span class="hljs-keyword">if</span> (<span class="hljs-string">"JobCompleted"</span>.equals(jobStatus)) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Create AsyncApi object</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                SignatureApi signatureApi = <span class="hljs-keyword">new</span> SignatureApi();
+                signatureApi.setBasePath(burl);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Create Storage Api object</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                StorageApi storageApi = <span class="hljs-keyword">new</span> StorageApi();
+                storageApi.setBasePath(burl);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Get document from envelop</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                SignatureFormParticipantResponse signatureFormParticipantResponse = signatureApi.GetSignatureFormParticipant(formId, participant);
+                Utils.assertResponse(signatureFormParticipantResponse);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Get signed document GUID</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                String guid = signatureFormParticipantResponse.getResult().getParticipant().getDocumentGuid();
+                <span class="hljs-keyword">return</span> ok(guid);
+            }
+        } <span class="hljs-keyword">catch</span> (Exception e) {
+            e.printStackTrace();
+            <span class="hljs-keyword">return</span> ok(e.getMessage());
+        }
+        <span class="hljs-keyword">return</span> ok(<span class="hljs-string">""</span>);
+    }
+	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">userRightsCallback</span>() {
+        <span class="hljs-keyword">try</span> {
+            FileInputStream fileInputStream = <span class="hljs-keyword">new</span> FileInputStream(Sample41.USER_INFO_FILE);
+            DataInputStream dataInputStream = <span class="hljs-keyword">new</span> DataInputStream(fileInputStream);
+            String data = dataInputStream.readUTF();
+            fileInputStream.close();
+
+            String cid = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">0</span>];
+            String pkey = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">1</span>];
+            String burl = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">2</span>];
+            <span class="hljs-keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
+                <span class="hljs-keyword">return</span> ok(<span class="hljs-string">"ClientID or PrivateKEY or base path is not found!"</span>);
+            }
+
+            ApiInvoker.getInstance().setRequestSigner(<span class="hljs-keyword">new</span> GroupDocsRequestSigner(pkey));
+            Http.RawBuffer rawBuffer = request().body().asRaw();
+            String jsonStr = <span class="hljs-keyword">new</span> String(rawBuffer.asBytes());
+            JsonNode json = Json.parse(jsonStr);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>Get job id from array</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            JsonNode serializedData = Json.parse(json.get(<span class="hljs-string">"SerializedData"</span>).asText());
+            String documentGuid = serializedData.get(<span class="hljs-string">"DocumentGuid"</span>).asText();
+            String userGuid = serializedData.get(<span class="hljs-string">"UserGuid"</span>).asText();
+
+            AntApi antApi = <span class="hljs-keyword">new</span> AntApi();
+            antApi.setBasePath(burl);
+            GetCollaboratorsResponse getCollaboratorsResponse = antApi.GetAnnotationCollaborators(cid, documentGuid);
+            getCollaboratorsResponse = Utils.assertResponse(getCollaboratorsResponse);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>Create ReviewerInfo array</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            ReviewerInfo reviewerInfo = <span class="hljs-keyword">new</span> ReviewerInfo();
+            ArrayList&lt;ReviewerInfo&gt; reviewers = <span class="hljs-keyword">new</span> ArrayList&lt;ReviewerInfo&gt;();
+            <span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>;
+            <span class="hljs-keyword">while</span> (i &lt;= getCollaboratorsResponse.getResult().getCollaborators().size()){
+                <span class="hljs-keyword">if</span> (getCollaboratorsResponse.getResult().getCollaborators().get(i).getGuid().contains(userGuid)){
+                    reviewerInfo.setId(getCollaboratorsResponse.getResult().getCollaborators().get(i).getId());
+                    reviewerInfo.setAccess_rights(<span class="hljs-string">"1"</span>);
+                    reviewers.add(reviewerInfo);
+                }
+            }
+            SetReviewerRightsResponse setReviewerRightsResponse = antApi.SetReviewerRights(cid, documentGuid, reviewers);
+
+
+            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">new</span> File(<span class="hljs-string">"/../../callback_info.txt"</span>).exists()) {
+                <span class="hljs-keyword">new</span> File(<span class="hljs-string">"/../../callback_info.txt"</span>).delete();
+            }
+
+            <span class="hljs-keyword">try</span> {
+                File makefile = <span class="hljs-keyword">new</span> File(<span class="hljs-string">"output.txt"</span>);
+                FileWriter fwrite = <span class="hljs-keyword">new</span> FileWriter(makefile);
+                fwrite.write(<span class="hljs-string">"User rights was set to view only"</span>);
+                fwrite.flush();
+                fwrite.close();
+            } <span class="hljs-keyword">catch</span> (Exception e) {
+                e.printStackTrace();
+            }
+        } <span class="hljs-keyword">catch</span> (Exception e) {
+            e.printStackTrace();
+        }
+        <span class="hljs-keyword">return</span> ok(<span class="hljs-string">""</span>);
     }
 }</pre></div></div>
             

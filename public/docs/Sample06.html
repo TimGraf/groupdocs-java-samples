@@ -31,7 +31,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="keyword">package</span> controllers;</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">package</span> controllers;</pre></div></div>
             
         </li>
         
@@ -47,23 +47,23 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>
-<span class="keyword">import</span> com.groupdocs.sdk.api.SignatureApi;
-<span class="keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
-<span class="keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
-<span class="keyword">import</span> com.groupdocs.sdk.common.MimeUtils;
-<span class="keyword">import</span> com.groupdocs.sdk.model.*;
-<span class="keyword">import</span> common.Utils;
-<span class="keyword">import</span> models.Credentials;
-<span class="keyword">import</span> play.data.Form;
-<span class="keyword">import</span> play.mvc.Controller;
-<span class="keyword">import</span> play.mvc.Http.MultipartFormData;
-<span class="keyword">import</span> play.mvc.Http.MultipartFormData.FilePart;
-<span class="keyword">import</span> play.mvc.Result;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.api.SignatureApi;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.MimeUtils;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.*;
+<span class="hljs-keyword">import</span> common.Utils;
+<span class="hljs-keyword">import</span> models.Credentials;
+<span class="hljs-keyword">import</span> play.data.Form;
+<span class="hljs-keyword">import</span> play.mvc.Controller;
+<span class="hljs-keyword">import</span> play.mvc.Http.MultipartFormData;
+<span class="hljs-keyword">import</span> play.mvc.Http.MultipartFormData.FilePart;
+<span class="hljs-keyword">import</span> play.mvc.Result;
 
-<span class="keyword">import</span> java.util.ArrayList;
-<span class="keyword">import</span> java.util.List;
+<span class="hljs-keyword">import</span> java.util.ArrayList;
+<span class="hljs-keyword">import</span> java.util.List;
 
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sample06</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>{</pre></div></div>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sample06</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span> </span>{</pre></div></div>
             
         </li>
         
@@ -77,12 +77,12 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">protected</span> <span class="keyword">static</span> Form&lt;Credentials&gt; form = Form.form(Credentials.<span class="class"><span class="keyword">class</span>);
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">static</span> Form&lt;Credentials&gt; form = Form.form(Credentials.class);
 
-    <span class="title">public</span> <span class="title">static</span> <span class="title">Result</span> <span class="title">index</span>() </span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">index</span>() {
 
-        <span class="keyword">if</span> (Utils.isPOST(request())) {
-            form = Form.form(Credentials.<span class="class"><span class="keyword">class</span>).<span class="title">bindFromRequest</span>();</pre></div></div>
+        <span class="hljs-keyword">if</span> (Utils.isPOST(request())) {
+            form = Form.form(Credentials.class).bindFromRequest();</pre></div></div>
             
         </li>
         
@@ -97,8 +97,8 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            <span class="keyword">if</span> (<span class="keyword">for</span>m.hasErrors()) {
-                <span class="keyword">return</span> badRequest(views.html.sample06.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> (form.hasErrors()) {
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample06.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
             }</pre></div></div>
             
         </li>
@@ -114,11 +114,11 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            Credentials credentials = <span class="keyword">for</span>m.get();
-            session().put(<span class="string">"clientId"</span>, credentials.getClientId());
-            session().put(<span class="string">"privateKey"</span>, credentials.getPrivateKey());
-            session().put(<span class="string">"basePath"</span>, credentials.getBasePath());
-            credentials.normalizeBasePath(<span class="string">"https://api.groupdocs.com/v2.0"</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>            Credentials credentials = form.get();
+            session().put(<span class="hljs-string">"clientId"</span>, credentials.getClientId());
+            session().put(<span class="hljs-string">"privateKey"</span>, credentials.getPrivateKey());
+            session().put(<span class="hljs-string">"basePath"</span>, credentials.getBasePath());
+            credentials.normalizeBasePath(<span class="hljs-string">"https://api.groupdocs.com/v2.0"</span>);</pre></div></div>
             
         </li>
         
@@ -134,9 +134,9 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>            MultipartFormData body = request().body().asMultipartFormData();
-            FilePart fiDocument = body.getFile(<span class="string">"fiDocument"</span>);
-            FilePart fiSignature = body.getFile(<span class="string">"fiSignature"</span>);
-            String signerName = <span class="string">"GroupDocs Signer"</span>;</pre></div></div>
+            FilePart fiDocument = body.getFile(<span class="hljs-string">"fiDocument"</span>);
+            FilePart fiSignature = body.getFile(<span class="hljs-string">"fiSignature"</span>);
+            String signerName = <span class="hljs-string">"GroupDocs Signer"</span>;</pre></div></div>
             
         </li>
         
@@ -152,9 +152,9 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>            ApiInvoker.getInstance().setRequestSigner(
-                    <span class="keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey()));
+                    <span class="hljs-keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey()));
 
-            <span class="keyword">try</span> {
+            <span class="hljs-keyword">try</span> {
                 fiDocument = Utils.assertNotNull(fiDocument);
                 fiSignature = Utils.assertNotNull(fiSignature);</pre></div></div>
             
@@ -201,7 +201,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                SignatureSignDocumentDocumentSettingsInfo document = <span class="keyword">new</span> SignatureSignDocumentDocumentSettingsInfo();
+            <div class="content"><div class='highlight'><pre>                SignatureSignDocumentDocumentSettingsInfo document = <span class="hljs-keyword">new</span> SignatureSignDocumentDocumentSettingsInfo();
                 document.setName(fiDocument.getFilename());
                 document.setData(base64file);</pre></div></div>
             
@@ -218,14 +218,14 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                SignatureSignDocumentSignerSettingsInfo signer = <span class="keyword">new</span> SignatureSignDocumentSignerSettingsInfo();
-                signer.setPlaceSignatureOn(<span class="string">""</span>);
+            <div class="content"><div class='highlight'><pre>                SignatureSignDocumentSignerSettingsInfo signer = <span class="hljs-keyword">new</span> SignatureSignDocumentSignerSettingsInfo();
+                signer.setPlaceSignatureOn(<span class="hljs-string">""</span>);
                 signer.setName(signerName);
                 signer.setData(base64signature);
-                signer.setHeight(<span class="number">40</span>d);
-                signer.setWidth(<span class="number">100</span>d);
-                signer.setTop(<span class="number">0.83319</span>);
-                signer.setLeft(<span class="number">0.72171</span>);</pre></div></div>
+                signer.setHeight(<span class="hljs-number">40</span>d);
+                signer.setWidth(<span class="hljs-number">100</span>d);
+                signer.setTop(<span class="hljs-number">0.83319</span>);
+                signer.setLeft(<span class="hljs-number">0.72171</span>);</pre></div></div>
             
         </li>
         
@@ -240,7 +240,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                SignatureSignDocumentSettingsInfo requestBody = <span class="keyword">new</span> SignatureSignDocumentSettingsInfo();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                SignatureSignDocumentSettingsInfo requestBody = <span class="hljs-keyword">new</span> SignatureSignDocumentSettingsInfo();</pre></div></div>
             
         </li>
         
@@ -255,7 +255,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                List&lt;SignatureSignDocumentSignerSettingsInfo&gt; signers = <span class="keyword">new</span> ArrayList&lt;SignatureSignDocumentSignerSettingsInfo&gt;();
+            <div class="content"><div class='highlight'><pre>                List&lt;SignatureSignDocumentSignerSettingsInfo&gt; signers = <span class="hljs-keyword">new</span> ArrayList&lt;SignatureSignDocumentSignerSettingsInfo&gt;();
                 signers.add(signer);</pre></div></div>
             
         </li>
@@ -286,7 +286,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                List&lt;SignatureSignDocumentDocumentSettingsInfo&gt; documents = <span class="keyword">new</span> ArrayList&lt;SignatureSignDocumentDocumentSettingsInfo&gt;();
+            <div class="content"><div class='highlight'><pre>                List&lt;SignatureSignDocumentDocumentSettingsInfo&gt; documents = <span class="hljs-keyword">new</span> ArrayList&lt;SignatureSignDocumentDocumentSettingsInfo&gt;();
                 documents.add(document);</pre></div></div>
             
         </li>
@@ -330,7 +330,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                SignatureApi signatureApi = <span class="keyword">new</span> SignatureApi();</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                SignatureApi signatureApi = <span class="hljs-keyword">new</span> SignatureApi();</pre></div></div>
             
         </li>
         
@@ -391,11 +391,11 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                Thread.sleep(<span class="number">5000</span>);
+            <div class="content"><div class='highlight'><pre>                Thread.sleep(<span class="hljs-number">5000</span>);
 
                 SignatureSignDocumentStatusResponse signResponse = signatureApi.GetSignDocumentStatus(credentials.getClientId(), jobId);
                 signResponse = Utils.assertResponse(signResponse);
-                String guid = signResponse.getResult().getDocuments().get(<span class="number">0</span>).getDocumentId();
+                String guid = signResponse.getResult().getDocuments().get(<span class="hljs-number">0</span>).getDocumentId();
                 guid = Utils.assertNotNull(guid);</pre></div></div>
             
         </li>
@@ -411,14 +411,14 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="keyword">return</span> ok(views.html.sample06.render(<span class="keyword">true</span>, guid, form));
-            } <span class="keyword">catch</span> (Exception e) {
-                <span class="keyword">return</span> badRequest(views.html.sample06.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">return</span> ok(views.html.sample06.render(<span class="hljs-keyword">true</span>, guid, form));
+            } <span class="hljs-keyword">catch</span> (Exception e) {
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample06.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
             }
-        } <span class="keyword">else</span> <span class="keyword">if</span> (Utils.isGET(request())) {
-            form = <span class="keyword">for</span>m.bind(session());
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Utils.isGET(request())) {
+            form = form.bind(session());
         }
-        <span class="keyword">return</span> ok(views.html.sample06.render(<span class="keyword">false</span>, <span class="keyword">null</span>, form));
+        <span class="hljs-keyword">return</span> ok(views.html.sample06.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
     }
 }</pre></div></div>
             

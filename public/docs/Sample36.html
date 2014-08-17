@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Sample36.java</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>Sample36.java</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h3 id="-i-this-sample-will-show-how-to-use-b-upload-b-method-from-storage-api-to-upload-file-to-groupdocs-storage-i-"><i>This sample will show how to use <b>Upload</b> method from Storage Api to upload file to GroupDocs Storage </i></h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">package</span> controllers;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Import of necessary libraries</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.api.SignatureApi;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.FileStream;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.SignatureEnvelopeDocumentsResponse;
+<span class="hljs-keyword">import</span> common.Utils;
+<span class="hljs-keyword">import</span> models.Credentials;
+<span class="hljs-keyword">import</span> org.apache.commons.io.IOUtils;
+<span class="hljs-keyword">import</span> play.Play;
+<span class="hljs-keyword">import</span> play.data.Form;
+<span class="hljs-keyword">import</span> play.mvc.Http;
+<span class="hljs-keyword">import</span> play.mvc.Result;
+
+<span class="hljs-keyword">import</span> java.io.File;
+<span class="hljs-keyword">import</span> java.io.FileOutputStream;
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sample36</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">BaseController</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">static</span> Form&lt;Credentials&gt; form = Form.form(Credentials.class);
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">index</span>() {
+
+        <span class="hljs-keyword">if</span> (Utils.isPOST(request())) {
+            Http.MultipartFormData body = request().body().asMultipartFormData();
+                form = Form.form(Credentials.class).bindFromRequest();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Check errors</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">if</span> (form.hasErrors()) {
+                    <span class="hljs-keyword">return</span> badRequest(views.html.sample36.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
+                }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Save credentials to session</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                Credentials credentials = form.get();
+                session().put(<span class="hljs-string">"clientId"</span>, credentials.getClientId());
+                session().put(<span class="hljs-string">"privateKey"</span>, credentials.getPrivateKey());
+                session().put(<span class="hljs-string">"basePath"</span>, credentials.getBasePath());
+                credentials.normalizeBasePath(<span class="hljs-string">"https://api.groupdocs.com/v2.0"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Get request parameters</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                String envelopeGuid = Utils.getFormValue(body, <span class="hljs-string">"envelopeGuid"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Initialize SDK with private key</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                ApiInvoker.getInstance().setRequestSigner(
+                        <span class="hljs-keyword">new</span> GroupDocsRequestSigner(credentials.getPrivateKey()));
+
+                <span class="hljs-keyword">try</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Make a request to Storage Api for downloading file
+Obtaining file stream of downloading file and definition of folder where to download file
+Set path for local storage were to download file</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    String currentDirectory = Play.application().path().getAbsolutePath();
+                    File downloadPath = <span class="hljs-keyword">new</span> File(currentDirectory + File.separator + <span class="hljs-string">"assets"</span>);
+                    downloadPath.mkdir();
+                    SignatureApi signatureApi = <span class="hljs-keyword">new</span> SignatureApi();
+                    signatureApi.setBasePath(credentials.getBasePath());</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Get envelop info</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    SignatureEnvelopeDocumentsResponse signatureEnvelopeDocumentsResponse = signatureApi.GetSignatureEnvelopeDocuments(credentials.getClientId(), envelopeGuid);
+                    Utils.assertResponse(signatureEnvelopeDocumentsResponse);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Get document name from envelop info</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    String documentName = signatureEnvelopeDocumentsResponse.getResult().getDocuments().get(<span class="hljs-number">0</span>).getName();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Get file stream for signed document from envelop</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    FileStream fileStream = signatureApi.GetSignedEnvelopeDocuments(credentials.getClientId(), envelopeGuid);
+                    <span class="hljs-keyword">if</span> (fileStream == <span class="hljs-keyword">null</span>) {
+                        <span class="hljs-keyword">return</span> badRequest(views.html.sample36.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
+                    }
+                    String filePath = downloadPath + File.separator + documentName;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Write file stream to file</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    FileOutputStream fileOutputStream = <span class="hljs-keyword">new</span> FileOutputStream(filePath);
+                    IOUtils.copy(fileStream.getInputStream(), fileOutputStream);
+                    fileOutputStream.close();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Result message with link to downloaded file for view in browser</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    <span class="hljs-keyword">return</span> ok(views.html.sample36.render(<span class="hljs-keyword">true</span>, documentName, form));
+                } <span class="hljs-keyword">catch</span> (Exception e) {
+                    <span class="hljs-keyword">return</span> badRequest(views.html.sample36.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
+                }
+
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Utils.isGET(request())) {
+            form = form.bind(session());
+        }
+        <span class="hljs-keyword">return</span> ok(views.html.sample36.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
+    }
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
