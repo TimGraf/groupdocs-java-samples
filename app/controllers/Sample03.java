@@ -66,7 +66,7 @@ public class Sample03 extends Controller {
                             folderPath += "/";
                         }
                     }
-                    uploadResponse = storageApi.Upload(credentials.getClientId(), folderPath + filePart.getFilename(), "uploaded", callbackUrl, new FileStream(is));
+                    uploadResponse = storageApi.Upload(credentials.getClientId(), folderPath + filePart.getFilename(), "uploaded", callbackUrl, false, new FileStream(is));
                 } else if ("url".equals(sourse)) {
                     String url = Utils.getFormValue(body.asFormUrlEncoded(), "url");
                     // Upload file to current user storage from url

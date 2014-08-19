@@ -13,7 +13,7 @@ object ApplicationBuild extends Build {
         "log4j" % "log4j" % "1.2.16",
         "org.apache.commons" % "commons-io" % "1.3.2",
         "com.sun.jersey" % "jersey-client" % "1.9.1",
-        "com.groupdocs" % "groupdocs-java-client" % "1.9.2",
+        "com.groupdocs" % "groupdocs-java-client" % "2.0.1",
         "com.typesafe" %% "play-plugins-mailer" % "2.1-RC2"
     )
 

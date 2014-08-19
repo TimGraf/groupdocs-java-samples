@@ -62,7 +62,7 @@ public class Sample05 extends Controller {
                     FileInputStream is = new FileInputStream(filePart.getFile());
                     String callbackUrl = Utils.getFormValue(body.asFormUrlEncoded(), "callbackUrl");
                     // Upload file to current user storage from local computer
-                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), filePart.getFilename(), "uploaded", callbackUrl, new FileStream(is));
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), filePart.getFilename(), "uploaded", callbackUrl, false, new FileStream(is));
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();

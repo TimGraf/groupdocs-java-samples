@@ -8,10 +8,7 @@ import com.groupdocs.sdk.api.StorageApi;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
-import com.groupdocs.sdk.model.GetJobDocumentsResponse;
-import com.groupdocs.sdk.model.SignatureEnvelopeDocumentsResponse;
-import com.groupdocs.sdk.model.SignatureFormDocumentsResponse;
-import com.groupdocs.sdk.model.SignatureFormParticipantResponse;
+import com.groupdocs.sdk.model.*;
 import com.typesafe.plugin.MailerAPI;
 import com.typesafe.plugin.MailerPlugin;
 import common.Utils;
@@ -317,7 +314,7 @@ public class Callbacks extends Controller {
                 Utils.assertResponse(signatureFormParticipantResponse);
 
                 //Get signed document GUID
-                String guid = signatureFormParticipantResponse.getResult().getParticipant().getDocumentGuid();
+                String guid = signatureFormParticipantResponse.getResult().getParticipant().getSignedDocuments().get(0).getDocumentGuid();
                 return ok(guid);
             }
         } catch (Exception e) {
