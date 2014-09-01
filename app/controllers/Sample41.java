@@ -48,8 +48,9 @@ public class Sample41 extends BaseController {
             // Get request parameters
             Http.MultipartFormData body = request().body().asMultipartFormData();
             String sourse = Utils.getFormValue(body.asFormUrlEncoded(), "sourse");
-            String firstEmail = Utils.getFormValue(body.asFormUrlEncoded(), "email");
-            String secondEmail = Utils.getFormValue(body.asFormUrlEncoded(), "secondEmail");
+            String firstEmail = form.data().get("email[0]");
+            String secondEmail = form.data().get("email[1]");
+
             String callback = Utils.getFormValue(body, "callbackUrl");
             String basePath = credentials.getBasePath();
             // Initialize SDK with private key
@@ -77,7 +78,7 @@ public class Sample41 extends BaseController {
                     // Initialize API with base path
                     storageApi.setBasePath(credentials.getBasePath());
                     FileInputStream is = new FileInputStream(file.getFile());
-                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), "uploaded", "", false, new FileStream(is));
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), "uploaded", "", true, new FileStream(is));
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
@@ -105,7 +106,10 @@ public class Sample41 extends BaseController {
                 ArrayList<String> collaborators = new ArrayList<String>();
                 ArrayList<String> emails = new ArrayList<String>();
                 emails.add(firstEmail);
-                emails.add(secondEmail);
+                if(secondEmail != null && !secondEmail.isEmpty()){
+                    emails.add(secondEmail);
+                }
+
                 String userGuid = null;
                 // Get all users from accaunt
                 GetAccountUsersResponse getAccountUsersResponse = mgmtApi.GetAccountUsers(credentials.getClientId());
@@ -161,8 +165,8 @@ public class Sample41 extends BaseController {
                         int n = 0;
                         for (ReviewerInfo collaborator : getCollaboratorsResponse.getResult().getCollaborators()) {
                             if (collaborator.getPrimary_email().equals(email)){
-                                collaborators.set(n, collaborator.getGuid());
-                                n++;
+                                collaborators.add(n, collaborator.getGuid());
+                                n = n + 1;
                             }
                         }
 

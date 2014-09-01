@@ -62,8 +62,16 @@ FieldConstructor(customInput.f)
         <div id="urlBlock" style="display: none;">
             @inputText(aForm("url"), '_label -> "File URL", 'id -> "urlField", 'size -> 50, 'required -> true)
         </div>
-        @inputText(aForm("email"), '_label -> "First collaborator email", 'size -> 50, 'required -> true)
-        @inputText(aForm("secondEmail"), '_label -> "Second collaborator email", 'size -> 50 )
+        <br />
+        <label>First collaborator email</label>
+        <br />
+        <input type='text' name='email[]' value="" />
+        <br />
+        <label>Second collaborator email</label>
+        <br />
+        <input type='text' name='email[]' value="" />
+        <br />
+
         @inputText(aForm("callbackUrl"), '_label -> "Callback URL", 'size -> 50)
         <div style="color: #808080; font-size: 10px">
             For test Callback you can use this URL: http://groupdocs-java-samples.herokuapp.com/callbacks/user_rights_callback

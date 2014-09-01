@@ -1,7 +1,7 @@
-@(success: Boolean, renderName: String, fields: Map[String, String], aForm: play.data.Form[Credentials], docGuid: String, signedUrl: String)
+@(success: Boolean, renderName: String, fields: List[com.groupdocs.sdk.model.TemplateField], aForm: play.data.Form[Credentials], docGuid: String, signedUrl: String)
 
 @import helper._
-
+@import java.math.BigInteger; var countCheckBox=0; var countRadio=0; var countCombo =1
 @* Register customInput as field constructor for this page (customize input field) *@
 @implicitField = @{
     FieldConstructor(customInput.f)
@@ -56,32 +56,80 @@
                     <input type="submit" value="Make Request">
                 }
                 @if(renderName == "show:form"){
-                    <div>
-                        @for((key, value) <- fields){
+                    <div id="formForAssembly" style="background-color:#e5e5e5;border:3px double gray;width:700px;padding:3px;font-size:10pt;">
+                        @for(field <- fields){
 
-                            <div>
-                                @if(value == "Checkbox"){
-                                    <label for="@key.replaceAll(" ", "_")" style="height: 25px; width: 100px; float: left; line-height: 25px;">@key</label>
-                                    <input type="checkbox" name="@key.replaceAll(" ", "_")" id="@key.replaceAll(" ", "_")" />
+
+
+                                @if(field.getType() == "Checkbox"){
+                                    <br/>
+                                    <input type="checkbox" name="@field.getName()" value="@countCheckBox" />@field.getName()
+                                    @if(field.getMandatory().toString() == "false"){
+                                        <span class="optional">(Optional)</span>
+                                    }else{
+                                        <span class="optional">(Required)</span>
+                                    }
+                                    <br/>
+                                    @{countCheckBox = countCheckBox + 1}
+
                                 }
-                                @if(value == "RadioButton"){
-                                    <label for="@key.replaceAll(" ", "_")" style="height: 25px; width: 100px; float: left; line-height: 25px;">@key</label>
-                                    <input type="radio" name="@key.replaceAll(" ", "_")" id="@key.replaceAll(" ", "_")" />
+                                @if(field.getType() == "RadioButton"){
+                                    <br/>
+                                    <input type="radio" name="@field.getName()" value="@countRadio" />@field.getName()
+                                    @if(field.getMandatory().toString() == "false"){
+                                        <span class="optional">(Optional)</span>
+                                    }else{
+                                        <span class="optional">(Required)</span>
+                                    }
+                                    <br/>
+                                    @{countRadio = countRadio + 1}
                                 }
-                                @if(value == "MultiLineText"){
-                                    <label for="@key.replaceAll(" ", "_")" style="height: 25px; width: 100px; float: left; line-height: 25px;">@key</label>
-                                    <textarea name="@key.replaceAll(" ", "_")" id="@key.replaceAll(" ", "_")"></textarea>
+                                @if(field.getType() == "MultiLineText"){
+                                    <br/>
+                                    <label for="@field.getName()" style="height: 25px; width: 100px; float: left; line-height: 25px;">@field.getName()
+                                    @if(field.getMandatory().toString() == "false"){
+                                    <span class="optional">(Optional)</span>
+                                    }else{
+                                    <span class="optional">(Required)</span>
+                                    }
+                                    </label><br/>
+                                    <textarea name="@field.getName()" ></textarea><br/>
                                 }
-                                @if(value == "Text" || value == null){
-                                    <label for="@key.replaceAll(" ", "_")" style="height: 25px; width: 100px; float: left; line-height: 25px;">@key</label>
-                                    <input type="text" name="@key.replaceAll(" ", "_")" id="@key.replaceAll(" ", "_")" />
+                                @if(field.getType() == "Text" ){
+                                    <br/>
+                                    <label for="@field.getName()" style="height: 25px; width: 100px; float: left; line-height: 25px;">@field.getName()
+                                    @if(field.getMandatory().toString() == "false"){
+                                    <span class="optional">(Optional)</span>
+                                    }else{
+                                    <span class="optional">(Required)</span>
+                                    }
+                                    </label><br/>
+                                    <br/><input type="text" name="@field.getName()" id="" /><br/>
                                 }
-                            </div>
+                                @if(field.getType() == "Listbox" ){
+                                    <br/>
+                                    <label for="@field.getName()" style="height: 25px; width: 100px; float: left; line-height: 25px;">@field.getName()
+                                    @if(field.getMandatory().toString() == "false"){
+                                    <span class="optional">(Optional)</span>
+                                    }else{
+                                    <span class="optional">(Required)</span>
+                                    }
+                                    </label>
+                                    <br/>
+                                    <select multiple type="text" name="@field.getName()[]" />
+                                    @for(option <- field.getAcceptableValues()){
+                                        <option value="@countCombo">@option</option>
+                                        @{countCombo = countCombo + 1}
+                                    }
+                                    </select><br/>
+                                }
+
                         }
-                        <input type="hidden" name="guid" value="@docGuid" />
-                        <input type="hidden" name="merge" value="Yes" />
-                        <input type="submit" value="Merge" />
+
                     </div>
+                    <input type="hidden" name="guid" value="@docGuid" />
+                    <input type="hidden" name="merge" value="Yes" />
+                    <input type="submit" value="Merge" id="button" />
                 }
                 @if(renderName == "show:doc"){
                     <iframe src="@signedUrl" frameborder="0" width="800" height="600"></iframe>

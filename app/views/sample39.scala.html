@@ -27,76 +27,77 @@
     </h3>
 
     <div class='samplecontent' style="padding:10px;">
-    <i>This sample will show how to add a Signature to a document and redirect after signing with GroupDocs widget</i> <br/>
-    <br />
-    <a href="@routes.Assets.at("docs/Sample39.html")">Docs for this sample</a>
-    <br />
-    <br/>
-    <div id="requestForm" style="padding:20px; border:1px solid black;">
-    <p>Enter data for request and press "Make request" button</p>
-    @myForm(routes.Sample39.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
+        <i>This sample will show how to add a Signature to a document and redirect after signing with GroupDocs widget</i> <br/>
+        <br />
+        <a href="@routes.Assets.at("docs/Sample39.html")">Docs for this sample</a>
+        <br />
+        <br/>
+        <div id="requestForm" style="padding:20px; border:1px solid black;">
+            <p>Enter data for request and press "Make request" button</p>
+            @myForm(routes.Sample39.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
 
-        <div>
-            <label for="clientId" class="file-choice-label form-label">Client ID</label>
-            <input type="text" value="" id="clientId" name="clientId" size="50" />
-        </div>
-        <div>
-            <label for="privateKey" class="file-choice-label form-label">Private Key</label>
-            <input type="text" value="" id="privateKey" name="privateKey" size="50" />
-        </div>
-        <div>
-            <label for="basePath" class="file-choice-label form-label">Base URL</label>
-            <input type="text" value="" id="basePath" name="basePath" size="50" />
-        </div>
-
-        <div>
-            <input type="checkbox" value="" id="useWidget" name="useWidget" onclick="setLogic();"/>
-            <label for="useWidget" class="file-choice-label">Sign document with Widget </label>
-        </div>
-
-        <div id="filesPanel" style="display: none">
-            <div>
-                <label for="document" class="file-choice-label form-label">Document to sign</label>
-                <input type="file" id="document" name="file"/>
-            </div>
-            <div>
-                <label for="signature" class="file-choice-label form-label" id="fiSignatureLabel">Signature</label>
-                <input type="file" id="signature" name="signature" />
-            </div>
-        </div>
-        <div id="fieldsPanel">
-            <div>
-                <label for="email" class="file-choice-label form-label" id="emailLabel">E-mail</label>
-                <input type="text" value="" id="email" name="email" size="50" />
-            </div>
-            <div>
-                <label for="name" class="file-choice-label form-label" id="nameLabel">Name</label>
-                <input type="text" value="" id="name" name="name" size="50" />
-            </div>
-            <div>
-                <label for="lastName" class="file-choice-label form-label" id="lastNameLabel">Last name</label>
-                <input type="text" value="" id="lastName" name="lastName" size="50"/>
-            </div>
-            <div>
-                <label for="callbackUrl" id="callBackLabel" class="file-choice-label form-label">Callback Url (Optional)</label>
-                <input type="text" name="callbackUrl" id="callbackUrl" value="" size="50"/>
-                <div style="color: #808080; font-size: 10px">
-                    For test Callback you can use this URL: http://groupdocs-php-samples.herokuapp.com/sample39_callback
+                <div>
+                    <label for="clientId" class="file-choice-label form-label">Client ID</label>
+                    <input type="text" value="" id="clientId" name="clientId" size="50" />
                 </div>
+                <div>
+                    <label for="privateKey" class="file-choice-label form-label">Private Key</label>
+                    <input type="text" value="" id="privateKey" name="privateKey" size="50" />
+                </div>
+                <div>
+                    <label for="basePath" class="file-choice-label form-label">Base URL</label>
+                    <input type="text" value="" id="basePath" name="basePath" size="50" />
+                </div>
+
+                <div>
+                    <input type="checkbox" value="" id="useWidget" name="useWidget" onclick="setLogic();"/>
+                    <label for="useWidget" class="file-choice-label">Sign document with Widget </label>
+                </div>
+
+
+                <div>
+                    <label for="document" class="file-choice-label form-label">Document to sign</label>
+                    <input type="file" id="document" name="file"/>
+                </div>
+                <div id="filesPanel" style="display: none">
+                    <div>
+                        <label for="signature" class="file-choice-label form-label" id="fiSignatureLabel">Signature</label>
+                        <input type="file" id="signature" name="signature" />
+                    </div>
+                </div>
+                <div id="fieldsPanel">
+                    <div>
+                        <label for="email" class="file-choice-label form-label" id="emailLabel">E-mail</label>
+                        <input type="text" value="" id="email" name="email" size="50" />
+                    </div>
+                    <div>
+                        <label for="name" class="file-choice-label form-label" id="nameLabel">Name</label>
+                        <input type="text" value="" id="name" name="name" size="50" />
+                    </div>
+                    <div>
+                        <label for="lastName" class="file-choice-label form-label" id="lastNameLabel">Last name</label>
+                        <input type="text" value="" id="lastName" name="lastName" size="50"/>
+                    </div>
+                    <div>
+                        <label for="callbackUrl" id="callBackLabel" class="file-choice-label form-label">Callback Url (Optional)</label>
+                        <input type="text" name="callbackUrl" id="callbackUrl" value="" size="50"/>
+                        <div style="color: #808080; font-size: 10px">
+                            For test Callback you can use this URL: http://groupdocs-php-samples.herokuapp.com/sample39_callback
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <input type='submit' id='btnLoad' value='Upload and sign the document'/>
+                <span id="resultsStatus" style="color:red;display:none;"> (Please wait for ajax response) </span>
+            }
             </div>
+            @if(success) {
+                <div style="padding:20px; border:1px solid black;">
+                    @*<p>New collaborations: <strong>@email</strong></p>*@
+                    <p>Results:</p>
+                    <iframe src="@url" width="875" height="800"></iframe>
+                </div>
+            }
         </div>
-</div>
-<br />
-        <input type='submit' id='btnLoad' value='Upload and sign the document'/>
-        <span id="resultsStatus" style="color:red;display:none;"> (Please wait for ajax response) </span>
-    }
-@if(success) {
-    <div style="padding:20px; border:1px solid black;">
-        @*<p>New collaborations: <strong>@email</strong></p>*@
-        <p>Results:</p>
-        <iframe src="@url" width="875" height="800"></iframe>
     </div>
 }
-</div>
-</div>
-    }

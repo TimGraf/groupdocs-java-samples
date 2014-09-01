@@ -123,7 +123,10 @@ public class Sample39 extends BaseController {
                     String signName = Utils.getFormValue(body, "name");
                     String lastName = Utils.getFormValue(body, "lastName");
                     String callbackUrl = Utils.getFormValue(body, "callbackUrl");
-                    // Initialize SDK with private key
+                    if(basePath == null){
+                        basePath = "https://api.groupdocs.com/v2.0";
+                    }
+                        // Initialize SDK with private key
 //            ApiInvoker.getInstance().setRequestSigner(
 //                    new GroupDocsRequestSigner(credentials.getPrivateKey()));
                     //path to settings file - temporary save userId and apiKey like to property file
@@ -144,24 +147,28 @@ public class Sample39 extends BaseController {
                         fileOutputStream.close();
                     }
                     ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(privateKey));
+                    Http.MultipartFormData.FilePart file = body.getFile("file");
                     //Create Storage Api object
                     StorageApi storageApi = new StorageApi();
-                    //Get uploaded file
-                    File file = body.getFile("file").getFile();
-                    if (file != null && !file.getName().isEmpty()) {
+                    // Initialize API with base path
+                    storageApi.setBasePath(basePath);
+                    FileInputStream is = new FileInputStream(file.getFile());
+                    if (file != null && !file.getFilename().isEmpty()) {
                         //###Make a request to Storage API using clientId
                         //Upload file to current user storage
-                        UploadResponse uploadResponse = storageApi.Upload(clientId, file.getName(), "uploaded", "", false, new FileStream(new FileInputStream(file)));
+                        UploadResponse uploadResponse = storageApi.Upload(clientId, file.getFilename(), "uploaded", "", true, new FileStream(is));
                         //###Check if file uploaded successfully
                         Utils.assertResponse(uploadResponse);
                         //Get file GUID
                         String fileGuId = uploadResponse.getResult().getGuid();
                         //Get file name
-                        String adjName = uploadResponse.getResult().getAdj_name();
+                        String fileName = Utils.getFileNameByGuid(clientId, privateKey, basePath, fileGuId);
                         //Create SignatureApi object
                         SignatureApi signature = new SignatureApi();
+                        // Initialize API with base path
+                        signature.setBasePath(basePath);
                         //Create envilope using user id and entered by user name
-                        SignatureEnvelopeResponse signatureEnvelopeResponse = signature.CreateSignatureEnvelope(clientId, adjName, null, null, null, false, null);
+                        SignatureEnvelopeResponse signatureEnvelopeResponse = signature.CreateSignatureEnvelope(clientId, fileName, null, null, null, false, null);
                         Utils.assertResponse(signatureEnvelopeResponse);
                         Thread.sleep(5);
                         //Add uploaded document to envelope
@@ -195,7 +202,7 @@ public class Sample39 extends BaseController {
                         signFieldEnvelopSettings.setLocationY(0.73);
                         signFieldEnvelopSettings.setLocationWidth(150d);
                         signFieldEnvelopSettings.setLocationHeight(50d);
-                        signFieldEnvelopSettings.setName("test_" + signFieldEnvelopSettings.toString());
+                        signFieldEnvelopSettings.setName("test");
                         signFieldEnvelopSettings.setForceNewField(true);
                         signFieldEnvelopSettings.setPage(1);
                         //Add signature field to document

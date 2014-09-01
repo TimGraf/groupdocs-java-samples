@@ -39,7 +39,7 @@
                         <label for="IDfileIdRadio" class="file-choice-label">File GUID</label>
                     <input type="radio" value="url" onclick="" id="IDfileUrlRadio" name="sourse"/>
                         <label for="IDfileUrlRadio" class="file-choice-label">File URL</label>
-                    <input type="radio" value="local" onclick="" id="IDfilePartRadio" name="sourse"/>
+                    <input type="radio" value="local" onclick="" id="IDfilePartRadio" name="sourse" checked/>
                         <label for="IDfilePartRadio" class="file-choice-label">Local file</label>
                     </div>
                     <div id="guid">
@@ -49,7 +49,7 @@
                     @inputText(aForm("fileUrl"), '_label -> "File Url", 'size -> 50, 'required -> true, 'id -> "urlField")
                     </div>
                     <div id="local">
-                    @inputFile(aForm("filePart"), '_label -> "Select file", 'required -> true, 'id -> "fileField")
+                    @inputFile(aForm("file"), '_label -> "Select file", 'required -> true, 'id -> "fileField")
                     </div>
                 </div>
                 @inputText(aForm("email"), '_label -> "Recipient Email", 'size -> 50, 'placeholder -> "SomeoneRegisteredInGroupdocs@mydomain.com", 'required -> true)
@@ -74,7 +74,7 @@
     $(function(){
     changeType.allChk = ['guid', 'url', 'local'];
     $('#IDfileIdRadio, #IDfileUrlRadio, #IDfilePartRadio').click(changeType);
-    $('#IDfileIdRadio').click();
+    $('#IDfilePartRadio').click();
 } );
 </script>
     }

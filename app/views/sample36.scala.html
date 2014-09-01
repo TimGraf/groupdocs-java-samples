@@ -19,6 +19,18 @@
         <a href="@routes.Assets.at("docs/Sample36.html")">Docs for this sample</a>
     <br />
     <br/>
+        @if(success) {
+        <p></p>
+        <p></p>
+        <p></p>
+        <p></p>
+        <p></p>
+        <p></p>
+        <p>
+                <span style="color: green">Files from the envelope were downloaded to server's local folder. You can check them
+                    <a href="/public/@documentName">here</a></span>
+        </p>
+        }
         <div id="requestForm" style="padding:20px; border:1px solid black;">
             <p>Enter data for request and press "Make request" button</p>
             @myForm(routes.Sample36.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
@@ -42,11 +54,5 @@
             }
         </div>
 
-        @if(success) {
-            <div style="padding:20px; border:1px solid black;">
-                <span style="color: green">Files from the envelope were downloaded to server's local folder. You can check them
-                    <a href="/public/@documentName">here</a></span>
-            </div>
-        }
     </div>
 }

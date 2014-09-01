@@ -19,6 +19,7 @@ import play.mvc.Result;
 import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Sample35 extends BaseController {
@@ -82,10 +83,7 @@ public class Sample35 extends BaseController {
                     TemplateFieldsResponse templateFieldsResponse = docApi.GetTemplateFields(credentials.getClientId(), guid, false);
                     // Check response status
                     templateFieldsResponse = Utils.assertResponse(templateFieldsResponse);
-                    HashMap<String, String> fields = new HashMap<String, String>();
-                    for (TemplateField templateField : templateFieldsResponse.getResult().getFields()){
-                        fields.put(templateField.getName(), templateField.getType());
-                    }
+                    List<TemplateField> fields = templateFieldsResponse.getResult().getFields();
 
                     return ok(views.html.sample35.render(true, "show:form", fields, form, guid, null));
                 } catch (Exception e) {

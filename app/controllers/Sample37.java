@@ -34,7 +34,7 @@ public class Sample37 extends BaseController {
                 form = Form.form(Credentials.class).bindFromRequest();
                 // Check errors
                 if (form.hasErrors()) {
-                    return badRequest(views.html.sample37.render(false, null, null, null, null, form));
+                    return badRequest(views.html.sample37.render(false, null, form));
                 }
                 // Save credentials to session
                 Credentials credentials = form.get();
@@ -90,7 +90,7 @@ public class Sample37 extends BaseController {
                         uploadResponse = Utils.assertResponse(uploadResponse);
                         guid = uploadResponse.getResult().getGuid();
                     } else if ("local".equals(sourse)) { // Upload local file
-                        Http.MultipartFormData.FilePart file = body.getFile("local");
+                        Http.MultipartFormData.FilePart file = body.getFile("file");
                         StorageApi storageApi = new StorageApi();
                         // Initialize API with base path
                         storageApi.setBasePath(credentials.getBasePath());
@@ -139,9 +139,9 @@ public class Sample37 extends BaseController {
                     SignatureEnvelopeFieldSettingsInfo signFieldEnvelopSettings = new SignatureEnvelopeFieldSettingsInfo();
                     signFieldEnvelopSettings.setLocationX(0.15);
                     signFieldEnvelopSettings.setLocationY(0.73);
-                    signFieldEnvelopSettings.setLocationWidth(150d);
-                    signFieldEnvelopSettings.setLocationHeight(50d);
-                    signFieldEnvelopSettings.setName("test_" + signFieldEnvelopSettings.toString());
+                    signFieldEnvelopSettings.setLocationWidth(150.0);
+                    signFieldEnvelopSettings.setLocationHeight(50.0);
+                    signFieldEnvelopSettings.setName("test");
                     signFieldEnvelopSettings.setForceNewField(true);
                     signFieldEnvelopSettings.setPage(1);
                     SignatureEnvelopeFieldsResponse signatureEnvelopeFieldsResponse = signature.AddSignatureEnvelopeField(credentials.getClientId(), envelopeId, signatureEnvelopeDocumentsResponse.getResult().getDocuments().get(0).getDocumentId(), recipientId, "0545e589fb3e27c9bb7a1f59d0e3fcb9", signFieldEnvelopSettings);
@@ -156,15 +156,15 @@ public class Sample37 extends BaseController {
                     Utils.assertResponse(signatureEnvelopeSendResponse);
 
                     String server = credentials.getBasePath().substring(0, credentials.getBasePath().indexOf(".com") + 4).replace("api", "apps");
-
-                    return ok(views.html.sample37.render(true, fileName, server, envelopeId, recipientId, form));
+                    String url = server + "/signature2/signembed/" + envelopeId + "/" + recipientId;
+                    return ok(views.html.sample37.render(true, url, form));
                 } catch (Exception e) {
-                    return badRequest(views.html.sample37.render(false, null, null, null, null, form));
+                    return badRequest(views.html.sample37.render(false, null, form));
                 }
 
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
         }
-        return ok(views.html.sample37.render(false, null, null, null, null, form));
+        return ok(views.html.sample37.render(false, null, form));
     }
 }

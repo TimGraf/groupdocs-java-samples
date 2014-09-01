@@ -61,7 +61,7 @@ public class Sample10 extends Controller {
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
                 } else if ("local".equals(sourse)) { // Upload local file
-                    Http.MultipartFormData.FilePart file = body.getFile("filePart");
+                    Http.MultipartFormData.FilePart file = body.getFile("file");
                     StorageApi storageApi = new StorageApi();
                     // Initialize API with base path
                     storageApi.setBasePath(credentials.getBasePath());
