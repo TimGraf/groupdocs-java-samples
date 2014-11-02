@@ -66,6 +66,7 @@ public class Sample06 extends Controller {
                 signer.setWidth(100d);
                 signer.setTop(0.83319);
                 signer.setLeft(0.72171);
+
                 // Make request to sign settings
                 SignatureSignDocumentSettingsInfo requestBody = new SignatureSignDocumentSettingsInfo();
                 // Add signer to sign settings List

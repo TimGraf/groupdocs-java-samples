@@ -46,7 +46,7 @@
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DummyCallbackHandler</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span> </span>{
 
     <span class="hljs-annotation">@BodyParser</span>.Of(value = BodyParser.TolerantText.class)
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">index</span>() {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">index</span><span class="hljs-params">()</span> </span>{
         System.out.println(<span class="hljs-string">"Method: "</span> + request().method());
         System.out.println(<span class="hljs-string">"URL: "</span> + request().uri());
         System.out.println(<span class="hljs-string">"Headers: "</span> + flattenMap(request().headers()));
@@ -80,10 +80,10 @@
             }
         }
 
-        <span class="hljs-keyword">return</span> ok();
+        <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">()</span></span>;
     }
 
-    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Map&lt;String, String&gt; <span class="hljs-title">flattenMap</span>(Map&lt;String, String[]&gt; headers) {
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Map&lt;String, String&gt; flattenMap(Map&lt;String, String[]&gt; headers) {
         Map&lt;String, String&gt; temp = <span class="hljs-keyword">new</span> HashMap&lt;String, String&gt;();
 
         <span class="hljs-keyword">for</span> (String header : headers.keySet()) {

@@ -1,4 +1,4 @@
-@(success: Boolean, server: String, aForm: Form[Credentials])
+@(success: Boolean, server: String, fileName: String, aForm: Form[Credentials])
 
 @import helper._
 
@@ -71,6 +71,7 @@
             @if(success) {
             <div id="result" style="padding:20px; border:1px solid black;">
                 <p>Results:</p>
+                <p>File was uploaded to GroupDocs. Here you can see your <strong>@fileName</strong> file in the GroupDocs Embedded Viewer.</p>
                 <iframe id='downloadframe' src="@server" width="800" height="1000"></iframe>
             </div>
             }

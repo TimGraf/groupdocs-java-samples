@@ -40,10 +40,7 @@
 <span class="hljs-keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
 <span class="hljs-keyword">import</span> com.groupdocs.sdk.common.FileStream;
 <span class="hljs-keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
-<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.GetJobDocumentsResponse;
-<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.SignatureEnvelopeDocumentsResponse;
-<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.SignatureFormDocumentsResponse;
-<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.SignatureFormParticipantResponse;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.*;
 <span class="hljs-keyword">import</span> com.typesafe.plugin.MailerAPI;
 <span class="hljs-keyword">import</span> com.typesafe.plugin.MailerPlugin;
 <span class="hljs-keyword">import</span> common.Utils;
@@ -70,7 +67,7 @@
  */</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Callbacks</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span> </span>{
 
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">convertCallback</span>() {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">convertCallback</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">try</span> {
             FileInputStream fileInputStream = <span class="hljs-keyword">new</span> FileInputStream(Sample18.USER_INFO_FILE);
             DataInputStream dataInputStream = <span class="hljs-keyword">new</span> DataInputStream(fileInputStream);
@@ -81,7 +78,7 @@
             String pkey = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">1</span>];
             String burl = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">2</span>];
             <span class="hljs-keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
-                <span class="hljs-keyword">return</span> ok(<span class="hljs-string">"ClientID or PrivateKEY or base path is not found!"</span>);
+                <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(<span class="hljs-string">"ClientID or PrivateKEY or base path is not found!"</span>)</span></span>;
             }
 
             ApiInvoker.getInstance().setRequestSigner(<span class="hljs-keyword">new</span> GroupDocsRequestSigner(pkey));
@@ -116,10 +113,10 @@
         } <span class="hljs-keyword">catch</span> (Exception e) {
             e.printStackTrace();
         }
-        <span class="hljs-keyword">return</span> ok(<span class="hljs-string">""</span>);
+        <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(<span class="hljs-string">""</span>)</span></span>;
     }
 
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">compareCallback</span>() {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">compareCallback</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">try</span> {
             FileInputStream fileInputStream = <span class="hljs-keyword">new</span> FileInputStream(Sample19.USER_INFO_FILE);
             DataInputStream dataInputStream = <span class="hljs-keyword">new</span> DataInputStream(fileInputStream);
@@ -130,7 +127,7 @@
             String pkey = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">1</span>];
             String burl = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">2</span>];
             <span class="hljs-keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
-                <span class="hljs-keyword">return</span> ok(<span class="hljs-string">"ClientID or PrivateKEY or base path is not found!"</span>);
+                <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(<span class="hljs-string">"ClientID or PrivateKEY or base path is not found!"</span>)</span></span>;
             }
 
             ApiInvoker.getInstance().setRequestSigner(<span class="hljs-keyword">new</span> GroupDocsRequestSigner(pkey));
@@ -164,11 +161,11 @@
         } <span class="hljs-keyword">catch</span> (Exception e) {
             e.printStackTrace();
         }
-        <span class="hljs-keyword">return</span> ok(<span class="hljs-string">""</span>);
+        <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(<span class="hljs-string">""</span>)</span></span>;
     }
 
 
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">signatureCallback</span>() {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">signatureCallback</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">try</span> {
             FileInputStream fileInputStream = <span class="hljs-keyword">new</span> FileInputStream(Sample21.USER_INFO_FILE);
             DataInputStream dataInputStream = <span class="hljs-keyword">new</span> DataInputStream(fileInputStream);
@@ -179,7 +176,7 @@
             String pkey = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">1</span>];
             String burl = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">2</span>];
             <span class="hljs-keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
-                <span class="hljs-keyword">return</span> ok(<span class="hljs-string">"ClientID or PrivateKEY or base path is not found!"</span>);
+                <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(<span class="hljs-string">"ClientID or PrivateKEY or base path is not found!"</span>)</span></span>;
             }
 
             ApiInvoker.getInstance().setRequestSigner(<span class="hljs-keyword">new</span> GroupDocsRequestSigner(pkey));
@@ -215,10 +212,10 @@
         } <span class="hljs-keyword">catch</span> (Exception e) {
             e.printStackTrace();
         }
-        <span class="hljs-keyword">return</span> ok(<span class="hljs-string">""</span>);
+        <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(<span class="hljs-string">""</span>)</span></span>;
     }
 
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">publishCallback</span>() <span class="hljs-keyword">throws</span> Exception {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">publishCallback</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception </span>{
         FileInputStream fileInputStream = <span class="hljs-keyword">new</span> FileInputStream(Sample32.USER_INFO_FILE);
         DataInputStream dataInputStream = <span class="hljs-keyword">new</span> DataInputStream(fileInputStream);
         String data = dataInputStream.readUTF();
@@ -229,7 +226,7 @@
         String burl = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">2</span>];
         String email = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">3</span>];
         <span class="hljs-keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl) || StringUtils.isEmpty(email)) {
-            <span class="hljs-keyword">return</span> ok(<span class="hljs-string">"ClientID or PrivateKEY or base path or email is not found!"</span>);
+            <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(<span class="hljs-string">"ClientID or PrivateKEY or base path or email is not found!"</span>)</span></span>;
         }
 
         ApiInvoker.getInstance().setRequestSigner(<span class="hljs-keyword">new</span> GroupDocsRequestSigner(pkey));</pre></div></div>
@@ -370,11 +367,11 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>        mail.sendHtml(message);
-        <span class="hljs-keyword">return</span> ok(<span class="hljs-string">""</span>);
+        <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(<span class="hljs-string">""</span>)</span></span>;
     }
 
 
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">checkGuidCallback</span>() <span class="hljs-keyword">throws</span> Exception {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">checkGuidCallback</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception </span>{
         String result = <span class="hljs-string">""</span>;</pre></div></div>
             
         </li>
@@ -449,9 +446,9 @@
                 String pkey = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">1</span>];
                 String burl = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">2</span>];
                 <span class="hljs-keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
-                    <span class="hljs-keyword">return</span> ok(<span class="hljs-string">"ClientID or PrivateKEY or base path is not found!"</span>);
+                    <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(<span class="hljs-string">"ClientID or PrivateKEY or base path is not found!"</span>)</span></span>;
                 } <span class="hljs-keyword">else</span> {
-                    <span class="hljs-keyword">return</span> ok(data);
+                    <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(data)</span></span>;
                 }</pre></div></div>
             
         </li>
@@ -479,7 +476,7 @@
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
     }
 
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">formRedirectCallback</span>() {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">formRedirectCallback</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">try</span> {
             FileInputStream fileInputStream = <span class="hljs-keyword">new</span> FileInputStream(Sample40.USER_INFO_FILE);
             DataInputStream dataInputStream = <span class="hljs-keyword">new</span> DataInputStream(fileInputStream);
@@ -490,7 +487,7 @@
             String pkey = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">1</span>];
             String burl = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">2</span>];
             <span class="hljs-keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
-                <span class="hljs-keyword">return</span> ok(<span class="hljs-string">"ClientID or PrivateKEY or base path is not found!"</span>);
+                <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(<span class="hljs-string">"ClientID or PrivateKEY or base path is not found!"</span>)</span></span>;
             }
 
             ApiInvoker.getInstance().setRequestSigner(<span class="hljs-keyword">new</span> GroupDocsRequestSigner(pkey));
@@ -579,16 +576,16 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                String guid = signatureFormParticipantResponse.getResult().getParticipant().getDocumentGuid();
-                <span class="hljs-keyword">return</span> ok(guid);
+            <div class="content"><div class='highlight'><pre>                String guid = signatureFormParticipantResponse.getResult().getParticipant().getSignedDocuments().get(<span class="hljs-number">0</span>).getDocumentGuid();
+                <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(guid)</span></span>;
             }
         } <span class="hljs-keyword">catch</span> (Exception e) {
             e.printStackTrace();
-            <span class="hljs-keyword">return</span> ok(e.getMessage());
+            <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(e.getMessage()</span>)</span>;
         }
-        <span class="hljs-keyword">return</span> ok(<span class="hljs-string">""</span>);
+        <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(<span class="hljs-string">""</span>)</span></span>;
     }
-	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">userRightsCallback</span>() {
+	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">userRightsCallback</span><span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">try</span> {
             FileInputStream fileInputStream = <span class="hljs-keyword">new</span> FileInputStream(Sample41.USER_INFO_FILE);
             DataInputStream dataInputStream = <span class="hljs-keyword">new</span> DataInputStream(fileInputStream);
@@ -599,7 +596,7 @@
             String pkey = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">1</span>];
             String burl = data.split(<span class="hljs-string">"\\|"</span>)[<span class="hljs-number">2</span>];
             <span class="hljs-keyword">if</span> (StringUtils.isEmpty(cid) || StringUtils.isEmpty(pkey) || StringUtils.isEmpty(burl)) {
-                <span class="hljs-keyword">return</span> ok(<span class="hljs-string">"ClientID or PrivateKEY or base path is not found!"</span>);
+                <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(<span class="hljs-string">"ClientID or PrivateKEY or base path is not found!"</span>)</span></span>;
             }
 
             ApiInvoker.getInstance().setRequestSigner(<span class="hljs-keyword">new</span> GroupDocsRequestSigner(pkey));
@@ -671,7 +668,7 @@
         } <span class="hljs-keyword">catch</span> (Exception e) {
             e.printStackTrace();
         }
-        <span class="hljs-keyword">return</span> ok(<span class="hljs-string">""</span>);
+        <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(<span class="hljs-string">""</span>)</span></span>;
     }
 }</pre></div></div>
             

@@ -3,13 +3,11 @@ package controllers;
 //Import of necessary libraries
 
 import com.groupdocs.sdk.api.StorageApi;
+import com.groupdocs.sdk.api.DocApi;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
-import com.groupdocs.sdk.model.FileMoveResponse;
-import com.groupdocs.sdk.model.FileSystemDocument;
-import com.groupdocs.sdk.model.ListEntitiesResponse;
-import com.groupdocs.sdk.model.UploadResponse;
+import com.groupdocs.sdk.model.*;
 import common.Utils;
 import models.Credentials;
 import org.apache.commons.lang3.StringUtils;
@@ -62,7 +60,7 @@ public class Sample05 extends Controller {
                     FileInputStream is = new FileInputStream(filePart.getFile());
                     String callbackUrl = Utils.getFormValue(body.asFormUrlEncoded(), "callbackUrl");
                     // Upload file to current user storage from local computer
-                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), filePart.getFilename(), "uploaded", callbackUrl, false, new FileStream(is));
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), filePart.getFilename(), "uploaded", callbackUrl, 2, new FileStream(is));
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
@@ -76,7 +74,9 @@ public class Sample05 extends Controller {
                     uploadDir = "My Web Documents";
                 }
                 String destPath = Utils.getFormValue(body.asFormUrlEncoded(), "destPath");
-                destPath = Utils.assertNotNull(destPath);
+                if (destPath == null){
+                    destPath = "";
+                }
 
                 if (StringUtils.isEmpty(guid)) {
                     return badRequest(views.html.sample05.render(false, null, form, null));
@@ -91,6 +91,14 @@ public class Sample05 extends Controller {
                         fileName = document.getName();
                         fileId = document.getId();
                         break;
+
+                    } else {
+                        DocApi docApi = new DocApi();
+                        DocumentAccessInfoResponse response2 = docApi.GetDocumentAccessInfo(credentials.getClientId(), guid);
+                        // Check response status
+                        response2 = Utils.assertResponse(response2);
+                        fileName = response2.getResult().getName();
+                        fileId = response2.getResult().getId();
                     }
                 }
                 guid = Utils.assertNotNull(guid);
@@ -98,7 +106,13 @@ public class Sample05 extends Controller {
                 if (fileName.contains("http:")) {
                     fileName = fileName.split("/")[fileName.split("/").length - 1];
                 }
-                String copyToPath = (destPath + File.separator + fileName).replaceAll("\\\\", "/").replaceAll("//", "/");
+                String copyToPath = null;
+                if (destPath.equals("")){
+                    copyToPath = (fileName).replaceAll("\\\\", "/").replaceAll("//", "/");
+                }else{
+                    copyToPath = (destPath + File.separator + fileName).replaceAll("\\\\", "/").replaceAll("//", "/");
+                }
+
 
                 String action = null;
                 FileMoveResponse copyMoveResponse = null;

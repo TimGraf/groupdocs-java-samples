@@ -50,11 +50,11 @@
         put(Pattern.compile(<span class="hljs-string">"^(https|http)://stage-api\\.groupdocs\\.com/v2\\.0.*"</span>), <span class="hljs-string">"https://stage-apps.groupdocs.com"</span>);
         put(Pattern.compile(<span class="hljs-string">"^(https|http)://realtime-api\\.groupdocs\\.com.*"</span>), <span class="hljs-string">"http://realtime-apps.groupdocs.com"</span>);
     }};
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">apiPath2framePath</span>(String apiPath){
-        <span class="hljs-keyword">return</span> apiPath2framePath(apiPath, <span class="hljs-string">""</span>);
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">apiPath2framePath</span><span class="hljs-params">(String apiPath)</span></span>{
+        <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">apiPath2framePath</span><span class="hljs-params">(apiPath, <span class="hljs-string">""</span>)</span></span>;
     }
 
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">apiPath2framePath</span>(String apiPath, String suffix){
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">apiPath2framePath</span><span class="hljs-params">(String apiPath, String suffix)</span></span>{
         <span class="hljs-keyword">for</span> (Pattern pattern : api2base.keySet()) {
             <span class="hljs-keyword">if</span> (pattern.matcher(apiPath).matches()) {
                 <span class="hljs-keyword">return</span> api2base.get(pattern) + (suffix.startsWith(<span class="hljs-string">"/"</span>) ? suffix : <span class="hljs-string">"/"</span> + suffix);
@@ -63,7 +63,7 @@
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
     }
 
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">signUrl</span>(String pkey, String url) {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">signUrl</span><span class="hljs-params">(String pkey, String url)</span> </span>{
         GroupDocsRequestSigner groupDocsRequestSigner = <span class="hljs-keyword">new</span> GroupDocsRequestSigner(pkey);
         <span class="hljs-keyword">return</span> groupDocsRequestSigner.signUrl(url);
     }
@@ -76,19 +76,19 @@
         <span class="hljs-keyword">private</span> String formGuid;
         <span class="hljs-keyword">private</span> String callbackUrl;
 
-        <span class="hljs-keyword">public</span> String <span class="hljs-title">getFormGuid</span>() {
+        <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getFormGuid</span><span class="hljs-params">()</span> </span>{
             <span class="hljs-keyword">return</span> formGuid;
         }
 
-        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setFormGuid</span>(String formGuid) {
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setFormGuid</span><span class="hljs-params">(String formGuid)</span> </span>{
             <span class="hljs-keyword">this</span>.formGuid = formGuid;
         }
 
-        <span class="hljs-keyword">public</span> String <span class="hljs-title">getCallbackUrl</span>() {
+        <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getCallbackUrl</span><span class="hljs-params">()</span> </span>{
             <span class="hljs-keyword">return</span> callbackUrl == <span class="hljs-keyword">null</span> ? <span class="hljs-string">""</span> : callbackUrl;
         }
 
-        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setCallbackUrl</span>(String callbackUrl) {
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setCallbackUrl</span><span class="hljs-params">(String callbackUrl)</span> </span>{
             <span class="hljs-keyword">this</span>.callbackUrl = callbackUrl;
         }
     }

@@ -63,7 +63,7 @@ public class Sample04 extends Controller {
                 } else if ("IDfilePart".equals(fileData)) { // Upload local file
                     Http.MultipartFormData.FilePart filePart = body.getFile("filePart");
                     FileInputStream is = new FileInputStream(filePart.getFile());
-                    UploadResponse response = storageApi.Upload(credentials.getClientId(), filePart.getFilename(), "uploaded", "", false, new FileStream(is));
+                    UploadResponse response = storageApi.Upload(credentials.getClientId(), filePart.getFilename(), "uploaded", "", 2, new FileStream(is));
                     response = Utils.assertResponse(response);
                     guid = response.getResult().getGuid();
                 }

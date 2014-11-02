@@ -34,7 +34,7 @@ public class Sample37 extends BaseController {
                 form = Form.form(Credentials.class).bindFromRequest();
                 // Check errors
                 if (form.hasErrors()) {
-                    return badRequest(views.html.sample37.render(false, null, form));
+                    return badRequest(views.html.sample37.render(false, null, null, form));
                 }
                 // Save credentials to session
                 Credentials credentials = form.get();
@@ -95,7 +95,7 @@ public class Sample37 extends BaseController {
                         // Initialize API with base path
                         storageApi.setBasePath(credentials.getBasePath());
                         FileInputStream is = new FileInputStream(file.getFile());
-                        UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), "uploaded", "", false, new FileStream(is));
+                        UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), "uploaded", "", 2, new FileStream(is));
                         // Check response status
                         uploadResponse = Utils.assertResponse(uploadResponse);
                         guid = uploadResponse.getResult().getGuid();
@@ -157,14 +157,14 @@ public class Sample37 extends BaseController {
 
                     String server = credentials.getBasePath().substring(0, credentials.getBasePath().indexOf(".com") + 4).replace("api", "apps");
                     String url = server + "/signature2/signembed/" + envelopeId + "/" + recipientId;
-                    return ok(views.html.sample37.render(true, url, form));
+                    return ok(views.html.sample37.render(true, url, fileName, form));
                 } catch (Exception e) {
-                    return badRequest(views.html.sample37.render(false, null, form));
+                    return badRequest(views.html.sample37.render(false, null, null, form));
                 }
 
         } else if (Utils.isGET(request())) {
             form = form.bind(session());
         }
-        return ok(views.html.sample37.render(false, null, form));
+        return ok(views.html.sample37.render(false, null, null, form));
     }
 }

@@ -48,13 +48,11 @@
             
             <div class="content"><div class='highlight'><pre>
 <span class="hljs-keyword">import</span> com.groupdocs.sdk.api.StorageApi;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.api.DocApi;
 <span class="hljs-keyword">import</span> com.groupdocs.sdk.common.ApiInvoker;
 <span class="hljs-keyword">import</span> com.groupdocs.sdk.common.FileStream;
 <span class="hljs-keyword">import</span> com.groupdocs.sdk.common.GroupDocsRequestSigner;
-<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.FileMoveResponse;
-<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.FileSystemDocument;
-<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.ListEntitiesResponse;
-<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.UploadResponse;
+<span class="hljs-keyword">import</span> com.groupdocs.sdk.model.*;
 <span class="hljs-keyword">import</span> common.Utils;
 <span class="hljs-keyword">import</span> models.Credentials;
 <span class="hljs-keyword">import</span> org.apache.commons.lang3.StringUtils;
@@ -82,7 +80,7 @@
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">static</span> Form&lt;Credentials&gt; form = Form.form(Credentials.class);
 
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">index</span>() {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Result <span class="hljs-title">index</span><span class="hljs-params">()</span> </span>{
 
         <span class="hljs-keyword">if</span> (Utils.isPOST(request())) {
             form = Form.form(Credentials.class).bindFromRequest();</pre></div></div>
@@ -101,7 +99,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> (form.hasErrors()) {
-                <span class="hljs-keyword">return</span> badRequest(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>));
+                <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">badRequest</span><span class="hljs-params">(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>)</span>)</span>;
             }</pre></div></div>
             
         </li>
@@ -221,7 +219,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), filePart.getFilename(), <span class="hljs-string">"uploaded"</span>, callbackUrl, <span class="hljs-keyword">new</span> FileStream(is));</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), filePart.getFilename(), <span class="hljs-string">"uploaded"</span>, callbackUrl, <span class="hljs-number">2</span>, <span class="hljs-keyword">new</span> FileStream(is));</pre></div></div>
             
         </li>
         
@@ -239,7 +237,7 @@
             <div class="content"><div class='highlight'><pre>                    uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();
                     Thread.sleep(<span class="hljs-number">3000</span>);
-                } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">"url"</span>.equals(sourse)) {
+                } <span class="hljs-function"><span class="hljs-keyword">else</span> <span class="hljs-title">if</span> <span class="hljs-params">(<span class="hljs-string">"url"</span>.equals(sourse)</span>) </span>{
                     String url = Utils.getFormValue(body.asFormUrlEncoded(), <span class="hljs-string">"url"</span>);
                     UploadResponse uploadResponse = storageApi.UploadWeb(credentials.getClientId(), url);</pre></div></div>
             
@@ -261,10 +259,12 @@
                     uploadDir = <span class="hljs-string">"My Web Documents"</span>;
                 }
                 String destPath = Utils.getFormValue(body.asFormUrlEncoded(), <span class="hljs-string">"destPath"</span>);
-                destPath = Utils.assertNotNull(destPath);
+                <span class="hljs-keyword">if</span> (destPath == <span class="hljs-keyword">null</span>){
+                    destPath = <span class="hljs-string">""</span>;
+                }
 
                 <span class="hljs-keyword">if</span> (StringUtils.isEmpty(guid)) {
-                    <span class="hljs-keyword">return</span> badRequest(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>));
+                    <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">badRequest</span><span class="hljs-params">(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>)</span>)</span>;
                 }
 
                 ListEntitiesResponse response = storageApi.ListEntities(credentials.getClientId(), uploadDir, <span class="hljs-number">0</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>);</pre></div></div>
@@ -302,25 +302,10 @@
                         fileName = document.getName();
                         fileId = document.getId();
                         <span class="hljs-keyword">break</span>;
-                    }
-                }
-                guid = Utils.assertNotNull(guid);
-                fileName = Utils.assertNotNull(fileName);
-                <span class="hljs-keyword">if</span> (fileName.contains(<span class="hljs-string">"http:"</span>)) {
-                    fileName = fileName.split(<span class="hljs-string">"/"</span>)[fileName.split(<span class="hljs-string">"/"</span>).length - <span class="hljs-number">1</span>];
-                }
-                String copyToPath = (destPath + File.separator + fileName).replaceAll(<span class="hljs-string">"\\\\"</span>, <span class="hljs-string">"/"</span>).replaceAll(<span class="hljs-string">"//"</span>, <span class="hljs-string">"/"</span>);
 
-                String action = <span class="hljs-keyword">null</span>;
-                FileMoveResponse copyMoveResponse = <span class="hljs-keyword">null</span>;
-
-                <span class="hljs-keyword">if</span> (Utils.getFormValue(body.asFormUrlEncoded(), <span class="hljs-string">"copy"</span>) != <span class="hljs-keyword">null</span>) {
-                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, <span class="hljs-keyword">null</span>, Double.toString(fileId), <span class="hljs-keyword">null</span>);
-                    action = <span class="hljs-string">"copy"</span>;
-                } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Utils.getFormValue(body.asFormUrlEncoded(), <span class="hljs-string">"move"</span>) != <span class="hljs-keyword">null</span>) {
-                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, Double.toString(fileId));
-                    action = <span class="hljs-string">"move"</span>;
-                }</pre></div></div>
+                    } <span class="hljs-keyword">else</span> {
+                        DocApi docApi = <span class="hljs-keyword">new</span> DocApi();
+                        DocumentAccessInfoResponse response2 = docApi.GetDocumentAccessInfo(credentials.getClientId(), guid);</pre></div></div>
             
         </li>
         
@@ -335,7 +320,34 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                copyMoveResponse = Utils.assertResponse(copyMoveResponse);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                        response2 = Utils.assertResponse(response2);
+                        fileName = response2.getResult().getName();
+                        fileId = response2.getResult().getId();
+                    }
+                }
+                guid = Utils.assertNotNull(guid);
+                fileName = Utils.assertNotNull(fileName);
+                <span class="hljs-keyword">if</span> (fileName.contains(<span class="hljs-string">"http:"</span>)) {
+                    fileName = fileName.split(<span class="hljs-string">"/"</span>)[fileName.split(<span class="hljs-string">"/"</span>).length - <span class="hljs-number">1</span>];
+                }
+                String copyToPath = <span class="hljs-keyword">null</span>;
+                <span class="hljs-keyword">if</span> (destPath.equals(<span class="hljs-string">""</span>)){
+                    copyToPath = (fileName).replaceAll(<span class="hljs-string">"\\\\"</span>, <span class="hljs-string">"/"</span>).replaceAll(<span class="hljs-string">"//"</span>, <span class="hljs-string">"/"</span>);
+                }<span class="hljs-keyword">else</span>{
+                    copyToPath = (destPath + File.separator + fileName).replaceAll(<span class="hljs-string">"\\\\"</span>, <span class="hljs-string">"/"</span>).replaceAll(<span class="hljs-string">"//"</span>, <span class="hljs-string">"/"</span>);
+                }
+
+
+                String action = <span class="hljs-keyword">null</span>;
+                FileMoveResponse copyMoveResponse = <span class="hljs-keyword">null</span>;
+
+                <span class="hljs-keyword">if</span> (Utils.getFormValue(body.asFormUrlEncoded(), <span class="hljs-string">"copy"</span>) != <span class="hljs-keyword">null</span>) {
+                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, <span class="hljs-keyword">null</span>, Double.toString(fileId), <span class="hljs-keyword">null</span>);
+                    action = <span class="hljs-string">"copy"</span>;
+                } <span class="hljs-function"><span class="hljs-keyword">else</span> <span class="hljs-title">if</span> <span class="hljs-params">(Utils.getFormValue(body.asFormUrlEncoded()</span>, "move") !</span>= <span class="hljs-keyword">null</span>) {
+                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, Double.toString(fileId));
+                    action = <span class="hljs-string">"move"</span>;
+                }</pre></div></div>
             
         </li>
         
@@ -346,18 +358,33 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
+              <p>Check response status</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                copyMoveResponse = Utils.assertResponse(copyMoveResponse);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
               <p>Render view</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">return</span> ok(views.html.sample05.render(<span class="hljs-keyword">true</span>, copyMoveResponse.getResult(), form, action));
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(views.html.sample05.render(<span class="hljs-keyword">true</span>, copyMoveResponse.getResult()</span>, form, action))</span>;
             } <span class="hljs-keyword">catch</span> (Exception e) {
-                <span class="hljs-keyword">return</span> badRequest(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>));
+                <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">badRequest</span><span class="hljs-params">(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>)</span>)</span>;
             }
-        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Utils.isGET(request())) {
+        } <span class="hljs-function"><span class="hljs-keyword">else</span> <span class="hljs-title">if</span> <span class="hljs-params">(Utils.isGET(request()</span>)) </span>{
             form = form.bind(session());
         }
-        <span class="hljs-keyword">return</span> ok(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>));
+        <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>)</span>)</span>;
     }
 }</pre></div></div>
             

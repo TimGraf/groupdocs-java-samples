@@ -156,7 +156,7 @@ public class Sample39 extends BaseController {
                     if (file != null && !file.getFilename().isEmpty()) {
                         //###Make a request to Storage API using clientId
                         //Upload file to current user storage
-                        UploadResponse uploadResponse = storageApi.Upload(clientId, file.getFilename(), "uploaded", "", true, new FileStream(is));
+                        UploadResponse uploadResponse = storageApi.Upload(clientId, file.getFilename(), "uploaded", "", 2, new FileStream(is));
                         //###Check if file uploaded successfully
                         Utils.assertResponse(uploadResponse);
                         //Get file GUID
