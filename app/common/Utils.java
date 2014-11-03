@@ -96,7 +96,7 @@ public abstract class Utils {
         ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(pkey));
         StorageApi storageApi = new StorageApi();
         storageApi.setBasePath(bpath);
-        UploadResponse response = storageApi.Upload(cid, path, "Description", callback, false, fileStream);
+        UploadResponse response = storageApi.Upload(cid, path, "Description", callback, 2, fileStream);
 
         if (response != null && "Ok".equalsIgnoreCase(response.getStatus())) {
             guid = response.getResult().getGuid();
