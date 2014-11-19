@@ -78,7 +78,7 @@ public class Sample41 extends BaseController {
                     // Initialize API with base path
                     storageApi.setBasePath(credentials.getBasePath());
                     FileInputStream is = new FileInputStream(file.getFile());
-                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), "uploaded", "", 2, new FileStream(is));
+                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), "uploaded", "", 1, new FileStream(is));
                     // Check response status
                     uploadResponse = Utils.assertResponse(uploadResponse);
                     guid = uploadResponse.getResult().getGuid();

@@ -104,7 +104,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">if</span> (form.hasErrors()) {
-                    <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">badRequest</span><span class="hljs-params">(views.html.sample35.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>)</span>)</span>;
+                    <span class="hljs-keyword">return</span> badRequest(views.html.sample35.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>));
                 }</pre></div></div>
             
         </li>
@@ -241,7 +241,7 @@
             
             <div class="content"><div class='highlight'><pre>                        storageApi.setBasePath(credentials.getBasePath());
                         FileInputStream is = <span class="hljs-keyword">new</span> FileInputStream(file.getFile());
-                        UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), <span class="hljs-string">"uploaded"</span>, <span class="hljs-string">""</span>, <span class="hljs-number">2</span>, <span class="hljs-keyword">new</span> FileStream(is));</pre></div></div>
+                        UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), file.getFilename(), <span class="hljs-string">"uploaded"</span>, <span class="hljs-string">""</span>, <span class="hljs-number">1</span>, <span class="hljs-keyword">new</span> FileStream(is));</pre></div></div>
             
         </li>
         
@@ -309,9 +309,9 @@
             <div class="content"><div class='highlight'><pre>                    templateFieldsResponse = Utils.assertResponse(templateFieldsResponse);
                     List&lt;TemplateField&gt; fields = templateFieldsResponse.getResult().getFields();
 
-                    <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(views.html.sample35.render(<span class="hljs-keyword">true</span>, <span class="hljs-string">"show:form"</span>, fields, form, guid, <span class="hljs-keyword">null</span>)</span>)</span>;
+                    <span class="hljs-keyword">return</span> ok(views.html.sample35.render(<span class="hljs-keyword">true</span>, <span class="hljs-string">"show:form"</span>, fields, form, guid, <span class="hljs-keyword">null</span>));
                 } <span class="hljs-keyword">catch</span> (Exception e) {
-                    <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">badRequest</span><span class="hljs-params">(views.html.sample35.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>)</span>)</span>;
+                    <span class="hljs-keyword">return</span> badRequest(views.html.sample35.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>));
                 }
             } <span class="hljs-keyword">else</span> {
                 String guid = Utils.getFormValue(body, <span class="hljs-string">"guid"</span>);
@@ -368,7 +368,7 @@
                         <span class="hljs-keyword">if</span> (<span class="hljs-string">"Completed"</span>.equalsIgnoreCase(jobStatus) || <span class="hljs-string">"Archived"</span>.equalsIgnoreCase(jobStatus)){
                             <span class="hljs-keyword">break</span>;
                         } <span class="hljs-function"><span class="hljs-keyword">else</span> <span class="hljs-title">if</span> <span class="hljs-params">(<span class="hljs-string">"Postponed"</span>.equalsIgnoreCase(jobStatus)</span>)</span>{
-                            <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">badRequest</span><span class="hljs-params">(views.html.sample35.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>)</span>)</span>;
+                            <span class="hljs-keyword">return</span> badRequest(views.html.sample35.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>));
                         }
                     }
                     Utils.assertNotNull(getJobDocumentsResponse);
@@ -378,15 +378,15 @@
                     String viewUrl = apiPath2framePath(mergeApi.getBasePath(), <span class="hljs-string">"/document-viewer/embed/"</span> + resGuid);
                     String signedUrl = signUrl(privateKey, viewUrl);
 
-                    <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(views.html.sample35.render(<span class="hljs-keyword">true</span>, <span class="hljs-string">"show:doc"</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>, signedUrl)</span>)</span>;
+                    <span class="hljs-keyword">return</span> ok(views.html.sample35.render(<span class="hljs-keyword">true</span>, <span class="hljs-string">"show:doc"</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>, signedUrl));
                 } <span class="hljs-keyword">catch</span> (Exception e) {
-                    <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">badRequest</span><span class="hljs-params">(views.html.sample35.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>)</span>)</span>;
+                    <span class="hljs-keyword">return</span> badRequest(views.html.sample35.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>));
                 }
             }
         } <span class="hljs-function"><span class="hljs-keyword">else</span> <span class="hljs-title">if</span> <span class="hljs-params">(Utils.isGET(request()</span>)) </span>{
             form = form.bind(session());
         }
-        <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(views.html.sample35.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>)</span>)</span>;
+        <span class="hljs-keyword">return</span> ok(views.html.sample35.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>));
     }
 }</pre></div></div>
             

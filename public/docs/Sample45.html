@@ -91,7 +91,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> (form.hasErrors()) {
-                <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">badRequest</span><span class="hljs-params">(views.html.sample45.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form)</span>)</span>;
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample45.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
             }</pre></div></div>
             
         </li>
@@ -303,14 +303,14 @@
             
             <div class="content"><div class='highlight'><pre>                documentMetadata = Utils.assertResponse(documentMetadata);
 
-                <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(views.html.sample45.render(<span class="hljs-keyword">true</span>, documentMetadata.getResult()</span>, form))</span>;
+                <span class="hljs-keyword">return</span> ok(views.html.sample45.render(<span class="hljs-keyword">true</span>, documentMetadata.getResult(), form));
             } <span class="hljs-keyword">catch</span> (Exception e) {
-                <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">badRequest</span><span class="hljs-params">(views.html.sample45.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form)</span>)</span>;
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample45.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
             }
         } <span class="hljs-function"><span class="hljs-keyword">else</span> <span class="hljs-title">if</span> <span class="hljs-params">(Utils.isGET(request()</span>)) </span>{
             form = form.bind(session());
         }
-        <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(views.html.sample45.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form)</span>)</span>;
+        <span class="hljs-keyword">return</span> ok(views.html.sample45.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form));
     }
 }</pre></div></div>
             

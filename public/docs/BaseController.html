@@ -51,7 +51,7 @@
         put(Pattern.compile(<span class="hljs-string">"^(https|http)://realtime-api\\.groupdocs\\.com.*"</span>), <span class="hljs-string">"http://realtime-apps.groupdocs.com"</span>);
     }};
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">apiPath2framePath</span><span class="hljs-params">(String apiPath)</span></span>{
-        <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">apiPath2framePath</span><span class="hljs-params">(apiPath, <span class="hljs-string">""</span>)</span></span>;
+        <span class="hljs-keyword">return</span> apiPath2framePath(apiPath, <span class="hljs-string">""</span>);
     }
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">apiPath2framePath</span><span class="hljs-params">(String apiPath, String suffix)</span></span>{

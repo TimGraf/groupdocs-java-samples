@@ -99,7 +99,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> (form.hasErrors()) {
-                <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">badRequest</span><span class="hljs-params">(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>)</span>)</span>;
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>));
             }</pre></div></div>
             
         </li>
@@ -219,7 +219,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), filePart.getFilename(), <span class="hljs-string">"uploaded"</span>, callbackUrl, <span class="hljs-number">2</span>, <span class="hljs-keyword">new</span> FileStream(is));</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                    UploadResponse uploadResponse = storageApi.Upload(credentials.getClientId(), filePart.getFilename(), <span class="hljs-string">"uploaded"</span>, callbackUrl, <span class="hljs-number">1</span>, <span class="hljs-keyword">new</span> FileStream(is));</pre></div></div>
             
         </li>
         
@@ -264,7 +264,7 @@
                 }
 
                 <span class="hljs-keyword">if</span> (StringUtils.isEmpty(guid)) {
-                    <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">badRequest</span><span class="hljs-params">(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>)</span>)</span>;
+                    <span class="hljs-keyword">return</span> badRequest(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>));
                 }
 
                 ListEntitiesResponse response = storageApi.ListEntities(credentials.getClientId(), uploadDir, <span class="hljs-number">0</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>);</pre></div></div>
@@ -377,14 +377,14 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(views.html.sample05.render(<span class="hljs-keyword">true</span>, copyMoveResponse.getResult()</span>, form, action))</span>;
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">return</span> ok(views.html.sample05.render(<span class="hljs-keyword">true</span>, copyMoveResponse.getResult(), form, action));
             } <span class="hljs-keyword">catch</span> (Exception e) {
-                <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">badRequest</span><span class="hljs-params">(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>)</span>)</span>;
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>));
             }
         } <span class="hljs-function"><span class="hljs-keyword">else</span> <span class="hljs-title">if</span> <span class="hljs-params">(Utils.isGET(request()</span>)) </span>{
             form = form.bind(session());
         }
-        <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>)</span>)</span>;
+        <span class="hljs-keyword">return</span> ok(views.html.sample05.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>, form, <span class="hljs-keyword">null</span>));
     }
 }</pre></div></div>
             

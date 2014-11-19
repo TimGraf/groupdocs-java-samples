@@ -535,7 +535,7 @@ path to settings file - temporary save userId and apiKey like to property file</
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                        UploadResponse uploadResponse = storageApi.Upload(clientId, file.getFilename(), <span class="hljs-string">"uploaded"</span>, <span class="hljs-string">""</span>, <span class="hljs-number">2</span>, <span class="hljs-keyword">new</span> FileStream(is));</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                        UploadResponse uploadResponse = storageApi.Upload(clientId, file.getFilename(), <span class="hljs-string">"uploaded"</span>, <span class="hljs-string">""</span>, <span class="hljs-number">1</span>, <span class="hljs-keyword">new</span> FileStream(is));</pre></div></div>
             
         </li>
         
@@ -831,11 +831,11 @@ Get document from envelop</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>                        url = <span class="hljs-keyword">new</span> GroupDocsRequestSigner(privateKey).signUrl(url);
-                        <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(views.html.sample39.render(<span class="hljs-keyword">true</span>, url)</span>)</span>;
+                        <span class="hljs-keyword">return</span> ok(views.html.sample39.render(<span class="hljs-keyword">true</span>, url));
                     }
                 }
             } <span class="hljs-keyword">catch</span> (Exception e) {
-                <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">badRequest</span><span class="hljs-params">(views.html.sample39.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>)</span>)</span>;
+                <span class="hljs-keyword">return</span> badRequest(views.html.sample39.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>));
             }
 
         } <span class="hljs-function"><span class="hljs-keyword">else</span> <span class="hljs-title">if</span> <span class="hljs-params">(Utils.isGET(request()</span>)) </span>{</pre></div></div>
@@ -854,7 +854,7 @@ Get document from envelop</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>        }
-        <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">ok</span><span class="hljs-params">(views.html.sample39.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>)</span>)</span>;
+        <span class="hljs-keyword">return</span> ok(views.html.sample39.render(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">null</span>));
     }
 }</pre></div></div>
             
