@@ -342,10 +342,10 @@
                 FileMoveResponse copyMoveResponse = <span class="hljs-keyword">null</span>;
 
                 <span class="hljs-keyword">if</span> (Utils.getFormValue(body.asFormUrlEncoded(), <span class="hljs-string">"copy"</span>) != <span class="hljs-keyword">null</span>) {
-                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, <span class="hljs-keyword">null</span>, Double.toString(fileId), <span class="hljs-keyword">null</span>);
+                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>,  Double.toString(fileId));
                     action = <span class="hljs-string">"copy"</span>;
                 } <span class="hljs-function"><span class="hljs-keyword">else</span> <span class="hljs-title">if</span> <span class="hljs-params">(Utils.getFormValue(body.asFormUrlEncoded()</span>, "move") !</span>= <span class="hljs-keyword">null</span>) {
-                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, Double.toString(fileId));
+                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, <span class="hljs-keyword">null</span>, Double.toString(fileId), <span class="hljs-keyword">null</span>);
                     action = <span class="hljs-string">"move"</span>;
                 }</pre></div></div>
             

@@ -36,16 +36,16 @@
             <p>Enter data for request and press "Make request" button</p>
             @myForm(routes.Sample39.index(), 'method -> "POST", 'enctype -> "multipart/form-data") {
 
-                <div>
-                    <label for="clientId" class="file-choice-label form-label">Client ID</label>
+                <div calass="input">
+                    <label for="clientId" class="file-choice-label field-label">Client ID</label>
                     <input type="text" value="" id="clientId" name="clientId" size="50" />
                 </div>
                 <div>
-                    <label for="privateKey" class="file-choice-label form-label">Private Key</label>
+                    <label for="privateKey" class="file-choice-label field-label">Private Key</label>
                     <input type="text" value="" id="privateKey" name="privateKey" size="50" />
                 </div>
                 <div>
-                    <label for="basePath" class="file-choice-label form-label">Base URL</label>
+                    <label for="basePath" class="file-choice-label field-label">Base URL</label>
                     <input type="text" value="" id="basePath" name="basePath" size="50" />
                 </div>
 
@@ -56,30 +56,30 @@
 
 
                 <div>
-                    <label for="document" class="file-choice-label form-label">Document to sign</label>
+                    <label for="document" class="file-choice-label field-label">Document to sign</label>
                     <input type="file" id="document" name="file"/>
                 </div>
                 <div id="filesPanel" style="display: none">
                     <div>
-                        <label for="signature" class="file-choice-label form-label" id="fiSignatureLabel">Signature</label>
+                        <label for="signature" class="file-choice-label field-label" id="fiSignatureLabel">Signature</label>
                         <input type="file" id="signature" name="signature" />
                     </div>
                 </div>
                 <div id="fieldsPanel">
                     <div>
-                        <label for="email" class="file-choice-label form-label" id="emailLabel">E-mail</label>
+                        <label for="email" class="file-choice-label field-label" id="emailLabel">E-mail</label>
                         <input type="text" value="" id="email" name="email" size="50" />
                     </div>
                     <div>
-                        <label for="name" class="file-choice-label form-label" id="nameLabel">Name</label>
+                        <label for="name" class="file-choice-label field-label" id="nameLabel">Name</label>
                         <input type="text" value="" id="name" name="name" size="50" />
                     </div>
                     <div>
-                        <label for="lastName" class="file-choice-label form-label" id="lastNameLabel">Last name</label>
+                        <label for="lastName" class="file-choice-label field-label" id="lastNameLabel">Last name</label>
                         <input type="text" value="" id="lastName" name="lastName" size="50"/>
                     </div>
                     <div>
-                        <label for="callbackUrl" id="callBackLabel" class="file-choice-label form-label">Callback Url (Optional)</label>
+                        <label for="callbackUrl" id="callBackLabel" class="file-choice-label field-label">Callback Url (Optional)</label>
                         <input type="text" name="callbackUrl" id="callbackUrl" value="" size="50"/>
                         <div style="color: #808080; font-size: 10px">
                             For test Callback you can use this URL: http://groupdocs-php-samples.herokuapp.com/sample39_callback

@@ -59,13 +59,14 @@ public class Sample06 extends Controller {
                 document.setData(base64file);
                 // Create SignatureSignDocumentSignerSettings object
                 SignatureSignDocumentSignerSettingsInfo signer = new SignatureSignDocumentSignerSettingsInfo();
-                signer.setPlaceSignatureOn("");
+                signer.setPlaceSignatureOn("1");
                 signer.setName(signerName);
                 signer.setData(base64signature);
                 signer.setHeight(40d);
                 signer.setWidth(100d);
                 signer.setTop(0.83319);
                 signer.setLeft(0.72171);
+                signer.setEmail("test@email.com");
 
                 // Make request to sign settings
                 SignatureSignDocumentSettingsInfo requestBody = new SignatureSignDocumentSettingsInfo();

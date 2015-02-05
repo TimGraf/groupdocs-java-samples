@@ -5,6 +5,8 @@ import com.groupdocs.sdk.api.StorageApi;
 import com.groupdocs.sdk.common.ApiInvoker;
 import com.groupdocs.sdk.common.FileStream;
 import com.groupdocs.sdk.common.GroupDocsRequestSigner;
+import com.groupdocs.sdk.model.DocumentAccessInfoResponse;
+import com.groupdocs.sdk.model.GetDocumentInfoResponse;
 import com.groupdocs.sdk.model.UploadResponse;
 import com.groupdocs.sdk.model.ViewDocumentResponse;
 import org.apache.commons.lang3.StringUtils;
@@ -120,7 +122,7 @@ public abstract class Utils {
         ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(pkey));
         DocApi docApi = new DocApi();
         docApi.setBasePath(bpath);
-        ViewDocumentResponse viewDocumentResponse = docApi.ViewDocument(cid, guid, null, null, null, null, null, null);
+        DocumentAccessInfoResponse viewDocumentResponse = docApi.GetDocumentAccessInfo(cid, guid);
         viewDocumentResponse = assertResponse(viewDocumentResponse);
         return viewDocumentResponse.getResult().getName();
     }
@@ -139,7 +141,7 @@ public abstract class Utils {
         ApiInvoker.getInstance().setRequestSigner(new GroupDocsRequestSigner(pkey));
         DocApi docApi = new DocApi();
         docApi.setBasePath(bpath);
-        ViewDocumentResponse viewDocumentResponse = docApi.ViewDocument(cid, guid, null, null, null, null, null, null);
+        DocumentAccessInfoResponse viewDocumentResponse = docApi.GetDocumentAccessInfo(cid, guid);
         viewDocumentResponse = assertResponse(viewDocumentResponse);
         return viewDocumentResponse.getResult().getId();
     }

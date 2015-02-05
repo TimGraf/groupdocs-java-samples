@@ -118,10 +118,10 @@ public class Sample05 extends Controller {
                 FileMoveResponse copyMoveResponse = null;
 
                 if (Utils.getFormValue(body.asFormUrlEncoded(), "copy") != null) {
-                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, null, Double.toString(fileId), null);
+                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, null, null,  Double.toString(fileId));
                     action = "copy";
                 } else if (Utils.getFormValue(body.asFormUrlEncoded(), "move") != null) {
-                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, null, null, Double.toString(fileId));
+                    copyMoveResponse = storageApi.MoveFile(credentials.getClientId(), copyToPath, null, Double.toString(fileId), null);
                     action = "move";
                 }
                 // Check response status
